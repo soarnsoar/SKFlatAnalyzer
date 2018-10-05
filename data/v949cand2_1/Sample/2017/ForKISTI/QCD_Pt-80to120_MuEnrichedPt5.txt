@@ -2,7 +2,6 @@ root://cms-xrdr.sdfarm.kr:1094///xrd/store/user/jskim/SKFlat/2017/QCD_Pt-80to120
 root://cms-xrdr.sdfarm.kr:1094///xrd/store/user/jskim/SKFlat/2017/QCD_Pt-80to120_MuEnrichedPt5_TuneCP5_13TeV_pythia8/SKFlat_v949cand2_1/180930_110605/0000/SKFlatNtuple_2017_MC_10.root
 root://cms-xrdr.sdfarm.kr:1094///xrd/store/user/jskim/SKFlat/2017/QCD_Pt-80to120_MuEnrichedPt5_TuneCP5_13TeV_pythia8/SKFlat_v949cand2_1/180930_110605/0000/SKFlatNtuple_2017_MC_100.root
 root://cms-xrdr.sdfarm.kr:1094///xrd/store/user/jskim/SKFlat/2017/QCD_Pt-80to120_MuEnrichedPt5_TuneCP5_13TeV_pythia8/SKFlat_v949cand2_1/180930_110605/0000/SKFlatNtuple_2017_MC_101.root
-root://cms-xrdr.sdfarm.kr:1094///xrd/store/user/jskim/SKFlat/2017/QCD_Pt-80to120_MuEnrichedPt5_TuneCP5_13TeV_pythia8/SKFlat_v949cand2_1/180930_110605/0000/SKFlatNtuple_2017_MC_102.root
 root://cms-xrdr.sdfarm.kr:1094///xrd/store/user/jskim/SKFlat/2017/QCD_Pt-80to120_MuEnrichedPt5_TuneCP5_13TeV_pythia8/SKFlat_v949cand2_1/180930_110605/0000/SKFlatNtuple_2017_MC_104.root
 root://cms-xrdr.sdfarm.kr:1094///xrd/store/user/jskim/SKFlat/2017/QCD_Pt-80to120_MuEnrichedPt5_TuneCP5_13TeV_pythia8/SKFlat_v949cand2_1/180930_110605/0000/SKFlatNtuple_2017_MC_105.root
 root://cms-xrdr.sdfarm.kr:1094///xrd/store/user/jskim/SKFlat/2017/QCD_Pt-80to120_MuEnrichedPt5_TuneCP5_13TeV_pythia8/SKFlat_v949cand2_1/180930_110605/0000/SKFlatNtuple_2017_MC_106.root
