@@ -46,6 +46,7 @@ std::vector<Muon> AnalyzerCore::GetAllMuons(){
     mu.SetdZ(muon_dzVTX->at(i), muon_dzerrVTX->at(i));
     mu.SetIP3D(muon_3DIPVTX->at(i), muon_3DIPerrVTX->at(i));
     mu.SetisPOGTight(muon_isTight->at(i));
+    mu.SetisPOGHighPt(muon_isHighPt->at(i));
     mu.SetisPOGMedium(muon_isMedium->at(i));
     mu.SetisPOGLoose(muon_isLoose->at(i));
     mu.SetChi2(muon_normchi->at(i));

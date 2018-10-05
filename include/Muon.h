@@ -12,9 +12,11 @@ public:
   ~Muon();
 
   inline bool isPOGTight() const {return j_isPOGTight;}
+  inline bool isPOGHighPt() const {return j_isPOGHighPt;}
   inline bool isPOGMedium() const {return j_isPOGMedium;}
   inline bool isPOGLoose() const {return j_isPOGLoose;}
   void SetisPOGTight(bool b){ j_isPOGTight = b; }
+  void SetisPOGHighPt(bool b){ j_isPOGHighPt = b; }
   void SetisPOGMedium(bool b){ j_isPOGMedium = b; }
   void SetisPOGLoose(bool b){ j_isPOGLoose = b; }
 
@@ -46,7 +48,7 @@ public:
 
 private:
 
-  bool j_isPOGTight, j_isPOGMedium, j_isPOGLoose;
+  bool j_isPOGTight, j_isPOGHighPt, j_isPOGMedium, j_isPOGLoose;
   double j_chi2;
   double j_PFCH04, j_PFNH04, j_PFPH04, j_PU04;
   double j_MiniAODPt, j_MomentumUp, j_MomentumDown;
@@ -55,6 +57,7 @@ private:
 
 Muon::Muon() : Lepton() {
   j_isPOGTight = false;
+  j_isPOGHighPt = false;
   j_isPOGMedium = false;
   j_isPOGLoose = false;
   j_chi2 = 999.;
@@ -113,6 +116,7 @@ void Muon::SetMomentumUpDown(double up, double down){
 bool Muon::PassID(TString ID){
   //==== POG
   if(ID=="POGTight") return isPOGTight();
+  if(ID=="POGHighPt") return isPOGHighPt();
   if(ID=="POGMedium") return isPOGMedium();
   if(ID=="POGLoose") return isPOGLoose();
   if(ID=="POGTightWithTightIso") return Pass_POGTightWithTightIso();
