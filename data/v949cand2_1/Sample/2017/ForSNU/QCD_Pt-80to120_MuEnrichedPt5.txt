@@ -1,6 +1,5 @@
 /data7/DATA/SKFlat/v949cand2_1/MC/QCD_Pt-80to120_MuEnrichedPt5_TuneCP5_13TeV_pythia8/180930_110605/0000/SKFlatNtuple_2017_MC_100.root
 /data7/DATA/SKFlat/v949cand2_1/MC/QCD_Pt-80to120_MuEnrichedPt5_TuneCP5_13TeV_pythia8/180930_110605/0000/SKFlatNtuple_2017_MC_101.root
-/data7/DATA/SKFlat/v949cand2_1/MC/QCD_Pt-80to120_MuEnrichedPt5_TuneCP5_13TeV_pythia8/180930_110605/0000/SKFlatNtuple_2017_MC_102.root
 /data7/DATA/SKFlat/v949cand2_1/MC/QCD_Pt-80to120_MuEnrichedPt5_TuneCP5_13TeV_pythia8/180930_110605/0000/SKFlatNtuple_2017_MC_104.root
 /data7/DATA/SKFlat/v949cand2_1/MC/QCD_Pt-80to120_MuEnrichedPt5_TuneCP5_13TeV_pythia8/180930_110605/0000/SKFlatNtuple_2017_MC_105.root
 /data7/DATA/SKFlat/v949cand2_1/MC/QCD_Pt-80to120_MuEnrichedPt5_TuneCP5_13TeV_pythia8/180930_110605/0000/SKFlatNtuple_2017_MC_106.root
