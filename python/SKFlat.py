@@ -154,7 +154,8 @@ for InputSample in InputSamples:
   #os.system('ssh -Y jskim@147.47.242.71 chmod -R 777 /var/www/html/SKFlatAnalyzerJobLogs/'+base_rundir.replace(SKFlatRunlogDir,''))
 
   ## If KNU, copy grid cert
-  os.system('cp /tmp/x509up_u'+UID+' '+base_rundir)
+  if IsKNU:
+    os.system('cp /tmp/x509up_u'+UID+' '+base_rundir)
 
   ## Get Sample Path
 
@@ -204,13 +205,11 @@ for InputSample in InputSamples:
   this_xsec = 1.;
   this_sumw = 1.;
   if not IsDATA:
-    lines_SamplePath = open(SAMPLE_DATA_DIR+"/"+args.Year+"/SamplePath.txt").readlines()
+    lines_SamplePath = open(SAMPLE_DATA_DIR+'/'+args.Year+'/CommonSampleInfo/'+InputSample+'.txt').readlines()
     for line in lines_SamplePath:
       if line[0]=="#":
         continue
       words = line.split()
-      if len(words)<5:
-        continue
       if InputSample==words[0]:
         this_xsec = words[2]
         this_sumw = words[4]
