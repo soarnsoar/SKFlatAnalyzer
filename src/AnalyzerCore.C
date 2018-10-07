@@ -50,7 +50,7 @@ std::vector<Muon> AnalyzerCore::GetAllMuons(){
     mu.SetisPOGMedium(muon_isMedium->at(i));
     mu.SetisPOGLoose(muon_isLoose->at(i));
     mu.SetChi2(muon_normchi->at(i));
-    mu.SetIso(muon_PfChargedHadronIsoR04->at(i),muon_PfNeutralHadronIsoR04->at(i),muon_PfGammaIsoR04->at(i),muon_PFSumPUIsoR04->at(i));
+    mu.SetIso(muon_PfChargedHadronIsoR04->at(i),muon_PfNeutralHadronIsoR04->at(i),muon_PfGammaIsoR04->at(i),muon_PFSumPUIsoR04->at(i),muon_trkiso->at(i));
 
     //==== Should be set after Eta is set
     mu.SetMiniIso(

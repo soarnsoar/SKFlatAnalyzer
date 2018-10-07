@@ -20,8 +20,9 @@ public:
   void SetisPOGMedium(bool b){ j_isPOGMedium = b; }
   void SetisPOGLoose(bool b){ j_isPOGLoose = b; }
 
-  void SetIso(double ch04, double nh04, double ph04, double pu04);
+  void SetIso(double ch04, double nh04, double ph04, double pu04, double trkiso);
   void CalcPFRelIso();
+  inline double TrkIso() const {return j_trkiso;}
   double EA();
 
   void SetChi2(double chi2){ j_chi2 = chi2; }
@@ -50,7 +51,7 @@ private:
 
   bool j_isPOGTight, j_isPOGHighPt, j_isPOGMedium, j_isPOGLoose;
   double j_chi2;
-  double j_PFCH04, j_PFNH04, j_PFPH04, j_PU04;
+  double j_PFCH04, j_PFNH04, j_PFPH04, j_PU04, j_trkiso;
   double j_MiniAODPt, j_MomentumUp, j_MomentumDown;
 
 };
@@ -65,6 +66,7 @@ Muon::Muon() : Lepton() {
   j_PFNH04 = -999.;
   j_PFPH04 = -999.;
   j_PU04 = -999.;
+  j_trkiso = -999.;
   this->SetLeptonFlavour(MUON);
   j_MiniAODPt = -999.;
   j_MomentumUp = -999.;
@@ -74,11 +76,12 @@ Muon::Muon() : Lepton() {
 Muon::~Muon(){
 }
 
-void Muon::SetIso(double ch04, double nh04, double ph04, double pu04){
+void Muon::SetIso(double ch04, double nh04, double ph04, double pu04, double trkiso){
   j_PFCH04 = ch04;
   j_PFNH04 = nh04;
   j_PFPH04 = ph04;
   j_PU04 = pu04;
+  j_trkiso = trkiso;
   CalcPFRelIso();
 }
 
