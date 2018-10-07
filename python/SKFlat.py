@@ -99,6 +99,14 @@ str_RandomNumber = str(RandomNumber).replace('0.','')
 webdirname = timestamp+"_"+str_RandomNumber
 webdirpathbase = SKFlatRunlogDir+'/www/SKFlatAnalyzerJobLogs/'+webdirname
 
+## If KISTI, compress files
+if IsKISTI:
+  cwd = os.getcwd()
+  os.chdir(SKFlat_WD)
+  os.system('tar --exclude=data/'+SKFlatV+'/Sample -czf '+str_RandomNumber+'_data.tar.gz data/'+SKFlatV+'/')
+  os.system('tar -czf '+str_RandomNumber+'_lib.tar.gz lib/*')
+  os.chdir(cwd)
+
 ## Loop over samples
 SampleFinishedForEachSample = []
 PostJobFinishedForEachSample = []
@@ -122,11 +130,12 @@ for InputSample in InputSamples:
 
   ## Prepare output
 
-  base_rundir = SKFlatRunlogDir+'/'+args.Analyzer+'__'+timestamp+'__'+InputSample+'_'+HOSTNAME
+  base_rundir = SKFlatRunlogDir+'/'+args.Analyzer+'__'+timestamp+'__'+InputSample
   if IsDATA:
     base_rundir = base_rundir+'_period'+DataPeriod
   for flag in Userflags:
     base_rundir += '__'+flag
+  base_rundir += '__'+HOSTNAME
   base_rundir = base_rundir+"/"
 
   os.system('mkdir -p '+base_rundir)
@@ -134,17 +143,15 @@ for InputSample in InputSamples:
 
   ## Copy shared library file
 
-  os.system('mkdir -p '+base_rundir+'/lib/')
-  os.system('cp '+SKFlat_LIB_PATH+'/* '+base_rundir+'/lib')
   if IsKISTI:
-    os.chdir(SKFlat_WD)
+    ## In KISTI, we have copy both library and data file
+    os.system('cp '+SKFlat_WD+'/'+str_RandomNumber+'_data.tar.gz '+base_rundir+'/data.tar.gz')
+    os.system('cp '+SKFlat_WD+'/'+str_RandomNumber+'_lib.tar.gz '+base_rundir+'/lib.tar.gz')
 
-    os.system('tar --exclude=data/'+SKFlatV+'/Sample -czf data.tar.gz data/'+SKFlatV+'/')
-    os.system('mv data.tar.gz '+base_rundir)
-    cwd = os.getcwd()
-    os.chdir(base_rundir)
-    os.system('tar -czf lib.tar.gz lib/*')
-    os.chdir(cwd)
+  else:
+    ## Else, we only have to copy libray
+    os.system('mkdir -p '+base_rundir+'/lib/')
+    os.system('cp '+SKFlat_LIB_PATH+'/* '+base_rundir+'/lib')
 
   ## Create webdir
 
@@ -420,12 +427,23 @@ root -l -b -q run.C 1>stdout.log 2>stderr.log
       KillCommand.write('qdel '+jobid+' ## job_'+str(it_job)+' ##\n')
     KillCommand.close()
 
+## remove tar.gz
+os.system('rm '+SKFlat_WD+'/'+str_RandomNumber+'_data.tar.gz')
+os.system('rm '+SKFlat_WD+'/'+str_RandomNumber+'_lib.tar.gz')
+
 if args.no_exec:
   exit()
 
-print '##################################'
-print '#### Submittion is FINISHED!! ####'
-print '##################################\n'
+print '##################################################'
+print 'Submission Finished'
+print '- Analyzer = '+args.Analyzer
+print '- InputSamples =',
+print InputSamples
+print '- NJobs = '+str(NJobs)
+print '- Year = '+args.Year
+print '- UserFlags =',
+print Userflags
+print '##################################################'
 
 ##########################
 ## Submittion all done. ##
@@ -470,11 +488,12 @@ try:
       ## Prepare output
       ## This should be copied from above
 
-      base_rundir = SKFlatRunlogDir+'/'+args.Analyzer+'__'+timestamp+'__'+InputSample+'_'+HOSTNAME
+      base_rundir = SKFlatRunlogDir+'/'+args.Analyzer+'__'+timestamp+'__'+InputSample
       if IsDATA:
         base_rundir = base_rundir+'_period'+DataPeriod
       for flag in Userflags:
         base_rundir += '__'+flag
+      base_rundir += '__'+HOSTNAME
       base_rundir = base_rundir+"/"
 
       this_webdir = webdirpathbase+'/'+base_rundir.replace(SKFlatRunlogDir,'')
