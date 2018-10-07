@@ -225,7 +225,6 @@ std::vector<Jet> AnalyzerCore::GetAllJets(){
   for(unsigned int i=0; i<jet_pt->size(); i++){
     Jet jet;
     jet.SetPtEtaPhiM(jet_pt->at(i), jet_eta->at(i), jet_phi->at(i), jet_m->at(i));
-
     if(!IsDATA){
       jet *= jet_smearedRes->at(i);
       jet.SetResShift( jet_smearedResUp->at(i)/jet_smearedRes->at(i), jet_smearedResDown->at(i)/jet_smearedRes->at(i) );
@@ -292,8 +291,10 @@ std::vector<FatJet> AnalyzerCore::GetAllFatJets(){
   for(unsigned int i=0; i<fatjet_pt->size(); i++){
     FatJet jet;
     jet.SetPtEtaPhiM(fatjet_pt->at(i), fatjet_eta->at(i), fatjet_phi->at(i), fatjet_m->at(i));
-    jet *= fatjet_smearedRes->at(i);
-    jet.SetResShift( fatjet_smearedResUp->at(i)/fatjet_smearedRes->at(i), fatjet_smearedResDown->at(i)/fatjet_smearedRes->at(i) );
+    if(!IsDATA){
+      jet *= fatjet_smearedRes->at(i);
+      jet.SetResShift( fatjet_smearedResUp->at(i)/fatjet_smearedRes->at(i), fatjet_smearedResDown->at(i)/fatjet_smearedRes->at(i) );
+    }
     jet.SetCharge(fatjet_charge->at(i));
 
     jet.SetArea(fatjet_area->at(i));
