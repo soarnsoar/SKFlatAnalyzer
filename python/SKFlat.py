@@ -23,6 +23,11 @@ Userflags = []
 if args.Userflags != "":
   Userflags = (args.Userflags).split(',')
 
+## Add Abosolute path for outputdir
+if args.Outputdir!='':
+  if args.Outputdir[0]!='/':
+    args.Outputdir = os.getcwd()+'/'+args.Outputdir
+
 ## TimeStamp
 
 # 1) dir/file name style
@@ -434,6 +439,17 @@ os.system('rm '+SKFlat_WD+'/'+str_RandomNumber+'_lib.tar.gz')
 if args.no_exec:
   exit()
 
+## Set Output directory
+## if args.Outputdir is not set, go to default setting
+FinalOutputPath = args.Outputdir
+if args.Outputdir=="":
+  FinalOutputPath = SKFlatOutputDir+'/'+SKFlatV+'/'+args.Analyzer+'/'+args.Year+'/'
+  for flag in Userflags:
+    FinalOutputPath += flag+"__"
+  if IsDATA:
+    FinalOutputPath += '/DATA/'
+os.system('mkdir -p '+FinalOutputPath)
+
 print '##################################################'
 print 'Submission Finished'
 print '- Analyzer = '+args.Analyzer
@@ -443,6 +459,7 @@ print '- NJobs = '+str(NJobs)
 print '- Year = '+args.Year
 print '- UserFlags =',
 print Userflags
+print '- output will be send to : '+FinalOutputPath
 print '##################################################'
 
 ##########################
@@ -683,16 +700,6 @@ try:
 
             ## Final Outputpath
 
-            FinalOutputPath = args.Outputdir
-            ## if args.Outputdir is not set, go to default setting
-            if args.Outputdir=="":
-              FinalOutputPath = SKFlatOutputDir+'/'+SKFlatV+'/'+args.Analyzer+'/'+args.Year+'/'
-              for flag in Userflags:
-                FinalOutputPath += flag+"__"
-              if IsDATA:
-                FinalOutputPath += '/DATA/'
-
-            os.system('mkdir -p '+FinalOutputPath)
             os.system('cp '+outputname+'.root '+FinalOutputPath)
             os.chdir(cwd)
 
@@ -715,8 +722,8 @@ HOST = {3}
 Analyzer = {0}
 # of Jobs = {4}
 InputSample = {1}
-OutputDir = {2}
-'''.format(args.Analyzer,InputSamples,args.Outputdir,HOSTNAME,NJobs)
+Output sent to : {2}
+'''.format(args.Analyzer,InputSamples,FinalOutputPath,HOSTNAME,NJobs)
 JobFinishEmail += '''##################
 Job started at {0}
 Job finished at {1}
