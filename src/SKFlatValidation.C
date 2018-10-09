@@ -20,11 +20,31 @@ void SKFlatValidation::executeEvent(){
 
   executeEventFromParameter(param);
 
+  //==== POG HighPt
+
+  param.Clear();
+
+  param.Name = "POGHighPt";
+
+  param.Electron_Tight_ID = "passHEEPID";
+  param.Electron_ID_SF_Key = "Default";
+
+  param.Muon_Tight_ID = "POGHighPtWithLooseTrkIso";
+  param.Muon_ID_SF_Key = "NUM_HighPtID_DEN_genTracks";
+  param.Muon_ISO_SF_Key = "NUM_LooseRelTkIso_DEN_HighPtIDandIPCut";
+  param.Muon_Trigger_SF_Key = "Default";
+  param.Muon_UseTuneP = true;
+
+  param.Jet_ID = "HN";
+
+  executeEventFromParameter(param);
+
+
 /*
   //=== Same but pt>75 GeV
   param.Name = "POG_pt75";
   executeEventFromParameter(param);
-
+*/
   //==== HNPair ID
 
   param.Clear();
@@ -52,6 +72,7 @@ void SKFlatValidation::executeEvent(){
 
   executeEventFromParameter(param);
 
+/*
   //=== Same but pt>75 GeV
   param.Name = "HNPair_pt75";
   executeEventFromParameter(param);
@@ -212,8 +233,18 @@ void SKFlatValidation::executeEventFromParameter(AnalyzerParameter param){
       //==== FIXME add third lepton veto later
       if(Suffix.Contains("SingleMuon")){
         for(unsigned int i=0; i<muons.size(); i++){
-          double this_idsf  = mcCorr.MuonID_SF (param.Muon_ID_SF_Key,  muons.at(i).Eta(), muons.at(i).MiniAODPt());
-          double this_isosf = mcCorr.MuonISO_SF(param.Muon_ISO_SF_Key, muons.at(i).Eta(), muons.at(i).MiniAODPt());
+
+          double this_pt = muons.at(i).MiniAODPt();
+          double this_eta = muons.at(i).Eta();
+
+          if(param.Muon_UseTuneP){
+            Particle this_tuneP = muons.at(i).TuneP4();
+            this_pt = this_tuneP.Pt();
+            this_eta = this_tuneP.Eta();
+          }
+
+          double this_idsf  = mcCorr.MuonID_SF (param.Muon_ID_SF_Key,  this_eta, this_pt);
+          double this_isosf = mcCorr.MuonISO_SF(param.Muon_ISO_SF_Key, this_eta, this_pt);
           double this_trigsf = mcCorr.MuonTrigger_SF(param.Muon_Trigger_SF_Key, "IsoMu27", muons);
 
           weight *= this_idsf*this_isosf*this_trigsf;

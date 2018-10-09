@@ -42,6 +42,7 @@ std::vector<Muon> AnalyzerCore::GetAllMuons(){
     mu.SetPtEtaPhiM(muon_pt->at(i)*rc, muon_eta->at(i), muon_phi->at(i), muon_mass->at(i));
     mu.SetMomentumUpDown( (rc+rc_err)*muon_pt->at(i), (rc-rc_err)*muon_pt->at(i) );
     mu.SetCharge(muon_charge->at(i));
+    mu.SetTuneP4(muon_TuneP_pt->at(i),muon_TuneP_ptError->at(i),muon_TuneP_eta->at(i),muon_TuneP_phi->at(i));
     mu.SetdXY(muon_dxyVTX->at(i), muon_dxyerrVTX->at(i));
     mu.SetdZ(muon_dzVTX->at(i), muon_dzerrVTX->at(i));
     mu.SetIP3D(muon_3DIPVTX->at(i), muon_3DIPerrVTX->at(i));

@@ -35,10 +35,15 @@ public:
   double MomentumUp() const {return j_MomentumUp;}
   double MomentumDown() const {return j_MomentumDown;}
 
+  void SetTuneP4(double pt, double pt_err, double eta, double phi);
+  Particle TuneP4() const {return j_TuneP4;}
+  double TunePPtError() const {return j_TunePPtError;}
+
   //==== ID
   bool PassID(TString ID);
   bool Pass_POGTight();
   bool Pass_POGTightWithTightIso();
+  bool Pass_POGHighPtWithLooseTrkIso();
   bool Pass_HNPairTight();
   bool Pass_HNPairLoose();
   bool Pass_HNPairVeto();
@@ -53,6 +58,8 @@ private:
   double j_chi2;
   double j_PFCH04, j_PFNH04, j_PFPH04, j_PU04, j_trkiso;
   double j_MiniAODPt, j_MomentumUp, j_MomentumDown;
+  Particle j_TuneP4;
+  double j_TunePPtError;
 
 };
 
@@ -71,6 +78,7 @@ Muon::Muon() : Lepton() {
   j_MiniAODPt = -999.;
   j_MomentumUp = -999.;
   j_MomentumDown = -999.;
+  j_TunePPtError = -999.;
 }
 
 Muon::~Muon(){
@@ -116,6 +124,12 @@ void Muon::SetMomentumUpDown(double up, double down){
   j_MomentumDown = down;
 }
 
+void Muon::SetTuneP4(double pt, double pt_err, double eta, double phi){
+  j_TuneP4.SetPtEtaPhiM(pt,eta,phi,M());
+  j_TuneP4.SetCharge(Charge()); //FIXME later, used TuneP charge
+  j_TunePPtError = pt_err;
+}
+
 bool Muon::PassID(TString ID){
   //==== POG
   if(ID=="POGTight") return isPOGTight();
@@ -123,6 +137,7 @@ bool Muon::PassID(TString ID){
   if(ID=="POGMedium") return isPOGMedium();
   if(ID=="POGLoose") return isPOGLoose();
   if(ID=="POGTightWithTightIso") return Pass_POGTightWithTightIso();
+  if(ID=="POGHighPtWithLooseTrkIso") return Pass_POGHighPtWithLooseTrkIso();
   //==== Customized
   if(ID=="HNPairTight") return Pass_HNPairTight();
   if(ID=="HNPairLoose") return Pass_HNPairLoose();
@@ -141,6 +156,11 @@ bool Muon::PassID(TString ID){
 bool Muon::Pass_POGTightWithTightIso(){
   if(!( isPOGTight() )) return false;
   if(!( RelIso()<0.15 ))  return false;
+  return true;
+}
+bool Muon::Pass_POGHighPtWithLooseTrkIso(){
+  if(!( isPOGHighPt() )) return false;
+  if(!( TrkIso()/TuneP4().Pt()<0.1 )) return false;
   return true;
 }
 

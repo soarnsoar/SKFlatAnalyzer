@@ -55,6 +55,8 @@ MCCorrection::~MCCorrection(){
 
 double MCCorrection::MuonID_SF(TString ID, double eta, double pt, int sys){
 
+  if(ID=="Default") return 1.;
+
   //cout << "[MCCorrection::MuonID_SF] eta = " << eta << ", pt = " << pt << endl;
 
   double value = 1.;
@@ -62,7 +64,7 @@ double MCCorrection::MuonID_SF(TString ID, double eta, double pt, int sys){
 
   eta = fabs(eta);
 
-  if(ID=="NUM_TightID_DEN_genTracks"){
+  if(ID=="NUM_TightID_DEN_genTracks" || ID=="NUM_HighPtID_DEN_genTracks"){
     //==== boundaries
     if(pt<20.) return 1.;
     if(pt>=120.) return 1.;
@@ -73,7 +75,7 @@ double MCCorrection::MuonID_SF(TString ID, double eta, double pt, int sys){
   if(!this_hist){
     if(IgnoreNoHist) return 1.;
     else{
-      cout << "[MCCorrection::MuonID_SF] No"<<"ID_SF_"+ID<<endl;
+      cout << "[MCCorrection::MuonID_SF] No "<<"ID_SF_"+ID<<endl;
       exit(EXIT_FAILURE);
     }
   }
@@ -90,6 +92,8 @@ double MCCorrection::MuonID_SF(TString ID, double eta, double pt, int sys){
 
 double MCCorrection::MuonISO_SF(TString ID, double eta, double pt, int sys){
 
+  if(ID=="Default") return 1.;
+
   //cout << "[MCCorrection::MuonISO_SF] eta = " << eta << ", pt = " << pt << endl;
 
   double value = 1.;
@@ -97,7 +101,7 @@ double MCCorrection::MuonISO_SF(TString ID, double eta, double pt, int sys){
 
   eta = fabs(eta);
 
-  if(ID=="NUM_TightRelIso_DEN_TightIDandIPCut"){
+  if(ID=="NUM_TightRelIso_DEN_TightIDandIPCut" || ID=="NUM_LooseRelTkIso_DEN_HighPtIDandIPCut"){
 
     //==== boundaries
     if(pt<20.) return 1.;
@@ -110,7 +114,7 @@ double MCCorrection::MuonISO_SF(TString ID, double eta, double pt, int sys){
   if(!this_hist){
     if(IgnoreNoHist) return 1.;
     else{
-      cout << "[MCCorrection::MuonISO_SF] No"<<"ISO_SF_"+ID<<endl;
+      cout << "[MCCorrection::MuonISO_SF] No "<<"ISO_SF_"+ID<<endl;
       exit(EXIT_FAILURE);
     }
   }
@@ -126,6 +130,8 @@ double MCCorrection::MuonISO_SF(TString ID, double eta, double pt, int sys){
 }
 
 double MCCorrection::MuonTrigger_Eff(TString ID, TString trig, int DataOrMC, double eta, double pt, int sys){
+
+  if(ID=="Default") return 1.;
 
   //cout << "[MCCorrection::MuonTrigger_Eff] eta = " << eta << ", pt = " << pt << endl;
 
@@ -151,7 +157,7 @@ double MCCorrection::MuonTrigger_Eff(TString ID, TString trig, int DataOrMC, dou
   if(!this_hist){
     if(IgnoreNoHist) return 1.;
     else{
-      cout << "[MCCorrection::MuonTrigger_Eff] No"<<histkey<<endl;
+      cout << "[MCCorrection::MuonTrigger_Eff] No "<<histkey<<endl;
       exit(EXIT_FAILURE);
     }
   }
@@ -168,6 +174,8 @@ double MCCorrection::MuonTrigger_Eff(TString ID, TString trig, int DataOrMC, dou
 }
 
 double MCCorrection::MuonTrigger_SF(TString ID, TString trig, std::vector<Muon> muons, int sys){
+
+  if(ID=="Default") return 1.;
 
   double value = 1.;
 
@@ -203,6 +211,8 @@ double MCCorrection::MuonTrigger_SF(TString ID, TString trig, std::vector<Muon> 
 
 double MCCorrection::ElectronID_SF(TString ID, double sceta, double pt, int sys){
 
+  if(ID=="Default") return 1.;
+
   double value = 1.;
   double error = 0.;
 
@@ -216,7 +226,7 @@ double MCCorrection::ElectronID_SF(TString ID, double sceta, double pt, int sys)
   if(!this_hist){
     if(IgnoreNoHist) return 1.;
     else{
-      cout << "[MCCorrection::ElectronID_SF] No"<<"ID_SF_"+ID<<endl;
+      cout << "[MCCorrection::ElectronID_SF] No "<<"ID_SF_"+ID<<endl;
       exit(EXIT_FAILURE);
     }
   }
@@ -243,7 +253,7 @@ double MCCorrection::ElectronReco_SF(double sceta, double pt, int sys){
   if(!this_hist){
     if(IgnoreNoHist) return 1.;
     else{
-      cout << "[MCCorrection::ElectronReco_SF] No"<<"RECO_SF_"+ptrange<<endl;
+      cout << "[MCCorrection::ElectronReco_SF] No "<<"RECO_SF_"+ptrange<<endl;
       exit(EXIT_FAILURE);
     }
   }

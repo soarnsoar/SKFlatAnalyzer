@@ -24,7 +24,7 @@ public:
   TString Muon_FR_ID, Muon_FR_Key;
   TString Muon_CF_ID, Muon_CF_Key;
   double Muon_Tight_RelIso, Muon_Loose_RelIso, Muon_Veto_RelIso;
-  bool Muon_UseMini, Muon_UsePtCone;
+  bool Muon_UseMini, Muon_UsePtCone, Muon_UseTuneP;
   double Muon_MinPt;
 
   TString Jet_ID, FatJet_ID;
@@ -73,6 +73,7 @@ void AnalyzerParameter::Clear(){
   Muon_Veto_RelIso = 999.;
   Muon_UseMini = false;
   Muon_UsePtCone = false;
+  Muon_UseTuneP = false;
   Muon_MinPt = 10.;
 
   Jet_ID = "";
