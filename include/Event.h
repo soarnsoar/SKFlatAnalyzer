@@ -104,7 +104,7 @@ double Event::GetTriggerLumi(TString trig){
     else if(trig=="HLT_Mu8_v"){
       //==== 180829 Norm Checked : sf = 1.41036
       //return 2.605*1.41036;
-      return 2.605;
+      return 2.605*1.41036;
     }
     else if(trig=="HLT_Mu17_v"){
       return 70.039;
