@@ -259,7 +259,7 @@ source /cvmfs/cms.cern.ch/slc6_amd64_gcc630/cms/cmssw/CMSSW_9_4_4/external/slc6_
 SumNoAuth=999
 Trial=0
 
-while [ "$NoAuthError" -ne 0 ]; do
+while [ "$SumNoAuth" -ne 0 ]; do
 
   if [ "$Trial" -gt 9999 ]; then
     break
