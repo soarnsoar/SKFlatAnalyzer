@@ -256,7 +256,7 @@ cd -
 echo "#### setup root ####"
 source /cvmfs/cms.cern.ch/slc6_amd64_gcc630/cms/cmssw/CMSSW_9_4_4/external/slc6_amd64_gcc630/bin/thisroot.sh
 
-NoAuthError=999
+SumNoAuth=999
 Trial=0
 
 while [ "$NoAuthError" -ne 0 ]; do
@@ -271,7 +271,7 @@ while [ "$NoAuthError" -ne 0 ]; do
   NoAuthError_Open=`grep "Error in <TNetXNGFile::Open>" err.log -R | wc -l`
   NoAuthError_Close=`grep "Error in <TNetXNGFile::Close>" err.log -R | wc -l`
 
-  SumNoAuth = $(($NoAuthError_Open + $NoAuthError_Close))
+  SumNoAuth=$(($NoAuthError_Open + $NoAuthError_Close))
 
   if [ "$SumNoAuth" -ne 0 ]; then
     echo "SumNoAuth="$SumNoAuth
