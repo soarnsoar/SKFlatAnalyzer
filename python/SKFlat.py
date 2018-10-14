@@ -268,10 +268,13 @@ while [ "$NoAuthError" -ne 0 ]; do
   echo "#### running ####"
   echo "root -l -b -q run_${SECTION}.C"
   root -l -b -q run_${SECTION}.C 2> err.log
-  NoAuthError=`grep "Error in <TNetXNGFile::Open>" err.log -R | wc -l`
+  NoAuthError_Open=`grep "Error in <TNetXNGFile::Open>" err.log -R | wc -l`
+  NoAuthError_Close=`grep "Error in <TNetXNGFile::Close>" err.log -R | wc -l`
 
-  if [ "$NoAuthError" -ne 0 ]; then
-    echo "NoAuthError="$NoAuthError
+  SumNoAuth = $(($NoAuthError_Open + $NoAuthError_Close))
+
+  if [ "$SumNoAuth" -ne 0 ]; then
+    echo "SumNoAuth="$SumNoAuth
     echo "AUTH error occured.. running again in 30 seconds.."
     Trial=$((Trial+=1))
     sleep 30
