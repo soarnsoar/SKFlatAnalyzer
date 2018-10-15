@@ -1129,6 +1129,18 @@ void AnalyzerCore::FillHist(TString histname, double value, double weight, int n
 
 }
 
+void AnalyzerCore::FillHist(TString histname, double value, double weight, int n_bin, double *xbins){
+
+  TH1D *this_hist = GetHist1D(histname);
+  if( !this_hist ){
+    this_hist = new TH1D(histname, "", n_bin, xbins);
+    maphist_TH1D[histname] = this_hist;
+  }
+
+  this_hist->Fill(value, weight);
+
+}
+
 void AnalyzerCore::FillHist(TString histname,
                 double value_x, double value_y,
                 double weight,
