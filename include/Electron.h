@@ -38,7 +38,7 @@ public:
     else if( sceta < 1.566 ) return GAP;
     else return EC;
   }
-
+  
   void SetCutBasedIDVariables(
     double full5x5_sigmaIetaIeta,
     double dEtaSeed,
@@ -172,7 +172,7 @@ void Electron::SetRelPFIso_Rho(double r){
 double Electron::EA(){
 
   //==== RecoEgamma/ElectronIdentification/data/Fall17/effAreaElectrons_cone03_pfNeuHadronsAndPhotons_94X.txt
-
+  
   double eta = fabs(this->scEta());
 
   if     (eta<1.000) return 0.1440;

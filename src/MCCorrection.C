@@ -47,6 +47,24 @@ IgnoreNoHist(false)
   }
 */
 
+  // == Get Prefiring maps
+  TString prefire_path = getenv("DATA_DIR");
+  prefire_path  = prefire_path + "/Prefire/";
+  
+  string elline3;
+  ifstream in3(prefire_path + "histmap.txt");
+  while(getline(in3,elline3)){
+    std::istringstream is( elline3 );
+    TString a,b,c;
+    is >> a; // Jet, Photon
+    is >> b; // <rootfilename>
+    is >> c; // <histname>
+    
+    TFile *file = new TFile(prefire_path + b);
+    map_hist_prefire[a + "_prefire"] = (TH2F *)file->Get(c);
+  }
+
+
 }
 
 MCCorrection::~MCCorrection(){
@@ -161,7 +179,7 @@ double MCCorrection::MuonTrigger_Eff(TString ID, TString trig, int DataOrMC, dou
       exit(EXIT_FAILURE);
     }
   }
-
+  
   int this_bin = this_hist->FindBin(pt,eta);
   value = this_hist->GetBinContent(this_bin);
   error = this_hist->GetBinError(this_bin);
@@ -269,7 +287,41 @@ double MCCorrection::ElectronReco_SF(double sceta, double pt, int sys){
 }
 
 
+double MCCorrection::GetPrefireWeight(std::vector<Photon> photons, std::vector<Jet> jets, int sys){
 
+  double out = 1.;
+  double photon_weight = 1.;
+  double jet_weight = 1.;
+  
+  TH2F *photon_hist = map_hist_prefire["Photon_prefire"];
+  TH2F *jet_hist = map_hist_prefire["Jet_prefire"];
+
+  
+  for(unsigned int i_pho = 0; i_pho < photons.size(); i_pho++){
+    double current_weight = 1.;
+    Photon current_photon = photons.at(i_pho);
+    double eta = current_photon.scEta();
+    double pt = current_photon.Pt();
+    
+    int this_bin = photon_hist->FindBin(eta, pt);
+    current_weight = 1. - photon_hist->GetBinContent(this_bin);
+    photon_weight = photon_weight * current_weight;
+  }
+  
+  for(unsigned int i_jet = 0; i_jet < jets.size(); i_jet++){
+    double current_weight = 1.;
+    Jet current_jet = jets.at(i_jet);
+    double eta = current_jet.Eta();
+    double pt = current_jet.Pt();
+    
+    int this_bin = jet_hist->FindBin(eta, pt);
+    current_weight = 1.- jet_hist->GetBinContent(this_bin);
+    jet_weight = jet_weight * current_weight;
+  }
+
+  return photon_weight * jet_weight;;
+
+}
 
 
 
