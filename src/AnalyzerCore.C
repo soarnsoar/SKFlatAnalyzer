@@ -390,6 +390,115 @@ std::vector<Gen> AnalyzerCore::GetGens(){
 
 }
 
+std::vector<Muon> AnalyzerCore::UseTunePMuon(std::vector<Muon> muons){
+
+  std::vector<Muon> out;
+  for(unsigned int i=0; i<muons.size(); i++){
+    Muon this_muon=muons.at(i);
+
+    Particle this_tunep4 = this_muon.TuneP4();
+    this_muon.SetPtEtaPhiM( this_tunep4.Pt(), this_tunep4.Eta(), this_tunep4.Phi(), this_tunep4.M() );
+    //==== FIXME Add TuneP Charge here
+
+    out.push_back(this_muon);
+  }
+
+  return out;
+
+}
+
+std::vector<Muon> AnalyzerCore::SelectMuons(std::vector<Muon> muons, TString id, double ptmin, double fetamax){
+
+  std::vector<Muon> out;
+  for(unsigned int i=0; i<muons.size(); i++){
+    Muon this_muon=muons.at(i);
+    if(!( this_muon.Pt()>ptmin )){
+      //cout << "Fail Pt : pt = " << this_muon.Pt() << ", cut = " << ptmin << endl;
+      continue;
+    }
+    if(!( fabs(this_muon.Eta())<fetamax )){
+      //cout << "Fail Eta : eta = " << fabs(this_muon.Eta()) << ", cut = " << fetamax << endl;
+      continue;
+    }
+    if(!( this_muon.PassID(id) )){
+      //cout << "Fail ID" << endl;
+      continue;
+    }
+    out.push_back(this_muon);
+  }
+  return out;
+
+}
+
+std::vector<Electron> AnalyzerCore::SelectElectrons(std::vector<Electron> electrons, TString id, double ptmin, double fetamax){
+
+  std::vector<Electron> out;
+  for(unsigned int i=0; i<electrons.size(); i++){
+    Electron this_electron= electrons.at(i);
+    if(!( this_electron.Pt()>ptmin )){
+      //cout << "Fail Pt : pt = " << this_electron.Pt() << ", cut = " << ptmin << endl;
+      continue;
+    }
+    if(!( fabs(this_electron.scEta())<fetamax )){
+      //cout << "Fail Eta : eta = " << fabs(this_electron.scEta()) << ", cut = " << fetamax << endl;
+      continue;
+    }
+    if(!( this_electron.PassID(id) )){
+      //cout << "Fail ID" << endl;
+      continue;
+    }
+    out.push_back(this_electron);
+  }
+  return out;
+
+}
+
+std::vector<Jet> AnalyzerCore::SelectJets(std::vector<Jet> jets, TString id, double ptmin, double fetamax){
+
+  std::vector<Jet> out;
+  for(unsigned int i=0; i<jets.size(); i++){
+    Jet this_jet= jets.at(i);
+    if(!( this_jet.Pt()>ptmin )){
+      //cout << "Fail Pt : pt = " << this_jet.Pt() << ", cut = " << ptmin << endl;
+      continue;
+    }
+    if(!( fabs(this_jet.Eta())<fetamax )){
+      //cout << "Fail Eta : eta = " << fabs(this_jet.Eta()) << ", cut = " << fetamax << endl;
+      continue;
+    }
+    if(!( this_jet.PassID(id) )){
+      //cout << "Fail ID" << endl;
+      continue;
+    }
+    out.push_back(this_jet);
+  }
+  return out;
+
+}
+
+std::vector<FatJet> AnalyzerCore::SelectFatJets(std::vector<FatJet> jets, TString id, double ptmin, double fetamax){
+
+  std::vector<FatJet> out;
+  for(unsigned int i=0; i<jets.size(); i++){
+    FatJet this_jet= jets.at(i);
+    if(!( this_jet.Pt()>ptmin )){
+      //cout << "Fail Pt : pt = " << this_jet.Pt() << ", cut = " << ptmin << endl;
+      continue;
+    }
+    if(!( fabs(this_jet.Eta())<fetamax )){
+      //cout << "Fail Eta : eta = " << fabs(this_jet.Eta()) << ", cut = " << fetamax << endl;
+      continue;
+    }
+    if(!( this_jet.PassID(id) )){
+      //cout << "Fail ID" << endl;
+      continue;
+    }
+    out.push_back(this_jet);
+  }
+  return out;
+
+}
+
 bool AnalyzerCore::PassMETFilter(){
 
   //==== https://twiki.cern.ch/twiki/bin/viewauth/CMS/MissingETOptionalFiltersRun2#Moriond_2018

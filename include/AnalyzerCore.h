@@ -43,21 +43,31 @@ public:
   Event GetEvent();
 
   std::vector<Muon> GetAllMuons();
-  std::vector<Muon> GetMuons(TString id, double ptmin=-999., double fetamax=999.);
+  std::vector<Muon> GetMuons(TString id, double ptmin, double fetamax);
 
   std::vector<Electron> GetAllElectrons();
-  std::vector<Electron> GetElectrons(TString id, double ptmin=-999., double fetamax=999.);
+  std::vector<Electron> GetElectrons(TString id, double ptmin, double fetamax);
 
   std::vector<Lepton *> MakeLeptonPointerVector(std::vector<Muon>& muons, double TightIso=-999, bool UseMini=false);
   std::vector<Lepton *> MakeLeptonPointerVector(std::vector<Electron>& electrons, double TightIso=-999, bool UseMini=false);
 
   std::vector<Jet> GetAllJets();
-  std::vector<Jet> GetJets(TString id, double ptmin=-999, double fetamax=999.);
+  std::vector<Jet> GetJets(TString id, double ptmin, double fetamax);
 
   std::vector<FatJet> GetAllFatJets();
-  std::vector<FatJet> GetFatJets(TString id, double ptmin=-999, double fetamax=999.);
+  std::vector<FatJet> GetFatJets(TString id, double ptmin, double fetamax);
 
   std::vector<Gen> GetGens();
+
+  //==== Get objects METHOD 2
+  std::vector<Muon> UseTunePMuon(std::vector<Muon> muons);
+  std::vector<Muon> SelectMuons(std::vector<Muon> muons, TString id, double ptmin, double fetamax);
+
+  std::vector<Electron> SelectElectrons(std::vector<Electron> electrons, TString id, double ptmin, double fetamax);
+
+  std::vector<Jet> SelectJets(std::vector<Jet> jets, TString id, double ptmin, double fetamax);
+
+  std::vector<FatJet> SelectFatJets(std::vector<FatJet> jets, TString id, double ptmin, double fetamax);
 
   //==== Event Filters
 
