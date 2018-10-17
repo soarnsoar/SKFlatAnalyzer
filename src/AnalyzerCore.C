@@ -37,7 +37,7 @@ std::vector<Muon> AnalyzerCore::GetAllMuons(){
     Muon mu;
     double rc = muon_roch_sf->at(i);
     double rc_err = muon_roch_sf_up->at(i);
-
+    
     mu.SetMiniAODPt(muon_pt->at(i));
     mu.SetPtEtaPhiM(muon_pt->at(i)*rc, muon_eta->at(i), muon_phi->at(i), muon_mass->at(i));
     mu.SetMomentumUpDown( (rc+rc_err)*muon_pt->at(i), (rc-rc_err)*muon_pt->at(i) );
@@ -219,6 +219,68 @@ std::vector<Lepton *> AnalyzerCore::MakeLeptonPointerVector(std::vector<Electron
   return out;
 
 }
+
+
+
+std::vector<Photon> AnalyzerCore::GetAllPhotons(){
+
+  std::vector<Photon> out;
+  for(unsigned int i=0; i<photon_pt->size(); i++){
+    
+    Photon pho;
+    pho.SetPtEtaPhiM(photon_pt->at(i), photon_eta->at(i), photon_phi->at(i), 0.);
+    pho.SetSC(photon_scEta->at(i), photon_scPhi->at(i));
+    pho.SetRho(Rho);
+
+    pho.SetCutBasedIDVariables(
+			       photon_Full5x5_SigmaIEtaIEta->at(i),
+			       photon_HoverE->at(i),
+			       photon_ChIsoWithEA->at(i),
+			       photon_NhIsoWithEA->at(i),
+			       photon_PhIsoWithEA->at(i)
+			       );
+    
+    
+
+    std::vector<bool> ids = {
+      photon_passLooseID->at(i),
+      photon_passMediumID->at(i),
+      photon_passTightID->at(i),
+      photon_passMVAID_WP80->at(i),
+      photon_passMVAID_WP90->at(i)
+     };
+    pho.SetPOGIDs(ids);
+        
+    
+
+    out.push_back(pho);
+    
+  }
+  return out;
+  
+}
+
+std::vector<Photon> AnalyzerCore::GetPhotons(TString id, double ptmin, double fetamax){
+
+  std::vector<Photon> photons = GetAllPhotons();
+  std::vector<Photon> out;
+  for(unsigned int i=0; i<photons.size(); i++){
+    Photon this_photon= photons.at(i);
+    if(!( this_photon.Pt()>ptmin )){
+      continue;
+    }
+    if(!( fabs(this_photon.scEta())<fetamax )){
+      continue;
+    }
+    if(!( this_photon.PassID(id) )){
+      continue;
+    }
+    out.push_back(this_photon);
+  }
+  return out;
+}
+
+
 
 std::vector<Jet> AnalyzerCore::GetAllJets(){
 
@@ -725,6 +787,27 @@ std::vector<Jet> AnalyzerCore::JetsVetoLeptonInside(std::vector<Jet> jets, std::
   return out;
 
 }
+
+std::vector<Jet> AnalyzerCore::JetsAwayFromPhoton(std::vector<Jet> jets, std::vector<Photon> photons, double mindr){
+  
+  std::vector<Jet> out;
+  for(unsigned int i=0; i<jets.size(); i++){
+    
+    bool Overlap = false;
+    for(unsigned int j=0; j<photons.size(); j++){
+      if( ( jets.at(i) ).DeltaR( photons.at(j) ) < mindr ){
+        Overlap = true;
+        break;
+      }
+    }
+    if(!Overlap) out.push_back( jets.at(i) );
+
+  }
+
+  return out;
+
+}
+
 
 Particle AnalyzerCore::AddFatJetAndLepton(FatJet fatjet, Lepton lep){
 
