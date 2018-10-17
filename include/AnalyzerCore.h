@@ -12,6 +12,7 @@
 #include "Lepton.h"
 #include "Muon.h"
 #include "Electron.h"
+#include "Photon.h"
 #include "Jet.h"
 #include "FatJet.h"
 
@@ -48,6 +49,9 @@ public:
   std::vector<Electron> GetAllElectrons();
   std::vector<Electron> GetElectrons(TString id, double ptmin=-999., double fetamax=999.);
 
+  std::vector<Photon> GetAllPhotons();
+  std::vector<Photon> GetPhotons(TString id, double ptmin=-999., double fetamax=999.);
+  
   std::vector<Lepton *> MakeLeptonPointerVector(std::vector<Muon>& muons, double TightIso=-999, bool UseMini=false);
   std::vector<Lepton *> MakeLeptonPointerVector(std::vector<Electron>& electrons, double TightIso=-999, bool UseMini=false);
 
@@ -90,6 +94,7 @@ public:
   std::vector<Electron> ElectronApplyPtCut(std::vector<Electron> electrons, double ptcut);
   std::vector<Jet> JetsAwayFromFatJet(std::vector<Jet> jets, std::vector<FatJet> fatjets, double mindr=1.0);
   std::vector<Jet> JetsVetoLeptonInside(std::vector<Jet> jets, std::vector<Electron> els, std::vector<Muon> mus);
+  std::vector<Jet> JetsAwayFromPhoton(std::vector<Jet> jets, std::vector<Photon> photons, double mindr);
   Particle AddFatJetAndLepton(FatJet fatjet, Lepton lep);
 
   //==== GenMatching

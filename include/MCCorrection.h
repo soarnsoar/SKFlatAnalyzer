@@ -25,6 +25,9 @@ public:
   double ElectronID_SF(TString ID, double sceta, double pt, int sys=0);
   std::map< TString, TH2F* > map_hist_Electron;
 
+  std::map< TString, TH2F* > map_hist_prefire;
+  double GetPrefireWeight(std::vector<Photon> photons, std::vector<Jet> jets, int sys);
+
 };
 
 #endif
