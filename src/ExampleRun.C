@@ -82,7 +82,7 @@ void ExampleRun::executeEventFromParameter(AnalyzerParameter param){
       cout << "MyPOGVeto && !POGVeto" << endl;
       cout << "===============" << endl;
       cout << "fabs(el.scEta()) = " << fabs(el.scEta()) << endl;
-      cout << "el.full5x5_sigmaIetaIeta() = " << el.full5x5_sigmaIetaIeta() << endl;
+      cout << "el.Full5x5_sigmaIetaIeta() = " << el.Full5x5_sigmaIetaIeta() << endl;
       cout << "fabs(el.dEtaSeed()) = " << fabs(el.dEtaSeed()) << endl;
       cout << "fabs(el.dPhiIn()) = " << fabs(el.dPhiIn()) << endl;
       cout << "el.HoverE() = " << el.HoverE() << endl;

@@ -15,19 +15,19 @@ public:
     
   
   void SetCutBasedIDVariables(
-    double full5x5_sigmaIetaIeta,
+    double Full5x5_sigmaIetaIeta,
     double HoverE,
     double ChIsoWithEA,
     double NhIsoWithEA,
     double PhIsoWithEA
   ){
-    j_full5x5_sigmaIetaIeta = full5x5_sigmaIetaIeta;
+    j_Full5x5_sigmaIetaIeta = Full5x5_sigmaIetaIeta;
     j_HoverE = HoverE;
     j_ChIsoWithEA = ChIsoWithEA;
     j_NhIsoWithEA = NhIsoWithEA;
     j_PhIsoWithEA = PhIsoWithEA;
   }
-  double full5x5_sigmaIetaIeta() const { return j_full5x5_sigmaIetaIeta; }
+  double Full5x5_sigmaIetaIeta() const { return j_Full5x5_sigmaIetaIeta; }
   double HoverE() const { return j_HoverE; }
   double ChIsoWithEA() const { return j_ChIsoWithEA; }
   double NhIsoWithEA() const { return j_NhIsoWithEA; }
@@ -60,7 +60,7 @@ private:
   double j_scEta;
   double j_scPhi;
   double j_scE;
-  double j_full5x5_sigmaIetaIeta;
+  double j_Full5x5_sigmaIetaIeta;
   double j_HoverE;
   double j_ChIsoWithEA;
   double j_NhIsoWithEA;
