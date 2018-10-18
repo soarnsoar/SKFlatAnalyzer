@@ -298,24 +298,30 @@ double MCCorrection::GetPrefireWeight(std::vector<Photon> photons, std::vector<J
 
   
   for(unsigned int i_pho = 0; i_pho < photons.size(); i_pho++){
-    double current_weight = 1.;
     Photon current_photon = photons.at(i_pho);
     double eta = current_photon.scEta();
     double pt = current_photon.Pt();
     
     int this_bin = photon_hist->FindBin(eta, pt);
-    current_weight = 1. - photon_hist->GetBinContent(this_bin);
+
+    double this_eff = photon_hist->GetBinContent(this_bin);
+    double this_efferr = photon_hist->GetBinError(this_bin);
+
+    double current_weight = 1. - (this_eff + (double)sys * this_efferr );;
     photon_weight = photon_weight * current_weight;
   }
   
   for(unsigned int i_jet = 0; i_jet < jets.size(); i_jet++){
-    double current_weight = 1.;
     Jet current_jet = jets.at(i_jet);
     double eta = current_jet.Eta();
     double pt = current_jet.Pt();
     
     int this_bin = jet_hist->FindBin(eta, pt);
-    current_weight = 1.- jet_hist->GetBinContent(this_bin);
+
+    double this_eff = jet_hist->GetBinContent(this_bin);
+    double this_efferr = jet_hist->GetBinError(this_bin);
+
+    double current_weight = 1.- (this_eff + (double)sys * this_efferr);
     jet_weight = jet_weight * current_weight;
   }
 

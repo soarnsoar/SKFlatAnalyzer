@@ -579,6 +579,30 @@ bool AnalyzerCore::PassMETFilter(){
 
 }
 
+double AnalyzerCore::GetPrefireWeight(int sys){
+
+  if(IsDATA) return 1.;
+  else{
+
+    //==== TODO Add 2016
+    if(DataYear==2017){
+
+      vector<Photon> photons = GetPhotons("passMediumID", 20., 3.0);
+      vector<Jet> jets = GetJets("tight", 40., 3.5);
+      jets = JetsAwayFromPhoton(jets, photons, 0.4);
+
+      return mcCorr.GetPrefireWeight(photons, jets, sys);
+
+    }
+
+  }
+
+  cout << "[AnalyzerCore::GetPrefireWeight] wtf" << endl;
+  exit(EXIT_FAILURE);
+  return 1.;
+
+}
+
 bool AnalyzerCore::IsOnZ(double m, double width){
   if( fabs(m-M_Z) < width ) return true;
   else return false;

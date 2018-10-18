@@ -87,6 +87,9 @@ public:
   FakeBackgroundEstimator fakeEst;
   CFBackgroundEstimator cfEst;
 
+  //==== Prefire
+  double GetPrefireWeight(int sys);
+
   //==== Functions
 
   bool IsOnZ(double m, double width);
