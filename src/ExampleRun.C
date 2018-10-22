@@ -35,6 +35,100 @@ void ExampleRun::executeEventFromParameter(AnalyzerParameter param){
   Event ev = GetEvent();
 
 
+  //==== Object pt ordering check
+  vector<Muon> muons = GetAllMuons();
+  if(muons.size()>0){
+
+    for(unsigned int i=0; i<muons.size()-1; i++){
+      Muon mu1 = muons.at(i);
+      for(unsigned int j=i+1; j<muons.size(); j++){
+        Muon mu2 = muons.at(j);
+
+        if(mu1.Pt()<mu2.Pt()){
+          FillHist("Muon_BeforeSorting_ReversedPt", 0., 1., 1, 0., 1.);
+        }
+
+      }
+    }
+
+    std::sort(muons.begin(), muons.end(), PtComparing);
+    for(unsigned int i=0; i<muons.size()-1; i++){
+      Muon mu1 = muons.at(i);
+      for(unsigned int j=i+1; j<muons.size(); j++){
+        Muon mu2 = muons.at(j);
+
+        if(mu1.Pt()<mu2.Pt()){
+          FillHist("Muon_AfterSorting_ReversedPt", 0., 1., 1, 0., 1.);
+        }
+
+      }
+
+    }
+
+  }
+
+  vector<Electron> electrons = GetAllElectrons();
+  if(electrons.size()>0){
+
+    for(unsigned int i=0; i<electrons.size()-1; i++){
+      Electron el1 = electrons.at(i);
+      for(unsigned int j=i+1; j<electrons.size(); j++){
+        Electron el2 = electrons.at(j);
+
+        if(el1.Pt()<el2.Pt()){
+          FillHist("Electron_BeforeSorting_ReversedPt", 0., 1., 1, 0., 1.);
+        }
+
+      }
+    }
+
+    std::sort(electrons.begin(), electrons.end(), PtComparing);
+    for(unsigned int i=0; i<electrons.size()-1; i++){
+      Electron el1 = electrons.at(i);
+      for(unsigned int j=i+1; j<electrons.size(); j++){
+        Electron el2 = electrons.at(j);
+
+        if(el1.Pt()<el2.Pt()){
+          FillHist("Electron_AfterSorting_ReversedPt", 0., 1., 1, 0., 1.);
+        }
+
+      }
+
+    }
+
+  }
+
+  vector<Jet> jets = GetAllJets();
+  if(jets.size()>0){
+
+    for(unsigned int i=0; i<jets.size()-1; i++){
+      Jet jet1 = jets.at(i);
+      for(unsigned int j=i+1; j<jets.size(); j++){
+        Jet jet2 = jets.at(j);
+
+        if(jet1.Pt()<jet2.Pt()){
+          FillHist("Jet_BeforeSorting_ReversedPt", 0., 1., 1, 0., 1.);
+        }
+
+      }
+    }
+
+    std::sort(jets.begin(), jets.end(), PtComparing);
+    for(unsigned int i=0; i<jets.size()-1; i++){
+      Jet jet1 = jets.at(i);
+      for(unsigned int j=i+1; j<jets.size(); j++){
+        Jet jet2 = jets.at(j);
+
+        if(jet1.Pt()<jet2.Pt()){
+          FillHist("Jet_AfterSorting_ReversedPt", 0., 1., 1, 0., 1.);
+        }
+
+      }
+
+    }
+
+  }
+
 /*
   //==== Electron Custom-CutBased test
 
@@ -180,18 +274,6 @@ void ExampleRun::executeEventFromParameter(AnalyzerParameter param){
 
   }
 */
-
-  vector<Electron> electrons = GetElectrons(param.Electron_Tight_ID, 10., 2.5);
-  for(unsigned int i=0; i<electrons.size(); i++){
-
-    Electron el = electrons.at(i);
-
-    FillHist("RelIso", el.RelIso(), 1, 100, 0., 1.);
-    JSFillHist(param.Electron_Tight_ID, "RelIso_"+param.Electron_Tight_ID, el.RelIso(), 1, 100, 0., 1.);
-
-  }
-
-
 
 
 

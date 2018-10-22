@@ -41,6 +41,14 @@ public:
 
   //==== Get objects
 
+  //==== When GetAllMuons, we apply Rochester correciton
+  //==== Then, Pt orderding can be changed
+  //==== So, in the analysis code, do e.g.,
+  // vector<Muon> muons = GetMuons(~~~);
+  // std::sort(muons.begin(), muons.end(), PtComparing);
+  //==== Can do same thing for other objects (Electron, Jet, FatJet, ...)
+  inline static bool PtComparing(const Particle& p1, const Particle& p2){ return (p1.Pt() > p2.Pt()); }
+
   Event GetEvent();
 
   std::vector<Muon> GetAllMuons();
