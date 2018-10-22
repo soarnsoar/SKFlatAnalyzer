@@ -197,7 +197,7 @@ double MCCorrection::MuonTrigger_SF(TString ID, TString trig, std::vector<Muon> 
 
   double value = 1.;
 
-  if(trig=="IsoMu27"){
+  if(trig=="IsoMu27" || trig=="Mu50"){
 
     double eff_DATA = 1.;
     double eff_MC = 1.;
