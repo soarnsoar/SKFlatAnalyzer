@@ -151,6 +151,8 @@ double MCCorrection::MuonTrigger_Eff(TString ID, TString trig, int DataOrMC, dou
 
   if(ID=="Default") return 1.;
 
+  //cout << "[MCCorrection::MuonTrigger_Eff] ID = " << ID << "\t" << "trig = " << trig << endl;
+  //cout << "[MCCorrection::MuonTrigger_Eff] DataOrMC = " << DataOrMC << endl;
   //cout << "[MCCorrection::MuonTrigger_Eff] eta = " << eta << ", pt = " << pt << endl;
 
   double value = 1.;
@@ -164,8 +166,18 @@ double MCCorrection::MuonTrigger_Eff(TString ID, TString trig, int DataOrMC, dou
     //==== FIXME This event pass pt>29GeV cut, but MiniAOD pt < 29 GeV
     //==== FIXME So when I return 0., SF goes nan.. let's returning 1. for now..
     if(pt<29.) return 1.; //FIXME
-    if(pt>=1200.) return 1.;
     if(eta>=2.4) return 1.;
+
+    if(pt>1200.) pt = 1199.;
+  }
+  else if(trig=="Mu50"){
+    if(pt<52.) return 1.; //FIXME
+    if(eta>=2.4) return 1.;
+
+    if(pt>1200.) pt = 1199.;
+  }
+  else{
+
   }
 
   TString histkey = "Trigger_Eff_DATA_"+trig+"_"+ID;
