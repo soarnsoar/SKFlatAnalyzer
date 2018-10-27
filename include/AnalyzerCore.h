@@ -46,17 +46,18 @@ public:
   //==== So, in the analysis code, do e.g.,
   // vector<Muon> muons = GetMuons(~~~);
   // std::sort(muons.begin(), muons.end(), PtComparing);
-  //==== Can do same thing for other objects (Electron, Jet, FatJet, ...)
+  //==== ** Recommend you to do the same for other objects (Electron, Jet, FatJet, ...) **
   inline static bool PtComparing(const Particle& p1, const Particle& p2){ return (p1.Pt() > p2.Pt()); }
   inline static bool PtComparingPtr(Particle* p1, Particle* p2){ return (p1->Pt() > p2->Pt()); }
 
   Event GetEvent();
 
-  std::vector<Muon> GetAllMuons();
-  std::vector<Muon> GetMuons(TString id, double ptmin, double fetamax);
 
   std::vector<Electron> GetAllElectrons();
   std::vector<Electron> GetElectrons(TString id, double ptmin, double fetamax);
+
+  std::vector<Muon> GetAllMuons();
+  std::vector<Muon> GetMuons(TString id, double ptmin, double fetamax);
 
   std::vector<Photon> GetAllPhotons();
   std::vector<Photon> GetPhotons(TString id, double ptmin=-999., double fetamax=999.);
@@ -73,14 +74,29 @@ public:
   std::vector<Gen> GetGens();
 
   //==== Get objects METHOD 2
-  std::vector<Muon> UseTunePMuon(std::vector<Muon> muons);
-  std::vector<Muon> SelectMuons(std::vector<Muon> muons, TString id, double ptmin, double fetamax);
+  //==== Get AllObject in the begning, and apply cut
 
   std::vector<Electron> SelectElectrons(std::vector<Electron> electrons, TString id, double ptmin, double fetamax);
+
+  std::vector<Muon> UseTunePMuon(std::vector<Muon> muons);
+  std::vector<Muon> SelectMuons(std::vector<Muon> muons, TString id, double ptmin, double fetamax);
 
   std::vector<Jet> SelectJets(std::vector<Jet> jets, TString id, double ptmin, double fetamax);
 
   std::vector<FatJet> SelectFatJets(std::vector<FatJet> jets, TString id, double ptmin, double fetamax);
+
+  //==== Systematics
+
+  std::vector<Electron> ScaleElectrons(std::vector<Electron> electrons, int sys);
+  std::vector<Electron> SmearElectrons(std::vector<Electron> electrons, int sys);
+
+  std::vector<Muon> ScaleMuons(std::vector<Muon> muons, int sys);
+
+  std::vector<Jet> ScaleJets(std::vector<Jet> jets, int sys);
+  std::vector<Jet> SmearJets(std::vector<Jet> jets, int sys);
+
+  std::vector<FatJet> ScaleFatJets(std::vector<FatJet> jets, int sys);
+  std::vector<FatJet> SmearFatJets(std::vector<FatJet> jets, int sys);
 
   //==== Event Filters
 

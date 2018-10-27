@@ -233,15 +233,13 @@ std::vector<Photon> AnalyzerCore::GetAllPhotons(){
     pho.SetRho(Rho);
 
     pho.SetCutBasedIDVariables(
-			       photon_Full5x5_SigmaIEtaIEta->at(i),
-			       photon_HoverE->at(i),
-			       photon_ChIsoWithEA->at(i),
-			       photon_NhIsoWithEA->at(i),
-			       photon_PhIsoWithEA->at(i)
-			       );
+      photon_Full5x5_SigmaIEtaIEta->at(i),
+      photon_HoverE->at(i),
+      photon_ChIsoWithEA->at(i),
+      photon_NhIsoWithEA->at(i),
+      photon_PhIsoWithEA->at(i)
+    );
     
-    
-
     std::vector<bool> ids = {
       photon_passLooseID->at(i),
       photon_passMediumID->at(i),
@@ -251,8 +249,6 @@ std::vector<Photon> AnalyzerCore::GetAllPhotons(){
      };
     pho.SetPOGIDs(ids);
         
-    
-
     out.push_back(pho);
     
   }
@@ -288,6 +284,7 @@ std::vector<Jet> AnalyzerCore::GetAllJets(){
   for(unsigned int i=0; i<jet_pt->size(); i++){
     Jet jet;
     jet.SetPtEtaPhiM(jet_pt->at(i), jet_eta->at(i), jet_phi->at(i), jet_m->at(i));
+    jet.SetEnShift( jet_shiftedEnUp->at(i), jet_shiftedEnDown->at(i) );
     if(!IsDATA){
       jet *= jet_smearedRes->at(i);
       jet.SetResShift( jet_smearedResUp->at(i)/jet_smearedRes->at(i), jet_smearedResDown->at(i)/jet_smearedRes->at(i) );
@@ -354,6 +351,7 @@ std::vector<FatJet> AnalyzerCore::GetAllFatJets(){
   for(unsigned int i=0; i<fatjet_pt->size(); i++){
     FatJet jet;
     jet.SetPtEtaPhiM(fatjet_pt->at(i), fatjet_eta->at(i), fatjet_phi->at(i), fatjet_m->at(i));
+    jet.SetEnShift( fatjet_shiftedEnUp->at(i), fatjet_shiftedEnDown->at(i) );
     if(!IsDATA){
       jet *= fatjet_smearedRes->at(i);
       jet.SetResShift( fatjet_smearedResUp->at(i)/fatjet_smearedRes->at(i), fatjet_smearedResDown->at(i)/fatjet_smearedRes->at(i) );
@@ -557,6 +555,127 @@ std::vector<FatJet> AnalyzerCore::SelectFatJets(std::vector<FatJet> jets, TStrin
     }
     out.push_back(this_jet);
   }
+  return out;
+
+}
+
+std::vector<Electron> AnalyzerCore::ScaleElectrons(std::vector<Electron> electrons, int sys){
+
+  std::vector<Electron> out;
+  for(unsigned int i=0; i<electrons.size(); i++){
+    Electron this_electron = electrons.at(i);
+
+    if(sys<0){
+      this_electron.SetPtEtaPhiE( electron_pt_Scale_Down->at(i), this_electron.Eta(), this_electron.Phi(), electron_Energy_Scale_Down->at(i) );
+    }
+    else{
+      this_electron.SetPtEtaPhiE( electron_pt_Scale_Up->at(i), this_electron.Eta(), this_electron.Phi(), electron_Energy_Scale_Up->at(i) );
+    }
+
+    out.push_back(this_electron);
+
+  }
+
+  return out;
+
+}
+
+std::vector<Electron> AnalyzerCore::SmearElectrons(std::vector<Electron> electrons, int sys){
+
+  std::vector<Electron> out;
+  for(unsigned int i=0; i<electrons.size(); i++){
+    Electron this_electron = electrons.at(i);
+
+    if(sys<0){
+      this_electron.SetPtEtaPhiE( electron_pt_Smear_Down->at(i), this_electron.Eta(), this_electron.Phi(), electron_Energy_Smear_Down->at(i) );
+    }
+    else{
+      this_electron.SetPtEtaPhiE( electron_pt_Smear_Up->at(i), this_electron.Eta(), this_electron.Phi(), electron_Energy_Smear_Up->at(i) );
+    }
+
+    out.push_back(this_electron);
+
+  }
+
+  return out;
+
+}
+
+std::vector<Muon> AnalyzerCore::ScaleMuons(std::vector<Muon> muons, int sys){
+
+  std::vector<Muon> out;
+  for(unsigned int i=0; i<muons.size(); i++){
+    Muon this_muon = muons.at(i);
+
+    if(sys<0){
+      this_muon.SetPtEtaPhiM( this_muon.MomentumDown(), this_muon.Eta(), this_muon.Phi(), this_muon.M() );
+    }
+    else{
+      this_muon.SetPtEtaPhiM( this_muon.MomentumUp(), this_muon.Eta(), this_muon.Phi(), this_muon.M() );
+    }
+
+    out.push_back(this_muon);
+
+  }
+
+  return out;
+
+}
+
+std::vector<Jet> AnalyzerCore::ScaleJets(std::vector<Jet> jets, int sys){
+
+  std::vector<Jet> out;
+  for(unsigned int i=0; i<jets.size(); i++){
+    Jet this_jet = jets.at(i);
+
+    this_jet *= this_jet.EnShift(sys);
+
+    out.push_back( this_jet );
+  }
+
+  return out;
+
+}
+std::vector<Jet> AnalyzerCore::SmearJets(std::vector<Jet> jets, int sys){
+
+  std::vector<Jet> out;
+  for(unsigned int i=0; i<jets.size(); i++){
+    Jet this_jet = jets.at(i);
+
+    this_jet *= this_jet.ResShift(sys);
+
+    out.push_back( this_jet );
+  }
+
+  return out;
+
+}
+
+std::vector<FatJet> AnalyzerCore::ScaleFatJets(std::vector<FatJet> jets, int sys){
+
+  std::vector<FatJet> out;
+  for(unsigned int i=0; i<jets.size(); i++){
+    FatJet this_jet = jets.at(i);
+
+    this_jet *= this_jet.EnShift(sys);
+
+    out.push_back( this_jet );
+  }
+
+  return out;
+
+}
+std::vector<FatJet> AnalyzerCore::SmearFatJets(std::vector<FatJet> jets, int sys){
+
+  std::vector<FatJet> out;
+  for(unsigned int i=0; i<jets.size(); i++){
+    FatJet this_jet = jets.at(i);
+
+    this_jet *= this_jet.ResShift(sys);
+
+    out.push_back( this_jet );
+  }
+
   return out;
 
 }
