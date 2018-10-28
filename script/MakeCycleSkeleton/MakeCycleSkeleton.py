@@ -6,7 +6,7 @@ out_h = open(cyclename+'.h','w')
 print>>out_h,'''#ifndef {0}_h
 #define {0}_h
 
-#include "AnalyzerCore.C"
+#include "AnalyzerCore.h"
 
 class {0} : public AnalyzerCore {{
 
@@ -66,7 +66,11 @@ print 'mv '+cyclename+'.h ../../include/'
 print 'mv '+cyclename+'.C ../../src'
 
 out_run = open('run_'+cyclename+'.C','w')
-print>>out_run,'''#include "{0}.C"
+print>>out_run,'''R__LOAD_LIBRARY(libPhysics.so)
+R__LOAD_LIBRARY(libTree.so)
+R__LOAD_LIBRARY(libHist.so)
+R__LOAD_LIBRARY(libDataFormats.so)
+R__LOAD_LIBRARY(libAnalyzers.so)
 
 void run_{0}(){{
 
