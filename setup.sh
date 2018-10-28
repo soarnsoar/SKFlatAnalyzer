@@ -51,11 +51,14 @@ elif [[ $HOSTNAME == *"knu"* ]]; then
   source /cvmfs/cms.cern.ch/slc6_amd64_gcc630/cms/cmssw/CMSSW_9_4_9_cand2/external/slc6_amd64_gcc630/bin/thisroot.sh
 
 fi
+
+alias skout="cd $SKFlatOutputDir/$SKFlatV/"
+
 export MYBIN=$SKFlat_WD/bin/
 export PATH=${MYBIN}:${PATH}
 
-export ROOT_INCLUDE_PATH=$ROOT_INCLUDE_PATH:$SKFlat_WD/DataFormats/include/:$SKFlat_WD/Analyzers/include/
-export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:$SKFlat_LIB_PATH
+#export ROOT_INCLUDE_PATH=$ROOT_INCLUDE_PATH:$SKFlat_WD/DataFormats/include/:$SKFlat_WD/Analyzers/include/
+#export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:$SKFlat_LIB_PATH
 
 source $SKFlat_WD/bin/BashColorSets.sh
 python python/PrintToDoLists.py

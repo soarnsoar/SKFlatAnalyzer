@@ -152,6 +152,8 @@ for InputSample in InputSamples:
     ## In KISTI, we have copy both library and data file
     os.system('cp '+SKFlat_WD+'/'+str_RandomNumber+'_data.tar.gz '+base_rundir+'/data.tar.gz')
     os.system('cp '+SKFlat_WD+'/'+str_RandomNumber+'_lib.tar.gz '+base_rundir+'/lib.tar.gz')
+    os.system('cp '+SKFlat_WD+'/lib/Analyzers.tar.gz '+base_rundir)
+    os.system('cp '+SKFlat_WD+'/lib/DataFormats.tar.gz '+base_rundir)
 
   else:
     ## Else, we only have to copy libray
@@ -297,11 +299,11 @@ should_transfer_files = YES
 when_to_transfer_output = ON_EXIT
 output = job_$(Process).log
 error = job_$(Process).err
-transfer_input_files = {0}, {1}, {4}
+transfer_input_files = {0}, {1}, {4}, {5}, {6}
 use_x509userproxy = true
 transfer_output_remaps = "hists.root = output/hists_$(Process).root"
 queue {2}
-'''.format(base_rundir+'/runFile.tar.gz', base_rundir+'/lib.tar.gz',str(NJobs), commandsfilename, base_rundir+'/data.tar.gz')
+'''.format(base_rundir+'/runFile.tar.gz', base_rundir+'/lib.tar.gz',str(NJobs), commandsfilename, base_rundir+'/data.tar.gz', base_rundir+'/Analyzers.tar.gz', base_rundir+'/DataFormats.tar.gz')
     submit_command.close()
 
   CheckTotalNFile=0
@@ -442,8 +444,8 @@ root -l -b -q run.C 1>stdout.log 2>stderr.log
     KillCommand.close()
 
 ## remove tar.gz
-os.system('rm '+SKFlat_WD+'/'+str_RandomNumber+'_data.tar.gz')
-os.system('rm '+SKFlat_WD+'/'+str_RandomNumber+'_lib.tar.gz')
+os.system('rm -f '+SKFlat_WD+'/'+str_RandomNumber+'_data.tar.gz')
+os.system('rm -f '+SKFlat_WD+'/'+str_RandomNumber+'_lib.tar.gz')
 
 if args.no_exec:
   exit()

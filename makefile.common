@@ -66,22 +66,30 @@ $(DEPDIR)/%.d: %.C
 		$(SHELL) -ec '$(CPP) -MM $(CXXFLAGS) $(INCLUDES) $< | sed '\''/Cstd\/rw/d'\'' > $@'; \
 	fi
 
-# Rule to combine objects into a unix shared library                                                                                                                           
+# Rule to combine objects into a unix shared library
+
 $(SHLIBFILE): $(OLIST) $(DICTOBJ)
 	@echo "Making shared library: $(SHLIBFILE)"
 	@rm -f $(SHLIBFILE)
+ifneq (,$(findstring macosx,$(ARCH)))
+	@$(LD) $(LDFLAGS) -dynamiclib -single_module -undefined dynamic_lookup $(addprefix $(OBJDIR)/,$(OLIST)) $(DICTOBJ) -o $(SHLIBFILE)
+else
 	@$(LD) $(LDFLAGS) $(SOFLAGS) $(addprefix $(OBJDIR)/,$(OLIST)) $(DICTOBJ) -o $(SHLIBFILE)
+endif
 
 shlib: $(SHLIBFILE)
 
 
 clean:
+	@rm -f $(DICTFILE) $(DICTHEAD)
 	@rm -f $(OBJDIR)/*.o
 	@rm -f $(SHLIBFILE)
 	@rm -f $(SFRAME_LIB_PATH)/lib$(LIBRARY).so
 
 distclean:
 	@rm -rf $(OBJDIR)
+	@rm -rf $(DEPDIR)
+	@rm -f $(DICTFILE) $(DICTHEAD)
 	@rm -f $(SHLIBFILE)
 	@rm -f lib/lib$(LIBRARY).so
 
