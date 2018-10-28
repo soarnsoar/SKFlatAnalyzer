@@ -2,6 +2,9 @@
 #define AnalyzerParameter_h
 
 #include "TString.h"
+#include <iostream>
+
+using namespace std;
 
 class AnalyzerParameter{
 
@@ -28,6 +31,18 @@ public:
   double Muon_MinPt;
 
   TString Jet_ID, FatJet_ID;
+
+  enum Syst{
+    Central,
+    JetResUp, JetResDown,
+    JetEnUp, JetEnDown,
+    MuonEnUp, MuonEnDown,
+    ElectronResUp, ElectronResDown,
+    ElectronEnUp, ElectronEnDown,
+    NSyst
+  };
+  Syst syst_;
+  TString GetSystType();
 
   void Clear();
 
