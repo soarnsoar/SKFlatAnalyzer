@@ -43,6 +43,8 @@ void AnalyzerParameter::Clear(){
   Jet_ID = "";
   FatJet_ID = "";
 
+  syst_ = Central;
+
 }
 
 AnalyzerParameter::AnalyzerParameter(){
@@ -65,6 +67,8 @@ AnalyzerParameter::AnalyzerParameter(){
 
   Jet_ID = "HN";
   FatJet_ID = "HN";
+
+  syst_ = Central;
 
 }
 
