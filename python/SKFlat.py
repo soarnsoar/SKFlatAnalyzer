@@ -326,7 +326,13 @@ queue {2}
       os.system('mkdir -p '+thisjob_dir)
       runCfileFullPath = thisjob_dir+'run.C'
 
-    IncludeLine = 'R__LOAD_LIBRARY({1}/{0}_C.so)'.format(args.Analyzer, libdir)
+    IncludeLine  = 'R__LOAD_LIBRARY(libPhysics.so)\n'
+    IncludeLine += 'R__LOAD_LIBRARY(libTree.so)\n'
+    IncludeLine += 'R__LOAD_LIBRARY(libHist.so)\n'
+    IncludeLine += 'R__LOAD_LIBRARY(libDataFormats.so)\n'
+    IncludeLine += 'R__LOAD_LIBRARY(libAnalyzers.so)\n'
+
+    #IncludeLine = 'R__LOAD_LIBRARY({1}/{0}_C.so)'.format(args.Analyzer, libdir)
 
     out = open(runCfileFullPath, 'w')
     print>>out,'''{3}

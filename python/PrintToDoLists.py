@@ -14,8 +14,10 @@ tags = [
 ]
 
 dirnames = [
-'include',
-'src'
+'DataFormats/include',
+'DataFormats/src',
+'Analyzers/include',
+'Analyzers/src',
 ]
 
 for tag in tags:
@@ -27,9 +29,9 @@ for tag in tags:
     out.write('echo "'+tag+' in '+dirname+'"\n')
     out.write('echo "'+'###################"\n')
 
-    os.system('grep -r "'+tag+'" '+dirname+'/ > '+TMPDIR+'tmp_'+tag+'_'+dirname+'.txt')
-    lines = open(TMPDIR+'tmp_'+tag+'_'+dirname+'.txt').readlines()
-    os.system('rm '+TMPDIR+'tmp_'+tag+'_'+dirname+'.txt')
+    os.system('grep -r "'+tag+'" '+dirname+'/ > '+TMPDIR+'tmp_'+tag+'_'+dirname.replace('/','__')+'.txt')
+    lines = open(TMPDIR+'tmp_'+tag+'_'+dirname.replace('/','__')+'.txt').readlines()
+    os.system('rm '+TMPDIR+'tmp_'+tag+'_'+dirname.replace('/','__')+'.txt')
     for line in lines:
       line = line.strip('\n')
       words = line.split(':')

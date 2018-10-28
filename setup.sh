@@ -2,9 +2,6 @@ export SKFlat_WD=`pwd`
 export SKFlat_LIB_PATH=$SKFlat_WD/lib/
 mkdir -p $SKFlat_LIB_PATH
 
-export ROOT_INCLUDE_PATH=$ROOT_INCLUDE_PATH:$SKFlat_WD/include/:$SKFlat_WD/src/
-export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:$SKFlat_LIB_PATH
-
 export SKFlatV="v949cand2_1"
 mkdir -p $SKFlat_WD/data/$SKFlatV
 
@@ -57,6 +54,8 @@ fi
 export MYBIN=$SKFlat_WD/bin/
 export PATH=${MYBIN}:${PATH}
 
+export ROOT_INCLUDE_PATH=$ROOT_INCLUDE_PATH:$SKFlat_WD/DataFormats/include/:$SKFlat_WD/Analyzers/include/
+export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:$SKFlat_LIB_PATH
 
 source $SKFlat_WD/bin/BashColorSets.sh
 python python/PrintToDoLists.py
