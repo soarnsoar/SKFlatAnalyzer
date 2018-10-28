@@ -9,6 +9,7 @@ def GetEventDone(l):
 
   if len(nums)<2:
     print nums
+    return "0:1"
 
   return str(nums[0])+':'+str(nums[1])
 

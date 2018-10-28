@@ -344,10 +344,6 @@ queue {2}
     IncludeLine += 'R__LOAD_LIBRARY(libHist.so)\n'
     IncludeLine += 'R__LOAD_LIBRARY({0}libDataFormats.so)\n'.format(libdir)
     IncludeLine += 'R__LOAD_LIBRARY({0}libAnalyzers.so)\n'.format(libdir)
-
-    IncludeLine += 'R__LOAD_LIBRARY(libDataFormats.so)\n'
-    IncludeLine += 'R__LOAD_LIBRARY(libAnalyzers.so)\n'
-
     #IncludeLine = 'R__LOAD_LIBRARY({1}/{0}_C.so)'.format(args.Analyzer, libdir)
 
     out = open(runCfileFullPath, 'w')
