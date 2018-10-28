@@ -242,6 +242,10 @@ for InputSample in InputSamples:
     print>>run_commands,'''#!/bin/bash
 SECTION=`printf %03d $1`
 WORKDIR=`pwd`
+echo "#### Extracting DataFormats ####"
+tar -zxvf DataFormats.tar.gz
+echo "####  Extracting Analyzers ####"
+tar -zxvf Analyzers.tar.gz
 echo "#### Extracting libraries ####"
 tar -zxvf lib.tar.gz
 echo "#### Extracting run files ####"
@@ -258,6 +262,13 @@ cd -
 echo "#### setup root ####"
 source /cvmfs/cms.cern.ch/slc6_amd64_gcc630/cms/cmssw/CMSSW_9_4_4/external/slc6_amd64_gcc630/bin/thisroot.sh
 
+export SKFlatV="{0}"
+export SKFlat_WD=`pwd`
+export SKFlat_LIB_PATH=$SKFlat_WD/lib/
+export DATA_DIR=data/$SKFlatV
+export ROOT_INCLUDE_PATH=$ROOT_INCLUDE_PATH:$SKFlat_WD/DataFormats/include/:$SKFlat_WD/Analyzers/include/
+export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:$SKFlat_LIB_PATH
+
 SumNoAuth=999
 Trial=0
 
@@ -268,8 +279,8 @@ while [ "$SumNoAuth" -ne 0 ]; do
   fi
 
   echo "#### running ####"
-  echo "root -l -b -q run_${SECTION}.C"
-  root -l -b -q run_${SECTION}.C 2> err.log
+  echo "root -l -b -q run_${{SECTION}}.C"
+  root -l -b -q run_${{SECTION}}.C 2> err.log
   NoAuthError_Open=`grep "Error in <TNetXNGFile::Open>" err.log -R | wc -l`
   NoAuthError_Close=`grep "Error in <TNetXNGFile::Close>" err.log -R | wc -l`
 
@@ -285,7 +296,7 @@ while [ "$SumNoAuth" -ne 0 ]; do
 done
 
 cat err.log >&2
-'''
+'''.format(SKFlatV)
     run_commands.close()
 
     submit_command = open(base_rundir+'/submit.jds','w')
@@ -294,7 +305,7 @@ universe   = vanilla
 arguments  = $(Process)
 requirements = OpSysMajorVer == 6
 log = condor.log
-getenv     = True
+getenv     = False
 should_transfer_files = YES
 when_to_transfer_output = ON_EXIT
 output = job_$(Process).log
@@ -318,10 +329,10 @@ queue {2}
     thisjob_dir = base_rundir+'/job_'+str(it_job)+'/'
 
     runfunctionname = "run"
-    libdir = (base_rundir+'/lib').replace('///','/').replace('//','/')
+    libdir = (base_rundir+'/lib').replace('///','/').replace('//','/')+'/'
     runCfileFullPath = ""
     if IsKISTI:
-      libdir = './lib'
+      libdir = './lib/'
       runfunctionname = "run_"+str(it_job).zfill(3)
       runCfileFullPath = base_rundir+'/run_'+str(it_job).zfill(3)+'.C'
     else:
@@ -331,6 +342,9 @@ queue {2}
     IncludeLine  = 'R__LOAD_LIBRARY(libPhysics.so)\n'
     IncludeLine += 'R__LOAD_LIBRARY(libTree.so)\n'
     IncludeLine += 'R__LOAD_LIBRARY(libHist.so)\n'
+    IncludeLine += 'R__LOAD_LIBRARY({0}libDataFormats.so)\n'.format(libdir)
+    IncludeLine += 'R__LOAD_LIBRARY({0}libAnalyzers.so)\n'.format(libdir)
+
     IncludeLine += 'R__LOAD_LIBRARY(libDataFormats.so)\n'
     IncludeLine += 'R__LOAD_LIBRARY(libAnalyzers.so)\n'
 
