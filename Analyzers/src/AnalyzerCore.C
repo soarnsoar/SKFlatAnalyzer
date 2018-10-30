@@ -36,7 +36,7 @@ std::vector<Muon> AnalyzerCore::GetAllMuons(){
 
     Muon mu;
     double rc = muon_roch_sf->at(i);
-    double rc_err = muon_roch_sf_up->at(i);
+    double rc_err = muon_roch_sf_up->at(i)-rc;
     
     mu.SetMiniAODPt(muon_pt->at(i));
     mu.SetPtEtaPhiM(muon_pt->at(i)*rc, muon_eta->at(i), muon_phi->at(i), muon_mass->at(i));
