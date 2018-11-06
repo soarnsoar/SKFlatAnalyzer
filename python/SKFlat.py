@@ -52,7 +52,9 @@ SKFlat_LIB_PATH = os.environ['SKFlat_LIB_PATH']
 UID = str(os.getuid())
 
 HOSTNAME = os.environ['HOSTNAME']
-IsKISTI = ("ui10.sdfarm.kr" in HOSTNAME)
+IsKISTI = ("sdfarm.kr" in HOSTNAME)
+IsUI10 = ("ui10.sdfarm.kr" in HOSTNAME)
+IsUI20 = ("ui20.sdfarm.kr" in HOSTNAME)
 IsSNU = ("snu" in HOSTNAME)
 IsKNU = ("knu" in HOSTNAME)
 if IsKISTI:
@@ -300,7 +302,8 @@ cat err.log >&2
     run_commands.close()
 
     submit_command = open(base_rundir+'/submit.jds','w')
-    print>>submit_command,'''executable = {3}.sh
+    if IsUI10:
+      print>>submit_command,'''executable = {3}.sh
 universe   = vanilla
 arguments  = $(Process)
 requirements = OpSysMajorVer == 6
@@ -315,7 +318,29 @@ use_x509userproxy = true
 transfer_output_remaps = "hists.root = output/hists_$(Process).root"
 queue {2}
 '''.format(base_rundir+'/runFile.tar.gz', base_rundir+'/lib.tar.gz',str(NJobs), commandsfilename, base_rundir+'/data.tar.gz', base_rundir+'/Analyzers.tar.gz', base_rundir+'/DataFormats.tar.gz')
-    submit_command.close()
+      submit_command.close()
+    if IsUI20:
+      print>>submit_command,'''executable = {3}.sh
+universe   = vanilla
+requirements = ( HasSingularity == true )
+arguments  = $(Process)
+log = condor.log
+getenv     = False
+should_transfer_files = YES
+when_to_transfer_output = ON_EXIT
+output = job_$(Process).log
+error = job_$(Process).err
+transfer_input_files = {0}, {1}, {4}, {5}, {6}
+use_x509userproxy = true
+accounting_group=group_cms
++SingularityImage = "/cvmfs/singularity.opensciencegrid.org/opensciencegrid/osgvo-el6:latest"
++SingularityBind = "/cvmfs, /cms, /share"
+transfer_output_remaps = "hists.root = output/hists_$(Process).root"
+queue {2}
+'''.format(base_rundir+'/runFile.tar.gz', base_rundir+'/lib.tar.gz',str(NJobs), commandsfilename, base_rundir+'/data.tar.gz', base_rundir+'/Analyzers.tar.gz', base_rundir+'/DataFormats.tar.gz')
+      submit_command.close()
+
+
 
   CheckTotalNFile=0
   for it_job in range(0,len(FileRanges)):
@@ -760,7 +785,3 @@ if IsKNU:
   SendEmailbyGMail(USER,SKFlatLogEmail,EmailTitle,JobFinishEmail)
 else:
   SendEmail(USER,SKFlatLogEmail,EmailTitle,JobFinishEmail)
-
-
-
-
