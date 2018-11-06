@@ -49,7 +49,19 @@ def CheckJobStatus(logfiledir, cycle, jobnumber, hostname):
     return "BATCH JOB NOT STARTED"
 
   log_e = open(path_log_e).readlines()
-  if len(log_e) > 0:
+  length_log_e = 0
+  is_not_mounting_err = False
+  for e_l in log_e:
+    if "WARNING: Not mounting" in e_l:
+      length_log_e = length_log_e + 0
+      is_not_mounting_err = True
+    else:
+      length_log_e = length_log_e + 1
+    
+  if is_not_mounting_err:
+    length_log_e = length_log_e - 1
+
+  if length_log_e > 0:
     out = 'ERROR\n'
     out += '--------------------------------------\n'
     out += 'logfile : '+path_log_o+'\n'

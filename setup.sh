@@ -23,6 +23,20 @@ if [[ $HOSTNAME == *"ui10.sdfarm.kr"* ]]; then
   cd -
   source /cvmfs/cms.cern.ch/slc6_amd64_gcc630/cms/cmssw/CMSSW_9_4_9_cand2/external/slc6_amd64_gcc630/bin/thisroot.sh
 
+elif [[ $HOSTNAME == *"ui20.sdfarm.kr"* ]]; then
+  echo "Working on KISTI ui20"
+  export SKFlatRunlogDir="/cms/scratch/$USER/SKFlatRunlog/"
+  export SKFlatOutputDir="/cms/scratch/$USER/SKFlatOutput/"
+  export DATA_DIR=data/$SKFlatV
+    
+  export CMS_PATH=/cvmfs/cms.cern.ch
+  source $CMS_PATH/cmsset_default.sh
+  export SCRAM_ARCH=slc6_amd64_gcc630
+  cd /cvmfs/cms.cern.ch/slc6_amd64_gcc630/cms/cmssw/CMSSW_9_4_9_cand2/src/
+  eval `scramv1 runtime -sh`
+  cd -
+  source /cvmfs/cms.cern.ch/slc6_amd64_gcc630/cms/cmssw/CMSSW_9_4_9_cand2/external/slc6_amd64_gcc630/bin/thisroot.sh
+    
 elif [[ $HOSTNAME == *"cms.snu.ac.kr"* ]]; then
 
   echo "Working on 42cluster"
@@ -64,4 +78,3 @@ source $SKFlat_WD/bin/BashColorSets.sh
 python python/PrintToDoLists.py
 source $SKFlat_WD/tmp/ToDoLists.sh
 rm $SKFlat_WD/tmp/ToDoLists.sh
-
