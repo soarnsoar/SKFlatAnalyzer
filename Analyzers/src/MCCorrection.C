@@ -65,6 +65,23 @@ IgnoreNoHist(false)
   }
 
 
+  // == Get Pileup Reweight maps
+  TString pileup_path = getenv("DATA_DIR");
+  pileup_path = pileup_path + "/PileUp/";
+
+  string elline4;
+  ifstream  in4(pileup_path + "histmap.txt");
+  while(getline(in4,elline4)){
+    std::istringstream is( elline4 );
+    TString a,b,c;
+    is >> a; // cross sec, up/down
+    is >> b; // <root file name>
+    is >> c; // <histname>
+
+    TFile *file = new TFile(pileup_path + b);
+    map_hist_pileup[a + "_pileup"] = (TH1D *)file->Get(c);
+  }
+
 }
 
 MCCorrection::~MCCorrection(){
@@ -341,10 +358,53 @@ double MCCorrection::GetPrefireWeight(std::vector<Photon> photons, std::vector<J
 }
 
 
+double MCCorrection::GetPileUpWeight(TString sample_name, int syst, int N_vtx){
+  
+  double out = 1.;
+  if(syst == 0){
+    if(!map_hist_pileup[sample_name + "_central_pileup"]) return out;
+  }
+  else if(syst == -1){
+    if(!map_hist_pileup[sample_name + "_down_pileup"]) return out;
+  }
+  else if(syst == 1){
+    if(!map_hist_pileup[sample_name + "_up_pileup"];) return out;
+  }
+  else return out;
+  
+  if(N_vtx < 100){
+    if(syst == 0){
+      TH1D *pileup_reweight = map_hist_pileup[sample_name + "_central_pileup"];
+      out = pileup_reweight -> GetBinContent(N_vtx+1);
+    }
+    else if(syst == -1){
+      TH1D *pileup_reweight = map_hist_pileup[sample_name + "_down_pileup"];
+      out = pileup_reweight -> GetBinContent(N_vtx+1);
+    }
+    else if(syst == 1){
+      TH1D *pileup_reweight = map_hist_pileup[sample_name + "_up_pileup"];
+      out = pileup_reweight -> GetBinContent(N_vtx+1);
+    }
+    else return 1.;
+  }
+  else{
+    if(syst == 0){
+      TH1D *pileup_reweight = map_hist_pileup["xsec_69p2_central_pileup"];
+      out = pileup_reweight -> GetBinContent(100);
+    }
+    else if(syst == -1){
+      TH1D *pileup_reweight = map_hist_pileup["xsec_69p2_down_pileup"];
+      out = pileup_reweight -> GetBinContent(100);
+    }
+    else if(syst == 1){
+      TH1D *pileup_reweight = map_hist_pileup["xsec_69p2_up_pileup"];
+      out = pileup_reweight -> GetBinContent(100);
+    }
+    else return 1.;
+  }
+  return out;
 
-
-
-
+}
 
 
 
