@@ -2,7 +2,9 @@
 
 AnalyzerCore::AnalyzerCore(){
 
-
+  if(!IsDATA){
+    mcCorr.SetMCSample(MCSample);
+  }
 
 }
 
