@@ -362,47 +362,47 @@ double MCCorrection::GetPrefireWeight(std::vector<Photon> photons, std::vector<J
 }
 
 
-double MCCorrection::GetPileUpWeightAsSampleName(TString sample_name, int syst, int N_vtx){
+double MCCorrection::GetPileUpWeightAsSampleName(int syst, int N_vtx){
   
   double out = 1.;
   if(syst == 0){
-    if(!map_hist_pileup[sample_name + "_central_pileup"]) return out;
+    if(!map_hist_pileup[MCSample + "_central_pileup"]) return out;
   }
   else if(syst == -1){
-    if(!map_hist_pileup[sample_name + "_down_pileup"]) return out;
+    if(!map_hist_pileup[MCSample + "_down_pileup"]) return out;
   }
   else if(syst == 1){
-    if(!map_hist_pileup[sample_name + "_up_pileup"]) return out;
+    if(!map_hist_pileup[MCSample + "_up_pileup"]) return out;
   }
   else return out;
   
   
   if(N_vtx < 100){
     if(syst == 0){
-      TH1D *pileup_reweight = map_hist_pileup[sample_name + "_central_pileup"];
+      TH1D *pileup_reweight = map_hist_pileup[MCSample + "_central_pileup"];
       out = pileup_reweight -> GetBinContent(N_vtx+1);
     }
     else if(syst == -1){
-      TH1D *pileup_reweight = map_hist_pileup[sample_name + "_down_pileup"];
+      TH1D *pileup_reweight = map_hist_pileup[MCSample + "_down_pileup"];
       out = pileup_reweight -> GetBinContent(N_vtx+1);
     }
     else if(syst == 1){
-      TH1D *pileup_reweight = map_hist_pileup[sample_name + "_up_pileup"];
+      TH1D *pileup_reweight = map_hist_pileup[MCSample + "_up_pileup"];
       out = pileup_reweight -> GetBinContent(N_vtx+1);
     }
     else return 1.;
   }
   else{
     if(syst == 0){
-      TH1D *pileup_reweight = map_hist_pileup[sample_name + "_central_pileup"];
+      TH1D *pileup_reweight = map_hist_pileup[MCSample + "_central_pileup"];
       out = pileup_reweight -> GetBinContent(100);
     }
     else if(syst == -1){
-      TH1D *pileup_reweight = map_hist_pileup[sample_name + "_down_pileup"];
+      TH1D *pileup_reweight = map_hist_pileup[MCSample + "_down_pileup"];
       out = pileup_reweight -> GetBinContent(100);
     }
     else if(syst == 1){
-      TH1D *pileup_reweight = map_hist_pileup[sample_name + "_up_pileup"];
+      TH1D *pileup_reweight = map_hist_pileup[MCSample + "_up_pileup"];
       out = pileup_reweight -> GetBinContent(100);
     }
     else return 1.;

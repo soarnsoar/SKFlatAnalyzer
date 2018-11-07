@@ -35,7 +35,10 @@ void ExampleRun::executeEventFromParameter(AnalyzerParameter param){
   Event ev = GetEvent();
 
   FillHist(param.Name+"_MET", ev.GetMETVector().Pt(), 1., 200, 0., 200.);
-
+  
+  int Nvtx = ev.nPV();
+  double pileup_weight = mcCorr.GetPileUpWeightAsSampleName(0, Nvtx);
+  cout << "pileup_weight : " << pileup_weight << endl;
 /*
   //==== Object pt ordering check
   vector<Muon> muons = GetAllMuons();
