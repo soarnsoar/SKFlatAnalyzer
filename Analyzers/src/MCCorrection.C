@@ -88,6 +88,10 @@ MCCorrection::~MCCorrection(){
 
 }
 
+void MCCorrection::SetMCSample(TString s){
+  MCSample = s;
+}
+
 double MCCorrection::MuonID_SF(TString ID, double eta, double pt, int sys){
 
   if(ID=="Default") return 1.;
