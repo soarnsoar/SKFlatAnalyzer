@@ -21,9 +21,8 @@ void Event::SetnPV(double n){
   j_nPV = n;
 }
 
-void Event::SetTrigger(vector<string> HLT_TriggerName, vector<bool> HLT_TriggerFired){
+void Event::SetTrigger(vector<string> HLT_TriggerName){
   j_HLT_TriggerName = HLT_TriggerName;
-  j_HLT_TriggerFired = HLT_TriggerFired;
 }
 
 bool Event::PassTrigger(TString trig){
@@ -36,20 +35,15 @@ bool Event::PassTrigger(std::vector<TString> trigs){
 
   for(unsigned int i=0; i<trigs.size(); i++){
     TString this_check_trig = trigs.at(i);
-    bool this_pass=false;
 
     //cout << this_check_trig << endl;
-
     for(unsigned int j=0; j<j_HLT_TriggerName.size(); j++){
 
       //cout << j_HLT_TriggerName.at(j) << endl;
-
       if( j_HLT_TriggerName.at(j).find(this_check_trig)!=std::string::npos ){
-        this_pass = j_HLT_TriggerFired.at(j);
-        break;
+        return true;
       }
     }
-    if(this_pass) return true;
 
   }
   return false;
@@ -281,8 +275,8 @@ bool Event::IsPDForTrigger(TString trig, TString PD){
 
 }
 
-void Event::SetMET(double pt, double px, double py){
-  j_METVector.SetPxPyPzE(px,py,0,pt);
+void Event::SetMET(double pt, double phi){
+  j_METVector.SetPtEtaPhiE(pt, 0, phi, pt);
 }
 
 void Event::SetDataYear(int y){

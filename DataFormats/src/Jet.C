@@ -22,6 +22,7 @@ Jet::Jet() : Particle() {
   j_neutralHadronEnergyFraction=-999.;
   j_neutralEmEnergyFraction=-999.;
   j_chargedEmEnergyFraction=-999.;
+  j_muonEnergyFraction=-999.;
   j_chargedMultiplicity=-999;
   j_neutralMultiplicity=-999;
   j_PileupJetId=-999.;
@@ -58,11 +59,12 @@ void Jet::SetTaggerResults(std::vector<double> ds){
   j_CvsL              = ds.at(10);
   j_CvsB              = ds.at(11);
 }
-void Jet::SetEnergyFractions(double cH, double nH, double nEM, double cEM){
+void Jet::SetEnergyFractions(double cH, double nH, double nEM, double cEM, double muE){
   j_chargedHadronEnergyFraction = cH;
   j_neutralHadronEnergyFraction = nH;
   j_neutralEmEnergyFraction = nEM;
   j_chargedEmEnergyFraction = cEM;
+  j_muonEnergyFraction = muE;
 }
 void Jet::SetMultiplicities(double cM, double nM){
   j_chargedMultiplicity = cM;

@@ -14,7 +14,7 @@ public:
   inline int partonFlavour() const { return j_partonFlavour; }
   inline int hadronFlavour() const { return j_hadronFlavour; }
   void SetTaggerResults(std::vector<double> ds);
-  void SetEnergyFractions(double cH, double nH, double nEM, double cEM);
+  void SetEnergyFractions(double cH, double nH, double nEM, double cEM, double muE);
   void SetMultiplicities(double cM, double nM);
   void SetPileupJetId(double v);
 
@@ -72,6 +72,7 @@ private:
   double  j_neutralHadronEnergyFraction;
   double  j_neutralEmEnergyFraction;
   double  j_chargedEmEnergyFraction;
+  double j_muonEnergyFraction;
   int j_chargedMultiplicity;
   int j_neutralMultiplicity;
   double j_PileupJetId;

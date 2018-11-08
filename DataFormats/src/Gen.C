@@ -7,7 +7,6 @@ Gen::Gen() : Particle() {
   j_index = -1;
   j_PID = 0;
   j_status = 0;
-  j_mother_PID = 0;
   j_mother_index = -1;
   j_isPrompt = false;
   j_isPromptFinalState = false;
@@ -38,8 +37,7 @@ void Gen::SetIndexPIDStatus(int i, int p, int t){
   j_status = t;
 }
 
-void Gen::SetMother(int mpid, int mindex){
-  j_mother_PID = mpid;
+void Gen::SetMother(int mindex){
   j_mother_index = mindex;
 }
 

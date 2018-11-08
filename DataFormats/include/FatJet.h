@@ -12,7 +12,7 @@ public:
   void SetArea(double area);
   void SetGenFlavours(double pf, double hf);
   void SetTaggerResults(std::vector<double> ds);
-  void SetEnergyFractions(double cH, double nH, double nEM, double cEM);
+  void SetEnergyFractions(double cH, double nH, double nEM, double cEM, double muE);
   void SetMultiplicities(double cM, double nM);
 
   void SetEnShift(double en_up, double en_down);
@@ -78,6 +78,7 @@ private:
   double  j_neutralHadronEnergyFraction;
   double  j_neutralEmEnergyFraction;
   double  j_chargedEmEnergyFraction;
+  double j_muonEnergyFraction;
   int j_chargedMultiplicity;
   int j_neutralMultiplicity;
   double j_En_up;

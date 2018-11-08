@@ -17,8 +17,7 @@ public:
   inline int Index() const { return j_index; }
   inline int PID() const { return j_PID; }
   inline int Status() const { return j_status; }
-  void SetMother(int mpid, int mindex);
-  inline int MotherPID() const { return j_mother_PID; }
+  void SetMother(int mindex);
   inline int MotherIndex() const { return j_mother_index; }
 
   //==== Gen Status Flags
@@ -56,7 +55,7 @@ private:
 
   bool j_IsEmpty;
   int j_index, j_PID, j_status;
-  int j_mother_PID, j_mother_index;
+  int j_mother_index;
   bool j_isPrompt, j_isPromptFinalState, j_isTauDecayProduct, j_isPromptTauDecayProduct, j_isDirectPromptTauDecayProductFinalState, j_isHardProcess, j_isLastCopy, j_isLastCopyBeforeFSR, j_isPromptDecayed, j_isDecayedLeptonHadron, j_fromHardProcessBeforeFSR, j_fromHardProcessDecayed, j_fromHardProcessFinalState, j_isMostlyLikePythia6Status3;
 
   ClassDef(Gen,1)
