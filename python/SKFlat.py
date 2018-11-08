@@ -44,7 +44,7 @@ USER = os.environ['USER']
 SKFlatLogEmail = os.environ['SKFlatLogEmail']
 SKFlat_WD = os.environ['SKFlat_WD']
 SKFlatV = os.environ['SKFlatV']
-SAMPLE_DATA_DIR = os.environ['SAMPLE_DATA_DIR']
+SAMPLE_DATA_DIR = SKFlat_WD+'/data/'+SKFlatV+'/'+args.Year+'/'
 SKFlatRunlogDir = os.environ['SKFlatRunlogDir']
 SKFlatOutputDir = os.environ['SKFlatOutputDir']
 SKFlatSEDir = os.environ['SKFlatSEDir']
@@ -177,9 +177,9 @@ for InputSample in InputSamples:
 
   lines_files = []
 
-  tmpfilepath = SAMPLE_DATA_DIR+'/'+args.Year+'/For'+HOSTNAME+'/'+InputSample+'.txt'
+  tmpfilepath = SAMPLE_DATA_DIR+'/For'+HOSTNAME+'/'+InputSample+'.txt'
   if IsDATA:
-    tmpfilepath = SAMPLE_DATA_DIR+'/'+args.Year+'/For'+HOSTNAME+'/'+InputSample+'_'+DataPeriod+'.txt'
+    tmpfilepath = SAMPLE_DATA_DIR+'/For'+HOSTNAME+'/'+InputSample+'_'+DataPeriod+'.txt'
   lines_files = open(tmpfilepath).readlines()
   os.system('cp '+tmpfilepath+' '+base_rundir+'/input_filelist.txt')
 
@@ -221,7 +221,7 @@ for InputSample in InputSamples:
   this_xsec = 1.;
   this_sumw = 1.;
   if not IsDATA:
-    lines_SamplePath = open(SAMPLE_DATA_DIR+'/'+args.Year+'/CommonSampleInfo/'+InputSample+'.txt').readlines()
+    lines_SamplePath = open(SAMPLE_DATA_DIR+'/CommonSampleInfo/'+InputSample+'.txt').readlines()
     for line in lines_SamplePath:
       if line[0]=="#":
         continue

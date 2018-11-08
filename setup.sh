@@ -5,7 +5,6 @@ mkdir -p $SKFlat_LIB_PATH
 export SKFlatV="v949cand2_2"
 mkdir -p $SKFlat_WD/data/$SKFlatV
 
-export SAMPLE_DATA_DIR=$SKFlat_WD/data/$SKFlatV/Sample/
 export SKFlatSEDir="/xrootd/store/user/$USER/SKFlatOutput/"
 export SKFlatLogEmail='jskim@cern.ch'
 
