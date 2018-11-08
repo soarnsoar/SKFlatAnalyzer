@@ -408,6 +408,7 @@ void {2}(){{
       out.write('  m.AddFile("'+thisfilename+'");\n')
 
     print>>out,'''  m.Init();
+  m.Set_MCSample_for_mcCorr();
 
   m.initializeAnalyzer();
   m.Loop();

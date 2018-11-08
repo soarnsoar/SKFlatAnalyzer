@@ -109,6 +109,7 @@ public:
   //===== Estimators
 
   MCCorrection mcCorr;
+  void Set_MCSample_for_mcCorr();
   FakeBackgroundEstimator fakeEst;
   CFBackgroundEstimator cfEst;
 

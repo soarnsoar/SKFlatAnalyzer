@@ -2,10 +2,6 @@
 
 AnalyzerCore::AnalyzerCore(){
 
-  if(!IsDATA){
-    mcCorr.SetMCSample(MCSample);
-  }
-
 }
 
 AnalyzerCore::~AnalyzerCore(){
@@ -16,6 +12,12 @@ AnalyzerCore::~AnalyzerCore(){
   maphist_TH1D.clear();
 
   outfile->Close();
+}
+
+void AnalyzerCore::Set_MCSample_for_mcCorr(){
+  if(!IsDATA){
+    mcCorr.SetMCSample(MCSample);
+  }
 }
 
 Event AnalyzerCore::GetEvent(){
