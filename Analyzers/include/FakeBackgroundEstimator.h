@@ -23,7 +23,12 @@ public:
   FakeBackgroundEstimator();
   ~FakeBackgroundEstimator();
 
+  void ReadHistograms();
+
   bool IgnoreNoHist;
+
+  int DataYear;
+  void SetDataYear(int i);
 
   std::map< TString, TH2D* > map_hist_Electron;
   std::map< TString, TH2D* > map_hist_Muon;

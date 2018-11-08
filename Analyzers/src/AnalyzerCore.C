@@ -692,8 +692,17 @@ void AnalyzerCore::initializeAnalyzerTools(){
   //==== MCCorrection
   if(!IsDATA){
     mcCorr.SetMCSample(MCSample);
+    mcCorr.SetDataYear(DataYear);
     mcCorr.ReadHistograms();
   }
+
+  //==== FakeBackgroundEstimator
+  fakeEst.SetDataYear(DataYear);
+  fakeEst.ReadHistograms();
+
+  //==== CFBackgroundEstimator
+  cfEst.SetDataYear(DataYear);
+  cfEst.ReadHistograms();
 
 }
 

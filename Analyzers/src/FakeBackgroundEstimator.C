@@ -5,8 +5,12 @@ IgnoreNoHist(false),
 HasLooseLepton(false)
 {
 
+}
+
+void FakeBackgroundEstimator::ReadHistograms(){
+
   TString datapath = getenv("DATA_DIR");
-  datapath = datapath+"/FakeRate/";
+  datapath = datapath+"/"+TString::Itoa(DataYear,10)+"/FakeRate/";
 
   string elline;
   ifstream in(datapath+"/histmap_Electron.txt");
@@ -44,6 +48,10 @@ HasLooseLepton(false)
 
 FakeBackgroundEstimator::~FakeBackgroundEstimator(){
 
+}
+
+void FakeBackgroundEstimator::SetDataYear(int i){
+  DataYear = i;
 }
 
 double FakeBackgroundEstimator::GetElectronFakeRate(TString ID, TString key, double eta, double pt, int sys){

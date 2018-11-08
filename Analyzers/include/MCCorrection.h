@@ -29,6 +29,9 @@ public:
   TString MCSample;
   void SetMCSample(TString s);
 
+  int DataYear;
+  void SetDataYear(int i);
+
   bool IgnoreNoHist;
 
   double MuonID_SF(TString ID, double eta, double pt, int sys=0);

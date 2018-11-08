@@ -23,6 +23,11 @@ public:
   CFBackgroundEstimator();
   ~CFBackgroundEstimator();
 
+  void ReadHistograms();
+
+  int DataYear;
+  void SetDataYear(int i);
+
   std::map< TString, TH1D* > map_hist_Electron;
   std::map< TString, TH1D* > map_hist_Muon;
 
