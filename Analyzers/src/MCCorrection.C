@@ -4,6 +4,10 @@ MCCorrection::MCCorrection() :
 IgnoreNoHist(false)
 {
 
+}
+
+void MCCorrection::ReadHistograms(){
+
   TString datapath = getenv("DATA_DIR");
   datapath = datapath+"/ID/";
 
@@ -74,13 +78,21 @@ IgnoreNoHist(false)
   while(getline(in4,elline4)){
     std::istringstream is( elline4 );
     TString a,b,c;
-    is >> a; // cross sec, up/down
-    is >> b; // <root file name>
-    is >> c; // <histname>
+    is >> a; // sample name
+    is >> b; // syst
+    is >> c; // rootfile name
 
-    TFile *file = new TFile(pileup_path + b);
-    map_hist_pileup[a + "_pileup"] = (TH1D *)file->Get(c);
+    if(a!=MCSample) continue;
+
+    TFile *file = new TFile(pileup_path + c);
+    map_hist_pileup[a+"_"+b+"_pileup"] = (TH1D *)file->Get(a+"_"+b);
   }
+/*
+  cout << "[MCCorrection::MCCorrection] map_hist_pileup :" << endl;
+  for(std::map< TString, TH1D* >::iterator it=map_hist_pileup.begin(); it!=map_hist_pileup.end(); it++){
+    cout << it->first << endl;
+  }
+*/
 
 }
 
@@ -364,51 +376,32 @@ double MCCorrection::GetPrefireWeight(std::vector<Photon> photons, std::vector<J
 
 double MCCorrection::GetPileUpWeightAsSampleName(int syst, int N_vtx){
   
-  double out = 1.;
+  int this_bin = N_vtx+1;
+  if(N_vtx >= 100) this_bin=100;
+
+  TString this_histname = MCSample;
   if(syst == 0){
-    if(!map_hist_pileup[MCSample + "_central_pileup"]) return out;
+    this_histname += "_central_pileup";
   }
   else if(syst == -1){
-    if(!map_hist_pileup[MCSample + "_down_pileup"]) return out;
+    this_histname += "_sig_down_pileup";
   }
   else if(syst == 1){
-    if(!map_hist_pileup[MCSample + "_up_pileup"]) return out;
-  }
-  else return out;
-  
-  
-  if(N_vtx < 100){
-    if(syst == 0){
-      TH1D *pileup_reweight = map_hist_pileup[MCSample + "_central_pileup"];
-      out = pileup_reweight -> GetBinContent(N_vtx+1);
-    }
-    else if(syst == -1){
-      TH1D *pileup_reweight = map_hist_pileup[MCSample + "_down_pileup"];
-      out = pileup_reweight -> GetBinContent(N_vtx+1);
-    }
-    else if(syst == 1){
-      TH1D *pileup_reweight = map_hist_pileup[MCSample + "_up_pileup"];
-      out = pileup_reweight -> GetBinContent(N_vtx+1);
-    }
-    else return 1.;
+    this_histname += "_sig_up_pileup";
   }
   else{
-    if(syst == 0){
-      TH1D *pileup_reweight = map_hist_pileup[MCSample + "_central_pileup"];
-      out = pileup_reweight -> GetBinContent(100);
-    }
-    else if(syst == -1){
-      TH1D *pileup_reweight = map_hist_pileup[MCSample + "_down_pileup"];
-      out = pileup_reweight -> GetBinContent(100);
-    }
-    else if(syst == 1){
-      TH1D *pileup_reweight = map_hist_pileup[MCSample + "_up_pileup"];
-      out = pileup_reweight -> GetBinContent(100);
-    }
-    else return 1.;
+    cout << "[MCCorrection::GetPileUpWeightAsSampleName] syst should be 0, -1, or +1" << endl;
+    exit(EXIT_FAILURE);
   }
-  return out;
-  
+
+  TH1D *this_hist = map_hist_pileup[this_histname];
+  if(!this_hist){
+    cout << "[MCCorrection::GetPileUpWeightAsSampleName] No " << this_histname << endl;
+    exit(EXIT_FAILURE);
+  }
+
+  return this_hist->GetBinContent(this_bin);
+
 }
 
 

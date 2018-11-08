@@ -14,12 +14,6 @@ AnalyzerCore::~AnalyzerCore(){
   outfile->Close();
 }
 
-void AnalyzerCore::Set_MCSample_for_mcCorr(){
-  if(!IsDATA){
-    mcCorr.SetMCSample(MCSample);
-  }
-}
-
 Event AnalyzerCore::GetEvent(){
 
   Event ev;
@@ -699,6 +693,16 @@ bool AnalyzerCore::PassMETFilter(){
   if(!Flag_ecalBadCalibFilter) return false;
 
   return true;
+
+}
+
+void AnalyzerCore::initializeAnalyzerTools(){
+
+  //==== MCCorrection
+  if(!IsDATA){
+    mcCorr.SetMCSample(MCSample);
+    mcCorr.ReadHistograms();
+  }
 
 }
 

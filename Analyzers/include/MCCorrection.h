@@ -24,6 +24,8 @@ public:
   MCCorrection();
   ~MCCorrection();
 
+  void ReadHistograms();
+
   TString MCSample;
   void SetMCSample(TString s);
 
