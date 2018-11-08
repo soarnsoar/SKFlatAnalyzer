@@ -2,10 +2,6 @@
 
 AnalyzerCore::AnalyzerCore(){
 
-  if(!IsDATA){
-    mcCorr.SetMCSample(MCSample);
-  }
-
 }
 
 AnalyzerCore::~AnalyzerCore(){
@@ -688,6 +684,16 @@ bool AnalyzerCore::PassMETFilter(){
   if(!Flag_ecalBadCalibFilter) return false;
 
   return true;
+
+}
+
+void AnalyzerCore::initializeAnalyzerTools(){
+
+  //==== MCCorrection
+  if(!IsDATA){
+    mcCorr.SetMCSample(MCSample);
+    mcCorr.ReadHistograms();
+  }
 
 }
 
