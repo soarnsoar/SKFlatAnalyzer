@@ -89,7 +89,7 @@ else:
     if args.DataPeriod=="ALL":
       for period in AvailableDataPeriods:
         InputSamples.append(args.InputSample+":"+period)
-        StringForHash += line
+        StringForHash += args.InputSample+":"+period
     elif args.DataPeriod in AvailableDataPeriods:
       InputSamples.append(args.InputSample+":"+args.DataPeriod)
       StringForHash += args.InputSample+":"+args.DataPeriod

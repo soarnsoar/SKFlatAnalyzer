@@ -24,6 +24,9 @@ public:
   MCCorrection();
   ~MCCorrection();
 
+  TString MCSample;
+  void SetMCSample(TString s);
+
   bool IgnoreNoHist;
 
   double MuonID_SF(TString ID, double eta, double pt, int sys=0);
