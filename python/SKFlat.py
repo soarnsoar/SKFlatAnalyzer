@@ -813,10 +813,11 @@ from SendEmail import *
 JobFinishEmail = '''#### Job Info ####
 HOST = {3}
 Analyzer = {0}
+Skim = {5}
 # of Jobs = {4}
 InputSample = {1}
 Output sent to : {2}
-'''.format(args.Analyzer,InputSamples,FinalOutputPath,HOSTNAME,NJobs)
+'''.format(args.Analyzer,InputSamples,FinalOutputPath,HOSTNAME,NJobs,args.Skim)
 JobFinishEmail += '''##################
 Job started at {0}
 Job finished at {1}
