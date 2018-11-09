@@ -408,7 +408,7 @@ void {2}(){{
       out.write('  m.AddFile("'+thisfilename+'");\n')
 
     print>>out,'''  m.Init();
-
+  m.initializeAnalyzerTools();
   m.initializeAnalyzer();
   m.Loop();
 

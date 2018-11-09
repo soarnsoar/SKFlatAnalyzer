@@ -4,6 +4,10 @@ MCCorrection::MCCorrection() :
 IgnoreNoHist(false)
 {
 
+}
+
+void MCCorrection::ReadHistograms(){
+
   TString datapath = getenv("DATA_DIR");
   datapath = datapath+"/ID/";
 
@@ -64,6 +68,31 @@ IgnoreNoHist(false)
     map_hist_prefire[a + "_prefire"] = (TH2F *)file->Get(c);
   }
 
+
+  // == Get Pileup Reweight maps
+  TString pileup_path = getenv("DATA_DIR");
+  pileup_path = pileup_path + "/PileUp/";
+
+  string elline4;
+  ifstream  in4(pileup_path + "histmap.txt");
+  while(getline(in4,elline4)){
+    std::istringstream is( elline4 );
+    TString a,b,c;
+    is >> a; // sample name
+    is >> b; // syst
+    is >> c; // rootfile name
+
+    if(a!=MCSample) continue;
+
+    TFile *file = new TFile(pileup_path + c);
+    map_hist_pileup[a+"_"+b+"_pileup"] = (TH1D *)file->Get(a+"_"+b);
+  }
+/*
+  cout << "[MCCorrection::MCCorrection] map_hist_pileup :" << endl;
+  for(std::map< TString, TH1D* >::iterator it=map_hist_pileup.begin(); it!=map_hist_pileup.end(); it++){
+    cout << it->first << endl;
+  }
+*/
 
 }
 
@@ -345,10 +374,35 @@ double MCCorrection::GetPrefireWeight(std::vector<Photon> photons, std::vector<J
 }
 
 
+double MCCorrection::GetPileUpWeightAsSampleName(int syst, int N_vtx){
+  
+  int this_bin = N_vtx+1;
+  if(N_vtx >= 100) this_bin=100;
 
+  TString this_histname = MCSample;
+  if(syst == 0){
+    this_histname += "_central_pileup";
+  }
+  else if(syst == -1){
+    this_histname += "_sig_down_pileup";
+  }
+  else if(syst == 1){
+    this_histname += "_sig_up_pileup";
+  }
+  else{
+    cout << "[MCCorrection::GetPileUpWeightAsSampleName] syst should be 0, -1, or +1" << endl;
+    exit(EXIT_FAILURE);
+  }
 
+  TH1D *this_hist = map_hist_pileup[this_histname];
+  if(!this_hist){
+    cout << "[MCCorrection::GetPileUpWeightAsSampleName] No " << this_histname << endl;
+    exit(EXIT_FAILURE);
+  }
 
+  return this_hist->GetBinContent(this_bin);
 
+}
 
 
 

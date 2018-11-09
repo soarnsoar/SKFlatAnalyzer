@@ -111,6 +111,7 @@ public:
   MCCorrection mcCorr;
   FakeBackgroundEstimator fakeEst;
   CFBackgroundEstimator cfEst;
+  void initializeAnalyzerTools();
 
   //==== Prefire
   double GetPrefireWeight(int sys);
