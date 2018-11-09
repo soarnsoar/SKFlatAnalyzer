@@ -14,6 +14,10 @@ AnalyzerCore::~AnalyzerCore(){
   outfile->Close();
 }
 
+void AnalyzerCore::SetOutfilePath(TString outname){
+  outfile = new TFile(outname,"RECREATE");
+};
+
 Event AnalyzerCore::GetEvent(){
 
   Event ev;

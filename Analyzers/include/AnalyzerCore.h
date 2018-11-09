@@ -186,7 +186,7 @@ public:
                   int n_binx, double *xbins,
                   int n_biny, double *ybins);
 
-  void WriteHist();
+  virtual void WriteHist();
 
   //==== Quick Plotters
   void FillLeptonPlots(std::vector<Lepton *> leps, TString this_region, double weight);
@@ -195,9 +195,7 @@ public:
   //==== Output rootfile
 
   TFile *outfile;
-  void SetOutfilePath(TString outname){
-    outfile = new TFile(outname,"RECREATE");
-  };
+  void SetOutfilePath(TString outname);
 
 };
 

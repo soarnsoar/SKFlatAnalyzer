@@ -14,6 +14,7 @@ parser.add_argument('-n', dest='NJobs', default=1, type=int)
 parser.add_argument('-o', dest='Outputdir', default="")
 parser.add_argument('-q', dest='Queue', default="fastq")
 parser.add_argument('-y', dest='Year', default="2017")
+parser.add_argument('--skim', dest='Skim', default="")
 parser.add_argument('--no_exec', action='store_true')
 parser.add_argument('--userflags', dest='Userflags', default="")
 args = parser.parse_args()
@@ -63,6 +64,14 @@ if IsSNU:
   HOSTNAME = "SNU"
 if IsKNU:
   HOSTNAME = "KNU"
+
+## Is Skim run?
+IsSkimTree = "SkimTree" in args.Analyzer
+if IsSkimTree:
+  if not IsSNU:
+    print "Skimming only possible in SNU"
+    exit()
+  args.NJobs = 999999
 
 ## Machine-dependent variables
 if IsKNU:
@@ -135,9 +144,13 @@ for InputSample in InputSamples:
     InputSample = tmp.split(":")[0]
     DataPeriod = tmp.split(":")[1]
 
+  SkimString = ""
+  if args.Skim!="":
+    SkimString = args.Skim+"_"
+
   ## Prepare output
 
-  base_rundir = SKFlatRunlogDir+'/'+args.Analyzer+'__'+timestamp+'__'+InputSample
+  base_rundir = SKFlatRunlogDir+'/'+args.Analyzer+'__'+timestamp+'__'+SkimString+InputSample
   if IsDATA:
     base_rundir = base_rundir+'_period'+DataPeriod
   for flag in Userflags:
@@ -177,9 +190,9 @@ for InputSample in InputSamples:
 
   lines_files = []
 
-  tmpfilepath = SAMPLE_DATA_DIR+'/For'+HOSTNAME+'/'+InputSample+'.txt'
+  tmpfilepath = SAMPLE_DATA_DIR+'/For'+HOSTNAME+'/'+SkimString+InputSample+'.txt'
   if IsDATA:
-    tmpfilepath = SAMPLE_DATA_DIR+'/For'+HOSTNAME+'/'+InputSample+'_'+DataPeriod+'.txt'
+    tmpfilepath = SAMPLE_DATA_DIR+'/For'+HOSTNAME+'/'+SkimString+InputSample+'_'+DataPeriod+'.txt'
   lines_files = open(tmpfilepath).readlines()
   os.system('cp '+tmpfilepath+' '+base_rundir+'/input_filelist.txt')
 
@@ -398,18 +411,41 @@ void {2}(){{
         out.write('    "'+flag+'",\n')
       out.write('  };\n')
 
-    if IsKISTI:
-      out.write('  m.SetOutfilePath("hists.root");\n')
-    else:
-      out.write('  m.SetOutfilePath("'+thisjob_dir+'/hists.root");\n')
-
     for it_file in FileRanges[it_job]:
       thisfilename = lines_files[it_file].strip('\n')
       out.write('  m.AddFile("'+thisfilename+'");\n')
 
-    print>>out,'''  m.Init();
-  m.initializeAnalyzerTools();
-  m.initializeAnalyzer();
+    if IsSkimTree:
+      tmp_filename = lines_files[ FileRanges[it_job][0] ].strip('\n')
+      ## /data7/DATA/SKFlat/v949cand2_2/2017/DATA/SingleMuon/periodB/181107_231447/0000
+      ## /data7/DATA/SKFlat/v949cand2_2/2017/MC/TTTo2L2Nu_TuneCP5_13TeV-powheg-pythia8/181108_152345/0000/SKFlatNtuple_2017_MC_100.root
+      dir1 = '/data7/DATA/SKFlat/'+SKFlatV+'/'+args.Year+'/'
+      dir2 = dir1
+      if IsDATA:
+        dir1 += "DATA/"
+        dir2 += "DATA_"+args.Analyzer+"/"
+      else:
+        dir1 += "MC/"
+        dir2 += "MC_"+args.Analyzer+"/"
+
+      skimoutname = tmp_filename.replace(dir1,dir2)
+
+      tmp_filename = skimoutname.split('/')[-1]
+      os.system('mkdir -p '+skimoutname.replace(tmp_filename,''))
+      out.write('  m.SetOutfilePath("'+skimoutname+'");\n')
+
+    else:
+      if IsKISTI:
+        out.write('  m.SetOutfilePath("hists.root");\n')
+      else:
+        out.write('  m.SetOutfilePath("'+thisjob_dir+'/hists.root");\n')
+
+    IsSkimTree
+
+    out.write('  m.Init();'+'\n')
+    if not IsSkimTree:
+      out.write('  m.initializeAnalyzerTools();'+'\n')
+    print>>out,'''  m.initializeAnalyzer();
   m.Loop();
 
   m.WriteHist();
@@ -499,6 +535,7 @@ os.system('mkdir -p '+FinalOutputPath)
 print '##################################################'
 print 'Submission Finished'
 print '- Analyzer = '+args.Analyzer
+print '- Skim = '+args.Skim
 print '- InputSamples =',
 print InputSamples
 print '- NJobs = '+str(NJobs)
@@ -548,10 +585,14 @@ try:
         InputSample = tmp.split(":")[0]
         DataPeriod = tmp.split(":")[1]
 
+      SkimString = ""
+      if args.Skim!="":
+        SkimString = args.Skim+"_"
+
       ## Prepare output
       ## This should be copied from above
 
-      base_rundir = SKFlatRunlogDir+'/'+args.Analyzer+'__'+timestamp+'__'+InputSample
+      base_rundir = SKFlatRunlogDir+'/'+args.Analyzer+'__'+timestamp+'__'+SkimString+InputSample
       if IsDATA:
         base_rundir = base_rundir+'_period'+DataPeriod
       for flag in Userflags:
@@ -729,7 +770,13 @@ try:
           ## PostJob was not done in the previous monitoring
           ## Copy output, and change the PostJob flag
 
-          outputname = args.Analyzer+'_'+InputSample
+
+          ## if Skim, no need to hadd. move on!
+          if IsSkimTree:
+            PostJobFinishedForEachSample[it_sample] = True
+            continue
+
+          outputname = args.Analyzer+'_'+SkimString+InputSample
           if IsDATA:
             outputname += '_'+DataPeriod
 
