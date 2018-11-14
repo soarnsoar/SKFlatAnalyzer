@@ -11,14 +11,58 @@ public:
   Muon();
   ~Muon();
 
-  inline bool isPOGTight() const {return j_isPOGTight;}
-  inline bool isPOGHighPt() const {return j_isPOGHighPt;}
-  inline bool isPOGMedium() const {return j_isPOGMedium;}
-  inline bool isPOGLoose() const {return j_isPOGLoose;}
-  void SetisPOGTight(bool b);
-  void SetisPOGHighPt(bool b);
-  void SetisPOGMedium(bool b);
-  void SetisPOGLoose(bool b);
+  void SetTypeBit(unsigned int typebit);
+  void SetIDBit(unsigned int idbit);
+
+  enum Selector {
+    CutBasedIdLoose        = 1UL<< 0,  
+    CutBasedIdMedium       = 1UL<< 1,  
+    CutBasedIdMediumPrompt = 1UL<< 2,  // medium with IP cuts
+    CutBasedIdTight        = 1UL<< 3,  
+    CutBasedIdGlobalHighPt = 1UL<< 4,  // high pt muon for Z',W' (better momentum resolution)
+    CutBasedIdTrkHighPt    = 1UL<< 5,  // high pt muon for boosted Z (better efficiency)
+    PFIsoVeryLoose         = 1UL<< 6,  // reliso<0.40
+    PFIsoLoose             = 1UL<< 7,  // reliso<0.25
+    PFIsoMedium            = 1UL<< 8,  // reliso<0.20
+    PFIsoTight             = 1UL<< 9,  // reliso<0.15
+    PFIsoVeryTight         = 1UL<<10,  // reliso<0.10
+    TkIsoLoose             = 1UL<<11,  // reliso<0.10
+    TkIsoTight             = 1UL<<12,  // reliso<0.05
+    SoftCutBasedId         = 1UL<<13,  
+    SoftMvaId              = 1UL<<14,  
+    MvaLoose               = 1UL<<15,  
+    MvaMedium              = 1UL<<16,  
+    MvaTight               = 1UL<<17,
+    MiniIsoLoose           = 1UL<<18,  // reliso<0.40
+    MiniIsoMedium          = 1UL<<19,  // reliso<0.20
+    MiniIsoTight           = 1UL<<20,  // reliso<0.10
+    MiniIsoVeryTight       = 1UL<<21,  // reliso<0.05
+    TriggerIdLoose         = 1UL<<22,  // robust selector for HLT
+    InTimeMuon             = 1UL<<23,   
+    PFIsoVeryVeryTight     = 1UL<<24,  // reliso<0.05
+    MultiIsoLoose          = 1UL<<25,  // miniIso with ptRatio and ptRel 
+    MultiIsoMedium         = 1UL<<26   // miniIso with ptRatio and ptRel 
+  };
+
+  enum Type {
+    GlobalMuon     =  1<<1,
+    TrackerMuon    =  1<<2,
+    StandAloneMuon =  1<<3,
+    CaloMuon =  1<<4,
+    PFMuon =  1<<5,
+    RPCMuon =  1<<6,
+    GEMMuon =  1<<7,
+    ME0Muon = 1<<8
+  };
+
+  inline bool PassSelector( unsigned int s ) const { return (j_IDBit & s)==s; }
+  inline bool IsType( unsigned int t ) const { return (j_TypeBit & t); }
+
+
+  inline bool isPOGTight() const {return PassSelector(CutBasedIdTight);}
+  inline bool isPOGHighPt() const {return PassSelector(CutBasedIdGlobalHighPt);}
+  inline bool isPOGMedium() const {return PassSelector(CutBasedIdMedium);}
+  inline bool isPOGLoose() const {return PassSelector(CutBasedIdLoose);}
 
   void SetIso(double ch04, double nh04, double ph04, double pu04, double trkiso);
   void CalcPFRelIso();
@@ -35,7 +79,7 @@ public:
   inline double MomentumUp() const {return j_MomentumUp;}
   inline double MomentumDown() const {return j_MomentumDown;}
 
-  void SetTuneP4(double pt, double pt_err, double eta, double phi);
+  void SetTuneP4(double pt, double pt_err, double eta, double phi, double q);
   inline Particle TuneP4() const {return j_TuneP4;}
   inline double TunePPtError() const {return j_TunePPtError;}
 
@@ -54,7 +98,7 @@ public:
 
 private:
 
-  bool j_isPOGTight, j_isPOGHighPt, j_isPOGMedium, j_isPOGLoose;
+  unsigned int j_TypeBit, j_IDBit;
   double j_chi2;
   double j_PFCH04, j_PFNH04, j_PFPH04, j_PU04, j_trkiso;
   double j_MiniAODPt, j_MomentumUp, j_MomentumDown;

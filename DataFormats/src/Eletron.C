@@ -11,15 +11,17 @@ Electron::Electron(){
   j_EnergyUnCorr = -999.;
   j_passConversionVeto = false;
   j_NMissingHits = 0;
-  j_passVetoID = false;
-  j_passLooseID = false;
-  j_passMediumID = false;
-  j_passTightID = false;
-  j_passMVAID_noIso_WP80 = false;
-  j_passMVAID_noIso_WP90 = false;
-  j_passMVAID_iso_WP80 = false;
-  j_passMVAID_iso_WP90 = false;
-  j_passHEEPID = false;
+  j_Full5x5_sigmaIetaIeta = -999.;
+  j_dEtaSeed = -999.;
+  j_dPhiIn = -999.;
+  j_HoverE  = -999.;
+  j_InvEminusInvP = -999.;
+  j_e2x5OverE5x5 = -999.;
+  j_e1x5OverE5x5 = -999.;
+  j_trkiso = -999.;
+  j_dr03EcalRecHitSumEt = -999.;
+  j_dr03HcalDepth1TowerSumEt = -999.;
+  j_IDBit = 0;
   j_Rho = -999.;
   this->SetLeptonFlavour(ELECTRON);
 }
@@ -51,28 +53,36 @@ void Electron::SetNMissingHits(int n){
   j_NMissingHits = n;
 }
 
-void Electron::SetCutBasedIDVariables(double Full5x5_sigmaIetaIeta, double dEtaSeed, double dPhiIn, double HoverE, double InvEminusInvP){
+void Electron::SetCutBasedIDVariables(
+    double Full5x5_sigmaIetaIeta,
+    double dEtaSeed,
+    double dPhiIn,
+    double HoverE,
+    double InvEminusInvP,
+    double e2x5OverE5x5,
+    double e1x5OverE5x5,
+    double trackIso,
+    double dr03EcalRecHitSumEt,
+    double dr03HcalDepth1TowerSumEt
+  ){
   j_Full5x5_sigmaIetaIeta = Full5x5_sigmaIetaIeta;
   j_dEtaSeed = dEtaSeed;
   j_dPhiIn = dPhiIn;
   j_HoverE = HoverE;
   j_InvEminusInvP = InvEminusInvP;
+  j_e2x5OverE5x5 = e2x5OverE5x5;
+  j_e1x5OverE5x5 = e1x5OverE5x5;
+  j_trkiso = trackIso;
+  j_dr03EcalRecHitSumEt = dr03EcalRecHitSumEt;
+  j_dr03HcalDepth1TowerSumEt = dr03HcalDepth1TowerSumEt;
 }
 
-void Electron::SetPOGIDs(std::vector<bool> bs){
-  j_passVetoID = bs.at(0);
-  j_passLooseID = bs.at(1);
-  j_passMediumID = bs.at(2);
-  j_passTightID = bs.at(3);
-  j_passMVAID_noIso_WP80 = bs.at(4);
-  j_passMVAID_noIso_WP90 = bs.at(5);
-  j_passMVAID_iso_WP80 = bs.at(6);
-  j_passMVAID_iso_WP90 = bs.at(7);
-  j_passHEEPID = bs.at(8);
+void Electron::SetIDBit(unsigned int idbit){
+  j_IDBit = idbit;
 }
 
 void Electron::SetRelPFIso_Rho(double r){
-  j_passTightID = r;
+  j_RelPFIso_Rho = r;
   this->SetRelIso(r);
 }
 
@@ -103,11 +113,11 @@ bool Electron::PassID(TString ID){
   if(ID=="passLooseID") return passLooseID();
   if(ID=="passMediumID") return passMediumID();
   if(ID=="passTightID") return passTightID();
+  if(ID=="passHEEPID") return passHEEPID();
   if(ID=="passMVAID_noIso_WP80") return passMVAID_noIso_WP80();
   if(ID=="passMVAID_noIso_WP90") return passMVAID_noIso_WP90();
   if(ID=="passMVAID_iso_WP80") return passMVAID_iso_WP80();
   if(ID=="passMVAID_iso_WP90") return passMVAID_iso_WP90();
-  if(ID=="passHEEPID") return passHEEPID();
   //==== Customized
   if(ID=="SUSYTight") return Pass_SUSYTight();
   if(ID=="SUSYLoose") return Pass_SUSYLoose();

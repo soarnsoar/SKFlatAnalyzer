@@ -32,78 +32,8 @@ void SKFlatValidation::executeEvent(){
   param.Muon_Tight_ID = "POGHighPtWithLooseTrkIso";
   param.Muon_ID_SF_Key = "NUM_HighPtID_DEN_genTracks";
   param.Muon_ISO_SF_Key = "NUM_LooseRelTkIso_DEN_HighPtIDandIPCut";
-  param.Muon_Trigger_SF_Key = "Default";
+  param.Muon_Trigger_SF_Key = "POGHighPtLooseTrkIso";
   param.Muon_UseTuneP = true;
-
-  param.Jet_ID = "HN";
-
-  executeEventFromParameter(param);
-
-
-/*
-  //=== Same but pt>75 GeV
-  param.Name = "POG_pt75";
-  executeEventFromParameter(param);
-*/
-  //==== HNPair ID
-
-  param.Clear();
-  param.Name = "HNPair";
-
-  param.MCCorrrectionIgnoreNoHist = true;
-
-  param.Electron_Tight_ID = "HNPairTight";
-  param.Electron_Tight_RelIso = 0.1;
-  param.Electron_Loose_ID = "HNPairLoose";
-  param.Electron_Loose_RelIso = 0.6;
-  param.Electron_Veto_ID = "HNPairVeto";
-  param.Electron_Veto_RelIso = 0.6;
-  param.Electron_UseMini = true;
-
-  param.Muon_Tight_ID = "HNPairTight";
-  param.Muon_Tight_RelIso = 0.2;
-  param.Muon_Loose_ID = "HNPairLoose";
-  param.Muon_Loose_RelIso = 0.6;
-  param.Muon_Veto_ID = "HNPairVeto";
-  param.Muon_Veto_RelIso = 0.6;
-  param.Muon_UseMini = true;
-
-  param.Jet_ID = "HN";
-
-  executeEventFromParameter(param);
-
-/*
-  //=== Same but pt>75 GeV
-  param.Name = "HNPair_pt75";
-  executeEventFromParameter(param);
-*/
-
-  //==== HNWR
-
-  param.Clear();
-  param.Name = "HNWR";
-
-  param.MCCorrrectionIgnoreNoHist = true;
-
-  param.Electron_Tight_ID = "HNWRTight";
-  param.Electron_Tight_RelIso = 0.15;
-  param.Electron_Loose_ID = "HNWRLoose";
-  param.Electron_Loose_RelIso = 0.6;
-  param.Electron_Veto_ID = "HNWRVeto";
-  param.Electron_Veto_RelIso = 0.6;
-  param.Electron_UseMini = false;
-  param.Electron_UsePtCone = false;
-  param.Electron_MinPt = 10.;
-
-  param.Muon_Tight_ID = "HNWRTight";
-  param.Muon_Tight_RelIso = 0.15;
-  param.Muon_Loose_ID = "HNWRLoose";
-  param.Muon_Loose_RelIso = 0.6;
-  param.Muon_Veto_ID = "HNWRVeto";
-  param.Muon_Veto_RelIso = 0.6;
-  param.Muon_UseMini = false;
-  param.Muon_UsePtCone = false;
-  param.Muon_MinPt = 10.;
 
   param.Jet_ID = "HN";
 
@@ -117,12 +47,16 @@ void SKFlatValidation::executeEventFromParameter(AnalyzerParameter param){
 
   Event ev = GetEvent();
 
-  //bool PassDiMuon = ev.PassTrigger("HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ_Mass8_v");
-  bool PassSingleMuon = ev.PassTrigger("HLT_IsoMu27_v");
+  TString SingleMuonTrigger = "IsoMu27";
+  int MuonTriggerSfaePt = 29.;
+  if(param.Name=="POGHighPt"){
+    SingleMuonTrigger = "Mu50";
+    MuonTriggerSfaePt = 52.;
+  }
+  bool PassSingleMuon = ev.PassTrigger("HLT_"+SingleMuonTrigger+"_v");
   bool PassSingleElectron = ev.PassTrigger("HLT_Ele35_WPTight_Gsf_v");
 
   double MinLeptonPt = 10.;
-  if(param.Name.Contains("pt75")) MinLeptonPt = 75.;
 
   std::vector<Muon> muons = GetMuons(param.Muon_Tight_ID, MinLeptonPt, 2.4);
   std::vector<Electron> electrons = GetElectrons(param.Electron_Tight_ID, MinLeptonPt, 2.5);
@@ -143,14 +77,10 @@ void SKFlatValidation::executeEventFromParameter(AnalyzerParameter param){
   //==== Based on which trigger is fired
   std::vector< TString > Suffixs = {
     "SingleMuon",
-    //"DiElectron",
-    //"DiPhoton",
     "SingleElectron",
   };
   std::vector< bool > PassTriggers = {
     PassSingleMuon && (muons.size()>=1) && (electrons.size()==0),
-    //PassDiElectron && (electrons.size()==2) && (muons.size()==0),
-    //PassDiPhoton && (electrons.size()==2) && (muons.size()==0),
     PassSingleElectron && (electrons.size()>=1) && (muons.size()==0),
   };
 
@@ -160,16 +90,10 @@ void SKFlatValidation::executeEventFromParameter(AnalyzerParameter param){
     if( !PassTriggers.at(i) ) continue;
 
     if(Suffix.Contains("SingleMuon")){
-      if( muons.at(0).Pt() < 29. ) continue;
-    }
-    else if(Suffix.Contains("DiElectron")){
-      if( electrons.at(0).Pt() < 25. || electrons.at(1).Pt() < 15. ) continue;
+      if( muons.at(0).Pt() < MuonTriggerSfaePt ) continue;
     }
     else if(Suffix.Contains("SingleElectron")){
       if( electrons.at(0).Pt() < 38. ) continue;
-    }
-    else if(Suffix.Contains("DiPhoton")){
-      if( electrons.at(0).Pt() < 75. || electrons.at(1).Pt() < 75. ) continue;
     }
     else{
 
@@ -178,9 +102,6 @@ void SKFlatValidation::executeEventFromParameter(AnalyzerParameter param){
     if(this->IsDATA){
       if(this->DataStream == "SingleMuon"){
         if(!( Suffix.Contains("SingleMuon") )) continue;
-      }
-      else if(this->DataStream == "DoubleEG"){
-        if(!( Suffix.Contains("DiElectron")||Suffix.Contains("DiPhoton") )) continue;
       }
       else if(this->DataStream == "SingleElectron"){
         if(!( Suffix.Contains("SingleElectron") )) continue;
@@ -193,9 +114,6 @@ void SKFlatValidation::executeEventFromParameter(AnalyzerParameter param){
     std::vector<Lepton *> leps;
     if(Suffix.Contains("SingleMuon")){
       leps = MakeLeptonPointerVector(muons);
-    }
-    else if(Suffix.Contains("DiElectron")||Suffix.Contains("DiPhoton")){
-      leps = MakeLeptonPointerVector(electrons);
     }
     else if(Suffix.Contains("SingleElectron")){
       leps = MakeLeptonPointerVector(electrons);
@@ -243,7 +161,7 @@ void SKFlatValidation::executeEventFromParameter(AnalyzerParameter param){
 
           double this_idsf  = mcCorr.MuonID_SF (param.Muon_ID_SF_Key,  this_eta, this_pt);
           double this_isosf = mcCorr.MuonISO_SF(param.Muon_ISO_SF_Key, this_eta, this_pt);
-          double this_trigsf = mcCorr.MuonTrigger_SF(param.Muon_Trigger_SF_Key, "IsoMu27", muons);
+          double this_trigsf = mcCorr.MuonTrigger_SF(param.Muon_Trigger_SF_Key, SingleMuonTrigger, muons);
 
           weight *= this_idsf*this_isosf*this_trigsf;
 
@@ -294,6 +212,9 @@ void SKFlatValidation::executeEventFromParameter(AnalyzerParameter param){
       if(it_map->second){
 
         JSFillHist(this_region, "NEvent_"+this_region, 0., weight, 1, 0., 1.);
+
+        JSFillHist(this_region, "nPileUp_"+this_region, nPileUp, weight, 200., 0., 200.);
+        JSFillHist(this_region, "nPV_"+this_region, nPV, weight, 200., 0., 200.);
 
         JSFillHist(this_region, "MET_"+this_region, METv.Pt(), weight, 500, 0., 500.);
         JSFillHist(this_region, "METphi_"+this_region, METv.Phi(), weight, 60, -3., 3.);

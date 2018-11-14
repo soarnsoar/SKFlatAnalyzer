@@ -22,6 +22,7 @@ FatJet::FatJet() : Particle() {
   j_neutralHadronEnergyFraction=-999.;
   j_neutralEmEnergyFraction=-999.;
   j_chargedEmEnergyFraction=-999.;
+  j_muonEnergyFraction=-999.;
   j_chargedMultiplicity=-999;
   j_neutralMultiplicity=-999;
   j_En_up=1.;
@@ -62,11 +63,12 @@ void FatJet::SetTaggerResults(std::vector<double> ds){
   j_CvsL              = ds.at(10);
   j_CvsB              = ds.at(11);
 }
-void FatJet::SetEnergyFractions(double cH, double nH, double nEM, double cEM){
+void FatJet::SetEnergyFractions(double cH, double nH, double nEM, double cEM, double muE){
   j_chargedHadronEnergyFraction = cH;
   j_neutralHadronEnergyFraction = nH;
   j_neutralEmEnergyFraction = nEM;
   j_chargedEmEnergyFraction = cEM;
+  j_muonEnergyFraction = muE;
 }
 void FatJet::SetMultiplicities(double cM, double nM){
   j_chargedMultiplicity = cM;

@@ -9,10 +9,13 @@ IgnoreNoHist(false)
 void MCCorrection::ReadHistograms(){
 
   TString datapath = getenv("DATA_DIR");
-  datapath = datapath+"/ID/";
+
+
+  //==== ID/Trigger
+  TString IDpath = datapath+"/"+TString::Itoa(DataYear,10)+"/ID/";
 
   string elline;
-  ifstream in(datapath+"/Electron/histmap.txt");
+  ifstream in(IDpath+"/Electron/histmap.txt");
   while(getline(in,elline)){
     std::istringstream is( elline );
     TString a,b,c,d,e;
@@ -21,7 +24,7 @@ void MCCorrection::ReadHistograms(){
     is >> c; // <WPnames>
     is >> d; // <rootfilename>
     is >> e; // <histname>
-    TFile *file = new TFile(datapath+"/Electron/"+d);
+    TFile *file = new TFile(IDpath+"/Electron/"+d);
     map_hist_Electron[a+"_"+b+"_"+c] = (TH2F *)file->Get(e);
   }
 /*
@@ -32,7 +35,7 @@ void MCCorrection::ReadHistograms(){
 */
 
   string elline2;
-  ifstream in2(datapath+"/Muon/histmap.txt");
+  ifstream in2(IDpath+"/Muon/histmap.txt");
   while(getline(in2,elline2)){
     std::istringstream is( elline2 );
     TString a,b,c,d,e;
@@ -41,7 +44,7 @@ void MCCorrection::ReadHistograms(){
     is >> c; // <WPnames>
     is >> d; // <rootfilename>
     is >> e; // <histname>
-    TFile *file = new TFile(datapath+"/Muon/"+d);
+    TFile *file = new TFile(IDpath+"/Muon/"+d);
     map_hist_Muon[a+"_"+b+"_"+c] = (TH2F *)file->Get(e);
   }
 /*
@@ -52,11 +55,10 @@ void MCCorrection::ReadHistograms(){
 */
 
   // == Get Prefiring maps
-  TString prefire_path = getenv("DATA_DIR");
-  prefire_path  = prefire_path + "/Prefire/";
-  
+  TString PrefirePath  = datapath+"/"+TString::Itoa(DataYear,10)+"/Prefire/";
+
   string elline3;
-  ifstream in3(prefire_path + "histmap.txt");
+  ifstream in3(PrefirePath+"/histmap.txt");
   while(getline(in3,elline3)){
     std::istringstream is( elline3 );
     TString a,b,c;
@@ -64,17 +66,16 @@ void MCCorrection::ReadHistograms(){
     is >> b; // <rootfilename>
     is >> c; // <histname>
     
-    TFile *file = new TFile(prefire_path + b);
+    TFile *file = new TFile(PrefirePath+b);
     map_hist_prefire[a + "_prefire"] = (TH2F *)file->Get(c);
   }
 
 
   // == Get Pileup Reweight maps
-  TString pileup_path = getenv("DATA_DIR");
-  pileup_path = pileup_path + "/PileUp/";
+  TString PUReweightPath = datapath+"/"+TString::Itoa(DataYear,10)+"/PileUp/";
 
   string elline4;
-  ifstream  in4(pileup_path + "histmap.txt");
+  ifstream  in4(PUReweightPath+"/histmap.txt");
   while(getline(in4,elline4)){
     std::istringstream is( elline4 );
     TString a,b,c;
@@ -84,7 +85,7 @@ void MCCorrection::ReadHistograms(){
 
     if(a!=MCSample) continue;
 
-    TFile *file = new TFile(pileup_path + c);
+    TFile *file = new TFile(PUReweightPath+c);
     map_hist_pileup[a+"_"+b+"_pileup"] = (TH1D *)file->Get(a+"_"+b);
   }
 /*
@@ -102,6 +103,9 @@ MCCorrection::~MCCorrection(){
 
 void MCCorrection::SetMCSample(TString s){
   MCSample = s;
+}
+void MCCorrection::SetDataYear(int i){
+  DataYear = i;
 }
 
 double MCCorrection::MuonID_SF(TString ID, double eta, double pt, int sys){

@@ -14,12 +14,16 @@ AnalyzerCore::~AnalyzerCore(){
   outfile->Close();
 }
 
+void AnalyzerCore::SetOutfilePath(TString outname){
+  outfile = new TFile(outname,"RECREATE");
+};
+
 Event AnalyzerCore::GetEvent(){
 
   Event ev;
   if(!IsDATA) ev.SetMCweight(gen_weight);
-  ev.SetTrigger(*HLT_TriggerName,*HLT_TriggerFired);
-  ev.SetMET(pfMET_pt,pfMET_Px,pfMET_Py);
+  ev.SetTrigger(*HLT_TriggerName);
+  ev.SetMET(pfMET_Type1_pt,pfMET_Type1_phi);
   ev.SetnPV(nPV);
   ev.SetDataYear(DataYear);
 
@@ -40,14 +44,12 @@ std::vector<Muon> AnalyzerCore::GetAllMuons(){
     mu.SetPtEtaPhiM(muon_pt->at(i)*rc, muon_eta->at(i), muon_phi->at(i), muon_mass->at(i));
     mu.SetMomentumUpDown( (rc+rc_err)*muon_pt->at(i), (rc-rc_err)*muon_pt->at(i) );
     mu.SetCharge(muon_charge->at(i));
-    mu.SetTuneP4(muon_TuneP_pt->at(i),muon_TuneP_ptError->at(i),muon_TuneP_eta->at(i),muon_TuneP_phi->at(i));
+    mu.SetTuneP4(muon_TuneP_pt->at(i),muon_TuneP_ptError->at(i),muon_TuneP_eta->at(i),muon_TuneP_phi->at(i),muon_TuneP_charge->at(i));
     mu.SetdXY(muon_dxyVTX->at(i), muon_dxyerrVTX->at(i));
     mu.SetdZ(muon_dzVTX->at(i), muon_dzerrVTX->at(i));
     mu.SetIP3D(muon_3DIPVTX->at(i), muon_3DIPerrVTX->at(i));
-    mu.SetisPOGTight(muon_isTight->at(i));
-    mu.SetisPOGHighPt(muon_isHighPt->at(i));
-    mu.SetisPOGMedium(muon_isMedium->at(i));
-    mu.SetisPOGLoose(muon_isLoose->at(i));
+    mu.SetTypeBit(muon_TypeBit->at(i));
+    mu.SetIDBit(muon_IDBit->at(i));
     mu.SetChi2(muon_normchi->at(i));
     mu.SetIso(muon_PfChargedHadronIsoR04->at(i),muon_PfNeutralHadronIsoR04->at(i),muon_PfGammaIsoR04->at(i),muon_PFSumPUIsoR04->at(i),muon_trkiso->at(i));
 
@@ -115,21 +117,15 @@ std::vector<Electron> AnalyzerCore::GetAllElectrons(){
       electron_dEtaInSeed->at(i),
       electron_dPhiIn->at(i),
       electron_HoverE->at(i),
-      electron_InvEminusInvP->at(i)
+      electron_InvEminusInvP->at(i),
+      electron_e2x5OverE5x5->at(i),
+      electron_e1x5OverE5x5->at(i),
+      electron_trackIso->at(i),
+      electron_dr03EcalRecHitSumEt->at(i),
+      electron_dr03HcalDepth1TowerSumEt->at(i)
     );
 
-    std::vector<bool> ids = {
-      electron_passVetoID->at(i),
-      electron_passLooseID->at(i),
-      electron_passMediumID->at(i),
-      electron_passTightID->at(i),
-      electron_passMVAID_noIso_WP80->at(i),
-      electron_passMVAID_noIso_WP90->at(i),
-      electron_passMVAID_iso_WP80->at(i),
-      electron_passMVAID_iso_WP90->at(i),
-      electron_passHEEPID->at(i),
-    };
-    el.SetPOGIDs(ids);
+    el.SetIDBit(electron_IDBit->at(i));
     el.SetRelPFIso_Rho(electron_RelPFIso_Rho->at(i));
 
     //==== Should be ran after SCeta is set
@@ -306,7 +302,7 @@ std::vector<Jet> AnalyzerCore::GetAllJets(){
       jet_CvsB->at(i),
     };
     jet.SetTaggerResults(tvs);
-    jet.SetEnergyFractions(jet_chargedHadronEnergyFraction->at(i), jet_neutralHadronEnergyFraction->at(i), jet_neutralEmEnergyFraction->at(i), jet_chargedEmEnergyFraction->at(i));
+    jet.SetEnergyFractions(jet_chargedHadronEnergyFraction->at(i), jet_neutralHadronEnergyFraction->at(i), jet_neutralEmEnergyFraction->at(i), jet_chargedEmEnergyFraction->at(i), jet_muonEnergyFraction->at(i));
     jet.SetMultiplicities(jet_chargedMultiplicity->at(i), jet_neutralMultiplicity->at(i));
     jet.SetPileupJetId(jet_PileupJetId->at(i));
     jet.SetTightJetID(jet_tightJetID->at(i));
@@ -373,7 +369,7 @@ std::vector<FatJet> AnalyzerCore::GetAllFatJets(){
       fatjet_CvsB->at(i),
     };
     jet.SetTaggerResults(tvs);
-    jet.SetEnergyFractions(fatjet_chargedHadronEnergyFraction->at(i), fatjet_neutralHadronEnergyFraction->at(i), fatjet_neutralEmEnergyFraction->at(i), fatjet_chargedEmEnergyFraction->at(i));
+    jet.SetEnergyFractions(fatjet_chargedHadronEnergyFraction->at(i), fatjet_neutralHadronEnergyFraction->at(i), fatjet_neutralEmEnergyFraction->at(i), fatjet_chargedEmEnergyFraction->at(i), fatjet_muonEnergyFraction->at(i));
     jet.SetMultiplicities(fatjet_chargedMultiplicity->at(i), fatjet_neutralMultiplicity->at(i));
     jet.SetTightJetID(fatjet_tightJetID->at(i));
     jet.SetTightLepVetoJetID(fatjet_tightLepVetoJetID->at(i));
@@ -421,10 +417,9 @@ std::vector<Gen> AnalyzerCore::GetGens(){
     Gen gen;
 
     gen.SetIsEmpty(false);
-    gen.SetPtEtaPhiE(gen_pt->at(i), gen_eta->at(i), gen_phi->at(i), gen_E->at(i));
-    gen.SetCharge(gen_charge->at(i));
+    gen.SetPtEtaPhiM(gen_pt->at(i), gen_eta->at(i), gen_phi->at(i), gen_mass->at(i));
     gen.SetIndexPIDStatus(i, gen_PID->at(i), gen_status->at(i));
-    gen.SetMother(gen_mother_PID->at(i), gen_mother_index->at(i));
+    gen.SetMother(gen_mother_index->at(i));
     gen.SetGenStatusFlag_isPrompt( gen_isPrompt->at(i) );
     gen.SetGenStatusFlag_isPromptFinalState( gen_isPromptFinalState->at(i) );
     gen.SetGenStatusFlag_isTauDecayProduct( gen_isTauDecayProduct->at(i) );
@@ -701,8 +696,17 @@ void AnalyzerCore::initializeAnalyzerTools(){
   //==== MCCorrection
   if(!IsDATA){
     mcCorr.SetMCSample(MCSample);
+    mcCorr.SetDataYear(DataYear);
     mcCorr.ReadHistograms();
   }
+
+  //==== FakeBackgroundEstimator
+  fakeEst.SetDataYear(DataYear);
+  fakeEst.ReadHistograms();
+
+  //==== CFBackgroundEstimator
+  cfEst.SetDataYear(DataYear);
+  cfEst.ReadHistograms();
 
 }
 
@@ -982,7 +986,7 @@ void AnalyzerCore::PrintGen(std::vector<Gen> gens){
   for(unsigned int i=0; i<gens.size(); i++){
     Gen gen = gens.at(i);
     vector<int> history = TrackGenSelfHistory(gen, gens);
-    cout << i << "\t" << gen.PID() << "\t" << gen.Status() << "\t" << gen.MotherIndex() << "\t" << gen.MotherPID() << "\t" << history[0] << "\t";
+    cout << i << "\t" << gen.PID() << "\t" << gen.Status() << "\t" << gen.MotherIndex() << "\t" << gens.at(gen.MotherIndex()).PID()<< "\t" << history[0] << "\t";
     printf("%.2f\t%.2f\t%.2f\t%.2f\n",gen.Pt(), gen.Eta(), gen.Phi(), gen.M());
   }
 

@@ -39,23 +39,58 @@ public:
     else return EC;
   }
   
-  void SetCutBasedIDVariables(double Full5x5_sigmaIetaIeta, double dEtaSeed, double dPhiIn, double HoverE, double InvEminusInvP);
-  double Full5x5_sigmaIetaIeta() const { return j_Full5x5_sigmaIetaIeta; }
-  double dEtaSeed() const { return j_dEtaSeed; }
-  double dPhiIn() const { return j_dPhiIn; }
-  double HoverE() const { return j_HoverE; }
-  double InvEminusInvP() const { return j_InvEminusInvP; }
+  void SetCutBasedIDVariables(
+    double Full5x5_sigmaIetaIeta,
+    double dEtaSeed,
+    double dPhiIn,
+    double HoverE,
+    double InvEminusInvP,
+    double e2x5OverE5x5,
+    double e1x5OverE5x5,
+    double trackIso,
+    double dr03EcalRecHitSumEt,
+    double dr03HcalDepth1TowerSumEt
+  );
+  inline double Full5x5_sigmaIetaIeta() const { return j_Full5x5_sigmaIetaIeta; }
+  inline double dEtaSeed() const { return j_dEtaSeed; }
+  inline double dPhiIn() const { return j_dPhiIn; }
+  inline double HoverE() const { return j_HoverE; }
+  inline double InvEminusInvP() const { return j_InvEminusInvP; }
+  inline double e2x5OverE5x5() const { return j_e2x5OverE5x5; }
+  inline double e1x5OverE5x5() const { return j_e1x5OverE5x5; }
+  inline double TrkIso() const {return j_trkiso; }
+  inline double dr03EcalRecHitSumEt() const { return j_dr03EcalRecHitSumEt; }
+  inline double dr03HcalDepth1TowerSumEt() const { return j_dr03HcalDepth1TowerSumEt; }
 
-  void SetPOGIDs(std::vector<bool> bs);
-  inline bool passVetoID() const {return j_passVetoID;}
-  inline bool passLooseID() const {return j_passLooseID;}
-  inline bool passMediumID() const {return j_passMediumID;}
-  inline bool passTightID() const {return j_passTightID;}
-  inline bool passMVAID_noIso_WP80() const {return j_passMVAID_noIso_WP80;}
-  inline bool passMVAID_noIso_WP90() const {return j_passMVAID_noIso_WP90;}
-  inline bool passMVAID_iso_WP80() const {return j_passMVAID_iso_WP80;}
-  inline bool passMVAID_iso_WP90() const {return j_passMVAID_iso_WP90;}
-  inline bool passHEEPID() const {return j_passHEEPID;}
+  void SetIDBit(unsigned int idbit);
+
+  enum Selector {
+    POG_CB_VETO = 1<< 0,
+    POG_CB_LOOSE = 1<< 1,
+    POG_CB_MEDIUM = 1<< 2,
+    POG_CB_TIGHT = 1<< 3,
+    POG_MVA_ISO_WP80 = 1<< 4,
+    POG_MVA_ISO_WP90 = 1<< 5,
+    POG_MVA_ISO_WPHZZ = 1<< 6,
+    POG_MVA_ISO_WPLOOSE = 1<< 7,
+    POG_MVA_NOISO_WP80 = 1<< 8,
+    POG_MVA_NOISO_WP90 = 1<< 9,
+    POG_MVA_NOISO_WPLOOSE = 1<< 10,
+    POG_HEEP = 1<< 11
+  };
+
+  inline bool PassSelector( unsigned int s ) const { return (j_IDBit & s)==s; }
+
+  inline bool passVetoID()   const {return PassSelector(POG_CB_VETO); }
+  inline bool passLooseID()  const {return PassSelector(POG_CB_LOOSE); }
+  inline bool passMediumID() const {return PassSelector(POG_CB_MEDIUM); }
+  inline bool passTightID()  const {return PassSelector(POG_CB_TIGHT); }
+  inline bool passMVAID_noIso_WP80() const {return PassSelector(POG_MVA_NOISO_WP80); }
+  inline bool passMVAID_noIso_WP90() const {return PassSelector(POG_MVA_NOISO_WP90); }
+  inline bool passMVAID_iso_WP80() const {return PassSelector(POG_MVA_ISO_WP80); }
+  inline bool passMVAID_iso_WP90() const {return PassSelector(POG_MVA_ISO_WP90); }
+  inline bool passHEEPID() const {return PassSelector(POG_HEEP); }
+
   bool Pass_SUSYMVAWP(TString wp);
   bool Pass_SUSYTight();
   bool Pass_SUSYLoose();
@@ -88,17 +123,8 @@ private:
   double j_EnergyUnCorr;
   bool j_passConversionVeto;
   int j_NMissingHits;
-  double j_Full5x5_sigmaIetaIeta, j_dEtaSeed, j_dPhiIn, j_HoverE, j_InvEminusInvP;
-  bool j_passVetoID;
-  bool j_passLooseID;
-  bool j_passMediumID;
-  bool j_passTightID;
-  bool j_passMVAID_noIso_WP80;
-  bool j_passMVAID_noIso_WP90;
-  bool j_passMVAID_iso_WP80;
-  bool j_passMVAID_iso_WP90;
-  bool j_passHEEPID;
-
+  double j_Full5x5_sigmaIetaIeta, j_dEtaSeed, j_dPhiIn, j_HoverE, j_InvEminusInvP, j_e2x5OverE5x5, j_e1x5OverE5x5, j_trkiso, j_dr03EcalRecHitSumEt, j_dr03HcalDepth1TowerSumEt;
+  unsigned int j_IDBit;
   double j_RelPFIso_Rho;
 
   double j_Rho;

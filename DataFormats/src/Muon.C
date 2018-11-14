@@ -3,10 +3,6 @@
 ClassImp(Muon)
 
 Muon::Muon() : Lepton() {
-  j_isPOGTight = false;
-  j_isPOGHighPt = false;
-  j_isPOGMedium = false;
-  j_isPOGLoose = false;
   j_chi2 = 999.;
   j_PFCH04 = -999.;
   j_PFNH04 = -999.;
@@ -23,17 +19,12 @@ Muon::Muon() : Lepton() {
 Muon::~Muon(){
 }
 
-void Muon::SetisPOGTight(bool b){
-  j_isPOGTight = b;
+void Muon::SetTypeBit(unsigned int typebit){
+  j_TypeBit = typebit;
 }
-void Muon::SetisPOGHighPt(bool b){
-  j_isPOGHighPt = b;
-}
-void Muon::SetisPOGMedium(bool b){
-  j_isPOGMedium = b;
-}
-void Muon::SetisPOGLoose(bool b){
-  j_isPOGLoose = b;
+
+void Muon::SetIDBit(unsigned int idbit){
+  j_IDBit = idbit;
 }
 
 void Muon::SetIso(double ch04, double nh04, double ph04, double pu04, double trkiso){
@@ -80,9 +71,9 @@ void Muon::SetMomentumUpDown(double up, double down){
   j_MomentumDown = down;
 }
 
-void Muon::SetTuneP4(double pt, double pt_err, double eta, double phi){
+void Muon::SetTuneP4(double pt, double pt_err, double eta, double phi, double q){
   j_TuneP4.SetPtEtaPhiM(pt,eta,phi,M());
-  j_TuneP4.SetCharge(Charge()); //FIXME later, used TuneP charge
+  j_TuneP4.SetCharge(q);
   j_TunePPtError = pt_err;
 }
 
