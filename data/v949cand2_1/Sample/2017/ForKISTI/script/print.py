@@ -56,3 +56,8 @@ for line in lines:
     ## check number of files
     tmp = open(alias+'.txt').readlines()
     print alias+'\t'+str(len(tmp))
+
+    out_common_info = open('temp_CommonInfo/'+alias+'.txt','w')
+    out_common_info.write('# alias PD xsec nmc sumw\n')
+    out_common_info.write(alias+'\t'+PD+'\t1.\t1\t1\n')
+    out_common_info.close()
