@@ -11,6 +11,8 @@ public:
 
   void executeEvent();
 
+  double weight_Prefire;
+
 };
 
 

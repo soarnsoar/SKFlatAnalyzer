@@ -2,14 +2,20 @@
 
 void SKFlatValidation::executeEvent(){
 
+  //==== Prefire reweight
+
+  weight_Prefire = GetPrefireWeight(0);
+
+  //==== AnalyzerParameter
+
   AnalyzerParameter param;
 
   //==== POG IDs
 
   param.Name = "POG";
 
-  param.Electron_Tight_ID = "passMVAID_iso_WP80";
-  param.Electron_ID_SF_Key = "passMVAID_iso_WP80";
+  param.Electron_Tight_ID = "passMediumID";
+  param.Electron_ID_SF_Key = "passMediumID";
 
   param.Muon_Tight_ID = "POGTightWithTightIso";
   param.Muon_ID_SF_Key = "NUM_TightID_DEN_genTracks";
@@ -48,10 +54,10 @@ void SKFlatValidation::executeEventFromParameter(AnalyzerParameter param){
   Event ev = GetEvent();
 
   TString SingleMuonTrigger = "IsoMu27";
-  int MuonTriggerSfaePt = 29.;
+  int MuonTriggerSafePt = 29.;
   if(param.Name=="POGHighPt"){
     SingleMuonTrigger = "Mu50";
-    MuonTriggerSfaePt = 52.;
+    MuonTriggerSafePt = 52.;
   }
   bool PassSingleMuon = ev.PassTrigger("HLT_"+SingleMuonTrigger+"_v");
   bool PassSingleElectron = ev.PassTrigger("HLT_Ele35_WPTight_Gsf_v");
@@ -90,7 +96,7 @@ void SKFlatValidation::executeEventFromParameter(AnalyzerParameter param){
     if( !PassTriggers.at(i) ) continue;
 
     if(Suffix.Contains("SingleMuon")){
-      if( muons.at(0).Pt() < MuonTriggerSfaePt ) continue;
+      if( muons.at(0).Pt() < MuonTriggerSafePt ) continue;
     }
     else if(Suffix.Contains("SingleElectron")){
       if( electrons.at(0).Pt() < 38. ) continue;
@@ -142,7 +148,7 @@ void SKFlatValidation::executeEventFromParameter(AnalyzerParameter param){
     if(!IsDATA){
       //cout << "weight_norm_1invpb = " << weight_norm_1invpb << endl;
       //cout << "GetTriggerLumi = " << ev.GetTriggerLumi("Full") << endl;
-      weight *= weight_norm_1invpb*ev.GetTriggerLumi("Full")*ev.MCweight();
+      weight *= weight_norm_1invpb*ev.GetTriggerLumi("Full")*ev.MCweight()*weight_Prefire;
 
       mcCorr.IgnoreNoHist = param.MCCorrrectionIgnoreNoHist;
 

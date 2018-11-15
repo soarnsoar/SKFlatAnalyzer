@@ -31,7 +31,7 @@ public:
   enum EtaRegion{
     IB, OB, GAP, EC
   };
-  EtaRegion etaRegion(){
+  inline EtaRegion etaRegion(){
     double sceta = fabs(scEta());
     if( sceta < 0.8 ) return IB;
     else if( sceta < 1.444 ) return OB;

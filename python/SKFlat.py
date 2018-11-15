@@ -505,6 +505,9 @@ root -l -b -q run.C 1>stdout.log 2>stderr.log
 
   else:
 
+    if args.no_exec:
+      continue
+
     ## Write Kill Command
 
     KillCommand = open(base_rundir+'/Script_JobKill.sh','w')
@@ -542,6 +545,8 @@ print '- NJobs = '+str(NJobs)
 print '- Year = '+args.Year
 print '- UserFlags =',
 print Userflags
+if IsSNU or IsKNU:
+  print '- Queue = '+args.Queue
 print '- output will be send to : '+FinalOutputPath
 print '##################################################'
 
@@ -822,6 +827,9 @@ JobFinishEmail += '''##################
 Job started at {0}
 Job finished at {1}
 '''.format(string_JobStartTime,string_ThisTime)
+
+if IsSNU or IsKNU:
+  JobFinishEmail += 'Queue = '+args.Queue+'\n'
 
 EmailTitle = '['+HOSTNAME+']'+' Job Summary'
 if GotError:
