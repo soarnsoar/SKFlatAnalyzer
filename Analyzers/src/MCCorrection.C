@@ -121,9 +121,9 @@ double MCCorrection::MuonID_SF(TString ID, double eta, double pt, int sys){
 
   if(ID=="NUM_TightID_DEN_genTracks" || ID=="NUM_HighPtID_DEN_genTracks"){
     //==== boundaries
-    if(pt<20.) return 1.;
-    if(pt>=120.) return 1.;
-    if(eta>=2.4) return 1.;
+    if(pt<20.) pt = 20.;
+    if(pt>=120.) pt = 119.;
+    if(eta>=2.4) eta = 2.39;
   }
 
   TH2F *this_hist = map_hist_Muon["ID_SF_"+ID];
@@ -159,9 +159,9 @@ double MCCorrection::MuonISO_SF(TString ID, double eta, double pt, int sys){
   if(ID=="NUM_TightRelIso_DEN_TightIDandIPCut" || ID=="NUM_LooseRelTkIso_DEN_HighPtIDandIPCut"){
 
     //==== boundaries
-    if(pt<20.) return 1.;
-    if(pt>=120.) return 1.;
-    if(eta>=2.4) return 1.;
+    if(pt<20.) pt = 20.;
+    if(pt>=120.) pt = 119.;
+    if(eta>=2.4) eta = 2.39;
 
   }
 
@@ -199,17 +199,17 @@ double MCCorrection::MuonTrigger_Eff(TString ID, TString trig, int DataOrMC, dou
 
   if(trig=="IsoMu27"){
     //==== FIXME MiniAODPt Pt
-    //==== FIXME 28.9918	29.0363
+    //==== FIXME 28.9918  29.0363
     //==== FIXME This event pass pt>29GeV cut, but MiniAOD pt < 29 GeV
     //==== FIXME So when I return 0., SF goes nan.. let's returning 1. for now..
     if(pt<29.) return 1.; //FIXME
-    if(eta>=2.4) return 1.;
+    if(eta>=2.4) eta = 2.39;
 
     if(pt>1200.) pt = 1199.;
   }
   else if(trig=="Mu50"){
     if(pt<52.) return 1.; //FIXME
-    if(eta>=2.4) return 1.;
+    if(eta>=2.4) eta = 2.39;
 
     if(pt>1200.) pt = 1199.;
   }
@@ -283,11 +283,10 @@ double MCCorrection::ElectronID_SF(TString ID, double sceta, double pt, int sys)
   double value = 1.;
   double error = 0.;
 
-  if(ID=="passMVAID_iso_WP80"){
-    if(pt<10.) return 1.;
-    if(pt>=500.) return 1.;
-    if(fabs(sceta)>=2.5) return 1.;
-  }
+  if(pt<10.) pt = 10.;
+  if(pt>=500.) pt = 499.;
+  if(sceta>=2.5) sceta = 2.49;
+  if(sceta<-2.5) sceta = -2.5;
 
   TH2F *this_hist = map_hist_Electron["ID_SF_"+ID];
   if(!this_hist){
@@ -315,6 +314,11 @@ double MCCorrection::ElectronReco_SF(double sceta, double pt, int sys){
 
   TString ptrange = "ptgt20";
   if(pt<20.) ptrange = "ptlt20";
+
+  if(pt<10.) pt = 10.;
+  if(pt>=500.) pt = 499.;
+  if(sceta>=2.5) sceta = 2.49;
+  if(sceta<-2.5) sceta = -2.5;
 
   TH2F *this_hist = map_hist_Electron["RECO_SF_"+ptrange];
   if(!this_hist){
