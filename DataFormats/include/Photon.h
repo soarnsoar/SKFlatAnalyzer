@@ -30,7 +30,7 @@ public:
   
   
   // === ID
-  bool PassID(TString id);
+  bool PassID(TString ID);
   bool Pass_CutBasedLoose();
   bool Pass_CutBasedMedium();
   bool Pass_CutBasedTight();

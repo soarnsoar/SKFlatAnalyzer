@@ -40,13 +40,13 @@ void Photon::SetPOGIDs(std::vector<bool> bs){
   
 }
 
-bool Photon::PassID(TString id){
+bool Photon::PassID(TString ID){
   
-  if(id=="passLooseID") return passLooseID();
-  if(id=="passMediumID") return passMediumID();
-  if(id=="passTightID") return passTightID();
-  if(id=="passMVAID_WP80") return passMVAID_WP80();
-  if(id=="passMVAID_WP90") return passMVAID_WP90();
+  if(ID=="passLooseID") return passLooseID();
+  if(ID=="passMediumID") return passMediumID();
+  if(ID=="passTightID") return passTightID();
+  if(ID=="passMVAID_WP80") return passMVAID_WP80();
+  if(ID=="passMVAID_WP90") return passMVAID_WP90();
 
   cout << "[Photon::PassID] No id : " << ID << endl;
   exit(EXIT_FAILURE);
