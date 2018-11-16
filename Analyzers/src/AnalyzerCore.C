@@ -602,9 +602,17 @@ std::vector<Muon> AnalyzerCore::ScaleMuons(std::vector<Muon> muons, int sys){
 
     if(sys<0){
       this_muon.SetPtEtaPhiM( this_muon.MomentumDown(), this_muon.Eta(), this_muon.Phi(), this_muon.M() );
+
+      //==== TODO how about tuneP?
+      //==== TODO IS THIS CORRECT?!
+      //this_muon.SetTuneP4(this_muon.MomentumDown(),muon_TuneP_ptError->at(i),muon_TuneP_eta->at(i),muon_TuneP_phi->at(i),muon_TuneP_charge->at(i));
     }
     else{
       this_muon.SetPtEtaPhiM( this_muon.MomentumUp(), this_muon.Eta(), this_muon.Phi(), this_muon.M() );
+
+      //==== TODO how about tuneP?
+      //==== TODO IS THIS CORRECT?!
+      //this_muon.SetTuneP4(this_muon.MomentumUp(),muon_TuneP_ptError->at(i),muon_TuneP_eta->at(i),muon_TuneP_phi->at(i),muon_TuneP_charge->at(i));
     }
 
     out.push_back(this_muon);
