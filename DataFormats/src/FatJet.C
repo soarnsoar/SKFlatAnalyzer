@@ -96,17 +96,7 @@ bool FatJet::PassID(TString id){
 
   if(id=="tight") return Pass_tightJetID();
   if(id=="tightLepVeto") return Pass_tightLepVetoJetID();
-  if(id=="HN") return Pass_HN();
   return false;
-
-}
-
-bool FatJet::Pass_HN(){
-
-  if(! Pass_tightJetID() ) return false;
-  if(! (SDMass()>60.) ) return false;
-
-  return true;
 
 }
 

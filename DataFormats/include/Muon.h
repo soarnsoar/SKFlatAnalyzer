@@ -88,12 +88,6 @@ public:
   bool Pass_POGTight();
   bool Pass_POGTightWithTightIso();
   bool Pass_POGHighPtWithLooseTrkIso();
-  bool Pass_HNPairTight();
-  bool Pass_HNPairLoose();
-  bool Pass_HNPairVeto();
-  bool Pass_HNWRTight();
-  bool Pass_HNWRLoose();
-  bool Pass_HNWRVeto();
   bool Pass_TESTID();
 
 private:

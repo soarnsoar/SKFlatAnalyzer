@@ -95,16 +95,7 @@ bool Jet::PassID(TString id){
 
   if(id=="tight") return Pass_tightJetID();
   if(id=="tightLepVeto") return Pass_tightLepVetoJetID();
-  if(id=="HN") return Pass_HN();
   return false;
-
-}
-
-bool Jet::Pass_HN(){
-
-  if(! Pass_tightJetID() ) return false;
-
-  return true;
 
 }
 

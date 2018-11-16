@@ -48,6 +48,7 @@ void Muon::CalcPFRelIso(){
   //cout << "[Muon::CalcPFRelIso] j_PU04 = " << j_PU04 << endl;
   //cout << "[Muon::CalcPFRelIso] --> absiso = " << absiso << endl;
   this->SetRelIso(absiso/this->Pt());
+  //this->SetRelIso(absiso/this->MiniAODPt()); //TODO This is same as IDBit
 }
 
 double Muon::EA(){
@@ -86,12 +87,6 @@ bool Muon::PassID(TString ID){
   if(ID=="POGTightWithTightIso") return Pass_POGTightWithTightIso();
   if(ID=="POGHighPtWithLooseTrkIso") return Pass_POGHighPtWithLooseTrkIso();
   //==== Customized
-  if(ID=="HNPairTight") return Pass_HNPairTight();
-  if(ID=="HNPairLoose") return Pass_HNPairLoose();
-  if(ID=="HNPairVeto") return Pass_HNPairVeto();
-  if(ID=="HNWRTight") return Pass_HNWRTight();
-  if(ID=="HNWRLoose") return Pass_HNWRLoose();
-  if(ID=="HNWRVeto") return Pass_HNWRVeto();
   if(ID=="TEST") return Pass_TESTID();
 
   cout << "[Electron::PassID] No id : " << ID << endl;
@@ -108,45 +103,6 @@ bool Muon::Pass_POGTightWithTightIso(){
 bool Muon::Pass_POGHighPtWithLooseTrkIso(){
   if(!( isPOGHighPt() )) return false;
   if(!( TrkIso()/TuneP4().Pt()<0.1 )) return false;
-  return true;
-}
-
-//==== HN Pair
-
-bool Muon::Pass_HNPairTight(){
-  if(! isPOGMedium() ) return false;
-  if(! (MiniRelIso()<0.2) ) return false;
-  if(! (fabs(dXY())<0.05 && fabs(dZ())<0.1 && fabs(IP3D()/IP3Derr())<4.) ) return false;
-  return true;
-}
-bool Muon::Pass_HNPairLoose(){
-  if(! isPOGMedium() ) return false;
-  if(! (MiniRelIso()<0.6) ) return false;
-  return true;
-}
-bool Muon::Pass_HNPairVeto(){
-  if(! isPOGLoose() ) return false;
-  if(! (MiniRelIso()<0.6) ) return false;
-  return true;
-}
-
-//==== HN WR
-
-bool Muon::Pass_HNWRTight(){
-  if(! isPOGMedium() ) return false;
-  if(! (RelIso()<0.15) ) return false;
-  if(! (fabs(dXY())<0.05 && fabs(dZ())<0.1) ) return false;
-  return true;
-}
-bool Muon::Pass_HNWRLoose(){
-  if(! isPOGMedium() ) return false;
-  if(! (RelIso()<0.6) ) return false;
-  if(! (fabs(dXY())<0.05 && fabs(dZ())<0.1) ) return false;
-  return true;
-}
-bool Muon::Pass_HNWRVeto(){
-  if(! isPOGLoose() ) return false;
-  if(! (RelIso()<0.6) ) return false;
   return true;
 }
 
