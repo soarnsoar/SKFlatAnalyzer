@@ -210,6 +210,9 @@ void SKFlatValidation::executeEventFromParameter(AnalyzerParameter param){
       map_bool_To_Region["W_CR"] = ( METv.Pt() > 30. ) && ( this_MT > 30. );
     }
 
+    int nPUForReweight = nPV;
+    if(!IsDATA) nPUForReweight = nPileUp;
+
     for(std::map<TString, bool>::iterator it_map = map_bool_To_Region.begin(); it_map != map_bool_To_Region.end(); it_map++){
 
       TString this_region = it_map->first;
@@ -221,6 +224,7 @@ void SKFlatValidation::executeEventFromParameter(AnalyzerParameter param){
 
         JSFillHist(this_region, "nPileUp_"+this_region, nPileUp, weight, 200., 0., 200.);
         JSFillHist(this_region, "nPV_"+this_region, nPV, weight, 200., 0., 200.);
+        JSFillHist(this_region, "nPUForReweight_"+this_region, nPUForReweight, weight, 200., 0., 200.);
 
         JSFillHist(this_region, "MET_"+this_region, METv.Pt(), weight, 500, 0., 500.);
         JSFillHist(this_region, "METphi_"+this_region, METv.Phi(), weight, 60, -3., 3.);
