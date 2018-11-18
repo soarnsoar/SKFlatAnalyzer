@@ -187,7 +187,7 @@ double MCCorrection::MuonISO_SF(TString ID, double eta, double pt, int sys){
 double MCCorrection::MuonTrigger_Eff(TString ID, TString trig, int DataOrMC, double eta, double pt, int sys){
 
   if(ID=="Default") return 1.;
-
+  
   //cout << "[MCCorrection::MuonTrigger_Eff] ID = " << ID << "\t" << "trig = " << trig << endl;
   //cout << "[MCCorrection::MuonTrigger_Eff] DataOrMC = " << DataOrMC << endl;
   //cout << "[MCCorrection::MuonTrigger_Eff] eta = " << eta << ", pt = " << pt << endl;
@@ -204,7 +204,7 @@ double MCCorrection::MuonTrigger_Eff(TString ID, TString trig, int DataOrMC, dou
     //==== FIXME So when I return 0., SF goes nan.. let's returning 1. for now..
     if(pt<29.) return 1.; //FIXME
     if(eta>=2.4) eta = 2.39;
-
+    
     if(pt>1200.) pt = 1199.;
   }
   else if(trig=="Mu50"){
