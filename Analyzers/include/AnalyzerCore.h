@@ -97,7 +97,10 @@ public:
 
   std::vector<FatJet> ScaleFatJets(std::vector<FatJet> jets, int sys);
   std::vector<FatJet> SmearFatJets(std::vector<FatJet> jets, int sys);
-
+  std::vector<FatJet> ScaleSDMassFatJets(std::vector<FatJet> jets, int sys);
+  std::vector<FatJet> SmearSDMassFatJets(std::vector<FatJet> jets, int sys);
+  
+  
   //==== Event Filters
 
   bool PassMETFilter();
