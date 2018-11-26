@@ -1,3 +1,5 @@
+#!/usr/bin/python
+
 import os,sys,time
 import argparse
 import datetime
@@ -80,7 +82,17 @@ if IsKNU:
 ## Make Sample List
 
 InputSample_Data = ["DoubleMuon", "DoubleEG", "SingleMuon", "SingleElectron", "SinglePhoton"]
-AvailableDataPeriods = ["B","C","D","E","F"]
+AvailableDataPeriods = []
+if args.Year == "2016":
+  AvailableDataPeriods = ["B_ver2","C","D","E","F","G","H"]
+elif args.Year == "2017":
+  AvailableDataPeriods = ["B","C","D","E","F"]
+elif args.Year == "2018":
+  print "[SKFlat.py] 2018 NOT YET supported"
+  sys.exit()
+else:
+  print "[SKFlat.py] Wrong Year : "+args.Year
+
 InputSamples = []
 StringForHash = ""
 
@@ -150,7 +162,7 @@ for InputSample in InputSamples:
 
   ## Prepare output
 
-  base_rundir = SKFlatRunlogDir+'/'+args.Analyzer+'__'+timestamp+'__'+SkimString+InputSample
+  base_rundir = SKFlatRunlogDir+'/'+args.Analyzer+'__'+timestamp+'__'+'Year'+args.Year+'__'+SkimString+InputSample
   if IsDATA:
     base_rundir = base_rundir+'_period'+DataPeriod
   for flag in Userflags:
@@ -597,7 +609,7 @@ try:
       ## Prepare output
       ## This should be copied from above
 
-      base_rundir = SKFlatRunlogDir+'/'+args.Analyzer+'__'+timestamp+'__'+SkimString+InputSample
+      base_rundir = SKFlatRunlogDir+'/'+args.Analyzer+'__'+timestamp+'__'+'Year'+args.Year+'__'+SkimString+InputSample
       if IsDATA:
         base_rundir = base_rundir+'_period'+DataPeriod
       for flag in Userflags:
