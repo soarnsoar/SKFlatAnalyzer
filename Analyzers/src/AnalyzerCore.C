@@ -680,6 +680,35 @@ std::vector<FatJet> AnalyzerCore::SmearFatJets(std::vector<FatJet> jets, int sys
   return out;
 
 }
+//Fatjet SDMass systematics (https://twiki.cern.ch/twiki/bin/view/CMS/JetWtagging#2016%20scale%20factors%20and%20correctio)
+std::vector<FatJet> AnalyzerCore::ScaleSDMassFatJets(std::vector<FatJet> jets, int sys){
+  
+  std::vector<FatJet> out;
+  for(unsigned int i=0; i<jets.size(); i++){
+    FatJet this_jet = jets.at(i);
+    double current_SDMass = this_jet.SDMass() * (1. + double(sys) * 0.0094 );
+    this_jet.SetSDMass( current_SDMass );
+    
+    out.push_back( this_jet );
+  }
+  
+  return out;
+  
+}
+std::vector<FatJet> AnalyzerCore::SmearSDMassFatJets(std::vector<FatJet> jets, int sys){
+
+  std::vector<FatJet> out;
+  for(unsigned int i=0; i<jets.size(); i++){
+    FatJet this_jet = jets.at(i);
+    double current_SDMass = this_jet.SDMass() * (1. + double(sys) * 0.20 );
+    this_jet.SetSDMass( current_SDMass );
+
+    out.push_back( this_jet );
+  }
+
+  return out;
+
+}
 
 bool AnalyzerCore::PassMETFilter(){
 
