@@ -1,0 +1,6 @@
+RECO	SF	ptgt20	EGM2D_BtoH_GT20GeV_RecoSF_Legacy2016.root	EGamma_SF2D
+RECO	SF	ptlt20	EGM2D_BtoH_low_RecoSF_Legacy2016.root	EGamma_SF2D
+ID	SF	passHEEPID_Barrel	HEEP_SF_SKFlatAnalyzer.root	EGamma_SF2D_Barrel
+ID	SF	passHEEPID_Barrel_down	HEEP_SF_SKFlatAnalyzer.root	EGamma_SF2D_Barrel_down
+ID	SF	passHEEPID_Endcap	HEEP_SF_SKFlatAnalyzer.root	EGamma_SF2D_Endcap
+ID	SF	passHEEPID_Endcap_down	HEEP_SF_SKFlatAnalyzer.root	EGamma_SF2D_Endcap_down
