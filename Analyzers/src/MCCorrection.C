@@ -112,18 +112,22 @@ double MCCorrection::MuonID_SF(TString ID, double eta, double pt, int sys){
 
   if(ID=="Default") return 1.;
 
+  //cout << "[MCCorrection::MuonID_SF] ID = " << ID << endl;
   //cout << "[MCCorrection::MuonID_SF] eta = " << eta << ", pt = " << pt << endl;
 
   double value = 1.;
   double error = 0.;
 
-  eta = fabs(eta);
+  if(DataYear==2017){
+    eta = fabs(eta);
+  }
 
   if(ID=="NUM_TightID_DEN_genTracks" || ID=="NUM_HighPtID_DEN_genTracks"){
     //==== boundaries
     if(pt<20.) pt = 20.;
     if(pt>=120.) pt = 119.;
     if(eta>=2.4) eta = 2.39;
+    if(eta<-2.4) eta = -2.4;
   }
 
   TH2F *this_hist = map_hist_Muon["ID_SF_"+ID];
@@ -135,7 +139,19 @@ double MCCorrection::MuonID_SF(TString ID, double eta, double pt, int sys){
     }
   }
 
-  int this_bin = this_hist->FindBin(pt,eta);
+  int this_bin(-999);
+
+  if(DataYear==2016){
+    this_bin = this_hist->FindBin(eta,pt);
+  }
+  else if(DataYear==2017){
+    this_bin = this_hist->FindBin(pt,eta);
+  }
+  else{
+    cout << "[MCCorrection::MuonID_SF] Wrong year : "<<DataYear<<endl;
+    exit(EXIT_FAILURE);
+  }
+
   value = this_hist->GetBinContent(this_bin);
   error = this_hist->GetBinError(this_bin);
 
@@ -154,15 +170,16 @@ double MCCorrection::MuonISO_SF(TString ID, double eta, double pt, int sys){
   double value = 1.;
   double error = 0.;
 
-  eta = fabs(eta);
+  if(DataYear==2017){
+    eta = fabs(eta);
+  }
 
   if(ID=="NUM_TightRelIso_DEN_TightIDandIPCut" || ID=="NUM_LooseRelTkIso_DEN_HighPtIDandIPCut"){
-
     //==== boundaries
     if(pt<20.) pt = 20.;
     if(pt>=120.) pt = 119.;
     if(eta>=2.4) eta = 2.39;
-
+    if(eta<-2.4) eta = -2.4;
   }
 
   TH2F *this_hist = map_hist_Muon["ISO_SF_"+ID];
@@ -174,7 +191,19 @@ double MCCorrection::MuonISO_SF(TString ID, double eta, double pt, int sys){
     }
   }
 
-  int this_bin = this_hist->FindBin(pt,eta);
+  int this_bin(-999);
+
+  if(DataYear==2016){
+    this_bin = this_hist->FindBin(eta,pt);
+  }
+  else if(DataYear==2017){
+    this_bin = this_hist->FindBin(pt,eta);
+  }
+  else{
+    cout << "[MCCorrection::MuonISO_SF] Wrong year : "<<DataYear<<endl;
+    exit(EXIT_FAILURE);
+  }
+
   value = this_hist->GetBinContent(this_bin);
   error = this_hist->GetBinError(this_bin);
 
@@ -195,26 +224,50 @@ double MCCorrection::MuonTrigger_Eff(TString ID, TString trig, int DataOrMC, dou
   double value = 1.;
   double error = 0.;
 
-  eta = fabs(eta);
-
-  if(trig=="IsoMu27"){
-    //==== FIXME MiniAODPt Pt
-    //==== FIXME 28.9918  29.0363
-    //==== FIXME This event pass pt>29GeV cut, but MiniAOD pt < 29 GeV
-    //==== FIXME So when I return 0., SF goes nan.. let's returning 1. for now..
-    if(pt<29.) return 1.; //FIXME
-    if(eta>=2.4) eta = 2.39;
-
-    if(pt>1200.) pt = 1199.;
+  //FIXME no 2016 trigger SF YET. Should check this layer
+  if(DataYear==2017){
+    eta = fabs(eta);
   }
-  else if(trig=="Mu50"){
-    if(pt<52.) return 1.; //FIXME
-    if(eta>=2.4) eta = 2.39;
 
-    if(pt>1200.) pt = 1199.;
+  //==== 2016
+  if(DataYear==2016){
+    if(trig=="IsoMu24"){
+      if(pt<26.) return 1.; //FIXME
+      if(eta>=2.4) eta = 2.39;
+      if(eta<-2.4) eta = -2.4;
+
+      if(pt>1200.) pt = 1199.;
+    }
+    else if(trig=="Mu50"){
+      if(pt<52.) return 1.; //FIXME
+      if(eta>=2.4) eta = 2.39;
+
+      if(pt>1200.) pt = 1199.;
+    }
+    else{
+
+    }
   }
-  else{
+  else if(DataYear==2017){
+    if(trig=="IsoMu27"){
+      //==== FIXME MiniAODPt Pt
+      //==== FIXME 28.9918  29.0363
+      //==== FIXME This event pass pt>29GeV cut, but MiniAOD pt < 29 GeV
+      //==== FIXME So when I return 0., SF goes nan.. let's returning 1. for now..
+      if(pt<29.) return 1.; //FIXME
+      if(eta>=2.4) eta = 2.39;
 
+      if(pt>1200.) pt = 1199.;
+    }
+    else if(trig=="Mu50"){
+      if(pt<52.) return 1.; //FIXME
+      if(eta>=2.4) eta = 2.39;
+
+      if(pt>1200.) pt = 1199.;
+    }
+    else{
+
+    }
   }
 
   TString histkey = "Trigger_Eff_DATA_"+trig+"_"+ID;
@@ -228,8 +281,21 @@ double MCCorrection::MuonTrigger_Eff(TString ID, TString trig, int DataOrMC, dou
       exit(EXIT_FAILURE);
     }
   }
-  
-  int this_bin = this_hist->FindBin(pt,eta);
+
+  int this_bin(-999);
+
+  if(DataYear==2016){
+    //FIXME no 2016 trigger SF YET. Should check this layer
+    this_bin = this_hist->FindBin(eta,pt);
+  }
+  else if(DataYear==2017){
+    this_bin = this_hist->FindBin(pt,eta);
+  }
+  else{
+    cout << "[MCCorrection::MuonTrigger_Eff] Wrong year : "<<DataYear<<endl;
+    exit(EXIT_FAILURE);
+  }
+
   value = this_hist->GetBinContent(this_bin);
   error = this_hist->GetBinError(this_bin);
 
@@ -246,7 +312,7 @@ double MCCorrection::MuonTrigger_SF(TString ID, TString trig, std::vector<Muon> 
 
   double value = 1.;
 
-  if(trig=="IsoMu27" || trig=="Mu50"){
+  if(trig=="IsoMu24" || trig=="IsoMu27" || trig=="Mu50"){
 
     double eff_DATA = 1.;
     double eff_MC = 1.;

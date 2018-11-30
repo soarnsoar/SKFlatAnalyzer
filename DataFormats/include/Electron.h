@@ -11,6 +11,19 @@ public:
   Electron();
   ~Electron();
 
+  void SetEnShift(double en_up, double en_down);
+  inline double EnShift(int s) const {
+    if(s==0) return 1.;
+    else if(s>0) return j_En_up;
+    else return j_En_down;
+  }
+  void SetResShift(double res_up, double res_down);
+  inline double ResShift(int s) const {
+    if(s==0) return 1.;
+    else if(s>0) return j_Res_up;
+    else return j_Res_down;
+  }
+
   void SetSC(double sceta, double scphi, double sce);
   inline double scEta() const { return j_scEta; }
   inline double scPhi() const { return j_scPhi; }
@@ -111,6 +124,10 @@ public:
 
 private:
 
+  double j_En_up;
+  double j_En_down;
+  double j_Res_up;
+  double j_Res_down;
   double j_scEta,j_scPhi, j_scE;
   double j_mvaiso, j_mvanoiso;
   double j_EnergyUnCorr;

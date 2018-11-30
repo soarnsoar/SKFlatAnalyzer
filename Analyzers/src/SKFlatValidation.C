@@ -1,5 +1,73 @@
 #include "SKFlatValidation.h"
 
+void SKFlatValidation::initializeAnalyzer(){
+
+
+  //==== Triggers
+
+  Triggers_POG_Electron.clear();
+  Triggers_POG_Muon.clear();
+  Triggers_POGHighPt_Electron.clear();
+  Triggers_POGHighPt_Muon.clear();
+
+  if(DataYear==2016){
+
+    Triggers_POG_Electron = {
+      "HLT_Ele27_WPTight_Gsf_v",
+    };
+    Triggers_POG_Muon = {
+      "HLT_IsoMu24_v",
+    };
+    TriggerNameForSF_POG_Electron = "Ele27_WPTight_Gsf";
+    TriggerNameForSF_POG_Muon = "IsoMu24";
+    TriggerSafePt_POG_Electron = 30.;
+    TriggerSafePt_POG_Muon = 26.;
+
+    Triggers_POGHighPt_Electron = {
+      "HLT_Ele27_WPTight_Gsf_v",
+    };
+    Triggers_POGHighPt_Muon = {
+      "HLT_Mu50",
+      "HLT_TkMu50_v",
+    };
+    TriggerNameForSF_POGHighPt_Electron = "Ele27_WPTight_Gsf";
+    TriggerNameForSF_POGHighPt_Muon = "Mu50";
+    TriggerSafePt_POGHighPt_Electron = 30.;
+    TriggerSafePt_POGHighPt_Muon = 52.;
+
+
+  }
+  else if(DataYear==2017){
+
+    Triggers_POG_Electron = {
+      "HLT_Ele35_WPTight_Gsf_v",
+    };
+    Triggers_POG_Muon = {
+      "HLT_IsoMu27_v",
+    };
+    TriggerNameForSF_POG_Electron = "Ele35_WPTight_Gsf";
+    TriggerNameForSF_POG_Muon = "IsoMu27";
+    TriggerSafePt_POG_Electron = 38.;
+    TriggerSafePt_POG_Muon = 29.;
+
+    Triggers_POGHighPt_Electron = {
+      "HLT_Ele35_WPTight_Gsf_v",
+    };
+    Triggers_POGHighPt_Muon = {
+      "HLT_Mu50_v",
+    };
+    TriggerNameForSF_POGHighPt_Electron = "Ele35_WPTight_Gsf";
+    TriggerNameForSF_POGHighPt_Muon = "Mu50";
+    TriggerSafePt_POGHighPt_Electron = 38.;
+    TriggerSafePt_POGHighPt_Muon = 52.;
+
+  }
+  else{
+
+  }
+
+}
+
 void SKFlatValidation::executeEvent(){
 
   //==== Prefire reweight
@@ -13,6 +81,8 @@ void SKFlatValidation::executeEvent(){
   //==== POG IDs
 
   param.Name = "POG";
+
+  if(DataYear==2016) param.MCCorrrectionIgnoreNoHist = true; //FIXME remove this later
 
   param.Electron_Tight_ID = "passMediumID";
   param.Electron_ID_SF_Key = "passMediumID";
@@ -31,6 +101,8 @@ void SKFlatValidation::executeEvent(){
   param.Clear();
 
   param.Name = "POGHighPt";
+
+  if(DataYear==2016) param.MCCorrrectionIgnoreNoHist = true; //FIXME remove this later
 
   param.Electron_Tight_ID = "passHEEPID";
   param.Electron_ID_SF_Key = "Default";
@@ -53,16 +125,31 @@ void SKFlatValidation::executeEventFromParameter(AnalyzerParameter param){
 
   Event ev = GetEvent();
 
-  TString SingleMuonTrigger = "IsoMu27";
-  int MuonTriggerSafePt = 29.;
-  if(param.Name=="POGHighPt"){
-    SingleMuonTrigger = "Mu50";
-    MuonTriggerSafePt = 52.;
+  bool PassSingleElectron, PassSingleMuon;
+  TString TriggerNameForSF_Electron, TriggerNameForSF_Muon;
+  int TriggerSafePt_Electron, TriggerSafePt_Muon;
+  if(param.Name=="POG"){
+    TriggerNameForSF_Electron = TriggerNameForSF_POG_Electron;
+    TriggerNameForSF_Muon = TriggerNameForSF_POG_Muon;
+    TriggerSafePt_Electron = TriggerSafePt_POG_Electron;
+    TriggerSafePt_Muon = TriggerSafePt_POG_Muon;
+    PassSingleElectron = ev.PassTrigger(Triggers_POG_Electron);
+    PassSingleMuon = ev.PassTrigger(Triggers_POG_Muon);
   }
-  bool PassSingleMuon = ev.PassTrigger("HLT_"+SingleMuonTrigger+"_v");
-  bool PassSingleElectron = ev.PassTrigger("HLT_Ele35_WPTight_Gsf_v");
+  else if(param.Name=="POGHighPt"){
+    TriggerNameForSF_Electron = TriggerNameForSF_POGHighPt_Electron;
+    TriggerNameForSF_Muon = TriggerNameForSF_POGHighPt_Muon;
+    TriggerSafePt_Electron = TriggerSafePt_POGHighPt_Electron;
+    TriggerSafePt_Muon = TriggerSafePt_POGHighPt_Muon;
+    PassSingleElectron = ev.PassTrigger(Triggers_POGHighPt_Electron);
+    PassSingleMuon = ev.PassTrigger(Triggers_POGHighPt_Muon);
+  }
+  else{
+    cout << "[SKFlatValidation::executeEventFromParameter] Wrong param.Name = " << param.Name << endl;
+    exit(EXIT_FAILURE);
+  }
 
-  double MinLeptonPt = 10.;
+  double MinLeptonPt = 20.;
 
   std::vector<Muon> muons = GetMuons(param.Muon_Tight_ID, MinLeptonPt, 2.4);
   std::vector<Electron> electrons = GetElectrons(param.Electron_Tight_ID, MinLeptonPt, 2.5);
@@ -96,10 +183,10 @@ void SKFlatValidation::executeEventFromParameter(AnalyzerParameter param){
     if( !PassTriggers.at(i) ) continue;
 
     if(Suffix.Contains("SingleMuon")){
-      if( muons.at(0).Pt() < MuonTriggerSafePt ) continue;
+      if( muons.at(0).Pt() < TriggerSafePt_Muon ) continue;
     }
     else if(Suffix.Contains("SingleElectron")){
-      if( electrons.at(0).Pt() < 38. ) continue;
+      if( electrons.at(0).Pt() < TriggerSafePt_Electron ) continue;
     }
     else{
 
@@ -167,7 +254,7 @@ void SKFlatValidation::executeEventFromParameter(AnalyzerParameter param){
 
           double this_idsf  = mcCorr.MuonID_SF (param.Muon_ID_SF_Key,  this_eta, this_pt);
           double this_isosf = mcCorr.MuonISO_SF(param.Muon_ISO_SF_Key, this_eta, this_pt);
-          double this_trigsf = mcCorr.MuonTrigger_SF(param.Muon_Trigger_SF_Key, SingleMuonTrigger, muons);
+          double this_trigsf = mcCorr.MuonTrigger_SF(param.Muon_Trigger_SF_Key, TriggerNameForSF_Muon, muons);
 
           weight *= this_idsf*this_isosf*this_trigsf;
 

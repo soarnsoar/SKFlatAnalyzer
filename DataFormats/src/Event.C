@@ -51,8 +51,42 @@ bool Event::PassTrigger(std::vector<TString> trigs){
 
 double Event::GetTriggerLumi(TString trig){
 
-
-  if(j_DataYear==2017){
+  if(j_DataYear==2016){
+    if(trig=="Full"){
+      return 35918.219;
+    }
+    else if(trig=="HLT_Mu20_v"){
+      return 139.671;
+    }
+    else if(trig=="HLT_Mu27_v"){
+      return 250.508;
+    }
+    else if(trig=="HLT_Mu50_v"){
+      return 35918.219;
+    }
+    else if(trig=="HLT_Mu8_v"){
+      return 3.937;
+    }
+    else if(trig=="HLT_Mu17_v"){
+      return 282.781;
+    }
+    else if(trig=="HLT_Mu3_PFJet40_v"){
+      return 7.408;
+    }
+    else if(trig=="HLT_IsoMu18_v"){
+      return 2399.779;
+    }
+    else if(trig=="HLT_IsoMu20_v"){
+      return 9537.847;
+    }
+    else if(trig=="HLT_IsoMu22_v"){
+      return 28564.373;
+    }
+    else if(trig=="HLT_IsoMu24_v"){
+      return 35918.219;
+    }
+  }
+  else if(j_DataYear==2017){
 
     if(trig=="Full"){
       return 41527.540;

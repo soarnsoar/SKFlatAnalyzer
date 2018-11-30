@@ -37,14 +37,22 @@ std::vector<Muon> AnalyzerCore::GetAllMuons(){
   for(unsigned int i=0; i<muon_pt->size(); i++){
 
     Muon mu;
+
+    mu.SetCharge(muon_charge->at(i));
+    mu.SetMiniAODPt(muon_pt->at(i));
+    mu.SetMiniAODTunePPt(muon_TuneP_pt->at(i));
+
     double rc = muon_roch_sf->at(i);
     double rc_err = muon_roch_sf_up->at(i)-rc;
-    
-    mu.SetMiniAODPt(muon_pt->at(i));
+    mu.SetMomentumScaleAndError(rc, rc_err);
     mu.SetPtEtaPhiM(muon_pt->at(i)*rc, muon_eta->at(i), muon_phi->at(i), muon_mass->at(i));
-    mu.SetMomentumUpDown( (rc+rc_err)*muon_pt->at(i), (rc-rc_err)*muon_pt->at(i) );
-    mu.SetCharge(muon_charge->at(i));
-    mu.SetTuneP4(muon_TuneP_pt->at(i),muon_TuneP_ptError->at(i),muon_TuneP_eta->at(i),muon_TuneP_phi->at(i),muon_TuneP_charge->at(i));
+
+    //==== TuneP
+    //==== Apply rochester correction for pt<200 GeV
+    double this_tuneP_pt = muon_TuneP_pt->at(i);
+    if(this_tuneP_pt < 200.) this_tuneP_pt *= rc;
+    mu.SetTuneP4(this_tuneP_pt, muon_TuneP_ptError->at(i), muon_TuneP_eta->at(i), muon_TuneP_phi->at(i), muon_TuneP_charge->at(i));
+
     mu.SetdXY(muon_dxyVTX->at(i), muon_dxyerrVTX->at(i));
     mu.SetdZ(muon_dzVTX->at(i), muon_dzerrVTX->at(i));
     mu.SetIP3D(muon_3DIPVTX->at(i), muon_3DIPerrVTX->at(i));
@@ -100,6 +108,10 @@ std::vector<Electron> AnalyzerCore::GetAllElectrons(){
   for(unsigned int i=0; i<electron_pt->size(); i++){
 
     Electron el;
+
+    el.SetEnShift(  electron_Energy_Scale_Up->at(i)/electron_Energy->at(i), electron_Energy_Scale_Down->at(i)/electron_Energy->at(i) );
+    el.SetResShift( electron_Energy_Smear_Up->at(i)/electron_Energy->at(i), electron_Energy_Smear_Down->at(i)/electron_Energy->at(i) );
+
     el.SetPtEtaPhiE(electron_pt->at(i), electron_eta->at(i), electron_phi->at(i), electron_Energy->at(i));
     el.SetUncorrE(electron_EnergyUnCorr->at(i));
     el.SetSC(electron_scEta->at(i), electron_scPhi->at(i), electron_scEnergy->at(i));
@@ -278,6 +290,8 @@ std::vector<Jet> AnalyzerCore::GetAllJets(){
   for(unsigned int i=0; i<jet_pt->size(); i++){
     Jet jet;
     jet.SetPtEtaPhiM(jet_pt->at(i), jet_eta->at(i), jet_phi->at(i), jet_m->at(i));
+
+    //==== Jet energy up and down are 1.xx or 0.99, not energy
     jet.SetEnShift( jet_shiftedEnUp->at(i), jet_shiftedEnDown->at(i) );
     if(!IsDATA){
       jet *= jet_smearedRes->at(i);
@@ -451,7 +465,12 @@ std::vector<Muon> AnalyzerCore::UseTunePMuon(std::vector<Muon> muons){
 
     Particle this_tunep4 = this_muon.TuneP4();
     this_muon.SetPtEtaPhiM( this_tunep4.Pt(), this_tunep4.Eta(), this_tunep4.Phi(), this_tunep4.M() );
-    //==== FIXME Add TuneP Charge here
+    this_muon.SetCharge( this_tunep4.Charge() );
+    this_muon.SetMiniAODPt( this_muon.MiniAODTunePPt() );
+
+    //==== TODO If MiniAODTunePPt >= 200, we don't use Rochester correction
+    //==== so let's set rc=1 and rc_err=0
+    if( this_muon.MiniAODTunePPt() >= 200. ) this_muon.SetMomentumScaleAndError(1., 0.);
 
     out.push_back(this_muon);
   }
@@ -558,36 +577,25 @@ std::vector<Electron> AnalyzerCore::ScaleElectrons(std::vector<Electron> electro
   for(unsigned int i=0; i<electrons.size(); i++){
     Electron this_electron = electrons.at(i);
 
-    if(sys<0){
-      this_electron.SetPtEtaPhiE( electron_pt_Scale_Down->at(i), this_electron.Eta(), this_electron.Phi(), electron_Energy_Scale_Down->at(i) );
-    }
-    else{
-      this_electron.SetPtEtaPhiE( electron_pt_Scale_Up->at(i), this_electron.Eta(), this_electron.Phi(), electron_Energy_Scale_Up->at(i) );
-    }
+    double this_sf = this_electron.EnShift(sys);
+    this_electron.SetPtEtaPhiM( this_electron.Pt() * this_sf, this_electron.Eta(), this_electron.Phi(), this_electron.M() );
 
-    out.push_back(this_electron);
-
+    out.push_back( this_electron );
   }
 
   return out;
 
 }
-
 std::vector<Electron> AnalyzerCore::SmearElectrons(std::vector<Electron> electrons, int sys){
 
   std::vector<Electron> out;
   for(unsigned int i=0; i<electrons.size(); i++){
     Electron this_electron = electrons.at(i);
 
-    if(sys<0){
-      this_electron.SetPtEtaPhiE( electron_pt_Smear_Down->at(i), this_electron.Eta(), this_electron.Phi(), electron_Energy_Smear_Down->at(i) );
-    }
-    else{
-      this_electron.SetPtEtaPhiE( electron_pt_Smear_Up->at(i), this_electron.Eta(), this_electron.Phi(), electron_Energy_Smear_Up->at(i) );
-    }
+    double this_sf = this_electron.ResShift(sys);
+    this_electron.SetPtEtaPhiM( this_electron.Pt() * this_sf, this_electron.Eta(), this_electron.Phi(), this_electron.M() );
 
-    out.push_back(this_electron);
-
+    out.push_back( this_electron );
   }
 
   return out;
@@ -600,20 +608,10 @@ std::vector<Muon> AnalyzerCore::ScaleMuons(std::vector<Muon> muons, int sys){
   for(unsigned int i=0; i<muons.size(); i++){
     Muon this_muon = muons.at(i);
 
-    if(sys<0){
-      this_muon.SetPtEtaPhiM( this_muon.MomentumDown(), this_muon.Eta(), this_muon.Phi(), this_muon.M() );
+    //==== TODO When we use TuneP, if MiniAODTunePPt >= 200., we set rc=1 and rc_err=0
+    //==== So we can just use MomentumShift()
 
-      //==== TODO how about tuneP?
-      //==== TODO IS THIS CORRECT?!
-      //this_muon.SetTuneP4(this_muon.MomentumDown(),muon_TuneP_ptError->at(i),muon_TuneP_eta->at(i),muon_TuneP_phi->at(i),muon_TuneP_charge->at(i));
-    }
-    else{
-      this_muon.SetPtEtaPhiM( this_muon.MomentumUp(), this_muon.Eta(), this_muon.Phi(), this_muon.M() );
-
-      //==== TODO how about tuneP?
-      //==== TODO IS THIS CORRECT?!
-      //this_muon.SetTuneP4(this_muon.MomentumUp(),muon_TuneP_ptError->at(i),muon_TuneP_eta->at(i),muon_TuneP_phi->at(i),muon_TuneP_charge->at(i));
-    }
+    this_muon.SetPtEtaPhiM( this_muon.MomentumShift(sys), this_muon.Eta(), this_muon.Phi(), this_muon.M() );
 
     out.push_back(this_muon);
 

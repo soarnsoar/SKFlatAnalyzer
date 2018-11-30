@@ -3,6 +3,12 @@
 ClassImp(Electron)
 
 Electron::Electron(){
+
+  j_En_up=1.;
+  j_En_down=1.;;
+  j_Res_up = 1.;
+  j_Res_down = 1.;
+
   j_scEta = -999.;
   j_scPhi = -999.;
   j_scE = -999.;
@@ -28,6 +34,16 @@ Electron::Electron(){
 
 Electron::~Electron(){
 
+}
+
+void Electron::SetEnShift(double en_up, double en_down){
+  j_En_up = en_up;
+  j_En_down = en_down;
+}
+
+void Electron::SetResShift(double res_up, double res_down){
+  j_Res_up = res_up;
+  j_Res_down = res_down;
 }
 
 void Electron::SetSC(double sceta, double scphi, double sce){
