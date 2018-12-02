@@ -1055,8 +1055,8 @@ Gen AnalyzerCore::GetGenMatchedLepton(Lepton lep, std::vector<Gen> gens){
 
     //==== Status 1
     if( gen.Status() != 1 ) continue;
-    //==== PID & deltaR matching first
-    if( abs(gen.PID() ) != reco_PID ) continue;
+    //==== PID
+    if( abs( gen.PID() ) != reco_PID ) continue;
     //==== reject ISR?
     if( gen.MotherIndex() < 0 ) continue;
     //==== dR matching
