@@ -73,17 +73,17 @@ double Event::GetTriggerLumi(TString trig){
     else if(trig=="HLT_Mu3_PFJet40_v"){
       return 7.408;
     }
-    else if(trig=="HLT_IsoMu18_v"){
-      return 2399.779;
-    }
-    else if(trig=="HLT_IsoMu20_v"){
-      return 9537.847;
-    }
-    else if(trig=="HLT_IsoMu22_v"){
-      return 28564.373;
-    }
     else if(trig=="HLT_IsoMu24_v"){
       return 35918.219;
+    }
+    else if(trig=="HLT_Ele8_CaloIdL_TrackIdL_IsoVL_PFJet30_v"){
+      return 6.988;
+    }
+    else if(trig=="HLT_Ele12_CaloIdL_TrackIdL_IsoVL_PFJet30_v"){
+      return 14.851;
+    }
+    else if(trig=="HLT_Ele23_CaloIdL_TrackIdL_IsoVL_PFJet30_v"){
+      return 62.808;
     }
   }
   else if(j_DataYear==2017){
