@@ -675,9 +675,14 @@ try:
             EventDone += this_EventDone
             EventTotal += this_EventTotal
 
+            #### start
             line_EventRunTime = this_status.split()[2]+' '+this_status.split()[3]
             this_jobstarttime = GetDatetimeFromMyFormat(line_EventRunTime)
-            this_diff = datetime.datetime.now()-this_jobstarttime
+            #### end
+            line_EventEndTime = this_status.split()[4]+' '+this_status.split()[5]
+            this_jobendtime   = GetDatetimeFromMyFormat(line_EventEndTime)
+
+            this_diff = this_jobendtime-this_jobstarttime
             this_EventRunTime = 86400*this_diff.days+this_diff.seconds
 
             this_TimePerEvent = float(this_EventRunTime)/float(this_EventDone)

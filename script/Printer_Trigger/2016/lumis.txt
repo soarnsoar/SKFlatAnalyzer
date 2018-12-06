@@ -72,3 +72,12 @@ HLT_IsoTkMu24_v	35918.219
 HLT_TripleMu_5_3_3_v	7966.263
 HLT_TripleMu_12_10_5_v	35918.219
 HLT_DiMu9_Ele9_CaloIdL_TrackIdL_v	35918.219
+HLT_Photon25_v	0.000
+HLT_Photon33_v	0.000
+HLT_Photon50_v	31.037
+HLT_Photon75_v	134.568
+HLT_Photon90_v	264.074
+HLT_Photon120_v	537.005
+HLT_Photon150_v	0.000
+HLT_Photon175_v	35918.219
+HLT_Photon200_v	0.000
