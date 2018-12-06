@@ -85,6 +85,36 @@ double Event::GetTriggerLumi(TString trig){
     else if(trig=="HLT_Ele23_CaloIdL_TrackIdL_IsoVL_PFJet30_v"){
       return 62.808;
     }
+    else if(trig=="HLT_DoublePhoton60_v"){
+      return 35918.219;
+    }
+    else if(trig=="HLT_Photon25_v"){
+      return 0.000;
+    }
+    else if(trig=="HLT_Photon33_v"){
+      return 0.000;
+    }
+    else if(trig=="HLT_Photon50_v"){
+      return 31.037;
+    }
+    else if(trig=="HLT_Photon75_v"){
+      return 134.568;
+    }
+    else if(trig=="HLT_Photon90_v"){
+      return 264.074;
+    }
+    else if(trig=="HLT_Photon120_v"){
+      return 537.005;
+    }
+    else if(trig=="HLT_Photon150_v"){
+      return 0.000;
+    }
+    else if(trig=="HLT_Photon175_v"){
+      return 35918.219;
+    }
+    else if(trig=="HLT_Photon200_v"){
+      return 0.000;
+    }
   }
   else if(j_DataYear==2017){
 
