@@ -272,7 +272,7 @@ void SKFlatValidation::executeEventFromParameter(AnalyzerParameter param){
 
     std::map<TString, bool> map_bool_To_Region;
     if(n_lepton==2){
-      if(IsOS){
+      if( IsOS && (Z.M() > 15.) ){
         //==== generic two OS lepton
         map_bool_To_Region["OS"] = true;
         //==== OnZ event

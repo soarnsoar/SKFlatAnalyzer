@@ -16,7 +16,7 @@ public:
 
   TTree *newtree;
 
-  vector<string> *temp_HLT_TriggerName;
+  vector<TString> triggers;
   void WriteHist();
 
 };

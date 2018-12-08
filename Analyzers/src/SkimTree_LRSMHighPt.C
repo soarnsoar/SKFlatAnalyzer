@@ -4,20 +4,36 @@ void SkimTree_LRSMHighPt::initializeAnalyzer(){
 
   newtree = fChain->CloneTree(0);
 
+  triggers.clear();
+  if(DataYear==2016){
+    triggers = {
+      "HLT_Mu50_v",
+      "HLT_TkMu50_v",
+      "HLT_Ele27_WPTight_Gsf_v",
+      "HLT_DoublePhoton60_v",
+    };
+  }
+  else if(DataYear==2017){
+    triggers = {
+      "HLT_Mu50_v",
+      "HLT_oldMu100_v",
+      "HLT_TkMu100_v",
+      "HLT_Ele35_WPTight_Gsf_v",
+      "HLT_DoublePhoton70_v",
+    };
+  }
+
+  cout << "[SkimTree_LRSMHighPt::initializeAnalyzer] triggers to skim = " << endl;
+  for(unsigned int i=0; i<triggers.size(); i++){
+    cout << "[SkimTree_LRSMHighPt::initializeAnalyzer]   " << triggers.at(i) << endl;
+  }
+
 }
 
 void SkimTree_LRSMHighPt::executeEvent(){
 
   Event ev;
   ev.SetTrigger(*HLT_TriggerName);
-
-  vector<TString> triggers = {
-    "HLT_Mu50_v",
-    "HLT_oldMu100_v",
-    "HLT_TkMu100_v",
-    "HLT_Ele35_WPTight_Gsf_v",
-    "HLT_DoublePhoton70_v",
-  };
 
   if( ev.PassTrigger(triggers) ){
     newtree->Fill();
