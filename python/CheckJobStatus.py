@@ -140,9 +140,6 @@ def CheckJobStatus(logfiledir, cycle, jobnumber, hostname):
     return "RUNNING\t"+perct+"\tEVDONE:"+EventDone+"\t"+line_JobStart
   else:
 
-    print "ELSE"
-    print LASTLINE
-
     for it_l in range(0,len(log_o)):
       l = log_o[len(log_o)-1-it_l]
       if ("[SKFlatNtuple::Loop RUNNING]" in l) and ("@" in l):
@@ -150,5 +147,5 @@ def CheckJobStatus(logfiledir, cycle, jobnumber, hostname):
         EventDone = GetEventDone(l)
         return "RUNNING\t"+perct+"\tEVDONE:"+EventDone+"\t"+line_JobStart
 
-      return "WTF"
+      return LASTLINE
 
