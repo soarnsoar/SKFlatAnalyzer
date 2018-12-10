@@ -3,8 +3,8 @@ import os
 #commands.sh  job_0_GetEffLumi.e6409440  job_0_GetEffLumi.o6409440  run.C  submitlog.log
 
 def GetEventDone(l):
-  # [SKFlatNtuple::Loop] 1185000/1207307 (98.1523 %) @ 2018-5-16 11:0:9
-  w = l.split()[1]
+  # [SKFlatNtuple::Loop RUNNING] 1185000/1207307 (98.1523 %) @ 2018-5-16 11:0:9
+  w = l.split()[2]
   nums = w.split('/')
 
   if len(nums)<2:
@@ -26,6 +26,20 @@ def GetJobID(logfiledir, cycle, jobnumber, hostname):
     jobid = open(logfiledir+'/submitlog.log').readlines()[0].split('.')[0]
 
   return jobid
+
+def GetLogLastLine(lines):
+  index = -1
+  for i in range(0,len(lines)):
+    l = lines[ len(lines)-1-i ]
+    if "LHAPDF" in l:
+      continue
+    elif "lhapdf" in l:
+      continue
+    elif "Eur.Phys.J." in l:
+      continue
+    else:
+      return l
+
 
 
 def CheckJobStatus(logfiledir, cycle, jobnumber, hostname):
@@ -53,14 +67,11 @@ def CheckJobStatus(logfiledir, cycle, jobnumber, hostname):
   is_not_mounting_err = False
   for e_l in log_e:
     if "WARNING: Not mounting" in e_l:
-      length_log_e = length_log_e + 0
+      length_log_e -= 1
       is_not_mounting_err = True
     else:
-      length_log_e = length_log_e + 1
+      length_log_e += 1
     
-  if is_not_mounting_err:
-    length_log_e = length_log_e - 1
-
   if length_log_e > 0:
     out = 'ERROR\n'
     out += '--------------------------------------\n'
@@ -88,7 +99,7 @@ def CheckJobStatus(logfiledir, cycle, jobnumber, hostname):
   if not IsCycleRan:
     return "ANALYZER NOT STARTED"
 
-  LASTLINE = log_o[-1]
+  LASTLINE = GetLogLastLine( log_o )
   if "Processing run.C" in LASTLINE:
     return "EVENT NOT STARTED"
 
@@ -107,8 +118,8 @@ def CheckJobStatus(logfiledir, cycle, jobnumber, hostname):
   if FinishString in LASTLINE:
 
     for i in range(0,len(log_o)):
-      l = log_o[len(log_o)-1-1-i]
-      if "[SKFlatNtuple::Loop]" in l:
+      l = log_o[len(log_o)-1-i]
+      if "[SKFlatNtuple::Loop RUNNING]" in l:
         ForTimeEst = l
         break
 
@@ -122,17 +133,20 @@ def CheckJobStatus(logfiledir, cycle, jobnumber, hostname):
     return "RUNNING\t"+str(0)+"\tEVDONE:"+str(0)+"\t"+line_JobStart
 
   ## 3) Running
-  elif "SKFlatNtuple::Loop" in LASTLINE:
-    # [SKFlatNtuple::Loop] 2011000/38777460 (5.186 %)
-    perct =  LASTLINE.split()[2].strip('(')
+  elif "[SKFlatNtuple::Loop RUNNING]" in LASTLINE:
+    # [SKFlatNtuple::Loop RUNNING] 2011000/38777460 (5.186 %)
+    perct =  LASTLINE.split()[3].strip('(')
     EventDone = GetEventDone(ForTimeEst)
     return "RUNNING\t"+perct+"\tEVDONE:"+EventDone+"\t"+line_JobStart
   else:
 
+    print "ELSE"
+    print LASTLINE
+
     for it_l in range(0,len(log_o)):
       l = log_o[len(log_o)-1-it_l]
-      if ("[SKFlatNtuple::Loop]" in l) and ("@" in l):
-        perct =  l.split()[2].strip('(')
+      if ("[SKFlatNtuple::Loop RUNNING]" in l) and ("@" in l):
+        perct =  l.split()[3].strip('(')
         EventDone = GetEventDone(l)
         return "RUNNING\t"+perct+"\tEVDONE:"+EventDone+"\t"+line_JobStart
 

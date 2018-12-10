@@ -25,7 +25,7 @@ void SKFlatNtuple::Loop(){
     }
 
     if(jentry%LogEvery==0){
-      cout << "[SKFlatNtuple::Loop] " << jentry << "/" << nentries << " ("<<100.*jentry/nentries<<" %) @ " << printcurrunttime() << endl;
+      cout << "[SKFlatNtuple::Loop RUNNING] " << jentry << "/" << nentries << " ("<<100.*jentry/nentries<<" %) @ " << printcurrunttime() << endl;
     }
 
     fChain->GetEntry(jentry);
