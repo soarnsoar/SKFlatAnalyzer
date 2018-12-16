@@ -45,6 +45,8 @@ string_ThisTime = ""
 
 USER = os.environ['USER']
 SKFlatLogEmail = os.environ['SKFlatLogEmail']
+SKFlatLogWeb = os.environ['SKFlatLogWeb']
+SKFlatLogWebDir = os.environ['SKFlatLogWebDir']
 SKFlat_WD = os.environ['SKFlat_WD']
 SKFlatV = os.environ['SKFlatV']
 SAMPLE_DATA_DIR = SKFlat_WD+'/data/'+SKFlatV+'/'+args.Year+'/Sample/'
@@ -53,6 +55,13 @@ SKFlatOutputDir = os.environ['SKFlatOutputDir']
 SKFlatSEDir = os.environ['SKFlatSEDir']
 SKFlat_LIB_PATH = os.environ['SKFlat_LIB_PATH']
 UID = str(os.getuid())
+
+if SKFlatLogEmail=='':
+  print '[SKFlat.py] Put your email address in setup.sh'
+  exit()
+SendLogToWeb = True
+if SKFlatLogWeb=='' or SKFlatLogWebDir=='':
+  SendLogToWeb = False
 
 HOSTNAME = os.environ['HOSTNAME']
 IsKISTI = ("sdfarm.kr" in HOSTNAME)
@@ -191,8 +200,6 @@ for InputSample in InputSamples:
 
   this_webdir = webdirpathbase+'/'+base_rundir.replace(SKFlatRunlogDir,'')
   os.system('mkdir -p '+this_webdir)
-  #os.system('scp -r '+this_webdir+' jskim@147.47.242.71:/var/www/html/SKFlatAnalyzerJobLogs/')
-  #os.system('ssh -Y jskim@147.47.242.71 chmod -R 777 /var/www/html/SKFlatAnalyzerJobLogs/'+base_rundir.replace(SKFlatRunlogDir,''))
 
   ## If KNU, copy grid cert
   if IsKNU:
@@ -773,8 +780,6 @@ try:
 
         ## copy statuslog to webdir
         os.system('cp '+base_rundir+'/JobStatus.log '+this_webdir)
-        #os.system('scp -r '+webdir+' jskim@147.47.242.71:/var/www/html/SKFlatAnalyzerJobLogs/')
-        #os.system('ssh -Y jskim@147.47.242.71 chmod -R 777 /var/www/html/SKFlatAnalyzerJobLogs/'+base_rundir.replace(SKFlatRunlogDir,''))
 
         ## This time, it is found to be finished
         ## Change the flag
@@ -820,9 +825,10 @@ try:
 
           PostJobFinishedForEachSample[it_sample] = True
 
-    if USER=="jskim":
-      os.system('scp -r '+webdirpathbase+'/* jskim@147.47.242.71:/var/www/html/SKFlatAnalyzerJobLogs/')
-      os.system('ssh -Y jskim@147.47.242.71 chmod -R 777 /var/www/html/SKFlatAnalyzerJobLogs/'+args.Analyzer+"*")
+    if SendLogToWeb:
+
+      os.system('scp -r '+webdirpathbase+'/* '+SKFlatLogWeb+':'+SKFlatLogWebDir)
+      os.system('ssh -Y '+SKFlatLogWeb+' chmod -R 777 '+SKFlatLogWebDir+'/'+args.Analyzer+"*")
 
     time.sleep(20)
 
