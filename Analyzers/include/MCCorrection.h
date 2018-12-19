@@ -10,6 +10,8 @@
 #include "TString.h"
 #include "TH1D.h"
 #include "TH2D.h"
+#include "TGraph.h"
+#include "TGraphAsymmErrors.h"
 
 #include "Lepton.h"
 #include "Muon.h"
@@ -43,6 +45,7 @@ public:
   double ElectronReco_SF(double sceta, double pt, int sys=0);
   double ElectronID_SF(TString ID, double sceta, double pt, int sys=0);
   std::map< TString, TH2F* > map_hist_Electron;
+  std::map< TString, TGraphAsymmErrors* > map_graph_Electron;
 
   std::map< TString, TH2F* > map_hist_prefire;
   double GetPrefireWeight(std::vector<Photon> photons, std::vector<Jet> jets, int sys);

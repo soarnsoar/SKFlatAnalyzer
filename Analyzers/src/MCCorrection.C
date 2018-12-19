@@ -18,26 +18,48 @@ void MCCorrection::ReadHistograms(){
   ifstream in(IDpath+"/Electron/histmap.txt");
   while(getline(in,elline)){
     std::istringstream is( elline );
-    TString a,b,c,d,e;
+
+    TString tstring_elline = elline;
+    if(tstring_elline.Contains("#")) continue;
+
+    TString a,b,c,d,e,f;
     is >> a; // ID,RERCO
     is >> b; // Eff,SF
     is >> c; // <WPnames>
     is >> d; // <rootfilename>
     is >> e; // <histname>
+    is >> f; // Class
     TFile *file = new TFile(IDpath+"/Electron/"+d);
-    map_hist_Electron[a+"_"+b+"_"+c] = (TH2F *)file->Get(e);
+
+    if(f=="TH2F"){
+      map_hist_Electron[a+"_"+b+"_"+c] = (TH2F *)file->Get(e);
+    }
+    else if(f=="TGraphAsymmErrors"){
+      map_graph_Electron[a+"_"+b+"_"+c] = (TGraphAsymmErrors *)file->Get(e);
+    }
+    else{
+      cout << "[MCCorrection::MCCorrection] Wrong class type : " << elline << endl;
+    }
   }
-/*
+
   cout << "[MCCorrection::MCCorrection] map_hist_Electron :" << endl;
   for(std::map< TString, TH2F* >::iterator it=map_hist_Electron.begin(); it!=map_hist_Electron.end(); it++){
     cout << it->first << endl;
   }
-*/
+  cout << "[MCCorrection::MCCorrection] map_graph_Electron :" << endl;
+  for(std::map< TString, TGraphAsymmErrors* >::iterator it=map_graph_Electron.begin(); it!=map_graph_Electron.end(); it++){
+    cout << it->first << endl;
+  }
+
 
   string elline2;
   ifstream in2(IDpath+"/Muon/histmap.txt");
   while(getline(in2,elline2)){
     std::istringstream is( elline2 );
+
+    TString tstring_elline = elline2;
+    if(tstring_elline.Contains("#")) continue;
+
     TString a,b,c,d,e;
     is >> a; // ID,RERCO
     is >> b; // Eff,SF
@@ -47,12 +69,12 @@ void MCCorrection::ReadHistograms(){
     TFile *file = new TFile(IDpath+"/Muon/"+d);
     map_hist_Muon[a+"_"+b+"_"+c] = (TH2F *)file->Get(e);
   }
-/*
+
   cout << "[MCCorrection::MCCorrection] map_hist_Muon :" << endl;
   for(std::map< TString, TH2F* >::iterator it=map_hist_Muon.begin(); it!=map_hist_Muon.end(); it++){
     cout << it->first << endl;
   }
-*/
+
 
   // == Get Prefiring maps
   TString PrefirePath  = datapath+"/"+TString::Itoa(DataYear,10)+"/Prefire/";
@@ -61,6 +83,10 @@ void MCCorrection::ReadHistograms(){
   ifstream in3(PrefirePath+"/histmap.txt");
   while(getline(in3,elline3)){
     std::istringstream is( elline3 );
+
+    TString tstring_elline = elline3;
+    if(tstring_elline.Contains("#")) continue;
+
     TString a,b,c;
     is >> a; // Jet, Photon
     is >> b; // <rootfilename>
@@ -78,6 +104,10 @@ void MCCorrection::ReadHistograms(){
   ifstream  in4(PUReweightPath+"/histmap.txt");
   while(getline(in4,elline4)){
     std::istringstream is( elline4 );
+
+    TString tstring_elline = elline4;
+    if(tstring_elline.Contains("#")) continue;
+
     TString a,b,c;
     is >> a; // sample name
     is >> b; // syst
@@ -354,22 +384,68 @@ double MCCorrection::ElectronID_SF(TString ID, double sceta, double pt, int sys)
   if(sceta>=2.5) sceta = 2.49;
   if(sceta<-2.5) sceta = -2.5;
 
-  TH2F *this_hist = map_hist_Electron["ID_SF_"+ID];
-  if(!this_hist){
-    if(IgnoreNoHist) return 1.;
-    else{
-      cout << "[MCCorrection::ElectronID_SF] No "<<"ID_SF_"+ID<<endl;
-      exit(EXIT_FAILURE);
+  if( ID.Contains("HEEP") ){
+
+    TString this_key = "ID_SF_"+ID;
+    if(fabs(sceta) < 1.479) this_key += "_Barrel";
+    else                    this_key += "_Endcap";
+
+    TGraphAsymmErrors *this_graph = map_graph_Electron[this_key];
+    if(!this_graph){
+      if(IgnoreNoHist) return 1.;
+      else{
+        cout << "[MCCorrection::ElectronID_SF] (Graph) No "<<this_key<<endl;
+        exit(EXIT_FAILURE);
+      }
     }
+
+    int NX = this_graph->GetN();
+
+    for(int j=0; j<NX; j++){
+
+      double x, x_low, x_high;
+      double y, y_low, y_high;
+      this_graph->GetPoint(j, x, y);
+      x_low = this_graph->GetErrorXlow(j);
+      x_high = this_graph->GetErrorXhigh(j);
+
+      if(j==0 && pt < x-x_low ) pt = x-x_low;
+      if(j==NX-1 && x+x_high <= pt ) pt = x-x_low;
+
+      if( x-x_low <= pt && pt < x+x_high){
+        y_low = this_graph->GetErrorYlow(j);
+        y_high = this_graph->GetErrorYhigh(j);
+
+        if(sys==0) return y;
+        else if(sys>0) return y+y_high;
+        else return y-y_low;
+
+      }
+
+    }
+    cout << "[MCCorrection::ElectronID_SF] (Graph) pt range strange.. "<<"ID_SF_"+ID<<", with pt = " << pt << endl;
+    exit(EXIT_FAILURE);
+    return 1.;
+
   }
+  else{
 
-  //cout << "[MCCorrection::ElectronID_SF] " << this_hist->GetBinContent(4,4) << endl;
+    TH2F *this_hist = map_hist_Electron["ID_SF_"+ID];
+    if(!this_hist){
+      if(IgnoreNoHist) return 1.;
+      else{
+        cout << "[MCCorrection::ElectronID_SF] (Hist) No "<<"ID_SF_"+ID<<endl;
+        exit(EXIT_FAILURE);
+      }
+    }
 
-  int this_bin = this_hist->FindBin(sceta,pt);
-  value = this_hist->GetBinContent(this_bin);
-  error = this_hist->GetBinError(this_bin);
+    int this_bin = this_hist->FindBin(sceta,pt);
+    value = this_hist->GetBinContent(this_bin);
+    error = this_hist->GetBinError(this_bin);
 
-  return value+double(sys)*error;
+    return value+double(sys)*error;
+
+  }
 
 }
 
