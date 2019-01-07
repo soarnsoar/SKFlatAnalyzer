@@ -35,10 +35,6 @@ void Gen::SetIndexPIDStatus(int i, int p, int t){
   j_index = i;
   j_PID = p;
   j_status = t;
-
-  int this_charge = j_PID > 0 ? +1 : -1;
-  if(11<=abs(j_PID) && abs(j_PID)<=18) this_charge = -this_charge;
-  this->SetCharge( this_charge );
 }
 
 void Gen::SetMother(int mindex){

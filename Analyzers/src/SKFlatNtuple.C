@@ -78,7 +78,6 @@ void SKFlatNtuple::Init()
     weight_norm_1invpb = xsec/sumW;
   }
 
-
   // Set object pointer
    HLT_TriggerName = 0;
    jet_pt = 0;
@@ -163,19 +162,18 @@ void SKFlatNtuple::Init()
    fatjet_smearedRes = 0;
    fatjet_smearedResUp = 0;
    fatjet_smearedResDown = 0;
+   fatjet_LSF = 0;
+   fatjet_LSFlep_PID = 0;
+   fatjet_LSFlep_Pt = 0;
+   fatjet_LSFlep_Eta = 0;
+   fatjet_LSFlep_Phi = 0;
    electron_MVAIso = 0;
    electron_MVANoIso = 0;
-   electron_et = 0;
    electron_Energy = 0;
    electron_Energy_Scale_Up = 0;
    electron_Energy_Scale_Down = 0;
    electron_Energy_Smear_Up = 0;
    electron_Energy_Smear_Down = 0;
-   electron_pt = 0;
-   electron_pt_Scale_Up = 0;
-   electron_pt_Scale_Down = 0;
-   electron_pt_Smear_Up = 0;
-   electron_pt_Smear_Down = 0;
    electron_eta = 0;
    electron_phi = 0;
    electron_charge = 0;
@@ -324,6 +322,7 @@ void SKFlatNtuple::Init()
    gen_eta = 0;
    gen_pt = 0;
    gen_mass = 0;
+   gen_charge = 0;
    gen_mother_index = 0;
    gen_status = 0;
    gen_PID = 0;
@@ -341,7 +340,8 @@ void SKFlatNtuple::Init()
    gen_fromHardProcessDecayed = 0;
    gen_fromHardProcessFinalState = 0;
    gen_isMostlyLikePythia6Status3 = 0;
-   photon_pt = 0;
+   photon_Energy = 0;
+   photon_EnergyUnCorr = 0;
    photon_eta = 0;
    photon_phi = 0;
    photon_scEta = 0;
@@ -360,7 +360,6 @@ void SKFlatNtuple::Init()
    photon_passLooseID = 0;
    photon_passMediumID = 0;
    photon_passTightID = 0;
-   photon_ptUnCorr = 0;
    pfMET_pt_shifts = 0;
    pfMET_phi_shifts = 0;
    pfMET_SumEt_shifts = 0;
@@ -370,18 +369,17 @@ void SKFlatNtuple::Init()
    pfMET_Type1_PhiCor_pt_shifts = 0;
    pfMET_Type1_PhiCor_phi_shifts = 0;
    pfMET_Type1_PhiCor_SumEt_shifts = 0;
-  // Set branch addresses and branch pointers
-
-  fChain->SetMakeClass(1);
 
    fChain->SetBranchAddress("IsData", &IsData, &b_IsData);
    fChain->SetBranchAddress("nTotal", &nTotal, &b_nTotal);
    fChain->SetBranchAddress("run", &run, &b_runNum);
    fChain->SetBranchAddress("event", &event, &b_evtNum);
    fChain->SetBranchAddress("lumi", &lumi, &b_lumiBlock);
-   fChain->SetBranchAddress("PUweight", &PUweight, &b_PUweight);
    fChain->SetBranchAddress("Rho", &Rho, &b_Rho);
    fChain->SetBranchAddress("nPV", &nPV, &b_nPV);
+   fChain->SetBranchAddress("L1PrefireReweight_Central", &L1PrefireReweight_Central, &b_L1PrefireReweight_Central);
+   fChain->SetBranchAddress("L1PrefireReweight_Up", &L1PrefireReweight_Up, &b_L1PrefireReweight_Up);
+   fChain->SetBranchAddress("L1PrefireReweight_Down", &L1PrefireReweight_Down, &b_L1PrefireReweight_Down);
    fChain->SetBranchAddress("Flag_goodVertices", &Flag_goodVertices, &b_Flag_goodVertices);
    fChain->SetBranchAddress("Flag_globalTightHalo2016Filter", &Flag_globalTightHalo2016Filter, &b_Flag_globalTightHalo2016Filter);
    fChain->SetBranchAddress("Flag_globalSuperTightHalo2016Filter", &Flag_globalSuperTightHalo2016Filter, &b_Flag_globalSuperTightHalo2016Filter);
@@ -391,7 +389,7 @@ void SKFlatNtuple::Init()
    fChain->SetBranchAddress("Flag_BadPFMuonFilter", &Flag_BadPFMuonFilter, &b_Flag_BadPFMuonFilter);
    fChain->SetBranchAddress("Flag_BadChargedCandidateFilter", &Flag_BadChargedCandidateFilter, &b_Flag_BadChargedCandidateFilter);
    fChain->SetBranchAddress("Flag_eeBadScFilter", &Flag_eeBadScFilter, &b_Flag_eeBadScFilter);
-   fChain->SetBranchAddress("Flag_ecalBadCalibFilter", &Flag_ecalBadCalibFilter, &b_Flag_ecalBadCalibFilter);
+   fChain->SetBranchAddress("Flag_ecalBadCalibReducedMINIAODFilter", &Flag_ecalBadCalibReducedMINIAODFilter, &b_Flag_ecalBadCalibReducedMINIAODFilter);
    fChain->SetBranchAddress("PVtrackSize", &PVtrackSize, &b_PVtrackSize);
    fChain->SetBranchAddress("PVchi2", &PVchi2, &b_PVchi2);
    fChain->SetBranchAddress("PVndof", &PVndof, &b_PVndof);
@@ -482,19 +480,18 @@ void SKFlatNtuple::Init()
    fChain->SetBranchAddress("fatjet_smearedRes", &fatjet_smearedRes, &b_fatjet_smearedRes);
    fChain->SetBranchAddress("fatjet_smearedResUp", &fatjet_smearedResUp, &b_fatjet_smearedResUp);
    fChain->SetBranchAddress("fatjet_smearedResDown", &fatjet_smearedResDown, &b_fatjet_smearedResDown);
+   fChain->SetBranchAddress("fatjet_LSF", &fatjet_LSF, &b_fatjet_LSF);
+   fChain->SetBranchAddress("fatjet_LSFlep_PID", &fatjet_LSFlep_PID, &b_fatjet_LSFlep_PID);
+   fChain->SetBranchAddress("fatjet_LSFlep_Pt", &fatjet_LSFlep_Pt, &b_fatjet_LSFlep_Pt);
+   fChain->SetBranchAddress("fatjet_LSFlep_Eta", &fatjet_LSFlep_Eta, &b_fatjet_LSFlep_Eta);
+   fChain->SetBranchAddress("fatjet_LSFlep_Phi", &fatjet_LSFlep_Phi, &b_fatjet_LSFlep_Phi);
    fChain->SetBranchAddress("electron_MVAIso", &electron_MVAIso, &b_electron_MVAIso);
    fChain->SetBranchAddress("electron_MVANoIso", &electron_MVANoIso, &b_electron_MVANoIso);
-   fChain->SetBranchAddress("electron_et", &electron_et, &b_electron_et);
    fChain->SetBranchAddress("electron_Energy", &electron_Energy, &b_electron_Energy);
    fChain->SetBranchAddress("electron_Energy_Scale_Up", &electron_Energy_Scale_Up, &b_electron_Energy_Scale_Up);
    fChain->SetBranchAddress("electron_Energy_Scale_Down", &electron_Energy_Scale_Down, &b_electron_Energy_Scale_Down);
    fChain->SetBranchAddress("electron_Energy_Smear_Up", &electron_Energy_Smear_Up, &b_electron_Energy_Smear_Up);
    fChain->SetBranchAddress("electron_Energy_Smear_Down", &electron_Energy_Smear_Down, &b_electron_Energy_Smear_Down);
-   fChain->SetBranchAddress("electron_pt", &electron_pt, &b_electron_pt);
-   fChain->SetBranchAddress("electron_pt_Scale_Up", &electron_pt_Scale_Up, &b_electron_pt_Scale_Up);
-   fChain->SetBranchAddress("electron_pt_Scale_Down", &electron_pt_Scale_Down, &b_electron_pt_Scale_Down);
-   fChain->SetBranchAddress("electron_pt_Smear_Up", &electron_pt_Smear_Up, &b_electron_pt_Smear_Up);
-   fChain->SetBranchAddress("electron_pt_Smear_Down", &electron_pt_Smear_Down, &b_electron_pt_Smear_Down);
    fChain->SetBranchAddress("electron_eta", &electron_eta, &b_electron_eta);
    fChain->SetBranchAddress("electron_phi", &electron_phi, &b_electron_phi);
    fChain->SetBranchAddress("electron_charge", &electron_charge, &b_electron_charge);
@@ -645,6 +642,7 @@ void SKFlatNtuple::Init()
    fChain->SetBranchAddress("gen_eta", &gen_eta, &b_gen_eta);
    fChain->SetBranchAddress("gen_pt", &gen_pt, &b_gen_pt);
    fChain->SetBranchAddress("gen_mass", &gen_mass, &b_gen_mass);
+   fChain->SetBranchAddress("gen_charge", &gen_charge, &b_gen_charge);
    fChain->SetBranchAddress("gen_mother_index", &gen_mother_index, &b_gen_mother_index);
    fChain->SetBranchAddress("gen_status", &gen_status, &b_gen_status);
    fChain->SetBranchAddress("gen_PID", &gen_PID, &b_gen_PID);
@@ -672,7 +670,8 @@ void SKFlatNtuple::Init()
    fChain->SetBranchAddress("genWeight_alphaQED", &genWeight_alphaQED, &b_genWeight_alphaQED);
    }
 
-   fChain->SetBranchAddress("photon_pt", &photon_pt, &b_photon_pt);
+   fChain->SetBranchAddress("photon_Energy", &photon_Energy, &b_photon_Energy);
+   fChain->SetBranchAddress("photon_EnergyUnCorr", &photon_EnergyUnCorr, &b_photon_EnergyUnCorr);
    fChain->SetBranchAddress("photon_eta", &photon_eta, &b_photon_eta);
    fChain->SetBranchAddress("photon_phi", &photon_phi, &b_photon_phi);
    fChain->SetBranchAddress("photon_scEta", &photon_scEta, &b_photon_scEta);
@@ -691,16 +690,7 @@ void SKFlatNtuple::Init()
    fChain->SetBranchAddress("photon_passLooseID", &photon_passLooseID, &b_photon_passLooseID);
    fChain->SetBranchAddress("photon_passMediumID", &photon_passMediumID, &b_photon_passMediumID);
    fChain->SetBranchAddress("photon_passTightID", &photon_passTightID, &b_photon_passTightID);
-   fChain->SetBranchAddress("photon_ptUnCorr", &photon_ptUnCorr, &b_photon_ptUnCorr);
    fChain->SetBranchAddress("nPileUp", &nPileUp, &b_nPileUp);
-   fChain->SetBranchAddress("pileUpReweightIn", &pileUpReweightIn, &b_pileUpReweightIn);
-   fChain->SetBranchAddress("pileUpReweight", &pileUpReweight, &b_pileUpReweight);
-   fChain->SetBranchAddress("pileUpReweightPlus", &pileUpReweightPlus, &b_pileUpReweightPlus);
-   fChain->SetBranchAddress("pileUpReweightMinus", &pileUpReweightMinus, &b_pileUpReweightMinus);
-   fChain->SetBranchAddress("pileUpReweightInMuonPhys", &pileUpReweightInMuonPhys, &b_pileUpReweightInMuonPhys);
-   fChain->SetBranchAddress("pileUpReweightMuonPhys", &pileUpReweightMuonPhys, &b_pileUpReweightMuonPhys);
-   fChain->SetBranchAddress("pileUpReweightPlusMuonPhys", &pileUpReweightPlusMuonPhys, &b_pileUpReweightPlusMuonPhys);
-   fChain->SetBranchAddress("pileUpReweightMinusMuonPhys", &pileUpReweightMinusMuonPhys, &b_pileUpReweightMinusMuonPhys);
    fChain->SetBranchAddress("pfMET_pt", &pfMET_pt, &b_pfMET_pt);
    fChain->SetBranchAddress("pfMET_phi", &pfMET_phi, &b_pfMET_phi);
    fChain->SetBranchAddress("pfMET_SumEt", &pfMET_SumEt, &b_pfMET_SumEt);

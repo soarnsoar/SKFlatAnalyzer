@@ -69,15 +69,16 @@ public :
    TChain *fChain;
 
    // Declaration of leaf types
-
    Bool_t          IsData;
    Int_t           nTotal;
    Int_t           run;
    ULong64_t       event;
    Int_t           lumi;
-   Double_t        PUweight;
    Double_t        Rho;
    Int_t           nPV;
+   Double_t        L1PrefireReweight_Central;
+   Double_t        L1PrefireReweight_Up;
+   Double_t        L1PrefireReweight_Down;
    Bool_t          Flag_goodVertices;
    Bool_t          Flag_globalTightHalo2016Filter;
    Bool_t          Flag_globalSuperTightHalo2016Filter;
@@ -87,7 +88,7 @@ public :
    Bool_t          Flag_BadPFMuonFilter;
    Bool_t          Flag_BadChargedCandidateFilter;
    Bool_t          Flag_eeBadScFilter;
-   Bool_t          Flag_ecalBadCalibFilter;
+   Bool_t          Flag_ecalBadCalibReducedMINIAODFilter;
    Int_t           PVtrackSize;
    Double_t        PVchi2;
    Double_t        PVndof;
@@ -178,19 +179,18 @@ public :
    vector<double>  *fatjet_smearedRes;
    vector<double>  *fatjet_smearedResUp;
    vector<double>  *fatjet_smearedResDown;
+   vector<double>  *fatjet_LSF;
+   vector<double>  *fatjet_LSFlep_PID;
+   vector<double>  *fatjet_LSFlep_Pt;
+   vector<double>  *fatjet_LSFlep_Eta;
+   vector<double>  *fatjet_LSFlep_Phi;
    vector<double>  *electron_MVAIso;
    vector<double>  *electron_MVANoIso;
-   vector<double>  *electron_et;
    vector<double>  *electron_Energy;
    vector<double>  *electron_Energy_Scale_Up;
    vector<double>  *electron_Energy_Scale_Down;
    vector<double>  *electron_Energy_Smear_Up;
    vector<double>  *electron_Energy_Smear_Down;
-   vector<double>  *electron_pt;
-   vector<double>  *electron_pt_Scale_Up;
-   vector<double>  *electron_pt_Scale_Down;
-   vector<double>  *electron_pt_Smear_Up;
-   vector<double>  *electron_pt_Smear_Down;
    vector<double>  *electron_eta;
    vector<double>  *electron_phi;
    vector<int>     *electron_charge;
@@ -339,6 +339,7 @@ public :
    vector<double>  *gen_eta;
    vector<double>  *gen_pt;
    vector<double>  *gen_mass;
+   vector<double>  *gen_charge;
    vector<int>     *gen_mother_index;
    vector<int>     *gen_status;
    vector<int>     *gen_PID;
@@ -364,7 +365,8 @@ public :
    Int_t           genWeight_id2;
    Double_t        genWeight_alphaQCD;
    Double_t        genWeight_alphaQED;
-   vector<double>  *photon_pt;
+   vector<double>  *photon_Energy;
+   vector<double>  *photon_EnergyUnCorr;
    vector<double>  *photon_eta;
    vector<double>  *photon_phi;
    vector<double>  *photon_scEta;
@@ -383,16 +385,7 @@ public :
    vector<bool>    *photon_passLooseID;
    vector<bool>    *photon_passMediumID;
    vector<bool>    *photon_passTightID;
-   vector<double>  *photon_ptUnCorr;
    Int_t           nPileUp;
-   Double_t        pileUpReweightIn;
-   Double_t        pileUpReweight;
-   Double_t        pileUpReweightPlus;
-   Double_t        pileUpReweightMinus;
-   Double_t        pileUpReweightInMuonPhys;
-   Double_t        pileUpReweightMuonPhys;
-   Double_t        pileUpReweightPlusMuonPhys;
-   Double_t        pileUpReweightMinusMuonPhys;
    Double_t        pfMET_pt;
    Double_t        pfMET_phi;
    Double_t        pfMET_SumEt;
@@ -418,9 +411,11 @@ public :
    TBranch        *b_runNum;   //!
    TBranch        *b_evtNum;   //!
    TBranch        *b_lumiBlock;   //!
-   TBranch        *b_PUweight;   //!
    TBranch        *b_Rho;   //!
    TBranch        *b_nPV;   //!
+   TBranch        *b_L1PrefireReweight_Central;   //!
+   TBranch        *b_L1PrefireReweight_Up;   //!
+   TBranch        *b_L1PrefireReweight_Down;   //!
    TBranch        *b_Flag_goodVertices;   //!
    TBranch        *b_Flag_globalTightHalo2016Filter;   //!
    TBranch        *b_Flag_globalSuperTightHalo2016Filter;   //!
@@ -430,7 +425,7 @@ public :
    TBranch        *b_Flag_BadPFMuonFilter;   //!
    TBranch        *b_Flag_BadChargedCandidateFilter;   //!
    TBranch        *b_Flag_eeBadScFilter;   //!
-   TBranch        *b_Flag_ecalBadCalibFilter;   //!
+   TBranch        *b_Flag_ecalBadCalibReducedMINIAODFilter;   //!
    TBranch        *b_PVtrackSize;   //!
    TBranch        *b_PVchi2;   //!
    TBranch        *b_PVndof;   //!
@@ -521,19 +516,18 @@ public :
    TBranch        *b_fatjet_smearedRes;   //!
    TBranch        *b_fatjet_smearedResUp;   //!
    TBranch        *b_fatjet_smearedResDown;   //!
+   TBranch        *b_fatjet_LSF;   //!
+   TBranch        *b_fatjet_LSFlep_PID;   //!
+   TBranch        *b_fatjet_LSFlep_Pt;   //!
+   TBranch        *b_fatjet_LSFlep_Eta;   //!
+   TBranch        *b_fatjet_LSFlep_Phi;   //!
    TBranch        *b_electron_MVAIso;   //!
    TBranch        *b_electron_MVANoIso;   //!
-   TBranch        *b_electron_et;   //!
    TBranch        *b_electron_Energy;   //!
    TBranch        *b_electron_Energy_Scale_Up;   //!
    TBranch        *b_electron_Energy_Scale_Down;   //!
    TBranch        *b_electron_Energy_Smear_Up;   //!
    TBranch        *b_electron_Energy_Smear_Down;   //!
-   TBranch        *b_electron_pt;   //!
-   TBranch        *b_electron_pt_Scale_Up;   //!
-   TBranch        *b_electron_pt_Scale_Down;   //!
-   TBranch        *b_electron_pt_Smear_Up;   //!
-   TBranch        *b_electron_pt_Smear_Down;   //!
    TBranch        *b_electron_eta;   //!
    TBranch        *b_electron_phi;   //!
    TBranch        *b_electron_charge;   //!
@@ -682,6 +676,7 @@ public :
    TBranch        *b_gen_eta;   //!
    TBranch        *b_gen_pt;   //!
    TBranch        *b_gen_mass;   //!
+   TBranch        *b_gen_charge;   //!
    TBranch        *b_gen_mother_index;   //!
    TBranch        *b_gen_status;   //!
    TBranch        *b_gen_PID;   //!
@@ -707,7 +702,8 @@ public :
    TBranch        *b_genWeight_id2;   //!
    TBranch        *b_genWeight_alphaQCD;   //!
    TBranch        *b_genWeight_alphaQED;   //!
-   TBranch        *b_photon_pt;   //!
+   TBranch        *b_photon_Energy;   //!
+   TBranch        *b_photon_EnergyUnCorr;   //!
    TBranch        *b_photon_eta;   //!
    TBranch        *b_photon_phi;   //!
    TBranch        *b_photon_scEta;   //!
@@ -726,16 +722,7 @@ public :
    TBranch        *b_photon_passLooseID;   //!
    TBranch        *b_photon_passMediumID;   //!
    TBranch        *b_photon_passTightID;   //!
-   TBranch        *b_photon_ptUnCorr;   //!
    TBranch        *b_nPileUp;   //!
-   TBranch        *b_pileUpReweightIn;   //!
-   TBranch        *b_pileUpReweight;   //!
-   TBranch        *b_pileUpReweightPlus;   //!
-   TBranch        *b_pileUpReweightMinus;   //!
-   TBranch        *b_pileUpReweightInMuonPhys;   //!
-   TBranch        *b_pileUpReweightMuonPhys;   //!
-   TBranch        *b_pileUpReweightPlusMuonPhys;   //!
-   TBranch        *b_pileUpReweightMinusMuonPhys;   //!
    TBranch        *b_pfMET_pt;   //!
    TBranch        *b_pfMET_phi;   //!
    TBranch        *b_pfMET_SumEt;   //!
@@ -754,6 +741,7 @@ public :
    TBranch        *b_pfMET_Type1_PhiCor_pt_shifts;   //!
    TBranch        *b_pfMET_Type1_PhiCor_phi_shifts;   //!
    TBranch        *b_pfMET_Type1_PhiCor_SumEt_shifts;   //!
+
 
 };
 

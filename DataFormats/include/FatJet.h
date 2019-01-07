@@ -14,6 +14,9 @@ public:
   void SetTaggerResults(std::vector<double> ds);
   void SetEnergyFractions(double cH, double nH, double nEM, double cEM, double muE);
   void SetMultiplicities(double cM, double nM);
+  void SetLSF(double lsf, int lsf_PID);
+  double LSF();
+  double LSF_PID();
 
   void SetEnShift(double en_up, double en_down);
   double EnShift(int s){
@@ -80,6 +83,8 @@ private:
   double j_muonEnergyFraction;
   int j_chargedMultiplicity;
   int j_neutralMultiplicity;
+  double j_lsf;
+  int j_lsf_pid;
   double j_En_up;
   double j_En_down;
   double j_Res_up;

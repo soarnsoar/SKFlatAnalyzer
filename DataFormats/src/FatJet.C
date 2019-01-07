@@ -75,6 +75,17 @@ void FatJet::SetMultiplicities(double cM, double nM){
   j_neutralMultiplicity = nM;
 }
 
+void FatJet::SetLSF(double lsf, int lsf_PID){
+  j_lsf = lsf;
+  j_lsf_pid = lsf_PID;
+}
+double FatJet::LSF(){
+  return j_lsf;
+}
+double FatJet::LSF_PID(){
+  return j_lsf_pid;
+}
+
 void FatJet::SetEnShift(double en_up, double en_down){
   j_En_up = en_up;
   j_En_down = en_down;
