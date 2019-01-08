@@ -128,6 +128,7 @@ void SKFlatValidation::executeEventFromParameter(AnalyzerParameter param){
   bool PassSingleElectron, PassSingleMuon;
   TString TriggerNameForSF_Electron, TriggerNameForSF_Muon;
   int TriggerSafePt_Electron, TriggerSafePt_Muon;
+  double MinLeptonPt = 20.;
   if(param.Name=="POG"){
     TriggerNameForSF_Electron = TriggerNameForSF_POG_Electron;
     TriggerNameForSF_Muon = TriggerNameForSF_POG_Muon;
@@ -148,8 +149,6 @@ void SKFlatValidation::executeEventFromParameter(AnalyzerParameter param){
     cout << "[SKFlatValidation::executeEventFromParameter] Wrong param.Name = " << param.Name << endl;
     exit(EXIT_FAILURE);
   }
-
-  double MinLeptonPt = 20.;
 
   std::vector<Muon> muons = GetMuons(param.Muon_Tight_ID, MinLeptonPt, 2.4);
   std::vector<Electron> electrons = GetElectrons(param.Electron_Tight_ID, MinLeptonPt, 2.5);
@@ -272,26 +271,35 @@ void SKFlatValidation::executeEventFromParameter(AnalyzerParameter param){
 
     std::map<TString, bool> map_bool_To_Region;
     if(n_lepton==2){
-      if( IsOS && (Z.M() > 15.) ){
-        //==== generic two OS lepton
-        map_bool_To_Region["OS"] = true;
-        //==== OnZ event
-        map_bool_To_Region["OnZ_OS"] = IsOnZ(Z.M(), 15.);
-        //==== OnZ event
-        map_bool_To_Region["ZMassgt50_OS"] = (Z.M()>50.);
-        //==== With B-jet, MET > 30 for dilepton ttbar
-        map_bool_To_Region["WithBJet_METgt30_OS"] = (NBJets>0) && (METv.Pt()>30.);
+
+      bool BaseDiLepSelection = (Z.M() > 15.);
+      bool HigherDiLeptonPtCut = (leps[0]->Pt() > 60.) && (leps[1]->Pt() > 53.);
+
+      if(BaseDiLepSelection){
+
+        if( IsOS ){
+          //==== generic two OS lepton
+          map_bool_To_Region["OS"] = true;
+          //==== OnZ event
+          map_bool_To_Region["OnZ_OS"] = IsOnZ(Z.M(), 15.);
+          //==== High ZMass event
+          map_bool_To_Region["ZMassgt200_OS"] = (Z.M()>200.) && HigherDiLeptonPtCut;
+          //==== With B-jet, MET > 30 for dilepton ttbar
+          map_bool_To_Region["WithBJet_METgt30_OS"] = (NBJets>0) && (METv.Pt()>30.);
+        }
+        else{
+          //==== generic two SS lepton
+          map_bool_To_Region["SS"] = true;
+          //==== OnZ event
+          map_bool_To_Region["OnZ_SS"] = IsOnZ(Z.M(), 15.);
+          //==== High ZMass event
+          map_bool_To_Region["ZMassgt200_SS"] = (Z.M()>200.) && HigherDiLeptonPtCut;
+          //==== With B-jet, MET > 30 for dilepton ttbar
+          map_bool_To_Region["WithBJet_METgt30_SS"] = (NBJets>0) && (METv.Pt()>30.);
+        }
+
       }
-      else{
-        //==== generic two SS lepton
-        map_bool_To_Region["SS"] = true;
-        //==== OnZ event
-        map_bool_To_Region["OnZ_SS"] = IsOnZ(Z.M(), 15.);
-        //==== OnZ event
-        map_bool_To_Region["ZMassgt50_SS"] = (Z.M()>50.);
-        //==== With B-jet, MET > 30 for dilepton ttbar
-        map_bool_To_Region["WithBJet_METgt30_SS"] = (NBJets>0) && (METv.Pt()>30.);
-      }
+
     }
     if(n_lepton==1){
       map_bool_To_Region["W_CR"] = ( METv.Pt() > 30. ) && ( this_MT > 30. );
