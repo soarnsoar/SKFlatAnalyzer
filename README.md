@@ -10,8 +10,14 @@ cp setup_tmp.sh setup.sh
 ```
 
 Edit setup.sh :
-```bash
+```
 export SKFlatLogEmail='' # <- put your email address here
+```
+
+Making libraries
+```
+make clean
+make
 ```
 
 ## Initializing
