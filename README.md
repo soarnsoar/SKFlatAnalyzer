@@ -58,7 +58,7 @@ Last line is to run a job with the machine, not batch.
 This is good for test your analyzer
 
 
-# How To merge your forked repo to the original repository
+# How To update your forked repo to follow the original repository
 
 To get your forked repo from this one
 ```
