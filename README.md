@@ -2,11 +2,11 @@
 
 ## Manual
 
-https://jskim.web.cern.ch/jskim/SKFlat/Manual_SKFlat.pdf
+https://jskim.web.cern.ch/jskim/SKFlat/Manual\_SKFlat.pdf
 
 ## First time setup
 ```
-cp setup\_tmp.sh setup.sh
+cp setup_tmp.sh setup.sh
 ```
 
 Edit setup.sh :
