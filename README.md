@@ -5,10 +5,19 @@
 https://jskim.web.cern.ch/jskim/SKFlat/Manual_SKFlat.pdf
 
 ## First time setup
+```
+cp setup_tmp.sh setup.sh
+```
 
 Edit setup.sh :
-```bash
+```
 export SKFlatLogEmail='' # <- put your email address here
+```
+
+Making libraries
+```
+make clean
+make
 ```
 
 ## Initializing
