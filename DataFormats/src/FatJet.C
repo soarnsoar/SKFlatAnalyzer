@@ -25,6 +25,8 @@ FatJet::FatJet() : Particle() {
   j_muonEnergyFraction=-999.;
   j_chargedMultiplicity=-999;
   j_neutralMultiplicity=-999;
+  j_lsf=-999.;
+  j_lsf_pid=-999;
   j_En_up=1.;
   j_En_down=1.;;
   j_Res_up = 1.;
