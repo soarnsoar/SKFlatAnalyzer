@@ -1660,10 +1660,26 @@ void AnalyzerCore::WriteHist(){
 
   outfile->cd();
   for(std::map< TString, TH1D* >::iterator mapit = maphist_TH1D.begin(); mapit!=maphist_TH1D.end(); mapit++){
-    mapit->second->Write();
+    TString this_fullname=mapit->second->GetName();
+    TString this_name=this_fullname(this_fullname.Last('/')+1,this_fullname.Length());
+    TString this_suffix=this_fullname(0,this_fullname.Last('/'));
+    TDirectory *dir = outfile->GetDirectory(this_suffix);
+    if(!dir){
+      outfile->mkdir(this_suffix);
+    }
+    outfile->cd(this_suffix);
+    mapit->second->Write(this_name);
   }
   for(std::map< TString, TH2D* >::iterator mapit = maphist_TH2D.begin(); mapit!=maphist_TH2D.end(); mapit++){
-    mapit->second->Write();
+    TString this_fullname=mapit->second->GetName();
+    TString this_name=this_fullname(this_fullname.Last('/')+1,this_fullname.Length());
+    TString this_suffix=this_fullname(0,this_fullname.Last('/'));
+    TDirectory *dir = outfile->GetDirectory(this_suffix);
+    if(!dir){
+      outfile->mkdir(this_suffix);
+    }
+    outfile->cd(this_suffix);
+    mapit->second->Write(this_name);
   }
 
   outfile->cd();
