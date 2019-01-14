@@ -24,12 +24,13 @@ make
 Everytime when using new shell,
 ```bash
 source setup.sh
-voms-proxy-init --voms cms -valid 24:00
+# If in KNU, need proxy
+# voms-proxy-init --voms cms -valid 24:00
 ```
 
 ## Test job
 ```bash
-python python/SKFlat.py -a ExampleRun -i ZToMuMu_M_50_120 -n 50 &
+SKFlat.py -a ExampleRun -i DYJets -n 50 &
 ```
 
 ## Making a new Ananlyzer
