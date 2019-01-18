@@ -5,3 +5,10 @@ ID	SF	passHEEPID_Barrel	HEEP_SF.root	SF_Et_Barrel	TGraphAsymmErrors
 ID	SF	passHEEPID_Endcap	HEEP_SF.root	SF_Et_Endcap	TGraphAsymmErrors
 RECO	SF	ptgt20	egammaEffi.txt_EGM2D.root	EGamma_SF2D	TH2F
 RECO	SF	ptlt20	egammaEffi.txt_EGM2D_low.root	EGamma_SF2	TH2F
+################################
+## SMP study: charge inclusive
+################################
+Trigger SF      LeadEle23_MediumID	EGM2D_runBCDEF_LeadEle23_MediumID.root	EGamma_SF2D	TH2F
+Trigger SF      TailEle12_MediumID	EGM2D_runBCDEF_tailEle12_MediumID.root  EGamma_SF2D	TH2F
+## pt 10, 15,...
+ID      SF      passMediumID_pt10	EGM2D_runBCDEF_passMedium94X_pt10.root	EGamma_SF2D	TH2F

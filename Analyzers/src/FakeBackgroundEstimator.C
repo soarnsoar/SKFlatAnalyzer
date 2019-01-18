@@ -19,7 +19,12 @@ void FakeBackgroundEstimator::ReadHistograms(){
     TString a,b,c,d,e;
     is >> a; // <ID>
     is >> b; // <rootfilename>
-    TFile *file = new TFile(datapath+"/"+b);
+    TString tfileName = datapath+"/"+b;
+    TFile *file = new TFile(tfileName);
+    if( file->IsZombie()){
+      cout<<"There in no file: "<<tfileName<<", check histmap.txt, exiting.........."<<endl; 
+      exit(-1);
+    }
     TList *histlist = file->GetListOfKeys();
     for(int i=0;i<histlist->Capacity();i++){
       TString this_frname = histlist->At(i)->GetName();
@@ -35,7 +40,12 @@ void FakeBackgroundEstimator::ReadHistograms(){
     TString a,b,c,d,e;
     is >> a; // <ID>
     is >> b; // <rootfilename>
-    TFile *file = new TFile(datapath+"/"+b);
+    TString tfileName = datapath+"/"+b;
+    TFile *file = new TFile(tfileName);
+    if( file->IsZombie()){
+      cout<<"There in no file: "<<tfileName<<", check histmap.txt, exiting.........."<<endl; 
+      exit(-1);
+    }
     TList *histlist = file->GetListOfKeys();
     for(int i=0;i<histlist->Capacity();i++){
       TString this_frname = histlist->At(i)->GetName();

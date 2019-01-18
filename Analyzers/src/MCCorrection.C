@@ -29,7 +29,12 @@ void MCCorrection::ReadHistograms(){
     is >> d; // <rootfilename>
     is >> e; // <histname>
     is >> f; // Class
-    TFile *file = new TFile(IDpath+"/Electron/"+d);
+    TString tfileName = IDpath+"/Electron/"+d;
+    TFile *file = new TFile(tfileName);
+    if( file->IsZombie()){
+      cout<<"There in no file: "<<tfileName<<", check histmap.txt, exiting.........."<<endl;
+      exit(-1);
+    }
 
     if(f=="TH2F"){
       map_hist_Electron[a+"_"+b+"_"+c] = (TH2F *)file->Get(e);
@@ -42,14 +47,19 @@ void MCCorrection::ReadHistograms(){
     }
   }
 
-  cout << "[MCCorrection::MCCorrection] map_hist_Electron :" << endl;
-  for(std::map< TString, TH2F* >::iterator it=map_hist_Electron.begin(); it!=map_hist_Electron.end(); it++){
-    cout << it->first << endl;
-  }
-  cout << "[MCCorrection::MCCorrection] map_graph_Electron :" << endl;
-  for(std::map< TString, TGraphAsymmErrors* >::iterator it=map_graph_Electron.begin(); it!=map_graph_Electron.end(); it++){
-    cout << it->first << endl;
-  }
+  if(!map_hist_Electron.empty()){
+    cout << "[MCCorrection::MCCorrection] map_hist_Electron :" << endl;
+    for(std::map< TString, TH2F* >::iterator it=map_hist_Electron.begin(); it!=map_hist_Electron.end(); it++){
+      cout << it->first << endl;
+    }
+  }else{cout<<"Warning: Empt hist_Electron profile input !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!"<<endl;}
+
+  if(!map_graph_Electron.empty()){
+    cout << "[MCCorrection::MCCorrection] map_graph_Electron :" << endl;
+    for(std::map< TString, TGraphAsymmErrors* >::iterator it=map_graph_Electron.begin(); it!=map_graph_Electron.end(); it++){
+      cout << it->first << endl;
+    }
+  }else{cout<<"Warning: Empt graph_Electron profile input !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!"<<endl;}
 
 
   string elline2;
@@ -66,14 +76,22 @@ void MCCorrection::ReadHistograms(){
     is >> c; // <WPnames>
     is >> d; // <rootfilename>
     is >> e; // <histname>
-    TFile *file = new TFile(IDpath+"/Muon/"+d);
+    TString tfileName = IDpath+"/Muon/"+d;
+    TFile *file = new TFile(tfileName);
+    if( file->IsZombie()){
+      cout<<"There in no file: "<<tfileName<<", check histmap.txt,  exiting.........."<<endl;
+      exit(-1);
+    }
+
     map_hist_Muon[a+"_"+b+"_"+c] = (TH2F *)file->Get(e);
   }
 
-  cout << "[MCCorrection::MCCorrection] map_hist_Muon :" << endl;
-  for(std::map< TString, TH2F* >::iterator it=map_hist_Muon.begin(); it!=map_hist_Muon.end(); it++){
-    cout << it->first << endl;
-  }
+  if(!map_hist_Muon.empty()){
+    cout << "[MCCorrection::MCCorrection] map_hist_Muon :" << endl;
+    for(std::map< TString, TH2F* >::iterator it=map_hist_Muon.begin(); it!=map_hist_Muon.end(); it++){
+      cout << it->first << endl;
+    }
+  }else{cout<<"Warning: Empt Muon profile input !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!"<<endl;}
 
 
   // == Get Prefiring maps
@@ -91,10 +109,21 @@ void MCCorrection::ReadHistograms(){
     is >> a; // Jet, Photon
     is >> b; // <rootfilename>
     is >> c; // <histname>
+
+    TString tfileName = PrefirePath+b;
+    TFile *file = new TFile(tfileName);
+    if( file->IsZombie()){
+      cout<<"There in no file: "<<tfileName<<", check histmap.txt, exiting.........."<<endl;
+      exit(-1);
+    }
     
-    TFile *file = new TFile(PrefirePath+b);
     map_hist_prefire[a + "_prefire"] = (TH2F *)file->Get(c);
   }
+  if(!map_hist_prefire.empty()){
+      cout << "[MCCorrection::MCCorrection] map_hist_prefire :" << endl;
+      for(std::map< TString, TH2F* >::iterator it= map_hist_prefire.begin(); it!=map_hist_prefire.end(); it++){
+        cout << it->first << endl;}
+  }else{cout<<"Warning: Empt prefire profile input !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!"<<endl;}
 
 
   // == Get Pileup Reweight maps
@@ -115,15 +144,19 @@ void MCCorrection::ReadHistograms(){
 
     if(a!=MCSample) continue;
 
-    TFile *file = new TFile(PUReweightPath+c);
+    TString tfileName = PUReweightPath+c;
+    TFile *file = new TFile(tfileName);
+    if( file->IsZombie()){
+      cout<<"There in no file: "<<tfileName<<", check histmap.txt, exiting.........."<<endl;
+      exit(-1);
+    }
     map_hist_pileup[a+"_"+b+"_pileup"] = (TH1D *)file->Get(a+"_"+b);
   }
-/*
-  cout << "[MCCorrection::MCCorrection] map_hist_pileup :" << endl;
-  for(std::map< TString, TH1D* >::iterator it=map_hist_pileup.begin(); it!=map_hist_pileup.end(); it++){
-    cout << it->first << endl;
-  }
-*/
+  if(!map_hist_pileup.empty()){
+      cout << "[MCCorrection::MCCorrection] map_hist_pileup :" << endl;
+      for(std::map< TString, TH1D* >::iterator it=map_hist_pileup.begin(); it!=map_hist_pileup.end(); it++){
+        cout << it->first << endl;}
+  }else{cout<<"Warning: Empt pileup profile input !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!"<<endl;}
 
 }
 
