@@ -214,6 +214,15 @@ void ExampleRun::executeEventFromParameter(AnalyzerParameter param){
   vector<Muon> muons = SelectMuons(this_AllMuons, param.Muon_Tight_ID, 20., 2.4);
   vector<Jet> jets = SelectJets(this_AllJets, param.Jet_ID, 30., 2.4);
 
+  //=======================
+  //==== Sort in pt-order
+  //=======================
+
+  //==== 1) leptons : after scaling/smearing, pt ordring can differ from MINIAOD
+  std::sort(muons.begin(), muons.end(), PtComparing);
+  //==== 2) jets : similar, but also when applying new JEC, ordering is changes. This is important if you use leading jets
+  std::sort(jets.begin(), jets.end(), PtComparing);
+
   //=========================
   //==== Event selections..
   //=========================
