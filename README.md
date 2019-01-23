@@ -2,7 +2,7 @@
 
 ## Manual
 
-https://jskim.web.cern.ch/jskim/SKFlat/Manual/190123_Manual_SKFlat.pdf
+https://jskim.web.cern.ch/jskim/SKFlat/Manual/Manual_SKFlat.pdf
 
 ## First time setup
 ```
