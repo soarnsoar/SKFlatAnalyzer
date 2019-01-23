@@ -62,8 +62,8 @@ void {0}::executeEventFromParameter(AnalyzerParameter param){{
 '''.format(cyclename)
 out_c.close()
 
-print 'mv '+cyclename+'.h ../../include/'
-print 'mv '+cyclename+'.C ../../src'
+print 'mv '+cyclename+'.h $SKFlat_WD/Analyzers/include/'
+print 'mv '+cyclename+'.C $SKFlat_WD/Analyzers/src/'
 
 out_run = open('run_'+cyclename+'.C','w')
 print>>out_run,'''R__LOAD_LIBRARY(libPhysics.so)
