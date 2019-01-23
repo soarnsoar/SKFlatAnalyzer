@@ -47,10 +47,8 @@ python MakeCycleSkeleton.py
 ```
 It will print below lines :
 ```bash
-mv NewAnalyzer.h ../../include/
-mv NewAnalyzer.C ../../src
-## For Single job test ##
-mv run_NewAnalyzer.C ../../
+mv NewAnalyzer.h $SKFlat_WD/Analyzers/include/
+mv NewAnalyzer.C $SKFlat_WD/Analyzers/src/
 ```
 First two lines will move the files to inclue/ and src/ directory
 
@@ -58,6 +56,9 @@ Last line is to run a job with the machine, not batch.
 
 This is good for test your analyzer
 
+## Detailed descriptions
+
+Look Analyzers/src/ExampleRun.C
 
 # How To update your forked repo to follow the original repository
 
