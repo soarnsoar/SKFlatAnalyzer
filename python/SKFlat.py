@@ -97,8 +97,7 @@ if args.Year == "2016":
 elif args.Year == "2017":
   AvailableDataPeriods = ["B","C","D","E","F"]
 elif args.Year == "2018":
-  print "[SKFlat.py] 2018 NOT YET supported"
-  sys.exit()
+  AvailableDataPeriods = ["A", "B","C","D"]
 else:
   print "[SKFlat.py] Wrong Year : "+args.Year
 

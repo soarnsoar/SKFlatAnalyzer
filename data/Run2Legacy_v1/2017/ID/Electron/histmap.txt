@@ -1,4 +1,5 @@
-ID	SF	passMVAID_iso_WP80	2017_ElectronMVA80noiso.root	EGamma_SF2D	TH2F
+ID	SF	passMVAID_iso_WP80	2017_ElectronMVA80.root	EGamma_SF2D	TH2F
+ID	SF	passMVAID_noIso_WP80	2017_ElectronMVA80noiso.root	EGamma_SF2D	TH2F
 ID	SF	passTightID	2017_ElectronTight.root	EGamma_SF2D	TH2F
 ID	SF	passMediumID	2017_ElectronMedium.root	EGamma_SF2D	TH2F
 ID	SF	passHEEPID_Barrel	HEEP_SF.root	SF_Et_Barrel	TGraphAsymmErrors
