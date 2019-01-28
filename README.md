@@ -50,11 +50,12 @@ It will print below lines :
 mv NewAnalyzer.h $SKFlat_WD/Analyzers/include/
 mv NewAnalyzer.C $SKFlat_WD/Analyzers/src/
 ```
-First two lines will move the files to inclue/ and src/ directory
 
-Last line is to run a job with the machine, not batch.
-
-This is good for test your analyzer
+Then, add
+```bash
+#pragma link C++ class NewAnalyzer+;
+```
+in Analyzers/include/Analyzers_LinkDef.h
 
 ## Detailed descriptions
 
