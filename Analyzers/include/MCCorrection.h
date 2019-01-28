@@ -52,7 +52,8 @@ public:
 
   std::map< TString, TH1D* > map_hist_pileup;
   double GetPileUpWeightAsSampleName(int syst, int N_vtx);
-  
+  double GetPileUpWeight(int syst, int N_vtx);
+
 };
 
 #endif

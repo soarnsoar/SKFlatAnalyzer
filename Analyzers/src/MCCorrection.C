@@ -554,6 +554,36 @@ double MCCorrection::GetPileUpWeightAsSampleName(int syst, int N_vtx){
 
 }
 
+double MCCorrection::GetPileUpWeight(int syst, int N_vtx){
+
+  int this_bin = N_vtx+1;
+  if(N_vtx >= 100) this_bin=100;
+
+  TString this_histname = "MC_" + TString::Itoa(DataYear,10);
+  if(syst == 0){
+    this_histname += "_central_pileup";
+  }
+  else if(syst == -1){
+    this_histname += "_sig_down_pileup";
+  }
+  else if(syst == 1){
+    this_histname += "_sig_up_pileup";
+  }
+  else{
+    cout << "[MCCorrection::GetPileUpWeightAsSampleName] syst should be 0, -1, or +1" << endl;
+    exit(EXIT_FAILURE);
+  }
+
+  TH1D *this_hist = map_hist_pileup[this_histname];
+  if(!this_hist){
+    cout << "[MCCorrection::GetPileUpWeightAsSampleName] No " << this_histname << endl;
+    exit(EXIT_FAILURE);
+  }
+
+  return this_hist->GetBinContent(this_bin);
+
+}
+
 
 
 
