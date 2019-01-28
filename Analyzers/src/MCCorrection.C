@@ -113,10 +113,9 @@ void MCCorrection::ReadHistograms(){
     is >> b; // syst
     is >> c; // rootfile name
 
-    if(a!=MCSample) continue;
-
     TFile *file = new TFile(PUReweightPath+c);
-    map_hist_pileup[a+"_"+b+"_pileup"] = (TH1D *)file->Get(a+"_"+b);
+    if((TH1D *)file->Get(a+"_"+b)) map_hist_pileup[a+"_"+b+"_pileup"] = (TH1D *)file->Get(a+"_"+b);
+    else cout << "[MCCorrection::ReadHistograms] No : " << a + "_" + b << endl;
   }
 /*
   cout << "[MCCorrection::MCCorrection] map_hist_pileup :" << endl;
