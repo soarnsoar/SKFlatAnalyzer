@@ -815,11 +815,11 @@ try:
               os.system('rm output/*.root')
             else:
               os.system('hadd -f '+outputname+'.root job_*/*.root >> JobStatus.log')
-              #os.system('rm job_*/*.root')
+              os.system('rm job_*/*.root')
 
             ## Final Outputpath
 
-            os.system('cp '+outputname+'.root '+FinalOutputPath)
+            os.system('mv '+outputname+'.root '+FinalOutputPath)
             os.chdir(cwd)
 
           PostJobFinishedForEachSample[it_sample] = True
