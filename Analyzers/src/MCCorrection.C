@@ -113,6 +113,8 @@ void MCCorrection::ReadHistograms(){
     is >> b; // syst
     is >> c; // rootfile name
 
+    if(DataYear == 2017 && a!=MCSample) continue;
+    
     TFile *file = new TFile(PUReweightPath+c);
     if((TH1D *)file->Get(a+"_"+b)) map_hist_pileup[a+"_"+b+"_pileup"] = (TH1D *)file->Get(a+"_"+b);
     else cout << "[MCCorrection::ReadHistograms] No : " << a + "_" + b << endl;
