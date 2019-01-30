@@ -525,7 +525,7 @@ double MCCorrection::GetPrefireWeight(std::vector<Photon> photons, std::vector<J
 }
 
 
-double MCCorrection::GetPileUpWeightAsSampleName(int syst, int N_vtx){
+double MCCorrection::GetPileUpWeightAsSampleName(int N_vtx, int syst){
   
   int this_bin = N_vtx+1;
   if(N_vtx >= 100) this_bin=100;
@@ -555,7 +555,7 @@ double MCCorrection::GetPileUpWeightAsSampleName(int syst, int N_vtx){
 
 }
 
-double MCCorrection::GetPileUpWeight(int syst, int N_vtx){
+double MCCorrection::GetPileUpWeight(int N_vtx, int syst){
 
   int this_bin = N_vtx+1;
   if(N_vtx >= 100) this_bin=100;
