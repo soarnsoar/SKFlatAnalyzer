@@ -113,10 +113,11 @@ void MCCorrection::ReadHistograms(){
     is >> b; // syst
     is >> c; // rootfile name
 
-    if(a!=MCSample) continue;
-
+    if(DataYear == 2017 && a!=MCSample) continue;
+    
     TFile *file = new TFile(PUReweightPath+c);
-    map_hist_pileup[a+"_"+b+"_pileup"] = (TH1D *)file->Get(a+"_"+b);
+    if((TH1D *)file->Get(a+"_"+b)) map_hist_pileup[a+"_"+b+"_pileup"] = (TH1D *)file->Get(a+"_"+b);
+    else cout << "[MCCorrection::ReadHistograms] No : " << a + "_" + b << endl;
   }
 /*
   cout << "[MCCorrection::MCCorrection] map_hist_pileup :" << endl;
@@ -524,12 +525,42 @@ double MCCorrection::GetPrefireWeight(std::vector<Photon> photons, std::vector<J
 }
 
 
-double MCCorrection::GetPileUpWeightAsSampleName(int syst, int N_vtx){
+double MCCorrection::GetPileUpWeightAsSampleName(int N_vtx, int syst){
   
   int this_bin = N_vtx+1;
   if(N_vtx >= 100) this_bin=100;
 
   TString this_histname = MCSample;
+  if(syst == 0){
+    this_histname += "_central_pileup";
+  }
+  else if(syst == -1){
+    this_histname += "_sig_down_pileup";
+  }
+  else if(syst == 1){
+    this_histname += "_sig_up_pileup";
+  }
+  else{
+    cout << "[MCCorrection::GetPileUpWeightAsSampleName] syst should be 0, -1, or +1" << endl;
+    exit(EXIT_FAILURE);
+  }
+
+  TH1D *this_hist = map_hist_pileup[this_histname];
+  if(!this_hist){
+    cout << "[MCCorrection::GetPileUpWeightAsSampleName] No " << this_histname << endl;
+    exit(EXIT_FAILURE);
+  }
+
+  return this_hist->GetBinContent(this_bin);
+
+}
+
+double MCCorrection::GetPileUpWeight(int N_vtx, int syst){
+
+  int this_bin = N_vtx+1;
+  if(N_vtx >= 100) this_bin=100;
+
+  TString this_histname = "MC_" + TString::Itoa(DataYear,10);
   if(syst == 0){
     this_histname += "_central_pileup";
   }
