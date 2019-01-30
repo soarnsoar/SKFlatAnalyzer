@@ -525,7 +525,7 @@ double MCCorrection::GetPrefireWeight(std::vector<Photon> photons, std::vector<J
 }
 
 
-double MCCorrection::GetPileUpWeightAsSampleName(int N_vtx, int syst){
+double MCCorrection::GetPileUpWeightBySampleName(int N_vtx, int syst){
   
   int this_bin = N_vtx+1;
   if(N_vtx >= 100) this_bin=100;
@@ -541,13 +541,13 @@ double MCCorrection::GetPileUpWeightAsSampleName(int N_vtx, int syst){
     this_histname += "_sig_up_pileup";
   }
   else{
-    cout << "[MCCorrection::GetPileUpWeightAsSampleName] syst should be 0, -1, or +1" << endl;
+    cout << "[MCCorrection::GetPileUpWeightBySampleName] syst should be 0, -1, or +1" << endl;
     exit(EXIT_FAILURE);
   }
 
   TH1D *this_hist = map_hist_pileup[this_histname];
   if(!this_hist){
-    cout << "[MCCorrection::GetPileUpWeightAsSampleName] No " << this_histname << endl;
+    cout << "[MCCorrection::GetPileUpWeightBySampleName] No " << this_histname << endl;
     exit(EXIT_FAILURE);
   }
 
@@ -571,13 +571,13 @@ double MCCorrection::GetPileUpWeight(int N_vtx, int syst){
     this_histname += "_sig_up_pileup";
   }
   else{
-    cout << "[MCCorrection::GetPileUpWeightAsSampleName] syst should be 0, -1, or +1" << endl;
+    cout << "[MCCorrection::GetPileUpWeightBySampleName] syst should be 0, -1, or +1" << endl;
     exit(EXIT_FAILURE);
   }
 
   TH1D *this_hist = map_hist_pileup[this_histname];
   if(!this_hist){
-    cout << "[MCCorrection::GetPileUpWeightAsSampleName] No " << this_histname << endl;
+    cout << "[MCCorrection::GetPileUpWeightBySampleName] No " << this_histname << endl;
     exit(EXIT_FAILURE);
   }
 
