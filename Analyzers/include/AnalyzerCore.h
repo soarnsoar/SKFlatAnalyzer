@@ -40,7 +40,9 @@ public:
 
   };
 
+  //==================
   //==== Get objects
+  //==================
 
   //==== When GetAllMuons, we apply Rochester correciton
   //==== Then, Pt orderding can be changed
@@ -74,8 +76,10 @@ public:
 
   std::vector<Gen> GetGens();
 
+  //===================================================
   //==== Get objects METHOD 2
-  //==== Get AllObject in the begning, and apply cut
+  //==== Get AllObject in the begining, and apply cut
+  //==================================================+
 
   std::vector<Electron> SelectElectrons(std::vector<Electron> electrons, TString id, double ptmin, double fetamax);
 
@@ -86,7 +90,9 @@ public:
 
   std::vector<FatJet> SelectFatJets(std::vector<FatJet> jets, TString id, double ptmin, double fetamax);
 
+  //==================
   //==== Systematics
+  //==================
 
   std::vector<Electron> ScaleElectrons(std::vector<Electron> electrons, int sys);
   std::vector<Electron> SmearElectrons(std::vector<Electron> electrons, int sys);
@@ -100,9 +106,16 @@ public:
   std::vector<FatJet> SmearFatJets(std::vector<FatJet> jets, int sys);
   std::vector<FatJet> ScaleSDMassFatJets(std::vector<FatJet> jets, int sys);
   std::vector<FatJet> SmearSDMassFatJets(std::vector<FatJet> jets, int sys);
-  
-  
+
+  //==== xsec syst from saved values (i.e., from LHE)
+  //==== PDF AlphaS
+  double GetPDFAlphaSError();
+  //==== Renorm/Fact Scale
+  double GetScaleError();
+
+  //====================
   //==== Event Filters
+  //====================
 
   bool PassMETFilter();
 
@@ -133,7 +146,9 @@ public:
   //==== AlphaS Error with new PDF
   double GetPDFAlphaSError(double c_Down, double c_Up);
 
+  //================
   //==== Functions
+  //================
 
   bool IsOnZ(double m, double width);
   double MT(TLorentzVector a, TLorentzVector b);

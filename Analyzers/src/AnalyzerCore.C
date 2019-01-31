@@ -719,6 +719,32 @@ std::vector<FatJet> AnalyzerCore::SmearSDMassFatJets(std::vector<FatJet> jets, i
 
 }
 
+//==== PDF AlphaS
+double AnalyzerCore::GetPDFAlphaSError(){
+
+  if(IsDATA) return 0.;
+  if(PDFWeights_AlphaS->size()!=2) return 0.;
+
+  return ( PDFWeights_AlphaS->at(1)-PDFWeights_AlphaS->at(0) ) / 2.;
+
+}
+//==== Renorm/Fact Scale
+double AnalyzerCore::GetScaleError(){
+
+  if(IsDATA) return 0.;
+  if(PDFWeights_Scale->size()!=9) return 0.;;
+
+  double out = 0.;
+  for(int i=1; i<9; i++){
+    if(i==5) continue;
+    if(i==7) continue;
+
+    out = max( out, fabs( PDFWeights_Scale->at(i)-1. ) );
+  }
+  return out;
+
+}
+
 bool AnalyzerCore::PassMETFilter(){
 
   //==== https://twiki.cern.ch/twiki/bin/viewauth/CMS/MissingETOptionalFiltersRun2#Moriond_2018

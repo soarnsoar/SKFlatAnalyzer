@@ -166,14 +166,17 @@ void ExampleRun::executeEvent(){
 
   if(RunNewPDF && !IsDATA){
     //cout << "[ExampleRun::executeEvent] PDF reweight = " << GetPDFReweight() << endl;
-    FillHist("PDFReweight", GetPDFReweight(), 1., 2000, 0.90, 1.10);
+    FillHist("NewPDF_PDFReweight", GetPDFReweight(), 1., 2000, 0.90, 1.10);
     //cout << "[ExampleRun::executeEvent] PDF reweight for error set (NErrorSet = "<<pdfReweight.NErrorSet<< ") :" << endl;
     for(int i=0; i<pdfReweight.NErrorSet; i++){
       //cout << "[ExampleRun::executeEvent]   " << GetPDFReweight(i) << endl;
-      JSFillHist("PDFErrorSet", "PDFReweight_Member_"+TString::Itoa(i,10), GetPDFReweight(i), 1., 2000, 0.90, 1.10);
+      JSFillHist("NewPDF_PDFErrorSet", "PDFReweight_Member_"+TString::Itoa(i,10), GetPDFReweight(i), 1., 2000, 0.90, 1.10);
     }
     //cout << "[ExampleRun::executeEvent] PDF AlphaS error = " << GetPDFAlphaSError(0.75, 0.75) << endl;
-    FillHist("PDFAlphasError", GetPDFAlphaSError(0.75, 0.75), 1., 2000, -0.10, 0.10);
+    FillHist("NewPDF_PDFAlphasError", GetPDFAlphaSError(0.75, 0.75), 1., 2000, -0.10, 0.10);
+    FillHist("PDFAlphasError", GetPDFAlphaSError(), 1., 2000, -0.10, 0.10);
+    FillHist("ScaleError", GetScaleError(), 1., 2000, 0, 0.20);
+
   }
 
 }
