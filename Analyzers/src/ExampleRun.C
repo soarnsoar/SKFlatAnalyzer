@@ -6,12 +6,16 @@ ExampleRun::ExampleRun(){
 
 void ExampleRun::initializeAnalyzer(){
 
-  //==== if you've done "--userflags RunSyst" with SKFlat.py, HasFlag("RunSyst") will return "true"
-  RunSyst = HasFlag("RunSyst");
+  //================================================================
+  //====  Example 1
+  //====  Dimuon Z-peak events with two muon IDs, with systematics
+  //================================================================
 
+  //==== if you use "--userflags RunSyst" with SKFlat.py, HasFlag("RunSyst") will return "true"
+  RunSyst = HasFlag("RunSyst");
   cout << "[ExampleRun::initializeAnalyzer] RunSyst = " << RunSyst << endl;
 
-  //==== In the following examples, I will obtain dimuon Z-peak with two muon IDs
+  //==== Dimuon Z-peak with two muon IDs
   //==== I defined "vector<TString> MuonIDs;" in Analyzers/include/ExampleRun.h
   MuonIDs = {
     "POGMedium",
@@ -41,6 +45,34 @@ void ExampleRun::initializeAnalyzer(){
   cout << "[ExampleRun::initializeAnalyzer] IsoMuTriggerName = " << IsoMuTriggerName << endl;
   cout << "[ExampleRun::initializeAnalyzer TriggerSafePtCut = " << TriggerSafePtCut << endl;
 
+  //================================
+  //==== Example 2
+  //==== Using new PDF
+  //================================
+
+  RunNewPDF = HasFlag("RunNewPDF");
+  cout << "[ExampleRun::initializeAnalyzer] RunNewPDF = " << RunNewPDF << endl;
+  if(RunNewPDF && !IsDATA){
+
+    LHAPDFHandler LHAPDFHandler_Prod;
+    LHAPDFHandler_Prod.CentralPDFName = "NNPDF31_nnlo_hessian_pdfas";
+    LHAPDFHandler_Prod.init();
+
+    LHAPDFHandler LHAPDFHandler_New;
+    LHAPDFHandler_New.CentralPDFName = "NNPDF31_nlo_hessian_pdfas";
+    LHAPDFHandler_New.ErrorSetMember_Start = 1; 
+    LHAPDFHandler_New.ErrorSetMember_End = 100; 
+    LHAPDFHandler_New.AlphaSMember_Down = 101; 
+    LHAPDFHandler_New.AlphaSMember_Up = 102; 
+    LHAPDFHandler_New.init();
+
+    pdfReweight.SetProdPDF( LHAPDFHandler_Prod.PDFCentral );
+    pdfReweight.SetNewPDF( LHAPDFHandler_New.PDFCentral );
+    pdfReweight.SetNewPDFErrorSet( LHAPDFHandler_New.PDFErrorSet );
+    pdfReweight.SetNewPDFAlphaS( LHAPDFHandler_New.PDFAlphaSDown, LHAPDFHandler_New.PDFAlphaSUp );
+
+  }
+
 }
 
 ExampleRun::~ExampleRun(){
@@ -52,7 +84,7 @@ ExampleRun::~ExampleRun(){
 void ExampleRun::executeEvent(){
 
   //================================================================
-  //====  (Example)
+  //====  Example 1
   //====  Dimuon Z-peak events with two muon IDs, with systematics
   //================================================================
 
@@ -125,6 +157,23 @@ void ExampleRun::executeEvent(){
 
     }
 
+  }
+
+  //================================
+  //==== Example 2
+  //==== Using new PDF
+  //================================
+
+  if(RunNewPDF && !IsDATA){
+    //cout << "[ExampleRun::executeEvent] PDF reweight = " << GetPDFReweight() << endl;
+    FillHist("PDFReweight", GetPDFReweight(), 1., 2000, 0.90, 1.10);
+    //cout << "[ExampleRun::executeEvent] PDF reweight for error set (NErrorSet = "<<pdfReweight.NErrorSet<< ") :" << endl;
+    for(int i=0; i<pdfReweight.NErrorSet; i++){
+      //cout << "[ExampleRun::executeEvent]   " << GetPDFReweight(i) << endl;
+      JSFillHist("PDFErrorSet", "PDFReweight_Member_"+TString::Itoa(i,10), GetPDFReweight(i), 1., 2000, 0.90, 1.10);
+    }
+    //cout << "[ExampleRun::executeEvent] PDF AlphaS error = " << GetPDFAlphaSError(0.75, 0.75) << endl;
+    FillHist("PDFAlphasError", GetPDFAlphaSError(0.75, 0.75), 1., 2000, -0.10, 0.10);
   }
 
 }

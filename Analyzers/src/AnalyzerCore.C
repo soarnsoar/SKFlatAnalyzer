@@ -810,6 +810,37 @@ double AnalyzerCore::GetPileUpWeight(int N_vtx, int syst){
 
 }
 
+double AnalyzerCore::GetPDFWeight(LHAPDF::PDF* pdf_){
+
+  double pdf_1 = pdf_->xfxQ(genWeight_id1, genWeight_X1, genWeight_Q);
+  double pdf_2 = pdf_->xfxQ(genWeight_id2, genWeight_X2, genWeight_Q);
+
+  return pdf_1 * pdf_2;
+
+}
+
+double AnalyzerCore::GetPDFReweight(){
+
+  return GetPDFWeight(pdfReweight.NewPDF)/GetPDFWeight(pdfReweight.ProdPDF);
+
+}
+
+double AnalyzerCore::GetPDFReweight(int member){
+
+  return GetPDFWeight(pdfReweight.PDFErrorSet.at(member))/GetPDFWeight(pdfReweight.ProdPDF);
+
+}
+
+double AnalyzerCore::GetPDFAlphaSError(double c_Down, double c_Up){
+
+  double w_New_Central = GetPDFWeight(pdfReweight.NewPDF);
+  double w_New_Down = GetPDFWeight(pdfReweight.NewPDFAlphaSDown);
+  double w_New_Up = GetPDFWeight(pdfReweight.NewPDFAlphaSUp);
+
+  return (c_Up*w_New_Up - c_Down*w_New_Down)/2./w_New_Central;
+
+}
+
 bool AnalyzerCore::IsOnZ(double m, double width){
   if( fabs(m-M_Z) < width ) return true;
   else return false;

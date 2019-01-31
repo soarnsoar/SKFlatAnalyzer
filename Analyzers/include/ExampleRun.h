@@ -13,6 +13,7 @@ public:
   void executeEvent();
 
   bool RunSyst;
+  bool RunNewPDF;
 
   TString IsoMuTriggerName;
   double TriggerSafePtCut;

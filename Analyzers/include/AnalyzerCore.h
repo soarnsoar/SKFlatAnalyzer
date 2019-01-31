@@ -20,6 +20,7 @@
 #include "MCCorrection.h"
 #include "FakeBackgroundEstimator.h"
 #include "CFBackgroundEstimator.h"
+#include "PDFReweight.h"
 
 #define M_Z 91.1876
 #define M_W 80.379
@@ -121,6 +122,16 @@ public:
 
   //==== PU Reweight
   double GetPileUpWeight(int N_vtx, int syst);
+
+  //==== Using new PDF set
+  PDFReweight pdfReweight;
+  double GetPDFWeight(LHAPDF::PDF* pdf_);
+  //==== NewCentral/ProdCentral
+  double GetPDFReweight();
+  //==== NewErrorSet/ProdCentral
+  double GetPDFReweight(int member);
+  //==== AlphaS Error with new PDF
+  double GetPDFAlphaSError(double c_Down, double c_Up);
 
   //==== Functions
 
