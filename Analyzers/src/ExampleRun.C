@@ -48,6 +48,7 @@ void ExampleRun::initializeAnalyzer(){
   //================================
   //==== Example 2
   //==== Using new PDF
+  //==== It consumes so much time, so only being actiavted with --userflags RunNewPDF
   //================================
 
   RunNewPDF = HasFlag("RunNewPDF");
