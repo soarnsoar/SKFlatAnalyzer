@@ -51,7 +51,7 @@ public:
   double GetPrefireWeight(std::vector<Photon> photons, std::vector<Jet> jets, int sys);
 
   std::map< TString, TH1D* > map_hist_pileup;
-  double GetPileUpWeightAsSampleName(int N_vtx, int syst);
+  double GetPileUpWeightBySampleName(int N_vtx, int syst);
   double GetPileUpWeight(int N_vtx, int syst);
 
 };

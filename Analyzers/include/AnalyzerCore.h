@@ -119,6 +119,9 @@ public:
   //==== Prefire
   double GetPrefireWeight(int sys);
 
+  //==== PU Reweight
+  double GetPileUpWeight(int N_vtx, int syst);
+
   //==== Functions
 
   bool IsOnZ(double m, double width);
