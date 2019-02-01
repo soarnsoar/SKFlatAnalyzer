@@ -173,11 +173,6 @@ void ExampleRun::executeEvent(){
       //cout << "[ExampleRun::executeEvent]   " << GetPDFReweight(i) << endl;
       JSFillHist("NewPDF_PDFErrorSet", "PDFReweight_Member_"+TString::Itoa(i,10), GetPDFReweight(i), 1., 2000, 0.90, 1.10);
     }
-    //cout << "[ExampleRun::executeEvent] PDF AlphaS error = " << GetPDFAlphaSError(0.75, 0.75) << endl;
-    FillHist("NewPDF_PDFAlphasError", GetPDFAlphaSError(0.75, 0.75), 1., 2000, -0.10, 0.10);
-    FillHist("PDFAlphasError", GetPDFAlphaSError(), 1., 2000, -0.10, 0.10);
-    FillHist("ScaleError", GetScaleError(), 1., 2000, 0, 0.20);
-
   }
 
 }

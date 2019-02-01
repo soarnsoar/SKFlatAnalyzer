@@ -107,12 +107,6 @@ public:
   std::vector<FatJet> ScaleSDMassFatJets(std::vector<FatJet> jets, int sys);
   std::vector<FatJet> SmearSDMassFatJets(std::vector<FatJet> jets, int sys);
 
-  //==== xsec syst from saved values (i.e., from LHE)
-  //==== PDF AlphaS
-  double GetPDFAlphaSError();
-  //==== Renorm/Fact Scale
-  double GetScaleError();
-
   //====================
   //==== Event Filters
   //====================
@@ -143,8 +137,6 @@ public:
   double GetPDFReweight();
   //==== NewErrorSet/ProdCentral
   double GetPDFReweight(int member);
-  //==== AlphaS Error with new PDF
-  double GetPDFAlphaSError(double c_Down, double c_Up);
 
   //================
   //==== Functions
