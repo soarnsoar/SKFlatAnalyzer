@@ -112,8 +112,5 @@ bool Muon::Pass_POGHighPtWithLooseTrkIso(){
 //==== TEST ID
 
 bool Muon::Pass_TESTID(){
-  if(! isPOGLoose() ) return false;
-  if(! (MiniRelIso()<0.6) ) return false;
-  if(! (fabs(dXY())<0.05 && fabs(dZ())<0.1 && fabs(IP3D()/IP3Derr())<4.) ) return false;
   return true;
 }

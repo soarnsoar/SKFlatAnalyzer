@@ -10,6 +10,7 @@ void SkimTree_LRSMHighPt::initializeAnalyzer(){
       "HLT_Mu50_v",
       "HLT_TkMu50_v",
       "HLT_Ele27_WPTight_Gsf_v",
+      "HLT_Photon175_v",
       "HLT_DoublePhoton60_v",
     };
   }
@@ -19,6 +20,7 @@ void SkimTree_LRSMHighPt::initializeAnalyzer(){
       "HLT_oldMu100_v",
       "HLT_TkMu100_v",
       "HLT_Ele35_WPTight_Gsf_v",
+      "HLT_Photon200_v",
       "HLT_DoublePhoton70_v",
     };
   }

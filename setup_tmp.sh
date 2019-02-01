@@ -66,6 +66,13 @@ export ROOT_INCLUDE_PATH=$ROOT_INCLUDE_PATH:$SKFlat_WD/DataFormats/include/:$SKF
 export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:$SKFlat_LIB_PATH
 
 source $SKFlat_WD/bin/BashColorSets.sh
+
+## Todo list ##
 python python/PrintToDoLists.py
 source $SKFlat_WD/tmp/ToDoLists.sh
 rm $SKFlat_WD/tmp/ToDoLists.sh
+
+## Log Dir ##
+echo "* Your Log Directory Usage"
+du -sh $SKFlatRunlogDir
+echo "-----------------------------------------------------------------"

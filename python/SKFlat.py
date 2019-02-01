@@ -97,8 +97,7 @@ if args.Year == "2016":
 elif args.Year == "2017":
   AvailableDataPeriods = ["B","C","D","E","F"]
 elif args.Year == "2018":
-  print "[SKFlat.py] 2018 NOT YET supported"
-  sys.exit()
+  AvailableDataPeriods = ["A", "B","C","D"]
 else:
   print "[SKFlat.py] Wrong Year : "+args.Year
 
@@ -816,11 +815,11 @@ try:
               os.system('rm output/*.root')
             else:
               os.system('hadd -f '+outputname+'.root job_*/*.root >> JobStatus.log')
-              #os.system('rm job_*/*.root')
+              os.system('rm job_*/*.root')
 
             ## Final Outputpath
 
-            os.system('cp '+outputname+'.root '+FinalOutputPath)
+            os.system('mv '+outputname+'.root '+FinalOutputPath)
             os.chdir(cwd)
 
           PostJobFinishedForEachSample[it_sample] = True

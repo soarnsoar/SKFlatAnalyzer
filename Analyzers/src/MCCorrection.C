@@ -29,12 +29,7 @@ void MCCorrection::ReadHistograms(){
     is >> d; // <rootfilename>
     is >> e; // <histname>
     is >> f; // Class
-    TString tfileName = IDpath+"/Electron/"+d;
-    TFile *file = new TFile(tfileName);
-    if( file->IsZombie()){
-      cout<<"There in no file: "<<tfileName<<", check histmap.txt, exiting.........."<<endl;
-      exit(-1);
-    }
+    TFile *file = new TFile(IDpath+"/Electron/"+d);
 
     if(f=="TH2F"){
       map_hist_Electron[a+"_"+b+"_"+c] = (TH2F *)file->Get(e);
@@ -47,19 +42,14 @@ void MCCorrection::ReadHistograms(){
     }
   }
 
-  if(!map_hist_Electron.empty()){
-    cout << "[MCCorrection::MCCorrection] map_hist_Electron :" << endl;
-    for(std::map< TString, TH2F* >::iterator it=map_hist_Electron.begin(); it!=map_hist_Electron.end(); it++){
-      cout << it->first << endl;
-    }
-  }else{cout<<"Warning: Empt hist_Electron profile input !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!"<<endl;}
-
-  if(!map_graph_Electron.empty()){
-    cout << "[MCCorrection::MCCorrection] map_graph_Electron :" << endl;
-    for(std::map< TString, TGraphAsymmErrors* >::iterator it=map_graph_Electron.begin(); it!=map_graph_Electron.end(); it++){
-      cout << it->first << endl;
-    }
-  }else{cout<<"Warning: Empt graph_Electron profile input !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!"<<endl;}
+  cout << "[MCCorrection::MCCorrection] map_hist_Electron :" << endl;
+  for(std::map< TString, TH2F* >::iterator it=map_hist_Electron.begin(); it!=map_hist_Electron.end(); it++){
+    cout << it->first << endl;
+  }
+  cout << "[MCCorrection::MCCorrection] map_graph_Electron :" << endl;
+  for(std::map< TString, TGraphAsymmErrors* >::iterator it=map_graph_Electron.begin(); it!=map_graph_Electron.end(); it++){
+    cout << it->first << endl;
+  }
 
 
   string elline2;
@@ -76,22 +66,14 @@ void MCCorrection::ReadHistograms(){
     is >> c; // <WPnames>
     is >> d; // <rootfilename>
     is >> e; // <histname>
-    TString tfileName = IDpath+"/Muon/"+d;
-    TFile *file = new TFile(tfileName);
-    if( file->IsZombie()){
-      cout<<"There in no file: "<<tfileName<<", check histmap.txt,  exiting.........."<<endl;
-      exit(-1);
-    }
-
+    TFile *file = new TFile(IDpath+"/Muon/"+d);
     map_hist_Muon[a+"_"+b+"_"+c] = (TH2F *)file->Get(e);
   }
 
-  if(!map_hist_Muon.empty()){
-    cout << "[MCCorrection::MCCorrection] map_hist_Muon :" << endl;
-    for(std::map< TString, TH2F* >::iterator it=map_hist_Muon.begin(); it!=map_hist_Muon.end(); it++){
-      cout << it->first << endl;
-    }
-  }else{cout<<"Warning: Empt Muon profile input !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!"<<endl;}
+  cout << "[MCCorrection::MCCorrection] map_hist_Muon :" << endl;
+  for(std::map< TString, TH2F* >::iterator it=map_hist_Muon.begin(); it!=map_hist_Muon.end(); it++){
+    cout << it->first << endl;
+  }
 
 
   // == Get Prefiring maps
@@ -109,21 +91,10 @@ void MCCorrection::ReadHistograms(){
     is >> a; // Jet, Photon
     is >> b; // <rootfilename>
     is >> c; // <histname>
-
-    TString tfileName = PrefirePath+b;
-    TFile *file = new TFile(tfileName);
-    if( file->IsZombie()){
-      cout<<"There in no file: "<<tfileName<<", check histmap.txt, exiting.........."<<endl;
-      exit(-1);
-    }
     
+    TFile *file = new TFile(PrefirePath+b);
     map_hist_prefire[a + "_prefire"] = (TH2F *)file->Get(c);
   }
-  if(!map_hist_prefire.empty()){
-      cout << "[MCCorrection::MCCorrection] map_hist_prefire :" << endl;
-      for(std::map< TString, TH2F* >::iterator it= map_hist_prefire.begin(); it!=map_hist_prefire.end(); it++){
-        cout << it->first << endl;}
-  }else{cout<<"Warning: Empt prefire profile input !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!"<<endl;}
 
 
   // == Get Pileup Reweight maps
@@ -142,21 +113,18 @@ void MCCorrection::ReadHistograms(){
     is >> b; // syst
     is >> c; // rootfile name
 
-    if(a!=MCSample) continue;
-
-    TString tfileName = PUReweightPath+c;
-    TFile *file = new TFile(tfileName);
-    if( file->IsZombie()){
-      cout<<"There in no file: "<<tfileName<<", check histmap.txt, exiting.........."<<endl;
-      exit(-1);
-    }
-    map_hist_pileup[a+"_"+b+"_pileup"] = (TH1D *)file->Get(a+"_"+b);
+    if(DataYear == 2017 && a!=MCSample) continue;
+    
+    TFile *file = new TFile(PUReweightPath+c);
+    if((TH1D *)file->Get(a+"_"+b)) map_hist_pileup[a+"_"+b+"_pileup"] = (TH1D *)file->Get(a+"_"+b);
+    else cout << "[MCCorrection::ReadHistograms] No : " << a + "_" + b << endl;
   }
-  if(!map_hist_pileup.empty()){
-      cout << "[MCCorrection::MCCorrection] map_hist_pileup :" << endl;
-      for(std::map< TString, TH1D* >::iterator it=map_hist_pileup.begin(); it!=map_hist_pileup.end(); it++){
-        cout << it->first << endl;}
-  }else{cout<<"Warning: Empt pileup profile input !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!"<<endl;}
+/*
+  cout << "[MCCorrection::MCCorrection] map_hist_pileup :" << endl;
+  for(std::map< TString, TH1D* >::iterator it=map_hist_pileup.begin(); it!=map_hist_pileup.end(); it++){
+    cout << it->first << endl;
+  }
+*/
 
 }
 
@@ -557,7 +525,7 @@ double MCCorrection::GetPrefireWeight(std::vector<Photon> photons, std::vector<J
 }
 
 
-double MCCorrection::GetPileUpWeightAsSampleName(int syst, int N_vtx){
+double MCCorrection::GetPileUpWeightBySampleName(int N_vtx, int syst){
   
   int this_bin = N_vtx+1;
   if(N_vtx >= 100) this_bin=100;
@@ -573,13 +541,43 @@ double MCCorrection::GetPileUpWeightAsSampleName(int syst, int N_vtx){
     this_histname += "_sig_up_pileup";
   }
   else{
-    cout << "[MCCorrection::GetPileUpWeightAsSampleName] syst should be 0, -1, or +1" << endl;
+    cout << "[MCCorrection::GetPileUpWeightBySampleName] syst should be 0, -1, or +1" << endl;
     exit(EXIT_FAILURE);
   }
 
   TH1D *this_hist = map_hist_pileup[this_histname];
   if(!this_hist){
-    cout << "[MCCorrection::GetPileUpWeightAsSampleName] No " << this_histname << endl;
+    cout << "[MCCorrection::GetPileUpWeightBySampleName] No " << this_histname << endl;
+    exit(EXIT_FAILURE);
+  }
+
+  return this_hist->GetBinContent(this_bin);
+
+}
+
+double MCCorrection::GetPileUpWeight(int N_vtx, int syst){
+
+  int this_bin = N_vtx+1;
+  if(N_vtx >= 100) this_bin=100;
+
+  TString this_histname = "MC_" + TString::Itoa(DataYear,10);
+  if(syst == 0){
+    this_histname += "_central_pileup";
+  }
+  else if(syst == -1){
+    this_histname += "_sig_down_pileup";
+  }
+  else if(syst == 1){
+    this_histname += "_sig_up_pileup";
+  }
+  else{
+    cout << "[MCCorrection::GetPileUpWeightBySampleName] syst should be 0, -1, or +1" << endl;
+    exit(EXIT_FAILURE);
+  }
+
+  TH1D *this_hist = map_hist_pileup[this_histname];
+  if(!this_hist){
+    cout << "[MCCorrection::GetPileUpWeightBySampleName] No " << this_histname << endl;
     exit(EXIT_FAILURE);
   }
 

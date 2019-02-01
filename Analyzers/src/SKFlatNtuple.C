@@ -377,7 +377,7 @@ void SKFlatNtuple::Init()
    fChain->SetBranchAddress("lumi", &lumi, &b_lumiBlock);
    fChain->SetBranchAddress("Rho", &Rho, &b_Rho);
    fChain->SetBranchAddress("nPV", &nPV, &b_nPV);
-   if(!IsDATA){
+   if(!IsDATA && DataYear<=2017){
    fChain->SetBranchAddress("L1PrefireReweight_Central", &L1PrefireReweight_Central, &b_L1PrefireReweight_Central);
    fChain->SetBranchAddress("L1PrefireReweight_Up", &L1PrefireReweight_Up, &b_L1PrefireReweight_Up);
    fChain->SetBranchAddress("L1PrefireReweight_Down", &L1PrefireReweight_Down, &b_L1PrefireReweight_Down);
