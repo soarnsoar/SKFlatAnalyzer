@@ -17,7 +17,12 @@ void CFBackgroundEstimator::ReadHistograms(){
     TString a,b,c,d,e;
     is >> a; // <ID>
     is >> b; // <rootfilename>
-    TFile *file = new TFile(datapath+"/"+b);
+    TString tfileName = datapath+"/"+b;
+    TFile *file = new TFile(tfileName);
+    if( file->IsZombie()){
+      cout<<"There in no file: "<<tfileName<<", check histmap_Electron.txt, exiting.........."<<endl;
+      exit(-1);
+    }
     TList *histlist = file->GetListOfKeys();
     for(int i=0;i<histlist->Capacity();i++){
       TString this_cfname = histlist->At(i)->GetName();
@@ -33,7 +38,12 @@ void CFBackgroundEstimator::ReadHistograms(){
     TString a,b,c,d,e;
     is >> a; // <ID>
     is >> b; // <rootfilename>
-    TFile *file = new TFile(datapath+"/"+b);
+    TString tfileName = datapath+"/"+b;
+    TFile *file = new TFile(tfileName);
+    if( file->IsZombie()){
+      cout<<"There in no file: "<<tfileName<<", check histmap_Muon.txt, exiting.........."<<endl;
+      exit(-1);
+    }
     TList *histlist = file->GetListOfKeys();
     for(int i=0;i<histlist->Capacity();i++){
       TString this_cfname = histlist->At(i)->GetName();
