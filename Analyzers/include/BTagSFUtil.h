@@ -1,0 +1,80 @@
+#include "BTagCalibrationStandalone.h"
+#include <Riostream.h>
+#include "TRandom3.h"
+#include "TMath.h"
+#include "TF1.h"
+#include <iostream>
+using namespace std;
+
+class BTagSFUtil{
+
+ public:
+    
+  // constructors
+  BTagSFUtil(string MeasurementType, string BTagAlgorithmBF, TString OperatingPoint, int SystematicIndex = 0, int Seed = 0);
+
+  // destructor
+  ~BTagSFUtil();
+
+
+  // Function used in analyzer to determine if jet is tagged
+  bool IsTagged(float JetDiscriminant, int JetFlavor, float JetPt, float JetEta);
+
+
+  // Functions used in IsTagged to determine tag rate with syst                                                                                                                                                                                                      
+  float GetJetSF(int JetFlavor, float JetPt, float JetEta);
+  float GetJetSFPeriodDependant(int JetFlavor, float JetPt, float JetEta, TString iperiod);
+  float JetTagEfficiency(int JetFlavor, float JetPt, float JetEta);
+
+
+  // New functions for SKAnalzyer
+  void SetMCSample(TString s);
+  void SetDataYear(int i);
+  void SetPeriodDependancy(bool b);
+
+
+ private:
+
+
+  // map to store BTagCalibrationReader objects, determined by setup/year
+  std::map <TString, BTagCalibrationReader*> ReaderMap;
+
+
+  
+  void GetBTagPayload(TString BTagAlgorithm, TString DataPeriod);
+
+  // SF functions
+  float ScaleFactorB(float JetPt, int SystematicFlag);
+  float ScaleFactorLight(float JetPt, float JetEta, int SystematicFlag);
+  float ScaleFactorJet(int JetFlavor, float JetPt, float JetEta, int SystematicFlag);
+
+  // Efficiency functions
+  float TagEfficiencyB(float JetPt, float JetEta);
+  float TagEfficiencyC(float JetPt, float JetEta);
+  float TagEfficiencyLight(float JetPt, float JetEta);
+
+  
+  TRandom3* rand_;
+
+  TF1 *funSFb, *funSFlight[4][3];
+
+  TString TaggerName, TaggerOP;
+  TString MCSample;
+
+  float TaggerCut;
+  float BTagPtBinEdge[50];
+  float SFb_error[50];
+  float BTagEtaBinEdge[50];
+  float FastSimPtBinEdge[50], FastSimEtaBinEdge[50][3];
+  float FastSimCF_error[50][2][3]; 
+  float FastSimCF[50][2][3];
+
+  int nBTagEtaBins;
+  int nBTagPtBins;
+  int nFastSimPtBins, nFastSimEtaBins[3];
+  int FastSimSystematic;
+  int DataYear;
+
+ 
+  bool period_dependancy;
+};
