@@ -49,9 +49,17 @@ class BTagSFUtil{
   float ScaleFactorJet(int JetFlavor, float JetPt, float JetEta, int SystematicFlag);
 
   // Efficiency functions
-  float TagEfficiencyB(float JetPt, float JetEta);
-  float TagEfficiencyC(float JetPt, float JetEta);
-  float TagEfficiencyLight(float JetPt, float JetEta);
+  float TagEfficiencyB_2016(float JetPt, float JetEta);
+  float TagEfficiencyC_2016(float JetPt, float JetEta);
+  float TagEfficiencyLight_2016(float JetPt, float JetEta);
+
+  float TagEfficiencyB_2017(float JetPt, float JetEta);
+  float TagEfficiencyC_2017(float JetPt, float JetEta);
+  float TagEfficiencyLight_2017(float JetPt, float JetEta);
+
+  float TagEfficiencyB_2018(float JetPt, float JetEta);
+  float TagEfficiencyC_2018(float JetPt, float JetEta);
+  float TagEfficiencyLight_2018(float JetPt, float JetEta);
 
   
   TRandom3* rand_;

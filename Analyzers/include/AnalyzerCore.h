@@ -20,6 +20,8 @@
 #include "MCCorrection.h"
 #include "FakeBackgroundEstimator.h"
 #include "CFBackgroundEstimator.h"
+#include "BTagSFUtil.h"
+
 
 #define M_Z 91.1876
 #define M_W 80.379
@@ -202,6 +204,10 @@ public:
 
   TFile *outfile;
   void SetOutfilePath(TString outname);
+
+  BTagSFUtil* btag_util;
+
+
 
 };
 

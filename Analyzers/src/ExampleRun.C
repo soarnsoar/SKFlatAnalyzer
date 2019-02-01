@@ -2,6 +2,11 @@
 
 ExampleRun::ExampleRun(){
 
+
+  BTagSFUtil* btag_util         = new BTagSFUtil("incl"  , "DeepCSV", "Medium");
+  btag_util->SetDataYear(2017);
+  btag_util->SetPeriodDependancy(true);
+  
 }
 
 void ExampleRun::initializeAnalyzer(){
@@ -152,6 +157,8 @@ void ExampleRun::executeEventFromParameter(AnalyzerParameter param){
   //==============
   if(! (ev.PassTrigger(IsoMuTriggerName) )) return;
 
+
+
   //======================
   //==== Copy AllObjects
   //======================
@@ -222,6 +229,18 @@ void ExampleRun::executeEventFromParameter(AnalyzerParameter param){
   std::sort(muons.begin(), muons.end(), PtComparing);
   //==== 2) jets : similar, but also when applying new JEC, ordering is changes. This is important if you use leading jets
   std::sort(jets.begin(), jets.end(), PtComparing);
+
+
+  // -----TEST
+  for(unsigned int ij = 0 ; ij < jets.size(); ij++){
+
+    if (btag_util->IsTagged(jets.at(ij).GetTaggerResult(Jet::DeepCSV),  jets.at(ij).hadronFlavour() , jets.at(ij).Pt(), jets.at(ij).Eta()))
+      cout << "Is b tagged (DeepCSV) medium" << endl;
+    else       cout << "Is not b tagged (DeepCSV)" << endl;
+    
+      
+  }
+
 
   //=========================
   //==== Event selections..

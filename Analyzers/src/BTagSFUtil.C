@@ -1,6 +1,8 @@
 #include "BTagSFUtil.h"
 #include "BTag/BTagCalibrationStandalone.C"
 #include "BTag/BTagEfficienciesTTbar16.C" // Change this to your sample efficiency  
+#include "BTag/BTagEfficienciesTTbar17.C" // Change this to your sample efficiency  
+#include "BTag/BTagEfficienciesTTbar18.C" // Change this to your sample efficiency  
 
 
 void BTagSFUtil::SetMCSample(TString s){
@@ -15,6 +17,10 @@ void BTagSFUtil::SetPeriodDependancy(bool b){
 }
 
 BTagSFUtil::BTagSFUtil(string MeasurementType, string BTagAlgorithm,  TString OperatingPoint, int SystematicIndex, int Seed) {
+
+  MCSample = "";
+  DataYear = 0;
+  period_dependancy = true;
 
   rand_ = new TRandom3(Seed);
 
@@ -112,10 +118,24 @@ BTagSFUtil::~BTagSFUtil() {
 
 float BTagSFUtil::JetTagEfficiency(int JetFlavor, float JetPt, float JetEta) {
 
-  if (abs(JetFlavor)==5) return TagEfficiencyB(JetPt, JetEta);
-  else if (abs(JetFlavor)==4) return TagEfficiencyC(JetPt, JetEta);
-  else return TagEfficiencyLight(JetPt, JetEta);
+  
+  if(DataYear == 2016){
+    if (abs(JetFlavor)==5) return TagEfficiencyB_2016(JetPt, JetEta);
+    else if (abs(JetFlavor)==4) return TagEfficiencyC_2016(JetPt, JetEta);
+    else return TagEfficiencyLight_2016(JetPt, JetEta);
+  }
+  else  if(DataYear == 2017){
+    if (abs(JetFlavor)==5) return TagEfficiencyB_2017(JetPt, JetEta);
+    else if (abs(JetFlavor)==4) return TagEfficiencyC_2017(JetPt, JetEta);
+    else return TagEfficiencyLight_2017(JetPt, JetEta);
+  }
+  else  if(DataYear == 2018){
+    if (abs(JetFlavor)==5) return TagEfficiencyB_2018(JetPt, JetEta);
+    else if (abs(JetFlavor)==4) return TagEfficiencyC_2018(JetPt, JetEta);
+    else return TagEfficiencyLight_2018(JetPt, JetEta);
+  }
 
+  return -999999.;
 }
 
 
@@ -218,6 +238,11 @@ float BTagSFUtil::GetJetSFPeriodDependant(int JetFlavor, float JetPt, float JetE
 
 bool BTagSFUtil::IsTagged(float JetDiscriminant, int JetFlavor, float JetPt, float JetEta) {
   
+
+  /// return false if year is not set
+  if (DataYear == 0) return false;
+
+
   bool isBTagged = JetDiscriminant>TaggerCut;
 
   if (JetFlavor==-999999) return isBTagged; // Data: no correction needed
@@ -237,7 +262,7 @@ bool BTagSFUtil::IsTagged(float JetDiscriminant, int JetFlavor, float JetPt, flo
     if( !isBTagged ) {
 
       float Btag_eff = JetTagEfficiency(JetFlavor, JetPt, fabs(JetEta));
-
+      cout << "Btag_eff = " << Btag_eff << endl;
       //fraction of jets that need to be upgraded
       float mistagPercent = (1.0 - Btag_SF) / (1.0 - (1./Btag_eff) );
       
