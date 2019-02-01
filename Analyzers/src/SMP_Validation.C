@@ -180,9 +180,9 @@ void SMP_Validation::executeEventFromParameter(TString channelname,Event* ev){
   /////////////////PUreweight///////////////////
   double PUreweight=1.,PUreweight_up=1.,PUreweight_down=1.;
   if(!IsDATA){
-    PUreweight=mcCorr.GetPileUpWeightBySampleName(nPileUp,0);
-    PUreweight_up=mcCorr.GetPileUpWeightBySampleName(nPileUp,1);
-    PUreweight_down=mcCorr.GetPileUpWeightBySampleName(nPileUp,-1);
+    PUreweight=mcCorr.GetPileUpWeightAsSampleName(0,nPileUp);
+    PUreweight_up=mcCorr.GetPileUpWeightAsSampleName(1,nPileUp);
+    PUreweight_down=mcCorr.GetPileUpWeightAsSampleName(-1,nPileUp);
     totalweight*=PUreweight;
   }
   FillHist("cutflow",1.5,totalweight,20,0,20);
