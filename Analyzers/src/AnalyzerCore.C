@@ -1512,7 +1512,7 @@ bool AnalyzerCore::IsSignalPID(int pid){
 
 }
 
-double AnalyzerCore::GetTopPtReWeight(std::vector<Gen> gens){
+double AnalyzerCore::GetTopPtReweight(std::vector<Gen> gens){
   //==== ref: https://twiki.cern.ch/twiki/bin/viewauth/CMS/TopPtReweighting2017
   //==== Only top quarks in SM ttbar events must be reweighted, 
   //==== not single tops or tops from BSM production mechanisms.

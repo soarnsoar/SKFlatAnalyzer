@@ -152,7 +152,7 @@ public:
   int GetLeptonType(Lepton lep, std::vector<Gen> gens);
   int GetGenPhotonType(Gen genph, std::vector<Gen> gens);
   bool IsSignalPID(int pid);
-  double GetTopPtReWeight(std::vector<Gen> gens);
+  double GetTopPtReweight(std::vector<Gen> gens);
 
   //==== Plotting
 
