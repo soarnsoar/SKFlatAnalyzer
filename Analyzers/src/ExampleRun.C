@@ -175,6 +175,42 @@ void ExampleRun::executeEvent(){
     }
   }
 
+  //================================================
+  //==== Example 3
+  //==== How to estimate xsec errors (PDF & Scale)
+  //==== For example, MET
+  //================================================
+
+  if(!IsDATA){
+
+    Event ev = GetEvent();
+    double MET = ev.GetMETVector().Pt();
+
+    //==== 1) PDF Error
+    //==== Obtain RMS of the distribution later
+    for(unsigned int i=0; i<PDFWeights_Error->size(); i++){
+      JSFillHist("XSecError", "MET_PDFError_"+TString::Itoa(i,10), MET, PDFWeights_Error->at(i), 200, 0., 200.);
+    }
+
+    //==== 2) PDF AlphaS
+    //==== Look for PDF4LHC paper..
+    //==== https://arxiv.org/abs/1510.03865
+    if(PDFWeights_AlphaS->size()==2){
+      JSFillHist("XSecError", "MET_PDFAlphaS_Down", MET, PDFWeights_AlphaS->at(0), 200, 0., 200.);
+      JSFillHist("XSecError", "MET_PDFAlphaS_Up", MET, PDFWeights_AlphaS->at(1), 200, 0., 200.);
+    }
+
+    //==== 3) Scale
+    //==== Obtain the envelop of the distribution later
+    for(unsigned int i=0; i<PDFWeights_Scale->size(); i++){
+      //==== i=5 and 7 are unphysical
+      if(i==5) continue;
+      if(i==7) continue;
+      JSFillHist("XSecError", "MET_Scale_"+TString::Itoa(i,10), MET, PDFWeights_Scale->at(i), 200, 0., 200.);
+    }
+
+  }
+
 }
 
 void ExampleRun::executeEventFromParameter(AnalyzerParameter param){
@@ -191,7 +227,6 @@ void ExampleRun::executeEventFromParameter(AnalyzerParameter param){
 
   if(!PassMETFilter()) return;
 
-  //==== Get Event object
   Event ev = GetEvent();
   Particle METv = ev.GetMETVector();
 
