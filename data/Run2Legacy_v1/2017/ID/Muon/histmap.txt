@@ -9,8 +9,3 @@ Trigger	Eff_DATA	Mu50_POGHighPtLooseTrkIso	EfficienciesAndSF_RunBtoF_Nov17Nov201
 Trigger	Eff_MC	Mu50_POGHighPtLooseTrkIso	EfficienciesAndSF_RunBtoF_Nov17Nov2017.root	Mu50_PtEtaBins/efficienciesMC/pt_abseta_MC
 Trigger Eff_DATA	Mu50_POGHighPt		MuonTriggerEfficiency_ZprimeToNN_Mu50_Run2017BCDEF_Central.root	TriggerEff_HNDilepton_BCDEF_Data
 Trigger Eff_MC		Mu50_POGHighPt		MuonTriggerEfficiency_ZprimeToNN_Mu50_Run2017BCDEF_Central.root	TriggerEff_HNDilepton_BCDEF_MC
-#######################################
-### SMP study: private charge inclusive SF
-#######################################
-Trigger SF	Leg17_POGTight	MuTrgEff_IsoMu17Mu8_Iso17_Run2017BCDEF.root	TriggerEff_AFB_2017BCDEF_SF
-Trigger SF      Leg8_POGTight	MuTrgEff_IsoMu17Mu8_Mu8_OR_TkMu8_Run2017BCDEF.root	TriggerEff_AFB_2017BCDEF_SF
