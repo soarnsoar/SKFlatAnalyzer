@@ -124,7 +124,7 @@ def CheckJobStatus(logfiledir, cycle, jobnumber, hostname):
         break
 
     # [SKFlatNtuple::Loop] JOB FINISHED 2018-12-06 04:10:37
-    line_JobFinished = LASTLINE.replace("[SKFlatNtuple::Loop] JOB FINISHED ","")
+    line_JobFinished = LASTLINE.replace("[SKFlatNtuple::~SKFlatNtuple] JOB FINISHED ","")
     EventDone = GetEventDone(ForTimeEst)
     return "FINISHED"+"\tEVDONE:"+EventDone+"\t"+line_JobStart+"\t"+line_JobFinished
 

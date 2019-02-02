@@ -36,7 +36,7 @@ void SKFlatNtuple::Loop(){
 
   }
 
-  cout << "[SKFlatNtuple::Loop] JOB FINISHED " << printcurrunttime() << endl;
+  cout << "[SKFlatNtuple::Loop] LOOP END " << printcurrunttime() << endl;
 
 }
 
@@ -60,6 +60,7 @@ SKFlatNtuple::~SKFlatNtuple()
 {
   if (!fChain) return;
   delete fChain->GetCurrentFile();
+  cout << "[SKFlatNtuple::~SKFlatNtuple] JOB FINISHED " << printcurrunttime() << endl;
 }
 
 Int_t SKFlatNtuple::GetEntry(Long64_t entry)
