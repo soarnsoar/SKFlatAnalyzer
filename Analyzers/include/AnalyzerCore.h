@@ -119,9 +119,9 @@ public:
 
   //===== Estimators
 
-  MCCorrection mcCorr;
-  FakeBackgroundEstimator fakeEst;
-  CFBackgroundEstimator cfEst;
+  MCCorrection *mcCorr;
+  FakeBackgroundEstimator *fakeEst;
+  CFBackgroundEstimator *cfEst;
   void initializeAnalyzerTools();
 
   //==== Prefire
@@ -131,7 +131,7 @@ public:
   double GetPileUpWeight(int N_vtx, int syst);
 
   //==== Using new PDF set
-  PDFReweight pdfReweight;
+  PDFReweight *pdfReweight;
   double GetPDFWeight(LHAPDF::PDF* pdf_);
   //==== NewCentral/ProdCentral
   double GetPDFReweight();

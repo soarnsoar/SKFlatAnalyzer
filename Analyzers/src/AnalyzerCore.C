@@ -746,18 +746,18 @@ void AnalyzerCore::initializeAnalyzerTools(){
 
   //==== MCCorrection
   if(!IsDATA){
-    mcCorr.SetMCSample(MCSample);
-    mcCorr.SetDataYear(DataYear);
-    mcCorr.ReadHistograms();
+    mcCorr->SetMCSample(MCSample);
+    mcCorr->SetDataYear(DataYear);
+    mcCorr->ReadHistograms();
   }
 
   //==== FakeBackgroundEstimator
-  fakeEst.SetDataYear(DataYear);
-  fakeEst.ReadHistograms();
+  fakeEst->SetDataYear(DataYear);
+  fakeEst->ReadHistograms();
 
   //==== CFBackgroundEstimator
-  cfEst.SetDataYear(DataYear);
-  cfEst.ReadHistograms();
+  cfEst->SetDataYear(DataYear);
+  cfEst->ReadHistograms();
 
 }
 
@@ -773,7 +773,7 @@ double AnalyzerCore::GetPrefireWeight(int sys){
       else if(sys>0) return L1PrefireReweight_Up;
       else return L1PrefireReweight_Down;
 
-      //return mcCorr.GetPrefireWeight(photons, jets, sys);
+      //return mcCorr->GetPrefireWeight(photons, jets, sys);
 
     }
 
@@ -791,10 +791,10 @@ double AnalyzerCore::GetPileUpWeight(int N_vtx, int syst){
   else{
 
     if(DataYear==2016){
-      return mcCorr.GetPileUpWeight(N_vtx, syst);
+      return mcCorr->GetPileUpWeight(N_vtx, syst);
     }
     else if(DataYear==2017){
-      return mcCorr.GetPileUpWeightBySampleName(N_vtx, syst);
+      return mcCorr->GetPileUpWeightBySampleName(N_vtx, syst);
     }
     else if(DataYear==2018){
       //==== TODO 2018 not yet added
@@ -821,13 +821,13 @@ double AnalyzerCore::GetPDFWeight(LHAPDF::PDF* pdf_){
 
 double AnalyzerCore::GetPDFReweight(){
 
-  return GetPDFWeight(pdfReweight.NewPDF)/GetPDFWeight(pdfReweight.ProdPDF);
+  return GetPDFWeight(pdfReweight->NewPDF)/GetPDFWeight(pdfReweight->ProdPDF);
 
 }
 
 double AnalyzerCore::GetPDFReweight(int member){
 
-  return GetPDFWeight(pdfReweight.PDFErrorSet.at(member))/GetPDFWeight(pdfReweight.ProdPDF);
+  return GetPDFWeight(pdfReweight->PDFErrorSet.at(member))/GetPDFWeight(pdfReweight->ProdPDF);
 
 }
 

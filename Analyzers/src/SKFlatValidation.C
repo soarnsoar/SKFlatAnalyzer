@@ -236,7 +236,7 @@ void SKFlatValidation::executeEventFromParameter(AnalyzerParameter param){
       //cout << "GetTriggerLumi = " << ev.GetTriggerLumi("Full") << endl;
       weight *= weight_norm_1invpb*ev.GetTriggerLumi("Full")*ev.MCweight()*weight_Prefire;
 
-      mcCorr.IgnoreNoHist = param.MCCorrrectionIgnoreNoHist;
+      mcCorr->IgnoreNoHist = param.MCCorrrectionIgnoreNoHist;
 
       //==== FIXME add third lepton veto later
       if(Suffix.Contains("SingleMuon")){
@@ -251,9 +251,9 @@ void SKFlatValidation::executeEventFromParameter(AnalyzerParameter param){
             this_eta = this_tuneP.Eta();
           }
 
-          double this_idsf  = mcCorr.MuonID_SF (param.Muon_ID_SF_Key,  this_eta, this_pt);
-          double this_isosf = mcCorr.MuonISO_SF(param.Muon_ISO_SF_Key, this_eta, this_pt);
-          double this_trigsf = mcCorr.MuonTrigger_SF(param.Muon_Trigger_SF_Key, TriggerNameForSF_Muon, muons);
+          double this_idsf  = mcCorr->MuonID_SF (param.Muon_ID_SF_Key,  this_eta, this_pt);
+          double this_isosf = mcCorr->MuonISO_SF(param.Muon_ISO_SF_Key, this_eta, this_pt);
+          double this_trigsf = mcCorr->MuonTrigger_SF(param.Muon_Trigger_SF_Key, TriggerNameForSF_Muon, muons);
 
           weight *= this_idsf*this_isosf*this_trigsf;
 
@@ -261,8 +261,8 @@ void SKFlatValidation::executeEventFromParameter(AnalyzerParameter param){
       }
       if( Suffix.Contains("DiElectron") || Suffix.Contains("SingleElectron") || Suffix.Contains("DiPhoton") ){
         for(unsigned int i=0; i<electrons.size(); i++){
-          double this_recosf = mcCorr.ElectronReco_SF(electrons.at(i).scEta(),electrons.at(i).Pt());
-          double this_idsf = mcCorr.ElectronID_SF(param.Electron_ID_SF_Key, electrons.at(i).scEta(), electrons.at(i).Pt());
+          double this_recosf = mcCorr->ElectronReco_SF(electrons.at(i).scEta(),electrons.at(i).Pt());
+          double this_idsf = mcCorr->ElectronID_SF(param.Electron_ID_SF_Key, electrons.at(i).scEta(), electrons.at(i).Pt());
           weight *= this_recosf*this_idsf;
         }
       }

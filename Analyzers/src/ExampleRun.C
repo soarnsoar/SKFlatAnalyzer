@@ -21,7 +21,7 @@ void ExampleRun::initializeAnalyzer(){
     "POGMedium",
     "POGTight"
   };
-  //==== corresponding Muon ID SF Keys for mcCorr.MuonID_SF()
+  //==== corresponding Muon ID SF Keys for mcCorr->MuonID_SF()
   MuonIDSFKeys = {
     "NUM_MediumID_DEN_genTracks",
     "NUM_TightID_DEN_genTracks",
@@ -67,10 +67,10 @@ void ExampleRun::initializeAnalyzer(){
     LHAPDFHandler_New.AlphaSMember_Up = 102; 
     LHAPDFHandler_New.init();
 
-    pdfReweight.SetProdPDF( LHAPDFHandler_Prod.PDFCentral );
-    pdfReweight.SetNewPDF( LHAPDFHandler_New.PDFCentral );
-    pdfReweight.SetNewPDFErrorSet( LHAPDFHandler_New.PDFErrorSet );
-    pdfReweight.SetNewPDFAlphaS( LHAPDFHandler_New.PDFAlphaSDown, LHAPDFHandler_New.PDFAlphaSUp );
+    pdfReweight->SetProdPDF( LHAPDFHandler_Prod.PDFCentral );
+    pdfReweight->SetNewPDF( LHAPDFHandler_New.PDFCentral );
+    pdfReweight->SetNewPDFErrorSet( LHAPDFHandler_New.PDFErrorSet );
+    pdfReweight->SetNewPDFAlphaS( LHAPDFHandler_New.PDFAlphaSDown, LHAPDFHandler_New.PDFAlphaSUp );
 
   }
 
@@ -168,8 +168,8 @@ void ExampleRun::executeEvent(){
   if(RunNewPDF && !IsDATA){
     //cout << "[ExampleRun::executeEvent] PDF reweight = " << GetPDFReweight() << endl;
     FillHist("NewPDF_PDFReweight", GetPDFReweight(), 1., 2000, 0.90, 1.10);
-    //cout << "[ExampleRun::executeEvent] PDF reweight for error set (NErrorSet = "<<pdfReweight.NErrorSet<< ") :" << endl;
-    for(int i=0; i<pdfReweight.NErrorSet; i++){
+    //cout << "[ExampleRun::executeEvent] PDF reweight for error set (NErrorSet = "<<pdfReweight->NErrorSet<< ") :" << endl;
+    for(int i=0; i<pdfReweight->NErrorSet; i++){
       //cout << "[ExampleRun::executeEvent]   " << GetPDFReweight(i) << endl;
       JSFillHist("NewPDF_PDFErrorSet", "PDFReweight_Member_"+TString::Itoa(i,10), GetPDFReweight(i), 1., 2000, 0.90, 1.10);
     }
@@ -343,10 +343,10 @@ void ExampleRun::executeEventFromParameter(AnalyzerParameter param){
     //==== Example of applying Muon scale factors
     for(unsigned int i=0; i<muons.size(); i++){
 
-      double this_idsf  = mcCorr.MuonID_SF (param.Muon_ID_SF_Key,  muons.at(i).Eta(), muons.at(i).MiniAODPt());
+      double this_idsf  = mcCorr->MuonID_SF (param.Muon_ID_SF_Key,  muons.at(i).Eta(), muons.at(i).MiniAODPt());
 
       //==== If you have iso SF, do below. Here we don't.
-      //double this_isosf = mcCorr.MuonISO_SF(param.Muon_ISO_SF_Key, muons.at(i).Eta(), muons.at(i).MiniAODPt());
+      //double this_isosf = mcCorr->MuonISO_SF(param.Muon_ISO_SF_Key, muons.at(i).Eta(), muons.at(i).MiniAODPt());
       double this_isosf = 1.;
 
       weight *= this_idsf*this_isosf;
