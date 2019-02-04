@@ -3,9 +3,9 @@
 ExampleRun::ExampleRun(){
 
 
-  BTagSFUtil* btag_util         = new BTagSFUtil("incl"  , "DeepCSV", "Medium");
-  btag_util->SetDataYear(2017);
-  btag_util->SetPeriodDependancy(true);
+  //BTagSFUtil* btag_util         = new BTagSFUtil("incl"  , "DeepCSV", "Medium");
+  //btag_util->SetDataYear(2017);
+  //btag_util->SetPeriodDependancy(true);
   
 }
 
@@ -42,6 +42,8 @@ void ExampleRun::initializeAnalyzer(){
     IsoMuTriggerName = "HLT_IsoMu27_v";
     TriggerSafePtCut = 29.;
   }
+
+
 
   cout << "[ExampleRun::initializeAnalyzer] IsoMuTriggerName = " << IsoMuTriggerName << endl;
   cout << "[ExampleRun::initializeAnalyzer TriggerSafePtCut = " << TriggerSafePtCut << endl;
@@ -232,14 +234,14 @@ void ExampleRun::executeEventFromParameter(AnalyzerParameter param){
 
 
   // -----TEST
-  for(unsigned int ij = 0 ; ij < jets.size(); ij++){
+  /*for(unsigned int ij = 0 ; ij < jets.size(); ij++){
 
     if (btag_util->IsTagged(jets.at(ij).GetTaggerResult(Jet::DeepCSV),  jets.at(ij).hadronFlavour() , jets.at(ij).Pt(), jets.at(ij).Eta()))
       cout << "Is b tagged (DeepCSV) medium" << endl;
     else       cout << "Is not b tagged (DeepCSV)" << endl;
     
       
-  }
+    }*/
 
 
   //=========================
