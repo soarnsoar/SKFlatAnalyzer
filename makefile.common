@@ -1,7 +1,7 @@
 ARCH_LOC := $(wildcard $(shell root-config --prefix)/etc/Makefile.arch)
 include $(ARCH_LOC)
 
-MAKEFLAGS = --no-print-directory -r -s -j4
+MAKEFLAGS = --no-print-directory -r -s
 
 VPATH    += $(OBJDIR) $(SRCDIR)
 INCLUDES += -Iinclude -I./
