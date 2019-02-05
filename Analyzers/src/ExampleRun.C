@@ -74,6 +74,15 @@ void ExampleRun::initializeAnalyzer(){
 
   }
 
+  //================================================
+  //==== Example 3
+  //==== How to estimate xsec errors (PDF & Scale)
+  //==== For example, MET
+  //================================================
+
+  RunXSecSyst = HasFlag("RunXSecSyst");
+  cout << "[ExampleRun::initializeAnalyzer] RunXSecSyst = " << RunXSecSyst << endl;
+
 }
 
 ExampleRun::~ExampleRun(){
@@ -181,7 +190,7 @@ void ExampleRun::executeEvent(){
   //==== For example, MET
   //================================================
 
-  if(!IsDATA){
+  if(RunXSecSyst && !IsDATA){
 
     Event ev = GetEvent();
     double MET = ev.GetMETVector().Pt();

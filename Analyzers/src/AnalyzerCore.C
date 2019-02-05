@@ -2,16 +2,38 @@
 
 AnalyzerCore::AnalyzerCore(){
 
+  mcCorr = new MCCorrection();
+  fakeEst = new FakeBackgroundEstimator();
+  cfEst = new CFBackgroundEstimator();
+  pdfReweight = new PDFReweight();
+
 }
 
 AnalyzerCore::~AnalyzerCore(){
+
+  //==== output rootfile
+
+  outfile->Close();
+
+  //=== hist maps
 
   for(std::map< TString, TH1D* >::iterator mapit = maphist_TH1D.begin(); mapit!=maphist_TH1D.end(); mapit++){
     delete mapit->second;
   }
   maphist_TH1D.clear();
 
-  outfile->Close();
+  for(std::map< TString, TH2D* >::iterator mapit = maphist_TH2D.begin(); mapit!=maphist_TH2D.end(); mapit++){
+    delete mapit->second;
+  }
+  maphist_TH2D.clear();
+
+  //==== Tools
+
+  delete mcCorr;
+  delete fakeEst;
+  delete cfEst;
+  delete pdfReweight;
+
 }
 
 void AnalyzerCore::SetOutfilePath(TString outname){
