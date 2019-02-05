@@ -347,7 +347,7 @@ should_transfer_files = YES
 when_to_transfer_output = ON_EXIT
 output = job_$(Process).log
 error = job_$(Process).err
-transfer_input_files = {0}, {1}, {4}, {5}, {6}
+transfer_input_files = {0}, {1}, {4}, {5}, {6}, {7}
 transfer_output_remaps = "hists.root = output/hists_$(Process).root"
 queue {2}
 '''.format(base_rundir+'/runFile.tar.gz', base_rundir+'/lib.tar.gz',str(NJobs), commandsfilename, base_rundir+'/data.tar.gz', base_rundir+'/Analyzers.tar.gz', base_rundir+'/AnalyzerTools.tar.gz', base_rundir+'/DataFormats.tar.gz')
@@ -363,7 +363,7 @@ should_transfer_files = YES
 when_to_transfer_output = ON_EXIT
 output = job_$(Process).log
 error = job_$(Process).err
-transfer_input_files = {0}, {1}, {4}, {5}, {6}
+transfer_input_files = {0}, {1}, {4}, {5}, {6}, {7}
 accounting_group=group_cms
 +SingularityImage = "/cvmfs/singularity.opensciencegrid.org/opensciencegrid/osgvo-el6:latest"
 +SingularityBind = "/cvmfs, /cms, /share"
