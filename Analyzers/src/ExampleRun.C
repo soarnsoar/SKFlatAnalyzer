@@ -6,18 +6,22 @@ ExampleRun::ExampleRun(){
 
 void ExampleRun::initializeAnalyzer(){
 
-  //==== if you've done "--userflags RunSyst" with SKFlat.py, HasFlag("RunSyst") will return "true"
-  RunSyst = HasFlag("RunSyst");
+  //================================================================
+  //====  Example 1
+  //====  Dimuon Z-peak events with two muon IDs, with systematics
+  //================================================================
 
+  //==== if you use "--userflags RunSyst" with SKFlat.py, HasFlag("RunSyst") will return "true"
+  RunSyst = HasFlag("RunSyst");
   cout << "[ExampleRun::initializeAnalyzer] RunSyst = " << RunSyst << endl;
 
-  //==== In the following examples, I will obtain dimuon Z-peak with two muon IDs
+  //==== Dimuon Z-peak with two muon IDs
   //==== I defined "vector<TString> MuonIDs;" in Analyzers/include/ExampleRun.h
   MuonIDs = {
     "POGMedium",
     "POGTight"
   };
-  //==== corresponding Muon ID SF Keys for mcCorr.MuonID_SF()
+  //==== corresponding Muon ID SF Keys for mcCorr->MuonID_SF()
   MuonIDSFKeys = {
     "NUM_MediumID_DEN_genTracks",
     "NUM_TightID_DEN_genTracks",
@@ -41,6 +45,44 @@ void ExampleRun::initializeAnalyzer(){
   cout << "[ExampleRun::initializeAnalyzer] IsoMuTriggerName = " << IsoMuTriggerName << endl;
   cout << "[ExampleRun::initializeAnalyzer TriggerSafePtCut = " << TriggerSafePtCut << endl;
 
+  //================================
+  //==== Example 2
+  //==== Using new PDF
+  //==== It consumes so much time, so only being actiavted with --userflags RunNewPDF
+  //================================
+
+  RunNewPDF = HasFlag("RunNewPDF");
+  cout << "[ExampleRun::initializeAnalyzer] RunNewPDF = " << RunNewPDF << endl;
+  if(RunNewPDF && !IsDATA){
+
+    LHAPDFHandler LHAPDFHandler_Prod;
+    LHAPDFHandler_Prod.CentralPDFName = "NNPDF31_nnlo_hessian_pdfas";
+    LHAPDFHandler_Prod.init();
+
+    LHAPDFHandler LHAPDFHandler_New;
+    LHAPDFHandler_New.CentralPDFName = "NNPDF31_nlo_hessian_pdfas";
+    LHAPDFHandler_New.ErrorSetMember_Start = 1; 
+    LHAPDFHandler_New.ErrorSetMember_End = 100; 
+    LHAPDFHandler_New.AlphaSMember_Down = 101; 
+    LHAPDFHandler_New.AlphaSMember_Up = 102; 
+    LHAPDFHandler_New.init();
+
+    pdfReweight->SetProdPDF( LHAPDFHandler_Prod.PDFCentral );
+    pdfReweight->SetNewPDF( LHAPDFHandler_New.PDFCentral );
+    pdfReweight->SetNewPDFErrorSet( LHAPDFHandler_New.PDFErrorSet );
+    pdfReweight->SetNewPDFAlphaS( LHAPDFHandler_New.PDFAlphaSDown, LHAPDFHandler_New.PDFAlphaSUp );
+
+  }
+
+  //================================================
+  //==== Example 3
+  //==== How to estimate xsec errors (PDF & Scale)
+  //==== For example, MET
+  //================================================
+
+  RunXSecSyst = HasFlag("RunXSecSyst");
+  cout << "[ExampleRun::initializeAnalyzer] RunXSecSyst = " << RunXSecSyst << endl;
+
 }
 
 ExampleRun::~ExampleRun(){
@@ -52,7 +94,7 @@ ExampleRun::~ExampleRun(){
 void ExampleRun::executeEvent(){
 
   //================================================================
-  //====  (Example)
+  //====  Example 1
   //====  Dimuon Z-peak events with two muon IDs, with systematics
   //================================================================
 
@@ -127,6 +169,57 @@ void ExampleRun::executeEvent(){
 
   }
 
+  //================================
+  //==== Example 2
+  //==== Using new PDF
+  //================================
+
+  if(RunNewPDF && !IsDATA){
+    //cout << "[ExampleRun::executeEvent] PDF reweight = " << GetPDFReweight() << endl;
+    FillHist("NewPDF_PDFReweight", GetPDFReweight(), 1., 2000, 0.90, 1.10);
+    //cout << "[ExampleRun::executeEvent] PDF reweight for error set (NErrorSet = "<<pdfReweight->NErrorSet<< ") :" << endl;
+    for(int i=0; i<pdfReweight->NErrorSet; i++){
+      //cout << "[ExampleRun::executeEvent]   " << GetPDFReweight(i) << endl;
+      JSFillHist("NewPDF_PDFErrorSet", "PDFReweight_Member_"+TString::Itoa(i,10), GetPDFReweight(i), 1., 2000, 0.90, 1.10);
+    }
+  }
+
+  //================================================
+  //==== Example 3
+  //==== How to estimate xsec errors (PDF & Scale)
+  //==== For example, MET
+  //================================================
+
+  if(RunXSecSyst && !IsDATA){
+
+    Event ev = GetEvent();
+    double MET = ev.GetMETVector().Pt();
+
+    //==== 1) PDF Error
+    //==== Obtain RMS of the distribution later
+    for(unsigned int i=0; i<PDFWeights_Error->size(); i++){
+      JSFillHist("XSecError", "MET_PDFError_"+TString::Itoa(i,10), MET, PDFWeights_Error->at(i), 200, 0., 200.);
+    }
+
+    //==== 2) PDF AlphaS
+    //==== Look for PDF4LHC paper..
+    //==== https://arxiv.org/abs/1510.03865
+    if(PDFWeights_AlphaS->size()==2){
+      JSFillHist("XSecError", "MET_PDFAlphaS_Down", MET, PDFWeights_AlphaS->at(0), 200, 0., 200.);
+      JSFillHist("XSecError", "MET_PDFAlphaS_Up", MET, PDFWeights_AlphaS->at(1), 200, 0., 200.);
+    }
+
+    //==== 3) Scale
+    //==== Obtain the envelop of the distribution later
+    for(unsigned int i=0; i<PDFWeights_Scale->size(); i++){
+      //==== i=5 and 7 are unphysical
+      if(i==5) continue;
+      if(i==7) continue;
+      JSFillHist("XSecError", "MET_Scale_"+TString::Itoa(i,10), MET, PDFWeights_Scale->at(i), 200, 0., 200.);
+    }
+
+  }
+
 }
 
 void ExampleRun::executeEventFromParameter(AnalyzerParameter param){
@@ -143,7 +236,6 @@ void ExampleRun::executeEventFromParameter(AnalyzerParameter param){
 
   if(!PassMETFilter()) return;
 
-  //==== Get Event object
   Event ev = GetEvent();
   Particle METv = ev.GetMETVector();
 
@@ -260,10 +352,10 @@ void ExampleRun::executeEventFromParameter(AnalyzerParameter param){
     //==== Example of applying Muon scale factors
     for(unsigned int i=0; i<muons.size(); i++){
 
-      double this_idsf  = mcCorr.MuonID_SF (param.Muon_ID_SF_Key,  muons.at(i).Eta(), muons.at(i).MiniAODPt());
+      double this_idsf  = mcCorr->MuonID_SF (param.Muon_ID_SF_Key,  muons.at(i).Eta(), muons.at(i).MiniAODPt());
 
       //==== If you have iso SF, do below. Here we don't.
-      //double this_isosf = mcCorr.MuonISO_SF(param.Muon_ISO_SF_Key, muons.at(i).Eta(), muons.at(i).MiniAODPt());
+      //double this_isosf = mcCorr->MuonISO_SF(param.Muon_ISO_SF_Key, muons.at(i).Eta(), muons.at(i).MiniAODPt());
       double this_isosf = 1.;
 
       weight *= this_idsf*this_isosf;
