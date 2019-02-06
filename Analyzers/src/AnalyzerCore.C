@@ -11,10 +11,6 @@ AnalyzerCore::AnalyzerCore(){
 
 AnalyzerCore::~AnalyzerCore(){
 
-  //==== output rootfile
-
-  outfile->Close();
-
   //=== hist maps
 
   for(std::map< TString, TH1D* >::iterator mapit = maphist_TH1D.begin(); mapit!=maphist_TH1D.end(); mapit++){
@@ -26,6 +22,10 @@ AnalyzerCore::~AnalyzerCore(){
     delete mapit->second;
   }
   maphist_TH2D.clear();
+
+  //==== output rootfile
+
+  outfile->Close();
 
   //==== Tools
 
