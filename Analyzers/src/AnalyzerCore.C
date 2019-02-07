@@ -863,6 +863,30 @@ double AnalyzerCore::MT(TLorentzVector a, TLorentzVector b){
   return TMath::Sqrt( 2.*a.Pt()*b.Pt()*(1.- TMath::Cos(dphi) ) );
 }
 
+double AnalyzerCore::MT2(TLorentzVector a, TLorentzVector b, Particle METv, double METgap){
+
+  TLorentzVector METa, METb;
+  METa.SetPxPyPzE( 0., 0., 0., 0.);
+  double MTa, MTb;
+  double tempMETa =0., tempMT2 = TMath::Max(MT(a, METv), MT(b, METv));
+
+  while(tempMETa < METv.Pt()){
+
+    METa.SetPxPyPzE(tempMETa*TMath::Cos(METv.Phi()), tempMETa*TMath::Sin(METv.Phi()), 0., tempMETa);
+    METb = METv - METa;
+
+    MTa = MT(METa, a);
+    MTb = MT(METb, b);
+
+    tempMT2 = TMath::Min(tempMT2, TMath::Max(MTa, MTb));
+
+    tempMETa = tempMETa + METgap;
+  }  
+
+  return tempMT2;
+
+}
+
 bool AnalyzerCore::HasFlag(TString flag){
 
   //cout << "[AnalyzerCore::HasFlag] Userflags.size() = " << Userflags.size() << endl;
