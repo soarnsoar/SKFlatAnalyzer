@@ -43,8 +43,8 @@ python MakeCycleSkeleton.py NewAnalyzer # <- put new analyzer name
 ```
 It will print below lines (execute the lines) :
 ```bash
-mv MakeCycleSkeleton.py.h $SKFlat_WD/Analyzers/include/NewAnalyzer.h
-mv MakeCycleSkeleton.py.C $SKFlat_WD/Analyzers/src/NewAnalyzer.C
+mv NewAnalyzer.h $SKFlat_WD/Analyzers/include/
+mv NewAnalyzer.C $SKFlat_WD/Analyzers/src/
 ```
 
 Then, add
