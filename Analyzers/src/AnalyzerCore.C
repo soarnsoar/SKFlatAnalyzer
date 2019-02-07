@@ -887,6 +887,15 @@ double AnalyzerCore::MT2(TLorentzVector a, TLorentzVector b, Particle METv, doub
 
 }
 
+double AnalyzerCore::projectedMET(TLorentzVector a, TLorentzVector b, Particle METv){
+
+  if( fabs(a.DeltaPhi(METv)) < fabs(b.DeltaPhi(METv)) ){
+    return (METv.Pt() * TMath::Sin(fabs(a.DeltaPhi(METv))) );
+  }
+  else return (METv.Pt() * TMath::Sin(fabs(b.DeltaPhi(METv))) );
+
+}
+
 bool AnalyzerCore::HasFlag(TString flag){
 
   //cout << "[AnalyzerCore::HasFlag] Userflags.size() = " << Userflags.size() << endl;
