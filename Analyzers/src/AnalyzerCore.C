@@ -1147,7 +1147,7 @@ Gen AnalyzerCore::GetGenMatchedLepton(Lepton lep, std::vector<Gen> gens){
 
 }
 
-Gen AnalyzerCore::GetGenMathcedPhoton(Lepton lep, std::vector<Gen> gens){
+Gen AnalyzerCore::GetGenMatchedPhoton(Lepton lep, std::vector<Gen> gens){
 
   double min_dR = 0.2;
   Gen gen_closest;
@@ -1320,7 +1320,7 @@ int AnalyzerCore::GetLeptonType(Lepton lep, std::vector<Gen> gens){
   if( gen_closest.IsEmpty() ){
 
     //==== Find if we have near photon
-    Gen gen_photon_closest = GetGenMathcedPhoton(lep, gens);
+    Gen gen_photon_closest = GetGenMatchedPhoton(lep, gens);
     int photontype = GetGenPhotonType(gen_photon_closest,gens);
     if(photontype<=0){
       return -1;
