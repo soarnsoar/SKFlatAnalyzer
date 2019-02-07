@@ -21,7 +21,7 @@
 #include "FakeBackgroundEstimator.h"
 #include "CFBackgroundEstimator.h"
 #include "BTagSFUtil.h"
-
+#include "PDFReweight.h"
 
 #define M_Z 91.1876
 #define M_W 80.379
@@ -41,7 +41,9 @@ public:
 
   };
 
+  //==================
   //==== Get objects
+  //==================
 
   //==== When GetAllMuons, we apply Rochester correciton
   //==== Then, Pt orderding can be changed
@@ -75,8 +77,10 @@ public:
 
   std::vector<Gen> GetGens();
 
+  //===================================================
   //==== Get objects METHOD 2
-  //==== Get AllObject in the begning, and apply cut
+  //==== Get AllObject in the begining, and apply cut
+  //==================================================+
 
   std::vector<Electron> SelectElectrons(std::vector<Electron> electrons, TString id, double ptmin, double fetamax);
 
@@ -87,7 +91,9 @@ public:
 
   std::vector<FatJet> SelectFatJets(std::vector<FatJet> jets, TString id, double ptmin, double fetamax);
 
+  //==================
   //==== Systematics
+  //==================
 
   std::vector<Electron> ScaleElectrons(std::vector<Electron> electrons, int sys);
   std::vector<Electron> SmearElectrons(std::vector<Electron> electrons, int sys);
@@ -101,9 +107,10 @@ public:
   std::vector<FatJet> SmearFatJets(std::vector<FatJet> jets, int sys);
   std::vector<FatJet> ScaleSDMassFatJets(std::vector<FatJet> jets, int sys);
   std::vector<FatJet> SmearSDMassFatJets(std::vector<FatJet> jets, int sys);
-  
-  
+
+  //====================
   //==== Event Filters
+  //====================
 
   bool PassMETFilter();
 
@@ -113,9 +120,9 @@ public:
 
   //===== Estimators
 
-  MCCorrection mcCorr;
-  FakeBackgroundEstimator fakeEst;
-  CFBackgroundEstimator cfEst;
+  MCCorrection *mcCorr;
+  FakeBackgroundEstimator *fakeEst;
+  CFBackgroundEstimator *cfEst;
   void initializeAnalyzerTools();
 
   //==== Prefire
@@ -124,7 +131,17 @@ public:
   //==== PU Reweight
   double GetPileUpWeight(int N_vtx, int syst);
 
+  //==== Using new PDF set
+  PDFReweight *pdfReweight;
+  double GetPDFWeight(LHAPDF::PDF* pdf_);
+  //==== NewCentral/ProdCentral
+  double GetPDFReweight();
+  //==== NewErrorSet/ProdCentral
+  double GetPDFReweight(int member);
+
+  //================
   //==== Functions
+  //================
 
   bool IsOnZ(double m, double width);
   double MT(TLorentzVector a, TLorentzVector b);
@@ -205,7 +222,8 @@ public:
   TFile *outfile;
   void SetOutfilePath(TString outname);
 
-  BTagSFUtil* btag_util;
+  BTagSFUtil* btag_util_lf;
+  BTagSFUtil* btag_util_hf;
 
 
 

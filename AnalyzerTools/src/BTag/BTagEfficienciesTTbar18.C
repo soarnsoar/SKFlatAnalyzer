@@ -2,10 +2,10 @@
    be used only for the same MC samples or for events with similar topology */  
 
 
-//################################### FIX THESE NUMBERS                                                                                                                                                                                                                   
 
+//################################### FIX THESE NUMBERS they are old 2016
 
-float BTagSFUtil::TagEfficiencyB_2016(float JetPt, float JetEta) {
+float BTagSFUtil::TagEfficiencyB_2018(float JetPt, float JetEta) {
   
   
   if (TaggerOP=="CSVv2M") { 
@@ -91,7 +91,7 @@ float BTagSFUtil::TagEfficiencyB_2016(float JetPt, float JetEta) {
 
 
 
-float BTagSFUtil::TagEfficiencyC_2016(float JetPt, float JetEta) {
+float BTagSFUtil::TagEfficiencyC_2018(float JetPt, float JetEta) {
   
   if (JetPt > 0. && JetEta < 5.) return 1.;
 

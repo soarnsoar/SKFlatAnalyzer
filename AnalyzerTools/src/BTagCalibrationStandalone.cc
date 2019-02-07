@@ -32,6 +32,7 @@ BTagEntry::Parameters::Parameters(
 BTagEntry::BTagEntry(const std::string &csvLine)
 {
   // make tokens
+  std::cout << csvLine << std::endl;
   std::stringstream buff(csvLine);
   std::vector<std::string> vec;
   std::string token;
@@ -40,6 +41,7 @@ BTagEntry::BTagEntry(const std::string &csvLine)
     if (token.empty()) {
       continue;
     }
+    std::cout << token << std::endl;
     vec.push_back(token);
   }
   if (vec.size() != 11) {
@@ -283,7 +285,12 @@ double BTagCalibrationReader::eval(BTagEntry::JetFlavor jf,
                                    float pt,
                                    float discr) const
 {
+
+  
+  
   bool use_discr = (params.operatingPoint == BTagEntry::OP_RESHAPING);
+
+
   if (useAbsEta[jf] && eta < 0) {
     eta = -eta;
   }

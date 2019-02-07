@@ -14,6 +14,8 @@ public:
   void executeEvent();
 
   bool RunSyst;
+  bool RunNewPDF;
+  bool RunXSecSyst;
 
   TString IsoMuTriggerName;
   double TriggerSafePtCut;

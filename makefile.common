@@ -1,12 +1,15 @@
 ARCH_LOC := $(wildcard $(shell root-config --prefix)/etc/Makefile.arch)
 include $(ARCH_LOC)
 
-MAKEFLAGS = --no-print-directory -r -s -j4  
+MAKEFLAGS = --no-print-directory -r -s
 
 VPATH    += $(OBJDIR) $(SRCDIR)
 INCLUDES += -Iinclude -I./
+INCLUDES += -I/cvmfs/cms.cern.ch/slc6_amd64_gcc630/external/lhapdf/6.2.1-fmblme/include/
 
-CXXFLAGS += -Wall -Wextra -Wno-overloaded-virtual  # -Wparentheses-equality #-Wno-unused
+CXXFLAGS += -Wall -Wextra -Wno-overloaded-virtual -Wno-ignored-qualifiers -Wno-unused-parameter
+#-Wno-ignored-qualifiers -Wno-unused-parameter
+# -Wparentheses-equality #-Wno-unused
 
 # Set the locations of some files
 DICTHEAD = $(SRCDIR)/$(LIBRARY)_Dict.h
@@ -19,40 +22,40 @@ LIBDIR = $(SKFlat_LIB_PATH)
 LIBFILE   = $(LIBDIR)/lib$(LIBRARY).a
 SHLIBFILE = $(LIBDIR)/lib$(LIBRARY).$(DllSuf)
 
-# Set up the default targets                                                                                                                                                    
+# Set up the default targets
 default: shlib 
 
 
-# List of all header and source files to build                                                                                                                                  
+# List of all header and source files to build
 HLIST   = $(filter-out $(SKIPHLIST),$(wildcard $(INCDIR)/*.h))
 CPPLIST = $(filter-out $(SKIPCPPLIST),$(wildcard $(SRCDIR)/*.C))
-# List of all object files to build                                                                                                                                             
+# List of all object files to build
 OLIST = $(patsubst %.C,%.o,$(notdir $(CPPLIST)))
 
-# Implicit rule to compile all sources                                                                                                                                          
+# Implicit rule to compile all sources
 %.o : %.C
 	@echo "Compiling $<" 
 	@mkdir -p $(OBJDIR) 
 	@$(CXX) $(CXXFLAGS) -c $< -o $(OBJDIR)/$(notdir $@) $(INCLUDES)
 
-# Rule to create the dictionary                                                                                                                                                 
+# Rule to create the dictionary
 $(DICTFILE): $(HLIST) $(DICTLDEF)
 	@echo "Generating dictionary $@"
 	@$(shell root-config --exec-prefix)/bin/rootcint -f $(DICTFILE) $(INCLUDES) $^
 
-# Rule to comile the dictionary                                                                                                                                                 
+# Rule to comile the dictionary
 $(DICTOBJ): $(DICTFILE)
 	@echo "Compiling $<"
 	@mkdir -p $(OBJDIR)
 	@$(CXX) $(CXXFLAGS) -c $(INCLUDES) -o $@ $<
 
-##############################                                                                                                                                                 
-# The dependencies section                                                                                                                                                     
-# - the purpose of the .d files is to keep track of the                                                                                                                        
-#   header file dependence                                                                                                                                                     
-# - this can be achieved using the makedepend command                                                                                                                          
+##############################
+# The dependencies section
+# - the purpose of the .d files is to keep track of the
+#   header file dependence
+# - this can be achieved using the makedepend command
 ############################## 
-# Useful build targets                                                                                                                                                         
+# Useful build targets
 ifneq ($(MAKECMDGOALS),clean)
 ifneq ($(MAKECMDGOALS),distclean)
 -include $(foreach var,$(notdir $(CPPLIST:.C=.d)),$(DEPDIR)/$(var))

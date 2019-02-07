@@ -11,7 +11,7 @@ class BTagSFUtil{
  public:
     
   // constructors
-  BTagSFUtil(string MeasurementType, string BTagAlgorithmBF, TString OperatingPoint, int SystematicIndex = 0, int Seed = 0);
+  BTagSFUtil(string MeasurementType, string BTagAlgorithmBF, TString OperatingPoint, int year, bool period,  int SystematicIndex = 0, int Seed = 0);
 
   // destructor
   ~BTagSFUtil();
@@ -81,6 +81,7 @@ class BTagSFUtil{
   int nBTagPtBins;
   int nFastSimPtBins, nFastSimEtaBins[3];
   int FastSimSystematic;
+
   int DataYear;
 
  
