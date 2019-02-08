@@ -144,6 +144,8 @@ public:
 
   bool IsOnZ(double m, double width);
   double MT(TLorentzVector a, TLorentzVector b);
+  double MT2(TLorentzVector a, TLorentzVector b, Particle METv, double METgap);
+  double projectedMET(TLorentzVector a, TLorentzVector b, Particle METv);
   bool HasFlag(TString flag);
   std::vector<Muon> MuonWithoutGap(std::vector<Muon> muons);
   std::vector<Muon> MuonPromptOnly(std::vector<Muon> muons, std::vector<Gen> gens);
