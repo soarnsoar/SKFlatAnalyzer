@@ -41,8 +41,6 @@ class BTagSFUtil{
 
   // map to store BTagCalibrationReader objects, determined by setup/year
   std::map <TString, BTagCalibrationReader*> ReaderMap;
-  BTagCalibrationReader* reader_bf_l;
-
   
   void GetBTagPayload(TString BTagAlgorithm, TString DataPeriod);
 
