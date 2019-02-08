@@ -4,6 +4,7 @@
 #include "TLorentzVector.h"
 #include "TString.h"
 #include "TMath.h"
+#include <sstream>      
 
 #include "SKFlatNtuple.h"
 #include "Event.h"
@@ -20,6 +21,7 @@
 #include "MCCorrection.h"
 #include "FakeBackgroundEstimator.h"
 #include "CFBackgroundEstimator.h"
+#include "BTagSFUtil.h"
 #include "PDFReweight.h"
 
 #define M_Z 91.1876
@@ -132,6 +134,14 @@ public:
   //==== PU Reweight
   double GetPileUpWeight(int N_vtx, int syst);
 
+
+  //==== Btag setup
+  void SetupBTagger(std::vector<Jet::Tagger> taggers, std::vector<Jet::WP> wps, bool setup_systematics, bool period_dependant);
+  
+  //==== Is Btagged (using SF)
+  bool IsBTagged(Jet j, Jet::Tagger tagger, Jet::WP WP, bool applySF, int systematic );
+
+ 
   //==== Using new PDF set
   PDFReweight *pdfReweight;
   double GetPDFWeight(LHAPDF::PDF* pdf_);
@@ -146,6 +156,8 @@ public:
 
   bool IsOnZ(double m, double width);
   double MT(TLorentzVector a, TLorentzVector b);
+  double MT2(TLorentzVector a, TLorentzVector b, Particle METv, double METgap);
+  double projectedMET(TLorentzVector a, TLorentzVector b, Particle METv);
   bool HasFlag(TString flag);
   std::vector<Muon> MuonWithoutGap(std::vector<Muon> muons);
   std::vector<Muon> MuonPromptOnly(std::vector<Muon> muons, std::vector<Gen> gens);
@@ -166,7 +178,7 @@ public:
 
   void PrintGen(std::vector<Gen> gens);
   Gen GetGenMatchedLepton(Lepton lep, std::vector<Gen> gens);
-  Gen GetGenMathcedPhoton(Lepton lep, std::vector<Gen> gens);
+  Gen GetGenMatchedPhoton(Lepton lep, std::vector<Gen> gens);
   vector<int> TrackGenSelfHistory(Gen me, std::vector<Gen> gens);
   bool IsFromHadron(Gen me, std::vector<Gen> gens);
   int GetLeptonType(Lepton lep, std::vector<Gen> gens);
@@ -222,6 +234,9 @@ public:
 
   TFile *outfile;
   void SetOutfilePath(TString outname);
+
+  std::map<TString,BTagSFUtil*> MapBTagSF;
+  
 
 };
 
