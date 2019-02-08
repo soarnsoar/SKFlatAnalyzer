@@ -3,7 +3,6 @@
 
 #include "AnalyzerCore.h"
 
-
 class ExampleRun : public AnalyzerCore {
 
 public:
