@@ -331,8 +331,9 @@ void ExampleRun::executeEventFromParameter(AnalyzerParameter param){
 
   int n_bjet_deepcsv_m=0;
   int n_bjet_deepcsv_m_noSF=0;
+
   for(unsigned int ij = 0 ; ij < jets.size(); ij++){
-    
+    cout << event << endl;
     if(IsBTagged(jets.at(ij), Jet::DeepCSV, Jet::Medium,true,0))          n_bjet_deepcsv_m++;     // method for getting btag with SF applied to MC 
     if(IsBTagged(jets.at(ij), Jet::DeepCSV, Jet::Medium,false,0))  n_bjet_deepcsv_m_noSF++; // method for getting btag with no SF applied to MC 
     

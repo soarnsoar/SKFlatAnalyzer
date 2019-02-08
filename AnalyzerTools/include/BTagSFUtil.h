@@ -13,15 +13,19 @@ class BTagSFUtil{
  public:
     
   // constructors
-  BTagSFUtil(string MeasurementType, string BTagAlgorithmBF, TString OperatingPoint, int year, bool period,  int SystematicIndex = 0, int Seed = 0);
+  BTagSFUtil(string MeasurementType, string BTagAlgorithmBF, TString OperatingPoint, int year, bool period,  int SystematicIndex);
 
   // destructor
   ~BTagSFUtil();
 
 
   // Function used in analyzer to determine if jet is tagged
-  bool IsTagged(float JetDiscriminant, int JetFlavor, float JetPt, float JetEta);
+  bool IsTagged(float JetDiscriminant, int JetFlavor, float JetPt, float JetEta, int seed);
   bool IsUncorrectedTagged(float JetDiscriminant, int JetFlavor, float JetPt, float JetEta);
+
+
+  // Function to setup rand numb generator
+  void RandInit(int seed);
 
 
   // Functions used in IsTagged to determine tag rate with syst                                                                                                                                                                                                      
@@ -63,8 +67,6 @@ class BTagSFUtil{
   float TagEfficiencyLight_2018(float JetPt, float JetEta);
 
   
-  TRandom3* rand_;
-
   TF1 *funSFb, *funSFlight[4][3];
 
   TString TaggerName, TaggerOP;

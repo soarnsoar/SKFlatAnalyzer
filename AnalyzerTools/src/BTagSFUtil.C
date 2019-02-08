@@ -25,18 +25,13 @@ void BTagSFUtil::SetPeriodDependancy(bool b){
   period_dependancy = b;
 }
 
-BTagSFUtil::BTagSFUtil(string MeasurementType, string BTagAlgorithm,  TString OperatingPoint, int year, bool pd,int SystematicIndex,  int Seed) {
+BTagSFUtil::BTagSFUtil(string MeasurementType, string BTagAlgorithm,  TString OperatingPoint, int year, bool pd,int SystematicIndex) {
 
   //=== initialise global variables
   MCSample = "";
   DataYear = year;
   period_dependancy = pd;
   
-  //=== initialise random seed
-  rand_ = new TRandom3(Seed);
-
-
-
   //=== set paths 
   TString datapath = getenv("DATA_DIR");
   TString btagpath = datapath+"/"+TString::Itoa(DataYear,10)+"/BTag/";
@@ -150,8 +145,6 @@ BTagSFUtil::~BTagSFUtil() {
   for(map<TString, BTagCalibrationReader*>::iterator it = ReaderMap.begin(); it!= ReaderMap.end(); it++){
     delete it->second;
   }
-
-  delete rand_;
 
 }
 
@@ -306,9 +299,12 @@ bool BTagSFUtil::IsUncorrectedTagged(float JetDiscriminant, int JetFlavor, float
 }
 
 
-bool BTagSFUtil::IsTagged(float JetDiscriminant, int JetFlavor, float JetPt, float JetEta) {
+bool BTagSFUtil::IsTagged(float JetDiscriminant, int JetFlavor, float JetPt, float JetEta, int seed) {
+
+  //=== set up rand number gen.
   
-  
+  TRandom3 rand_(seed);
+
   /// return false if year is not set
   if (DataYear == 0) return false;
 
@@ -333,7 +329,7 @@ bool BTagSFUtil::IsTagged(float JetDiscriminant, int JetFlavor, float JetPt, flo
   if (Btag_SF == 1) return newBTag; //no correction needed 
 
   //=== throw random number to apply correction
-  float coin = rand_->Uniform(1.);    
+  float coin = rand_.Uniform(1.);    
   if(Btag_SF > 1){ 
     //=== use this if SF>1
 

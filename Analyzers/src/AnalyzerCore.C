@@ -832,8 +832,8 @@ void AnalyzerCore::SetupBTagger(std::vector<Jet::Tagger> taggers, std::vector<Je
       TString stagger = j.TaggerString(*it);
       TString swp = j.WPString(*it2);
       
-      MapBTagSF[stagger + "_" + swp + "_lf"]              = new BTagSFUtil("incl"  ,  string(stagger), swp, DataYear, period_dependant);
-      MapBTagSF[stagger + "_" + swp + "_hf"]              = new BTagSFUtil("mujets",  string(stagger), swp, DataYear, period_dependant);
+      MapBTagSF[stagger + "_" + swp + "_lf"]              = new BTagSFUtil("incl"  ,  string(stagger), swp, DataYear, period_dependant,0);
+      MapBTagSF[stagger + "_" + swp + "_hf"]              = new BTagSFUtil("mujets",  string(stagger), swp, DataYear, period_dependant,0);
       if(setup_systematics){
 	MapBTagSF[stagger + "_" + swp + "_lf_systup"]     = new BTagSFUtil("incl"  ,  string(stagger), swp, DataYear, period_dependant , 3);
 	MapBTagSF[stagger + "_" + swp + "_hf_systup"]     = new BTagSFUtil("mujets",  string(stagger), swp, DataYear, period_dependant , 1);
@@ -877,7 +877,16 @@ bool AnalyzerCore::IsBTagged(Jet j, Jet::Tagger tagger, Jet::WP WP, bool applySF
   int jet_flavour = IsDATA ? -999999 : j.hadronFlavour();
 
   if(applySF){
-    if (it_jet_btagger->second->IsTagged(j.GetTaggerResult(tagger), jet_flavour, j.Pt(), j.Eta()))
+
+    //=== Assign unique seed for jet
+    unsigned int runNum_uint  = static_cast <unsigned int> (run);
+    unsigned int lumiNum_uint = static_cast <unsigned int> (lumi);
+    unsigned int evNum_uint   = static_cast <unsigned int> (event);
+    unsigned int jet0eta = uint32_t(fabs(j.Eta())/0.01);
+    int m_nomVar=1;
+    std::uint32_t seed = jet0eta + m_nomVar + (lumiNum_uint<<10) + (runNum_uint<<20) + evNum_uint;
+
+    if (it_jet_btagger->second->IsTagged(j.GetTaggerResult(tagger), jet_flavour, j.Pt(), j.Eta(),seed))
       isBtag=true;
   }
   else{
