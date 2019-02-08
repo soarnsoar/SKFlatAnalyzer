@@ -2,7 +2,7 @@
 
 ExampleRun::ExampleRun(){
 
-  }
+}
 
 void ExampleRun::initializeAnalyzer(){
 
@@ -41,7 +41,6 @@ void ExampleRun::initializeAnalyzer(){
     IsoMuTriggerName = "HLT_IsoMu27_v";
     TriggerSafePtCut = 29.;
   }
-
 
   cout << "[ExampleRun::initializeAnalyzer] IsoMuTriggerName = " << IsoMuTriggerName << endl;
   cout << "[ExampleRun::initializeAnalyzer TriggerSafePtCut = " << TriggerSafePtCut << endl;
