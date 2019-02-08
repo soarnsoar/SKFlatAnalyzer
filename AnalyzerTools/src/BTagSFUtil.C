@@ -8,10 +8,10 @@
 //=== To do list
 //#################################################
 //--- add fast sim efficiency once one is available  
-//--- add 2016/2018 SF 
+//--- add 2016/2018 SF (when POG make available)
 //--- add 2018 MC efficiencies (need 2018 TT sample)
 //--- add AK8 code
-//--- add charge tagging code
+//--- add charm tagging code
 //#################################################
 
 void BTagSFUtil::SetMCSample(TString s){
