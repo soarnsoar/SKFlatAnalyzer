@@ -1,17 +1,17 @@
 #include "BTagSFUtil.h"
-#include "BTag/BTagCalibrationStandalone.cc"
-#include "BTag/Efficiency/BTagEfficienciesTTbar16.C" // Change this if MC are updated
-#include "BTag/Efficiency/BTagEfficienciesTTbar17.C" // Change this if MC are updated  
-#include "BTag/Efficiency/BTagEfficienciesTTbar18.C" // Change this if MC are updated  
+#include "BTagCalibrationStandalone.cc"
+#include "BTagEfficiencies/BTagEfficienciesTTbar16.C" // Change this if MC are updated
+#include "BTagEfficiencies/BTagEfficienciesTTbar17.C" // Change this if MC are updated  
+#include "BTagEfficiencies/BTagEfficienciesTTbar18.C" // Change this if MC are updated  
 
 //#################################################
 //=== To do list
 //#################################################
-//--- add fast sim efficiency once one is available  
-//--- add 2016/2018 SF (when POG make available)
-//--- add 2018 MC efficiencies (need 2018 TT sample)
-//--- add AK8 code
-//--- add charm tagging code
+//--- TODO add fast sim efficiency once one is available  
+//--- TODO add 2016/2018 SF (when POG make available)
+//--- TODO add 2018 MC efficiencies (need 2018 TT sample)
+//--- TODO add AK8 code
+//--- TODO add charm tagging code
 //#################################################
 
 void BTagSFUtil::SetMCSample(TString s){
@@ -47,9 +47,9 @@ BTagSFUtil::BTagSFUtil(string MeasurementType, string BTagAlgorithm,  TString Op
   string SystematicFlagL  = "central";
   if (abs(SystematicIndex)<10) {
     if (SystematicIndex==-1 || SystematicIndex==-2) SystematicFlagBC = "down";
-    if (SystematicIndex==+1 || SystematicIndex==+2) SystematicFlagBC = "up";
-    if (SystematicIndex==-3) SystematicFlagL = "down";
-    if (SystematicIndex==+3) SystematicFlagL = "up";
+    else if (SystematicIndex==+1 || SystematicIndex==+2) SystematicFlagBC = "up";
+    else if (SystematicIndex==-3) SystematicFlagL = "down";
+    else if (SystematicIndex==+3) SystematicFlagL = "up";
   }
 
 
@@ -120,17 +120,12 @@ BTagSFUtil::BTagSFUtil(string MeasurementType, string BTagAlgorithm,  TString Op
     if( dy != DataYear) continue;
     if( b != BTagAlgorithm) continue;
     
-    if (period_dependancy&& c=="PeriodDep"){   
+    if( (period_dependancy&& c=="PeriodDep") || (!period_dependancy && c!="PeriodDep")){   
       BTagCalibration calib(BTagAlgorithm, string(btagpath)+f);
       
       ReaderMap[TString(a)+"_"+b+"_"+d+"_"+e+"_bc"] = new BTagCalibrationReader(&calib, op, MeasurementType, SystematicFlagBC);; 
       ReaderMap[TString(a)+"_"+b+"_"+d+"_"+e+"_l"] = new BTagCalibrationReader(&calib, op, MeasurementType, SystematicFlagL);; 
       
-    }
-    else if(!period_dependancy && c!="PeriodDep"){
-      BTagCalibration calib(BTagAlgorithm, string(btagpath)+f);
-      ReaderMap[TString(a)+"_"+b+"_"+d+"_"+e+"_bc"] = new BTagCalibrationReader(&calib, op, MeasurementType, SystematicFlagBC);;
-      ReaderMap[TString(a)+"_"+b+"_"+d+"_"+e+"_l"] = new BTagCalibrationReader(&calib, op, MeasurementType, SystematicFlagL);;
     }
   }
   

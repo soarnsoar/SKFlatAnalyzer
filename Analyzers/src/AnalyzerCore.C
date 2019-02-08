@@ -847,7 +847,7 @@ void AnalyzerCore::SetupBTagger(std::vector<Jet::Tagger> taggers, std::vector<Je
 }
 
 
-bool AnalyzerCore::IsBTaggedCorrected(Jet j, Jet::Tagger tagger, Jet::WP WP, int systematic, bool applySF ){
+bool AnalyzerCore::IsBTagged(Jet j, Jet::Tagger tagger, Jet::WP WP, bool applySF, int systematic){
 
   //=== function to check if jet is btagged using SF to correct MC tag rate
   
@@ -875,12 +875,12 @@ bool AnalyzerCore::IsBTaggedCorrected(Jet j, Jet::Tagger tagger, Jet::WP WP, int
   //=== check if jet is btagged using BTagSFUtil
   bool isBtag=false;
   int jet_flavour = IsDATA ? -999999 : j.hadronFlavour();
-  if (it_jet_btagger->second->IsTagged(j.GetTaggerResult(tagger), jet_flavour, j.Pt(), j.Eta()))
-    isBtag=true;
 
-  
-  if(!applySF){
-    isBtag=false;
+  if(applySF){
+    if (it_jet_btagger->second->IsTagged(j.GetTaggerResult(tagger), jet_flavour, j.Pt(), j.Eta()))
+      isBtag=true;
+  }
+  else{
     //===  dont apply correction to btag value
     if (it_jet_btagger->second->IsUncorrectedTagged(j.GetTaggerResult(tagger), jet_flavour, j.Pt(), j.Eta()))
       isBtag=true;

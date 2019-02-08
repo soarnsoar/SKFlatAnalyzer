@@ -137,7 +137,7 @@ public:
   void SetupBTagger(std::vector<Jet::Tagger> taggers, std::vector<Jet::WP> wps, bool setup_systematics, bool period_dependant);
   
   //==== Is Btagged (using SF)
-  bool IsBTaggedCorrected(Jet j, Jet::Tagger tagger, Jet::WP WP, int systematic , bool applySF=true);
+  bool IsBTagged(Jet j, Jet::Tagger tagger, Jet::WP WP, bool applySF, int systematic );
 
  
   //==== Using new PDF set
