@@ -63,8 +63,10 @@ public:
   std::vector<Muon> GetMuons(TString id, double ptmin, double fetamax);
 
   std::vector<Photon> GetAllPhotons();
-  std::vector<Photon> GetPhotons(TString id, double ptmin=-999., double fetamax=999.);
-  
+  std::vector<Photon> GetPhotons(TString id, double ptmin, double fetamax);
+
+  //==== If TightIso is set, it calculate ptcone
+  //==== If UseMini is true, Lepton::RelIso() returns MiniRelIso
   std::vector<Lepton *> MakeLeptonPointerVector(std::vector<Muon>& muons, double TightIso=-999, bool UseMini=false);
   std::vector<Lepton *> MakeLeptonPointerVector(std::vector<Electron>& electrons, double TightIso=-999, bool UseMini=false);
 
