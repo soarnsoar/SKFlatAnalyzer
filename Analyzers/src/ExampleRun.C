@@ -46,6 +46,17 @@ void ExampleRun::initializeAnalyzer(){
   cout << "[ExampleRun::initializeAnalyzer] IsoMuTriggerName = " << IsoMuTriggerName << endl;
   cout << "[ExampleRun::initializeAnalyzer TriggerSafePtCut = " << TriggerSafePtCut << endl;
 
+  //==== Test btagging code                                                                                                                                                                                
+  //==== add taggers and WP that you want to use in analysis                                                                                                                                                
+  std::vector<Jet::Tagger> vtaggers;
+  vtaggers.push_back(Jet::DeepCSV);
+
+  std::vector<Jet::WP> v_wps;
+  v_wps.push_back(Jet::Medium);
+
+  //=== list of taggers, WP, setup systematics, use period SFs                                                                                                                                              
+  SetupBTagger(vtaggers,v_wps, true, true);
+
   //================================
   //==== Example 2
   //==== Using new PDF
@@ -317,6 +328,17 @@ void ExampleRun::executeEventFromParameter(AnalyzerParameter param){
   std::sort(muons.begin(), muons.end(), PtComparing);
   //==== 2) jets : similar, but also when applying new JEC, ordering is changes. This is important if you use leading jets
   std::sort(jets.begin(), jets.end(), PtComparing);
+
+
+  int n_bjet_deepcsv_m=0;
+  int n_bjet_deepcsv_m_noSF=0;
+  for(unsigned int ij = 0 ; ij < jets.size(); ij++){
+    
+    if(IsBTaggedCorrected(jets.at(ij), Jet::DeepCSV, Jet::Medium,0))          n_bjet_deepcsv_m++;     // method for getting btag with SF applied to MC 
+    if(IsBTaggedCorrected(jets.at(ij), Jet::DeepCSV, Jet::Medium,0, false))  n_bjet_deepcsv_m_noSF++; // method for getting btag with no SF applied to MC 
+    
+  }
+  JSFillHist(param.Name, "NJet_"+yeartag+"_DeepCSV_Medium"+param.Name, n_bjet_deepcsv_m, ev.MCweight(), 4, 0., 4);
 
   
   //=========================

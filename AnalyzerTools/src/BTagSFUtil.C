@@ -1,8 +1,8 @@
 #include "BTagSFUtil.h"
-#include "BTagCalibrationStandalone.cc"
-#include "BTag/BTagEfficienciesTTbar16.C" // Change this if MC are updated
-#include "BTag/BTagEfficienciesTTbar17.C" // Change this if MC are updated  
-#include "BTag/BTagEfficienciesTTbar18.C" // Change this if MC are updated  
+#include "BTag/BTagCalibrationStandalone.cc"
+#include "BTag/Efficiency/BTagEfficienciesTTbar16.C" // Change this if MC are updated
+#include "BTag/Efficiency/BTagEfficienciesTTbar17.C" // Change this if MC are updated  
+#include "BTag/Efficiency/BTagEfficienciesTTbar18.C" // Change this if MC are updated  
 
 //#################################################
 //=== To do list
@@ -69,9 +69,12 @@ BTagSFUtil::BTagSFUtil(string MeasurementType, string BTagAlgorithm,  TString Op
     is_tag >> b; // TAGGER
     is_tag >> c; // WP
     is_tag >> cutvalue;  // cut value
-    if(a == DataYear && b == BTagAlgorithm && c == OperatingPoint ) {
+   if(a == DataYear && b == BTagAlgorithm && c == OperatingPoint ) {
       TaggerCut = cutvalue; 
-      cout << "[BTagSFUtil::initializeAnalyzer] Year = "  << DataYear << " OperatingPoint = " << OperatingPoint << " TaggerCut = " << TaggerCut << endl;
+      TString flavour_string = "Heavy Flavour"; 
+      TString systematic_string = SystematicFlagBC;
+      if(MeasurementType=="incl") { flavour_string = "Light Flavour"; systematic_string = SystematicFlagL;}
+      cout << "[BTagSFUtil::initializeAnalyzer] " << flavour_string << " : Year = "  << DataYear << "  : OperatingPoint = " << OperatingPoint << " : TaggerCut = " << TaggerCut << " : Systematic " << systematic_string <<  endl;
       break;
     }
   }// end of taggermap loop
@@ -100,9 +103,9 @@ BTagSFUtil::BTagSFUtil(string MeasurementType, string BTagAlgorithm,  TString Op
     TString tstring_btagline = btagline;
     if(tstring_btagline.Contains("#")) continue;
 
-    int a;
+    string a,f;
     TString b,c,d,e;
-    string f;
+
     is >> a; // YEAR
     is >> b; // TAGGER
     is >> c; // Period_dep
@@ -110,21 +113,24 @@ BTagSFUtil::BTagSFUtil(string MeasurementType, string BTagAlgorithm,  TString Op
     is >> e; // Run_end
     is >> f; // csv file                                                                                                                                                                           
 
-    if( a != DataYear) continue;
+    istringstream buffer(a);
+    int dy;
+    buffer >> dy;
+
+    if( dy != DataYear) continue;
     if( b != BTagAlgorithm) continue;
     
     if (period_dependancy&& c=="PeriodDep"){   
-      cout << f << endl;    
-      BTagCalibration calib(BTagAlgorithm, f);
-      ReaderMap[a+"_"+b+"_"+d+"_"+e+"_bc"] = new BTagCalibrationReader(&calib, op, MeasurementType, SystematicFlagBC);; 
-      ReaderMap[a+"_"+b+"_"+d+"_"+e+"_l"] = new BTagCalibrationReader(&calib, op, MeasurementType, SystematicFlagL);; 
-
+      BTagCalibration calib(BTagAlgorithm, string(btagpath)+f);
+      
+      ReaderMap[TString(a)+"_"+b+"_"+d+"_"+e+"_bc"] = new BTagCalibrationReader(&calib, op, MeasurementType, SystematicFlagBC);; 
+      ReaderMap[TString(a)+"_"+b+"_"+d+"_"+e+"_l"] = new BTagCalibrationReader(&calib, op, MeasurementType, SystematicFlagL);; 
+      
     }
     else if(!period_dependancy && c!="PeriodDep"){
-      cout << f << endl;
-      BTagCalibration calib(BTagAlgorithm, f);
-      ReaderMap[a+"_"+b+"_"+d+"_"+e+"_bc"] = new BTagCalibrationReader(&calib, op, MeasurementType, SystematicFlagBC);;
-      ReaderMap[a+"_"+b+"_"+d+"_"+e+"_l"] = new BTagCalibrationReader(&calib, op, MeasurementType, SystematicFlagL);;
+      BTagCalibration calib(BTagAlgorithm, string(btagpath)+f);
+      ReaderMap[TString(a)+"_"+b+"_"+d+"_"+e+"_bc"] = new BTagCalibrationReader(&calib, op, MeasurementType, SystematicFlagBC);;
+      ReaderMap[TString(a)+"_"+b+"_"+d+"_"+e+"_l"] = new BTagCalibrationReader(&calib, op, MeasurementType, SystematicFlagL);;
     }
   }
   
@@ -217,10 +223,10 @@ float BTagSFUtil::GetJetSF(int JetFlavor, float JetPt, float JetEta) {
 
       double total_lumi = (lumi_periodB+lumi_periodCtoE + lumi_periodEtoF);
       
-      double WeightB = (lumi_periodB)/total_lumi;
-      double WeightCtoE = lumi_periodCtoE/total_lumi;
+      double WeightB    = lumi_periodB   / total_lumi;
+      double WeightCtoE = lumi_periodCtoE/ total_lumi;
       double WeightEtoF = lumi_periodEtoF/ total_lumi;
-      Btag_SF = Btag_SF_B*WeightB + Btag_SF_CtoE*WeightCtoE*Btag_SF_EtoF*WeightEtoF;
+      Btag_SF = Btag_SF_B*WeightB + Btag_SF_CtoE*WeightCtoE +  Btag_SF_EtoF*WeightEtoF;
 
       return Btag_SF;
 
@@ -256,19 +262,20 @@ float BTagSFUtil::GetJetSF(int JetFlavor, float JetPt, float JetEta) {
 float BTagSFUtil::GetJetSFPeriodDependant(int JetFlavor, float JetPt, float JetEta, TString tag_key) {
 
   /// https://twiki.cern.ch/twiki/bin/viewauth/CMS/BtagRecommendation80XReReco for pt range and systematic correlations
-  float Btag_SF;
+  float Btag_SF=1.;
 
   float ThisJetPt = JetPt;
 
   //=== SF available for 20 < pt  1000 GeV
   if     (JetPt > 999.99) ThisJetPt = 999.99;
-  else if(JetPt < 20.   ) return 1.; 
+  else if(JetPt < 20.   ) ThisJetPt = 20.;
  
-  else return 1.; //For safety.
-
+  //=== declare iterator to find BTagCalibrationReader in map
   map <TString, BTagCalibrationReader*>::iterator reader_bf_it ;
 
+
   if (abs(JetFlavor)==5) {
+
     //=== access b flavour reader
     reader_bf_it =    ReaderMap.find(tag_key+"_bc");
     Btag_SF = reader_bf_it->second->eval(BTagEntry::FLAV_B, JetEta, ThisJetPt);
@@ -282,19 +289,30 @@ float BTagSFUtil::GetJetSFPeriodDependant(int JetFlavor, float JetPt, float JetE
   else {
 
     //=== access light flavour reader
-
-    cout << tag_key+"_l" << endl;
     reader_bf_it = ReaderMap.find(tag_key+"_l");
     Btag_SF = reader_bf_it->second->eval(BTagEntry::FLAV_UDSG, JetEta, ThisJetPt);
+
   }
     
   return Btag_SF;
 
 }
 
+
+bool BTagSFUtil::IsUncorrectedTagged(float JetDiscriminant, int JetFlavor, float JetPt, float JetEta) {
+  /// return false if year is not set                                                                                                                                                                       
+  if (DataYear == 0) return false;
+
+
+  bool isBTagged = JetDiscriminant>TaggerCut;
+
+  return isBTagged;
+
+}
+
+
 bool BTagSFUtil::IsTagged(float JetDiscriminant, int JetFlavor, float JetPt, float JetEta) {
   
-
   
   /// return false if year is not set
   if (DataYear == 0) return false;
@@ -314,20 +332,19 @@ bool BTagSFUtil::IsTagged(float JetDiscriminant, int JetFlavor, float JetPt, flo
   bool newBTag = isBTagged;
 
   //=== Get SF 
+  JetEta= fabs(JetEta);
   float Btag_SF = GetJetSF(JetFlavor, JetPt, JetEta);
-  
+
   if (Btag_SF == 1) return newBTag; //no correction needed 
 
   //=== throw random number to apply correction
   float coin = rand_->Uniform(1.);    
-
   if(Btag_SF > 1){ 
     //=== use this if SF>1
 
     if( !isBTagged ) {
 
       float Btag_eff = JetTagEfficiency(JetFlavor, JetPt, fabs(JetEta));
-
       //=== fraction of jets that need to be upgraded
       float mistagPercent = (1.0 - Btag_SF) / (1.0 - (1./Btag_eff) );
       

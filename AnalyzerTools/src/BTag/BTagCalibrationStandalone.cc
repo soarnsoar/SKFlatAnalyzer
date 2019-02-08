@@ -32,7 +32,7 @@ BTagEntry::Parameters::Parameters(
 BTagEntry::BTagEntry(const std::string &csvLine)
 {
   // make tokens
-  std::cout << csvLine << std::endl;
+  
   std::stringstream buff(csvLine);
   std::vector<std::string> vec;
   std::string token;
@@ -41,7 +41,6 @@ BTagEntry::BTagEntry(const std::string &csvLine)
     if (token.empty()) {
       continue;
     }
-    std::cout << token << std::endl;
     vec.push_back(token);
   }
   if (vec.size() != 11) {
@@ -82,6 +81,7 @@ BTagEntry::BTagEntry(const std::string &csvLine)
 	      << csvLine;
     throw std::exception();
   }
+
   params = BTagEntry::Parameters(
 				 BTagEntry::OperatingPoint(stoi(vec[0])),
 				 vec[1],
@@ -330,7 +330,7 @@ void BTagCalibrationReader::setupTmpData(const BTagCalibration* c)
     te.ptMax = be.params.ptMax;
     te.discrMin = be.params.discrMin;
     te.discrMax = be.params.discrMax;
-
+    
     if (params.operatingPoint == BTagEntry::OP_RESHAPING) {
       te.func = TF1("", be.formula.c_str(),
                     be.params.discrMin, be.params.discrMax);

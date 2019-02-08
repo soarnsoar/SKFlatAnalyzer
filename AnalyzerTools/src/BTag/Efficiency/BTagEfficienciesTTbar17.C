@@ -1,4 +1,4 @@
-/* These Efficiencies have been derived for Summer15ttbar events and should 
+/* These Efficiencies have been derived for TTLJ_powheg events and should 
 be used only for the same MC samples or for events with similar topology */  
 
 
@@ -473,9 +473,9 @@ if (TaggerOP=="DeepCSV_Tight") {
 float BTagSFUtil::TagEfficiencyLight_2017(float JetPt, float JetEta) {
 
 
-if (TaggerOP=="CSVv2_Loose") { 
-   if (JetPt > 20.00000 && JetPt <= 40.00000){  
-     if      (fabs(JetEta) > 0.00000   && fabs(JetEta) <= 0.60000) return 0.06246 ;  
+  if (TaggerOP=="CSVv2_Loose") { 
+    if (JetPt > 20.00000 && JetPt <= 40.00000){  
+      if      (fabs(JetEta) > 0.00000   && fabs(JetEta) <= 0.60000) return 0.06246 ;  
      else if (fabs(JetEta) > 0.60000 && fabs(JetEta) <= 1.20000) return 0.08930;  
      else if (fabs(JetEta) > 1.20000 && fabs(JetEta) <= 1.80000) return 0.12301;  
      else if (fabs(JetEta) > 1.80000 && fabs(JetEta) <= 2.40000) return 0.15619;  

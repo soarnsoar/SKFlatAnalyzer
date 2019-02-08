@@ -4,6 +4,7 @@
 #include "TLorentzVector.h"
 #include "TString.h"
 #include "TMath.h"
+#include <sstream>      
 
 #include "SKFlatNtuple.h"
 #include "Event.h"
@@ -131,6 +132,14 @@ public:
   //==== PU Reweight
   double GetPileUpWeight(int N_vtx, int syst);
 
+
+  //==== Btag setup
+  void SetupBTagger(std::vector<Jet::Tagger> taggers, std::vector<Jet::WP> wps, bool setup_systematics, bool period_dependant);
+  
+  //==== Is Btagged (using SF)
+  bool IsBTaggedCorrected(Jet j, Jet::Tagger tagger, Jet::WP WP, int systematic , bool applySF=true);
+
+ 
   //==== Using new PDF set
   PDFReweight *pdfReweight;
   double GetPDFWeight(LHAPDF::PDF* pdf_);
@@ -222,10 +231,8 @@ public:
   TFile *outfile;
   void SetOutfilePath(TString outname);
 
-  BTagSFUtil* btag_util_lf;
-  BTagSFUtil* btag_util_hf;
-
-
+  std::map<TString,BTagSFUtil*> MapBTagSF;
+  
 
 };
 

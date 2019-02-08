@@ -4,6 +4,8 @@
 #include "TMath.h"
 #include "TF1.h"
 #include <iostream>
+#include <sstream>
+
 using namespace std;
 
 class BTagSFUtil{
@@ -19,6 +21,7 @@ class BTagSFUtil{
 
   // Function used in analyzer to determine if jet is tagged
   bool IsTagged(float JetDiscriminant, int JetFlavor, float JetPt, float JetEta);
+  bool IsUncorrectedTagged(float JetDiscriminant, int JetFlavor, float JetPt, float JetEta);
 
 
   // Functions used in IsTagged to determine tag rate with syst                                                                                                                                                                                                      
@@ -38,7 +41,7 @@ class BTagSFUtil{
 
   // map to store BTagCalibrationReader objects, determined by setup/year
   std::map <TString, BTagCalibrationReader*> ReaderMap;
-
+  BTagCalibrationReader* reader_bf_l;
 
   
   void GetBTagPayload(TString BTagAlgorithm, TString DataPeriod);
