@@ -123,8 +123,8 @@ BTagSFUtil::BTagSFUtil(string MeasurementType, string BTagAlgorithm,  TString Op
     if( (period_dependancy&& c=="PeriodDep") || (!period_dependancy && c!="PeriodDep")){   
       BTagCalibration calib(BTagAlgorithm, string(btagpath)+f);
       
-      ReaderMap[TString(a)+"_"+b+"_"+d+"_"+e+"_bc"] = new BTagCalibrationReader(&calib, op, MeasurementType, SystematicFlagBC);; 
-      ReaderMap[TString(a)+"_"+b+"_"+d+"_"+e+"_l"] = new BTagCalibrationReader(&calib, op, MeasurementType, SystematicFlagL);; 
+      ReaderMap[TString(a)+"_"+b+"_"+d+"_"+e+"_bc"] = new BTagCalibrationReader(&calib, op, MeasurementType, SystematicFlagBC); 
+      ReaderMap[TString(a)+"_"+b+"_"+d+"_"+e+"_l"] = new BTagCalibrationReader(&calib, op, MeasurementType, SystematicFlagL);
       
     }
   }
