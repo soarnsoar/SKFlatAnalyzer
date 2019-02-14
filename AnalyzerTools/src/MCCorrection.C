@@ -525,10 +525,10 @@ double MCCorrection::GetPrefireWeight(std::vector<Photon> photons, std::vector<J
 }
 
 
-double MCCorrection::GetPileUpWeightBySampleName(int N_vtx, int syst){
+double MCCorrection::GetPileUpWeightBySampleName(int N_pileup, int syst){
   
-  int this_bin = N_vtx+1;
-  if(N_vtx >= 100) this_bin=100;
+  int this_bin = N_pileup+1;
+  if(N_pileup >= 100) this_bin=100;
 
   TString this_histname = MCSample;
   if(syst == 0){
@@ -555,10 +555,10 @@ double MCCorrection::GetPileUpWeightBySampleName(int N_vtx, int syst){
 
 }
 
-double MCCorrection::GetPileUpWeight(int N_vtx, int syst){
+double MCCorrection::GetPileUpWeight(int N_pileup, int syst){
 
-  int this_bin = N_vtx+1;
-  if(N_vtx >= 100) this_bin=100;
+  int this_bin = N_pileup+1;
+  if(N_pileup >= 100) this_bin=100;
 
   TString this_histname = "MC_" + TString::Itoa(DataYear,10);
   if(syst == 0){

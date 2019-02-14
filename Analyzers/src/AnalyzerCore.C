@@ -900,16 +900,16 @@ bool AnalyzerCore::IsBTagged(Jet j, Jet::Tagger tagger, Jet::WP WP, bool applySF
 
 
 
-double AnalyzerCore::GetPileUpWeight(int N_vtx, int syst){
+double AnalyzerCore::GetPileUpWeight(int N_pileup, int syst){
 
   if(IsDATA) return 1.;
   else{
 
     if(DataYear==2016){
-      return mcCorr->GetPileUpWeight(N_vtx, syst);
+      return mcCorr->GetPileUpWeight(N_pileup, syst);
     }
     else if(DataYear==2017){
-      return mcCorr->GetPileUpWeightBySampleName(N_vtx, syst);
+      return mcCorr->GetPileUpWeightBySampleName(N_pileup, syst);
     }
     else if(DataYear==2018){
       //==== TODO 2018 not yet added
