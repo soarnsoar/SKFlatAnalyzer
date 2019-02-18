@@ -62,6 +62,42 @@ void SKFlatValidation::initializeAnalyzer(){
     TriggerSafePt_POGHighPt_Muon = 52.;
     DoublePhotonSafePtCut = 75.;
   }
+  else if(DataYear==2018){
+
+    Triggers_POG_Electron = {
+      "HLT_Ele32_WPTight_Gsf_v",
+    };
+    Triggers_POG_Muon = {
+      "HLT_IsoMu24_v",
+    };
+/*
+    TriggerNameForSF_POG_Electron = "Ele32_WPTight_Gsf";
+    TriggerNameForSF_POG_Muon = "IsoMu24";
+*/
+    TriggerNameForSF_POG_Electron = "Default";
+    TriggerNameForSF_POG_Muon = "Default";
+    TriggerSafePt_POG_Electron = 35.;
+    TriggerSafePt_POG_Muon = 26.;
+
+    Triggers_POGHighPt_Electron = {
+      "HLT_Ele32_WPTight_Gsf_v",
+    };
+    Triggers_POGHighPt_Muon = {
+      "HLT_Mu50_v",
+      "HLT_OldMu100_v",
+      "HLT_TkMu100_v",
+    };
+/*
+    TriggerNameForSF_POGHighPt_Electron = "Ele35_WPTight_Gsf";
+    TriggerNameForSF_POGHighPt_Muon = "Mu50";
+*/
+    TriggerNameForSF_POG_Electron = "Default";
+    TriggerNameForSF_POG_Muon = "Default";
+    TriggerSafePt_POGHighPt_Electron = 35.;
+    TriggerSafePt_POGHighPt_Muon = 52.;
+    DoublePhotonSafePtCut = 75.;
+  }
+
   else{
 
   }
@@ -230,6 +266,8 @@ void SKFlatValidation::executeEventFromParameter(AnalyzerParameter param){
     if(!IsDATA){
       //cout << "weight_norm_1invpb = " << weight_norm_1invpb << endl;
       //cout << "GetTriggerLumi = " << ev.GetTriggerLumi("Full") << endl;
+      //cout << "MCweight = " << ev.MCweight() << endl;
+      //cout << "weight_Prefire = " << weight_Prefire << endl;
       weight *= weight_norm_1invpb*ev.GetTriggerLumi("Full")*ev.MCweight()*weight_Prefire;
 
       mcCorr->IgnoreNoHist = param.MCCorrrectionIgnoreNoHist;
