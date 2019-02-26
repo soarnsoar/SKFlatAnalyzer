@@ -255,25 +255,21 @@ double MCCorrection::MuonTrigger_Eff(TString ID, TString trig, int DataOrMC, dou
   double value = 1.;
   double error = 0.;
 
-  //FIXME no 2016 trigger SF YET. Should check this layer
-  if(DataYear==2017){
-    eta = fabs(eta);
-  }
+  eta = fabs(eta);
 
   //==== 2016
   if(DataYear==2016){
     if(trig=="IsoMu24"){
       if(pt<26.) return 1.; //FIXME
       if(eta>=2.4) eta = 2.39;
-      if(eta<-2.4) eta = -2.4;
 
-      if(pt>1200.) pt = 1199.;
+      if(pt>500.) pt = 499.;
     }
     else if(trig=="Mu50"){
       if(pt<52.) return 1.; //FIXME
       if(eta>=2.4) eta = 2.39;
 
-      if(pt>1200.) pt = 1199.;
+      if(pt>800.) pt = 799.;
     }
     else{
 
@@ -284,7 +280,7 @@ double MCCorrection::MuonTrigger_Eff(TString ID, TString trig, int DataOrMC, dou
       //==== FIXME MiniAODPt Pt
       //==== FIXME 28.9918  29.0363
       //==== FIXME This event pass pt>29GeV cut, but MiniAOD pt < 29 GeV
-      //==== FIXME So when I return 0., SF goes nan.. let's returning 1. for now..
+      //==== FIXME So when I return 0., SF goes nan.. let's return 1 for now..
       if(pt<29.) return 1.; //FIXME
       if(eta>=2.4) eta = 2.39;
 
@@ -317,7 +313,7 @@ double MCCorrection::MuonTrigger_Eff(TString ID, TString trig, int DataOrMC, dou
 
   if(DataYear==2016){
     //FIXME no 2016 trigger SF YET. Should check this layer
-    this_bin = this_hist->FindBin(eta,pt);
+    this_bin = this_hist->FindBin(pt,eta);
   }
   else if(DataYear==2017){
     this_bin = this_hist->FindBin(pt,eta);
@@ -525,10 +521,10 @@ double MCCorrection::GetPrefireWeight(std::vector<Photon> photons, std::vector<J
 }
 
 
-double MCCorrection::GetPileUpWeightBySampleName(int N_vtx, int syst){
+double MCCorrection::GetPileUpWeightBySampleName(int N_pileup, int syst){
   
-  int this_bin = N_vtx+1;
-  if(N_vtx >= 100) this_bin=100;
+  int this_bin = N_pileup+1;
+  if(N_pileup >= 100) this_bin=100;
 
   TString this_histname = MCSample;
   if(syst == 0){
@@ -555,10 +551,10 @@ double MCCorrection::GetPileUpWeightBySampleName(int N_vtx, int syst){
 
 }
 
-double MCCorrection::GetPileUpWeight(int N_vtx, int syst){
+double MCCorrection::GetPileUpWeight(int N_pileup, int syst){
 
-  int this_bin = N_vtx+1;
-  if(N_vtx >= 100) this_bin=100;
+  int this_bin = N_pileup+1;
+  if(N_pileup >= 100) this_bin=100;
 
   TString this_histname = "MC_" + TString::Itoa(DataYear,10);
   if(syst == 0){

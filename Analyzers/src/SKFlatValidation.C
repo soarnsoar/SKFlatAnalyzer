@@ -17,6 +17,7 @@ void SKFlatValidation::initializeAnalyzer(){
     };
     Triggers_POG_Muon = {
       "HLT_IsoMu24_v",
+      "HLT_IsoTkMu24_v",
     };
     TriggerNameForSF_POG_Electron = "Ele27_WPTight_Gsf";
     TriggerNameForSF_POG_Muon = "IsoMu24";
@@ -34,8 +35,7 @@ void SKFlatValidation::initializeAnalyzer(){
     TriggerNameForSF_POGHighPt_Muon = "Mu50";
     TriggerSafePt_POGHighPt_Electron = 30.;
     TriggerSafePt_POGHighPt_Muon = 52.;
-
-
+    DoublePhotonSafePtCut = 65.;
   }
   else if(DataYear==2017){
 
@@ -60,7 +60,7 @@ void SKFlatValidation::initializeAnalyzer(){
     TriggerNameForSF_POGHighPt_Muon = "Mu50";
     TriggerSafePt_POGHighPt_Electron = 38.;
     TriggerSafePt_POGHighPt_Muon = 52.;
-
+    DoublePhotonSafePtCut = 75.;
   }
   else{
 
@@ -82,8 +82,6 @@ void SKFlatValidation::executeEvent(){
 
   param.Name = "POG";
 
-  if(DataYear==2016) param.MCCorrrectionIgnoreNoHist = true; //FIXME remove this later
-
   param.Electron_Tight_ID = "passMediumID";
   param.Electron_ID_SF_Key = "passMediumID";
 
@@ -101,8 +99,6 @@ void SKFlatValidation::executeEvent(){
   param.Clear();
 
   param.Name = "POGHighPt";
-
-  if(DataYear==2016) param.MCCorrrectionIgnoreNoHist = true; //FIXME remove this later
 
   param.Electron_Tight_ID = "passHEEPID";
   param.Electron_ID_SF_Key = "Default";
@@ -236,7 +232,7 @@ void SKFlatValidation::executeEventFromParameter(AnalyzerParameter param){
       //cout << "GetTriggerLumi = " << ev.GetTriggerLumi("Full") << endl;
       weight *= weight_norm_1invpb*ev.GetTriggerLumi("Full")*ev.MCweight()*weight_Prefire;
 
-      mcCorr.IgnoreNoHist = param.MCCorrrectionIgnoreNoHist;
+      mcCorr->IgnoreNoHist = param.MCCorrrectionIgnoreNoHist;
 
       //==== FIXME add third lepton veto later
       if(Suffix.Contains("SingleMuon")){
@@ -251,9 +247,9 @@ void SKFlatValidation::executeEventFromParameter(AnalyzerParameter param){
             this_eta = this_tuneP.Eta();
           }
 
-          double this_idsf  = mcCorr.MuonID_SF (param.Muon_ID_SF_Key,  this_eta, this_pt);
-          double this_isosf = mcCorr.MuonISO_SF(param.Muon_ISO_SF_Key, this_eta, this_pt);
-          double this_trigsf = mcCorr.MuonTrigger_SF(param.Muon_Trigger_SF_Key, TriggerNameForSF_Muon, muons);
+          double this_idsf  = mcCorr->MuonID_SF (param.Muon_ID_SF_Key,  this_eta, this_pt);
+          double this_isosf = mcCorr->MuonISO_SF(param.Muon_ISO_SF_Key, this_eta, this_pt);
+          double this_trigsf = mcCorr->MuonTrigger_SF(param.Muon_Trigger_SF_Key, TriggerNameForSF_Muon, muons);
 
           weight *= this_idsf*this_isosf*this_trigsf;
 
@@ -261,8 +257,8 @@ void SKFlatValidation::executeEventFromParameter(AnalyzerParameter param){
       }
       if( Suffix.Contains("DiElectron") || Suffix.Contains("SingleElectron") || Suffix.Contains("DiPhoton") ){
         for(unsigned int i=0; i<electrons.size(); i++){
-          double this_recosf = mcCorr.ElectronReco_SF(electrons.at(i).scEta(),electrons.at(i).Pt());
-          double this_idsf = mcCorr.ElectronID_SF(param.Electron_ID_SF_Key, electrons.at(i).scEta(), electrons.at(i).Pt());
+          double this_recosf = mcCorr->ElectronReco_SF(electrons.at(i).scEta(),electrons.at(i).Pt());
+          double this_idsf = mcCorr->ElectronID_SF(param.Electron_ID_SF_Key, electrons.at(i).scEta(), electrons.at(i).Pt());
           weight *= this_recosf*this_idsf;
         }
       }
@@ -273,7 +269,7 @@ void SKFlatValidation::executeEventFromParameter(AnalyzerParameter param){
     if(n_lepton==2){
 
       bool BaseDiLepSelection = (Z.M() > 15.);
-      bool HigherDiLeptonPtCut = (leps[0]->Pt() > 60.) && (leps[1]->Pt() > 53.);
+      bool HigherDiLeptonPtCut = (leps[0]->Pt() > DoublePhotonSafePtCut) && (leps[1]->Pt() > DoublePhotonSafePtCut);
 
       if(BaseDiLepSelection){
 
@@ -283,7 +279,7 @@ void SKFlatValidation::executeEventFromParameter(AnalyzerParameter param){
           //==== OnZ event
           map_bool_To_Region["OnZ_OS"] = IsOnZ(Z.M(), 15.);
           //==== High ZMass event
-          map_bool_To_Region["ZMassgt200_OS"] = (Z.M()>200.) && HigherDiLeptonPtCut;
+          map_bool_To_Region["HigherDiLeptonPtCut_OS"] = HigherDiLeptonPtCut;
           //==== With B-jet, MET > 30 for dilepton ttbar
           map_bool_To_Region["WithBJet_METgt30_OS"] = (NBJets>0) && (METv.Pt()>30.);
         }
@@ -293,7 +289,7 @@ void SKFlatValidation::executeEventFromParameter(AnalyzerParameter param){
           //==== OnZ event
           map_bool_To_Region["OnZ_SS"] = IsOnZ(Z.M(), 15.);
           //==== High ZMass event
-          map_bool_To_Region["ZMassgt200_SS"] = (Z.M()>200.) && HigherDiLeptonPtCut;
+          map_bool_To_Region["HigherDiLeptonPtCut_SS"] = HigherDiLeptonPtCut;
           //==== With B-jet, MET > 30 for dilepton ttbar
           map_bool_To_Region["WithBJet_METgt30_SS"] = (NBJets>0) && (METv.Pt()>30.);
         }

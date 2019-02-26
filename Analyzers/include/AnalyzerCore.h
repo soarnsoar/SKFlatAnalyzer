@@ -4,6 +4,7 @@
 #include "TLorentzVector.h"
 #include "TString.h"
 #include "TMath.h"
+#include <sstream>      
 
 #include "SKFlatNtuple.h"
 #include "Event.h"
@@ -20,6 +21,8 @@
 #include "MCCorrection.h"
 #include "FakeBackgroundEstimator.h"
 #include "CFBackgroundEstimator.h"
+#include "BTagSFUtil.h"
+#include "PDFReweight.h"
 
 #define M_Z 91.1876
 #define M_W 80.379
@@ -39,7 +42,9 @@ public:
 
   };
 
+  //==================
   //==== Get objects
+  //==================
 
   //==== When GetAllMuons, we apply Rochester correciton
   //==== Then, Pt orderding can be changed
@@ -60,8 +65,10 @@ public:
   std::vector<Muon> GetMuons(TString id, double ptmin, double fetamax);
 
   std::vector<Photon> GetAllPhotons();
-  std::vector<Photon> GetPhotons(TString id, double ptmin=-999., double fetamax=999.);
-  
+  std::vector<Photon> GetPhotons(TString id, double ptmin, double fetamax);
+
+  //==== If TightIso is set, it calculate ptcone
+  //==== If UseMini is true, Lepton::RelIso() returns MiniRelIso
   std::vector<Lepton *> MakeLeptonPointerVector(std::vector<Muon>& muons, double TightIso=-999, bool UseMini=false);
   std::vector<Lepton *> MakeLeptonPointerVector(std::vector<Electron>& electrons, double TightIso=-999, bool UseMini=false);
 
@@ -73,8 +80,10 @@ public:
 
   std::vector<Gen> GetGens();
 
+  //===================================================
   //==== Get objects METHOD 2
-  //==== Get AllObject in the begning, and apply cut
+  //==== Get AllObject in the begining, and apply cut
+  //==================================================+
 
   std::vector<Electron> SelectElectrons(std::vector<Electron> electrons, TString id, double ptmin, double fetamax);
 
@@ -85,7 +94,9 @@ public:
 
   std::vector<FatJet> SelectFatJets(std::vector<FatJet> jets, TString id, double ptmin, double fetamax);
 
+  //==================
   //==== Systematics
+  //==================
 
   std::vector<Electron> ScaleElectrons(std::vector<Electron> electrons, int sys);
   std::vector<Electron> SmearElectrons(std::vector<Electron> electrons, int sys);
@@ -99,9 +110,10 @@ public:
   std::vector<FatJet> SmearFatJets(std::vector<FatJet> jets, int sys);
   std::vector<FatJet> ScaleSDMassFatJets(std::vector<FatJet> jets, int sys);
   std::vector<FatJet> SmearSDMassFatJets(std::vector<FatJet> jets, int sys);
-  
-  
+
+  //====================
   //==== Event Filters
+  //====================
 
   bool PassMETFilter();
 
@@ -111,21 +123,41 @@ public:
 
   //===== Estimators
 
-  MCCorrection mcCorr;
-  FakeBackgroundEstimator fakeEst;
-  CFBackgroundEstimator cfEst;
+  MCCorrection *mcCorr;
+  FakeBackgroundEstimator *fakeEst;
+  CFBackgroundEstimator *cfEst;
   void initializeAnalyzerTools();
 
   //==== Prefire
   double GetPrefireWeight(int sys);
 
   //==== PU Reweight
-  double GetPileUpWeight(int N_vtx, int syst);
+  double GetPileUpWeight(int N_pileup, int syst);
 
+
+  //==== Btag setup
+  void SetupBTagger(std::vector<Jet::Tagger> taggers, std::vector<Jet::WP> wps, bool setup_systematics, bool period_dependant);
+  
+  //==== Is Btagged (using SF)
+  bool IsBTagged(Jet j, Jet::Tagger tagger, Jet::WP WP, bool applySF, int systematic );
+
+ 
+  //==== Using new PDF set
+  PDFReweight *pdfReweight;
+  double GetPDFWeight(LHAPDF::PDF* pdf_);
+  //==== NewCentral/ProdCentral
+  double GetPDFReweight();
+  //==== NewErrorSet/ProdCentral
+  double GetPDFReweight(int member);
+
+  //================
   //==== Functions
+  //================
 
   bool IsOnZ(double m, double width);
   double MT(TLorentzVector a, TLorentzVector b);
+  double MT2(TLorentzVector a, TLorentzVector b, Particle METv, double METgap);
+  double projectedMET(TLorentzVector a, TLorentzVector b, Particle METv);
   bool HasFlag(TString flag);
   std::vector<Muon> MuonWithoutGap(std::vector<Muon> muons);
   std::vector<Muon> MuonPromptOnly(std::vector<Muon> muons, std::vector<Gen> gens);
@@ -146,7 +178,7 @@ public:
 
   void PrintGen(std::vector<Gen> gens);
   Gen GetGenMatchedLepton(Lepton lep, std::vector<Gen> gens);
-  Gen GetGenMathcedPhoton(Lepton lep, std::vector<Gen> gens);
+  Gen GetGenMatchedPhoton(Lepton lep, std::vector<Gen> gens);
   vector<int> TrackGenSelfHistory(Gen me, std::vector<Gen> gens);
   bool IsFromHadron(Gen me, std::vector<Gen> gens);
   int GetLeptonType(Lepton lep, std::vector<Gen> gens);
@@ -203,6 +235,9 @@ public:
 
   TFile *outfile;
   void SetOutfilePath(TString outname);
+
+  std::map<TString,BTagSFUtil*> MapBTagSF;
+  
 
 };
 

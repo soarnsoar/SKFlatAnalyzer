@@ -2,16 +2,44 @@
 
 AnalyzerCore::AnalyzerCore(){
 
+  mcCorr = new MCCorrection();
+  fakeEst = new FakeBackgroundEstimator();
+  cfEst = new CFBackgroundEstimator();
+  pdfReweight = new PDFReweight();
+
 }
 
 AnalyzerCore::~AnalyzerCore(){
+
+  //=== hist maps
 
   for(std::map< TString, TH1D* >::iterator mapit = maphist_TH1D.begin(); mapit!=maphist_TH1D.end(); mapit++){
     delete mapit->second;
   }
   maphist_TH1D.clear();
 
+  for(std::map< TString, TH2D* >::iterator mapit = maphist_TH2D.begin(); mapit!=maphist_TH2D.end(); mapit++){
+    delete mapit->second;
+  }
+  maphist_TH2D.clear();
+
+  //=== delete btag map
+  for(std::map<TString,BTagSFUtil*>::iterator it = MapBTagSF.begin(); it!= MapBTagSF.end(); it++){
+    delete it->second;
+  }
+  MapBTagSF.clear();
+
+  //==== output rootfile
+
   outfile->Close();
+
+  //==== Tools
+
+  delete mcCorr;
+  delete fakeEst;
+  delete cfEst;
+  delete pdfReweight;
+
 }
 
 void AnalyzerCore::SetOutfilePath(TString outname){
@@ -746,18 +774,18 @@ void AnalyzerCore::initializeAnalyzerTools(){
 
   //==== MCCorrection
   if(!IsDATA){
-    mcCorr.SetMCSample(MCSample);
-    mcCorr.SetDataYear(DataYear);
-    mcCorr.ReadHistograms();
+    mcCorr->SetMCSample(MCSample);
+    mcCorr->SetDataYear(DataYear);
+    mcCorr->ReadHistograms();
   }
 
   //==== FakeBackgroundEstimator
-  fakeEst.SetDataYear(DataYear);
-  fakeEst.ReadHistograms();
+  fakeEst->SetDataYear(DataYear);
+  fakeEst->ReadHistograms();
 
   //==== CFBackgroundEstimator
-  cfEst.SetDataYear(DataYear);
-  cfEst.ReadHistograms();
+  cfEst->SetDataYear(DataYear);
+  cfEst->ReadHistograms();
 
 }
 
@@ -773,7 +801,7 @@ double AnalyzerCore::GetPrefireWeight(int sys){
       else if(sys>0) return L1PrefireReweight_Up;
       else return L1PrefireReweight_Down;
 
-      //return mcCorr.GetPrefireWeight(photons, jets, sys);
+      //return mcCorr->GetPrefireWeight(photons, jets, sys);
 
     }
 
@@ -785,16 +813,103 @@ double AnalyzerCore::GetPrefireWeight(int sys){
 
 }
 
-double AnalyzerCore::GetPileUpWeight(int N_vtx, int syst){
+
+void AnalyzerCore::SetupBTagger(std::vector<Jet::Tagger> taggers, std::vector<Jet::WP> wps, bool setup_systematics, bool period_dependant){
+
+  //=== Btagging code for 2016/2017/2018
+  
+  //=== Uses method 2 a) from twiki (more methods can be coded):
+  //=== https://twiki.cern.ch/twiki/bin/view/CMS/BTagSFMethods
+  
+  //=== if function already called exit
+  if(MapBTagSF.size() > 0) return;
+
+  for(std::vector<Jet::Tagger>::const_iterator it = taggers.begin(); it != taggers.end(); it++){
+    for(std::vector<Jet::WP>::const_iterator it2 = wps.begin(); it2 != wps.end(); it2++){
+    
+      //=== creat tmmp jet to get tagger string
+      Jet j;
+      TString stagger = j.TaggerString(*it);
+      TString swp = j.WPString(*it2);
+      
+      MapBTagSF[stagger + "_" + swp + "_lf"]              = new BTagSFUtil("incl"  ,  string(stagger), swp, DataYear, period_dependant,0);
+      MapBTagSF[stagger + "_" + swp + "_hf"]              = new BTagSFUtil("mujets",  string(stagger), swp, DataYear, period_dependant,0);
+      if(setup_systematics){
+	MapBTagSF[stagger + "_" + swp + "_lf_systup"]     = new BTagSFUtil("incl"  ,  string(stagger), swp, DataYear, period_dependant , 3);
+	MapBTagSF[stagger + "_" + swp + "_hf_systup"]     = new BTagSFUtil("mujets",  string(stagger), swp, DataYear, period_dependant , 1);
+	MapBTagSF[stagger + "_" + swp + "_lf_systdown"]   = new BTagSFUtil("incl"  ,  string(stagger), swp, DataYear, period_dependant , -3);
+	MapBTagSF[stagger + "_" + swp + "_hf_systdown"]   = new BTagSFUtil("mujets",  string(stagger), swp, DataYear, period_dependant , -1);
+      }
+    }
+  }
+  return;
+
+}
+
+
+bool AnalyzerCore::IsBTagged(Jet j, Jet::Tagger tagger, Jet::WP WP, bool applySF, int systematic){
+
+  //=== function to check if jet is btagged using SF to correct MC tag rate
+  
+  //=== create key from configuration
+  TString map_key = j.TaggerString(tagger) + "_"+  j.WPString(WP) ;
+
+  if(j.hadronFlavour() == 0 || IsDATA) map_key += "_lf";
+  else map_key +="_hf";
+
+  if(!IsDATA){
+    if(systematic > 0) map_key += "_systup";
+    else if (systematic < 0) map_key +=  "systdown";
+  }
+  
+  //=== use key to access correct BTagSFUtil object
+  
+  std::map<TString,BTagSFUtil*>::iterator it_jet_btagger = MapBTagSF.find(map_key);
+
+  if(it_jet_btagger == MapBTagSF.end()){
+    cout << "[AnalyzerCore::IsBTaggedCorrected]  ERROR, incorrect combination of tagger/WP : " << j.TaggerString(tagger) <<  "/" << j.WPString(WP) << " check SetupBTagger is correctly configured for tagger/WP and systematics" << endl;
+    exit(EXIT_FAILURE);
+  }
+  
+
+  //=== check if jet is btagged using BTagSFUtil
+  bool isBtag=false;
+  int jet_flavour = IsDATA ? -999999 : j.hadronFlavour();
+
+  if(applySF){
+
+    //=== Assign unique seed for jet
+    unsigned int runNum_uint  = static_cast <unsigned int> (run);
+    unsigned int lumiNum_uint = static_cast <unsigned int> (lumi);
+    unsigned int evNum_uint   = static_cast <unsigned int> (event);
+    unsigned int jet0eta = uint32_t(fabs(j.Eta())/0.01);
+    int m_nomVar=1;
+    std::uint32_t seed = jet0eta + m_nomVar + (lumiNum_uint<<10) + (runNum_uint<<20) + evNum_uint;
+
+    if (it_jet_btagger->second->IsTagged(j.GetTaggerResult(tagger), jet_flavour, j.Pt(), j.Eta(),seed))
+      isBtag=true;
+  }
+  else{
+    //===  dont apply correction to btag value
+    if (it_jet_btagger->second->IsUncorrectedTagged(j.GetTaggerResult(tagger), jet_flavour, j.Pt(), j.Eta()))
+      isBtag=true;
+  }
+  return isBtag;
+
+}
+
+
+
+double AnalyzerCore::GetPileUpWeight(int N_pileup, int syst){
 
   if(IsDATA) return 1.;
   else{
 
     if(DataYear==2016){
-      return mcCorr.GetPileUpWeight(N_vtx, syst);
+      return mcCorr->GetPileUpWeight(N_pileup, syst);
     }
     else if(DataYear==2017){
-      return mcCorr.GetPileUpWeightBySampleName(N_vtx, syst);
+      return mcCorr->GetPileUpWeightBySampleName(N_pileup, syst);
     }
     else if(DataYear==2018){
       //==== TODO 2018 not yet added
@@ -810,6 +925,27 @@ double AnalyzerCore::GetPileUpWeight(int N_vtx, int syst){
 
 }
 
+double AnalyzerCore::GetPDFWeight(LHAPDF::PDF* pdf_){
+
+  double pdf_1 = pdf_->xfxQ(genWeight_id1, genWeight_X1, genWeight_Q);
+  double pdf_2 = pdf_->xfxQ(genWeight_id2, genWeight_X2, genWeight_Q);
+
+  return pdf_1 * pdf_2;
+
+}
+
+double AnalyzerCore::GetPDFReweight(){
+
+  return GetPDFWeight(pdfReweight->NewPDF)/GetPDFWeight(pdfReweight->ProdPDF);
+
+}
+
+double AnalyzerCore::GetPDFReweight(int member){
+
+  return GetPDFWeight(pdfReweight->PDFErrorSet.at(member))/GetPDFWeight(pdfReweight->ProdPDF);
+
+}
+
 bool AnalyzerCore::IsOnZ(double m, double width){
   if( fabs(m-M_Z) < width ) return true;
   else return false;
@@ -818,6 +954,39 @@ bool AnalyzerCore::IsOnZ(double m, double width){
 double AnalyzerCore::MT(TLorentzVector a, TLorentzVector b){
   double dphi = a.DeltaPhi(b);
   return TMath::Sqrt( 2.*a.Pt()*b.Pt()*(1.- TMath::Cos(dphi) ) );
+}
+
+double AnalyzerCore::MT2(TLorentzVector a, TLorentzVector b, Particle METv, double METgap){
+
+  TLorentzVector METa, METb;
+  METa.SetPxPyPzE( 0., 0., 0., 0.);
+  double MTa, MTb;
+  double tempMETa =0., tempMT2 = TMath::Max(MT(a, METv), MT(b, METv));
+
+  while(tempMETa < METv.Pt()){
+
+    METa.SetPxPyPzE(tempMETa*TMath::Cos(METv.Phi()), tempMETa*TMath::Sin(METv.Phi()), 0., tempMETa);
+    METb = METv - METa;
+
+    MTa = MT(METa, a);
+    MTb = MT(METb, b);
+
+    tempMT2 = TMath::Min(tempMT2, TMath::Max(MTa, MTb));
+
+    tempMETa = tempMETa + METgap;
+  }  
+
+  return tempMT2;
+
+}
+
+double AnalyzerCore::projectedMET(TLorentzVector a, TLorentzVector b, Particle METv){
+
+  if( fabs(a.DeltaPhi(METv)) < fabs(b.DeltaPhi(METv)) ){
+    return (METv.Pt() * TMath::Sin(fabs(a.DeltaPhi(METv))) );
+  }
+  else return (METv.Pt() * TMath::Sin(fabs(b.DeltaPhi(METv))) );
+
 }
 
 bool AnalyzerCore::HasFlag(TString flag){
@@ -1104,7 +1273,7 @@ Gen AnalyzerCore::GetGenMatchedLepton(Lepton lep, std::vector<Gen> gens){
 
 }
 
-Gen AnalyzerCore::GetGenMathcedPhoton(Lepton lep, std::vector<Gen> gens){
+Gen AnalyzerCore::GetGenMatchedPhoton(Lepton lep, std::vector<Gen> gens){
 
   double min_dR = 0.2;
   Gen gen_closest;
@@ -1277,7 +1446,7 @@ int AnalyzerCore::GetLeptonType(Lepton lep, std::vector<Gen> gens){
   if( gen_closest.IsEmpty() ){
 
     //==== Find if we have near photon
-    Gen gen_photon_closest = GetGenMathcedPhoton(lep, gens);
+    Gen gen_photon_closest = GetGenMatchedPhoton(lep, gens);
     int photontype = GetGenPhotonType(gen_photon_closest,gens);
     if(photontype<=0){
       return -1;
