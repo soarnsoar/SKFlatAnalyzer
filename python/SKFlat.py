@@ -7,6 +7,8 @@ from CheckJobStatus import *
 from TimeTools import *
 import random
 
+## Arguments
+
 parser = argparse.ArgumentParser(description='SKFlat Command')
 parser.add_argument('-a', dest='Analyzer', default="")
 parser.add_argument('-i', dest='InputSample', default="")
@@ -21,7 +23,7 @@ parser.add_argument('--no_exec', action='store_true')
 parser.add_argument('--userflags', dest='Userflags', default="")
 args = parser.parse_args()
 
-## make flags
+## make userflags as a list
 Userflags = []
 if args.Userflags != "":
   Userflags = (args.Userflags).split(',')
@@ -55,6 +57,9 @@ SKFlatOutputDir = os.environ['SKFlatOutputDir']
 SKFlatSEDir = os.environ['SKFlatSEDir']
 SKFlat_LIB_PATH = os.environ['SKFlat_LIB_PATH']
 UID = str(os.getuid())
+HOSTNAME = os.environ['HOSTNAME']
+
+## Check joblog email
 
 if SKFlatLogEmail=='':
   print '[SKFlat.py] Put your email address in setup.sh'
@@ -63,7 +68,8 @@ SendLogToWeb = True
 if SKFlatLogWeb=='' or SKFlatLogWebDir=='':
   SendLogToWeb = False
 
-HOSTNAME = os.environ['HOSTNAME']
+## Check hostname
+
 IsKISTI = ("sdfarm.kr" in HOSTNAME)
 IsUI10 = ("ui10.sdfarm.kr" in HOSTNAME)
 IsUI20 = ("ui20.sdfarm.kr" in HOSTNAME)
@@ -77,6 +83,7 @@ if IsKNU:
   HOSTNAME = "KNU"
 
 ## Is Skim run?
+
 IsSkimTree = "SkimTree" in args.Analyzer
 if IsSkimTree:
   if not IsSNU:
@@ -85,6 +92,7 @@ if IsSkimTree:
   args.NJobs = 999999
 
 ## Machine-dependent variables
+
 if IsKNU:
   args.Queue = "cms"
 
@@ -104,7 +112,7 @@ else:
 InputSamples = []
 StringForHash = ""
 
-## When using list
+## When using txt file for input (i.e., -l option)
 if args.InputSampleList is not "":
   lines = open(args.InputSampleList)
   for line in lines:
@@ -136,6 +144,7 @@ webdirname = timestamp+"_"+str_RandomNumber
 webdirpathbase = SKFlatRunlogDir+'/www/SKFlatAnalyzerJobLogs/'+webdirname
 
 ## If KISTI, compress files
+
 if IsKISTI:
   cwd = os.getcwd()
   os.chdir(SKFlat_WD)
@@ -144,6 +153,8 @@ if IsKISTI:
   os.chdir(cwd)
 
 ## Loop over samples
+
+# true or false for each sample
 SampleFinishedForEachSample = []
 PostJobFinishedForEachSample = []
 BaseDirForEachSample = []
@@ -184,7 +195,9 @@ for InputSample in InputSamples:
   ## Copy shared library file
 
   if IsKISTI:
+
     ## In KISTI, we have copy both library and data file
+
     os.system('cp '+SKFlat_WD+'/'+str_RandomNumber+'_data.tar.gz '+base_rundir+'/data.tar.gz')
     os.system('cp '+SKFlat_WD+'/'+str_RandomNumber+'_lib.tar.gz '+base_rundir+'/lib.tar.gz')
     os.system('cp '+SKFlat_WD+'/lib/DataFormats.tar.gz '+base_rundir)
@@ -192,7 +205,9 @@ for InputSample in InputSamples:
     os.system('cp '+SKFlat_WD+'/lib/Analyzers.tar.gz '+base_rundir)
 
   else:
+
     ## Else, we only have to copy libray
+
     os.system('mkdir -p '+base_rundir+'/lib/')
     os.system('cp '+SKFlat_LIB_PATH+'/* '+base_rundir+'/lib')
 
@@ -202,6 +217,7 @@ for InputSample in InputSamples:
   os.system('mkdir -p '+this_webdir)
 
   ## If KNU, copy grid cert
+
   if IsKNU:
     os.system('cp /tmp/x509up_u'+UID+' '+base_rundir)
 
@@ -236,12 +252,16 @@ for InputSample in InputSamples:
   FileRanges = []
   temp_end_largerjob = 0
   nfile_checksum = 0
+
   ## First nfilepjob_remainder jobs will have (nfilepjob+1) files per job
+
   for it_job in range(0,nfilepjob_remainder):
     FileRanges.append(range(it_job*(nfilepjob+1),(it_job+1)*(nfilepjob+1)))
     temp_end_largerjob = (it_job+1)*(nfilepjob+1)
     nfile_checksum += len(range(it_job*(nfilepjob+1),(it_job+1)*(nfilepjob+1)))
+
   ## Remaining NJobs-nfilepjob_remainder jobs will have (nfilepjob) files per job
+
   for it_job in range(0,NJobs-nfilepjob_remainder):
     FileRanges.append(range(temp_end_largerjob+(it_job*nfilepjob),temp_end_largerjob+((it_job+1)*nfilepjob) ))
     nfile_checksum += len(range(temp_end_largerjob+(it_job*nfilepjob),temp_end_largerjob+((it_job+1)*nfilepjob) ))
@@ -250,6 +270,7 @@ for InputSample in InputSamples:
   FileRangesForEachSample.append(FileRanges)
 
   ## Get xsec and SumW
+
   this_xsec = 1.;
   this_sumw = 1.;
   if not IsDATA:
@@ -372,8 +393,6 @@ queue {2}
 '''.format(base_rundir+'/runFile.tar.gz', base_rundir+'/lib.tar.gz',str(NJobs), commandsfilename, base_rundir+'/data.tar.gz', base_rundir+'/Analyzers.tar.gz', base_rundir+'/AnalyzerTools.tar.gz', base_rundir+'/DataFormats.tar.gz')
       submit_command.close()
 
-
-
   CheckTotalNFile=0
   for it_job in range(0,len(FileRanges)):
 
@@ -403,7 +422,6 @@ queue {2}
     IncludeLine += 'R__LOAD_LIBRARY({0}libAnalyzerTools.so)\n'.format(libdir)
     IncludeLine += 'R__LOAD_LIBRARY({0}libAnalyzers.so)\n'.format(libdir)
     IncludeLine += 'R__LOAD_LIBRARY(/cvmfs/cms.cern.ch/slc6_amd64_gcc630/external/lhapdf/6.2.1-fmblme/lib/libLHAPDF.so)\n'
-    #IncludeLine = 'R__LOAD_LIBRARY({1}/{0}_C.so)'.format(args.Analyzer, libdir)
 
     out = open(runCfileFullPath, 'w')
     print>>out,'''{3}
@@ -539,6 +557,7 @@ root -l -b -q run.C 1>stdout.log 2>stderr.log
     KillCommand.close()
 
 ## remove tar.gz
+
 os.system('rm -f '+SKFlat_WD+'/'+str_RandomNumber+'_data.tar.gz')
 os.system('rm -f '+SKFlat_WD+'/'+str_RandomNumber+'_lib.tar.gz')
 
@@ -547,6 +566,7 @@ if args.no_exec:
 
 ## Set Output directory
 ## if args.Outputdir is not set, go to default setting
+
 FinalOutputPath = args.Outputdir
 if args.Outputdir=="":
   FinalOutputPath = SKFlatOutputDir+'/'+SKFlatV+'/'+args.Analyzer+'/'+args.Year+'/'
@@ -745,7 +765,9 @@ try:
           ##---- END it_job loop
 
         if GotError:
+
           ## When error occured, change both Finished/PostJob Flag to True
+
           SampleFinishedForEachSample[it_sample] = True
           PostJobFinishedForEachSample[it_sample] = True
           break
@@ -781,12 +803,15 @@ try:
         statuslog.close()
 
         ## copy statuslog to webdir
+
         os.system('cp '+base_rundir+'/JobStatus.log '+this_webdir)
 
         ## This time, it is found to be finished
         ## Change the flag
+
         if ThisSampleFinished:
           SampleFinishedForEachSample[it_sample] = True
+
         ##---- END if finished
 
       else:
@@ -801,6 +826,7 @@ try:
 
 
           ## if Skim, no need to hadd. move on!
+
           if IsSkimTree:
             PostJobFinishedForEachSample[it_sample] = True
             continue
