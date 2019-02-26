@@ -168,6 +168,25 @@ for flag in Userflags:
   MasterJobDir += '__'+flag
 MasterJobDir += '__'+HOSTNAME+'/'
 
+## Copy shared library file
+
+if IsKISTI:
+
+  ## In KISTI, we have copy both library and data file
+
+  os.system('cp '+SKFlat_WD+'/'+str_RandomNumber+'_data.tar.gz '+MasterJobDir+'/data.tar.gz')
+  os.system('cp '+SKFlat_WD+'/'+str_RandomNumber+'_lib.tar.gz '+MasterJobDir+'/lib.tar.gz')
+  os.system('cp '+SKFlat_WD+'/lib/DataFormats.tar.gz '+MasterJobDir)
+  os.system('cp '+SKFlat_WD+'/lib/AnalyzerTools.tar.gz '+MasterJobDir)
+  os.system('cp '+SKFlat_WD+'/lib/Analyzers.tar.gz '+MasterJobDir)
+
+else:
+
+  ## Else, we only have to copy libray
+
+  os.system('mkdir -p '+MasterJobDir+'/lib/')
+  os.system('cp '+SKFlat_LIB_PATH+'/* '+MasterJobDir+'/lib')
+
 ## Loop over samples
 
 # true or false for each sample
@@ -201,27 +220,8 @@ for InputSample in InputSamples:
   os.system('mkdir -p '+base_rundir)
   os.system('mkdir -p '+base_rundir+'/output/')
 
-  ## Copy shared library file
-
-  if IsKISTI:
-
-    ## In KISTI, we have copy both library and data file
-
-    os.system('cp '+SKFlat_WD+'/'+str_RandomNumber+'_data.tar.gz '+MasterJobDir+'/data.tar.gz')
-    os.system('cp '+SKFlat_WD+'/'+str_RandomNumber+'_lib.tar.gz '+MasterJobDir+'/lib.tar.gz')
-    os.system('cp '+SKFlat_WD+'/lib/DataFormats.tar.gz '+MasterJobDir)
-    os.system('cp '+SKFlat_WD+'/lib/AnalyzerTools.tar.gz '+MasterJobDir)
-    os.system('cp '+SKFlat_WD+'/lib/Analyzers.tar.gz '+MasterJobDir)
-
-  else:
-
-    ## Else, we only have to copy libray
-
-    os.system('mkdir -p '+MasterJobDir+'/lib/')
-    os.system('cp '+SKFlat_LIB_PATH+'/* '+MasterJobDir+'/lib')
-
   ## Create webdir
-  ## base_rundir = $SKFlatRunlogDir/2019_02_26_222038__GetEffLumi__Year2016__KISTI/WW_pythia/
+  ## cf) base_rundir = $SKFlatRunlogDir/2019_02_26_222038__GetEffLumi__Year2016__KISTI/WW_pythia/
 
   this_webdir = webdirpathbase+'/'+base_rundir.replace(SKFlatRunlogDir,'').replace(HOSTNAME+'/',HOSTNAME+'__')
   os.system('mkdir -p '+this_webdir)
