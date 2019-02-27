@@ -144,15 +144,6 @@ str_RandomNumber = str(RandomNumber).replace('0.','')
 webdirname = timestamp+"_"+str_RandomNumber
 webdirpathbase = SKFlatRunlogDir+'/www/SKFlatAnalyzerJobLogs/'+webdirname
 
-## If KISTI, compress files
-
-if IsKISTI:
-  cwd = os.getcwd()
-  os.chdir(SKFlat_WD)
-  os.system('tar --exclude=data/'+SKFlatV+'/Sample -czf '+str_RandomNumber+'_data.tar.gz data/'+SKFlatV+'/')
-  os.system('tar -czf '+str_RandomNumber+'_lib.tar.gz lib/*')
-  os.chdir(cwd)
-
 ## skim string
 
 SkimString = ""
@@ -168,11 +159,22 @@ for flag in Userflags:
   MasterJobDir += '__'+flag
 MasterJobDir += '__'+HOSTNAME+'/'
 
+## If KISTI, compress files
+
+if IsKISTI:
+  cwd = os.getcwd()
+  os.chdir(SKFlat_WD)
+  os.system('tar --exclude=data/'+SKFlatV+'/Sample -czf '+str_RandomNumber+'_data.tar.gz data/'+SKFlatV+'/')
+  os.system('tar -czf '+str_RandomNumber+'_lib.tar.gz lib/*')
+  os.chdir(cwd)
+
 ## Copy shared library file
 
 if IsKISTI:
 
   ## In KISTI, we have copy both library and data file
+
+  os.system('mkdir -p '+MasterJobDir)
 
   os.system('cp '+SKFlat_WD+'/'+str_RandomNumber+'_data.tar.gz '+MasterJobDir+'/data.tar.gz')
   os.system('cp '+SKFlat_WD+'/'+str_RandomNumber+'_lib.tar.gz '+MasterJobDir+'/lib.tar.gz')
