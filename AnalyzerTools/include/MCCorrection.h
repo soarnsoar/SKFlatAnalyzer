@@ -18,6 +18,7 @@
 #include "Electron.h"
 #include "Photon.h"
 #include "Jet.h"
+#include "Gen.h"
 
 class MCCorrection{
 
@@ -53,6 +54,8 @@ public:
   std::map< TString, TH1D* > map_hist_pileup;
   double GetPileUpWeightBySampleName(int N_pileup, int syst);
   double GetPileUpWeight(int N_pileup, int syst);
+
+  double GetTopPtReweight(std::vector<Gen> gens);
 
 };
 
