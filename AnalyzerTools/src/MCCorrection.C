@@ -149,7 +149,7 @@ double MCCorrection::MuonID_SF(TString ID, double eta, double pt, int sys){
   double value = 1.;
   double error = 0.;
 
-  if(DataYear==2017){
+  if(DataYear!=2016){
     eta = fabs(eta);
   }
 
@@ -175,12 +175,8 @@ double MCCorrection::MuonID_SF(TString ID, double eta, double pt, int sys){
   if(DataYear==2016){
     this_bin = this_hist->FindBin(eta,pt);
   }
-  else if(DataYear==2017){
-    this_bin = this_hist->FindBin(pt,eta);
-  }
   else{
-    cout << "[MCCorrection::MuonID_SF] Wrong year : "<<DataYear<<endl;
-    exit(EXIT_FAILURE);
+    this_bin = this_hist->FindBin(pt,eta);
   }
 
   value = this_hist->GetBinContent(this_bin);
@@ -201,7 +197,7 @@ double MCCorrection::MuonISO_SF(TString ID, double eta, double pt, int sys){
   double value = 1.;
   double error = 0.;
 
-  if(DataYear==2017){
+  if(DataYear!=2016){
     eta = fabs(eta);
   }
 
@@ -227,12 +223,8 @@ double MCCorrection::MuonISO_SF(TString ID, double eta, double pt, int sys){
   if(DataYear==2016){
     this_bin = this_hist->FindBin(eta,pt);
   }
-  else if(DataYear==2017){
-    this_bin = this_hist->FindBin(pt,eta);
-  }
   else{
-    cout << "[MCCorrection::MuonISO_SF] Wrong year : "<<DataYear<<endl;
-    exit(EXIT_FAILURE);
+    this_bin = this_hist->FindBin(pt,eta);
   }
 
   value = this_hist->GetBinContent(this_bin);
@@ -247,6 +239,7 @@ double MCCorrection::MuonISO_SF(TString ID, double eta, double pt, int sys){
 double MCCorrection::MuonTrigger_Eff(TString ID, TString trig, int DataOrMC, double eta, double pt, int sys){
 
   if(ID=="Default") return 1.;
+  if(trig=="Default") return 1.;
 
   //cout << "[MCCorrection::MuonTrigger_Eff] ID = " << ID << "\t" << "trig = " << trig << endl;
   //cout << "[MCCorrection::MuonTrigger_Eff] DataOrMC = " << DataOrMC << endl;
@@ -309,19 +302,7 @@ double MCCorrection::MuonTrigger_Eff(TString ID, TString trig, int DataOrMC, dou
     }
   }
 
-  int this_bin(-999);
-
-  if(DataYear==2016){
-    //FIXME no 2016 trigger SF YET. Should check this layer
-    this_bin = this_hist->FindBin(pt,eta);
-  }
-  else if(DataYear==2017){
-    this_bin = this_hist->FindBin(pt,eta);
-  }
-  else{
-    cout << "[MCCorrection::MuonTrigger_Eff] Wrong year : "<<DataYear<<endl;
-    exit(EXIT_FAILURE);
-  }
+  int this_bin = this_hist->FindBin(pt,eta);
 
   value = this_hist->GetBinContent(this_bin);
   error = this_hist->GetBinError(this_bin);
@@ -336,6 +317,7 @@ double MCCorrection::MuonTrigger_Eff(TString ID, TString trig, int DataOrMC, dou
 double MCCorrection::MuonTrigger_SF(TString ID, TString trig, std::vector<Muon> muons, int sys){
 
   if(ID=="Default") return 1.;
+  if(trig=="Default") return 1.;
 
   double value = 1.;
 
