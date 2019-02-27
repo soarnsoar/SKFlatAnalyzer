@@ -563,7 +563,40 @@ double MCCorrection::GetPileUpWeight(int N_pileup, int syst){
 
 }
 
+double MCCorrection::GetTopPtReweight(std::vector<Gen> gens){
+  //==== ref: https://twiki.cern.ch/twiki/bin/viewauth/CMS/TopPtReweighting2017
+  //==== Only top quarks in SM ttbar events must be reweighted, 
+  //==== not single tops or tops from BSM production mechanisms.
+  if(!MCSample.Contains("TT") || !MCSample.Contains("powheg")){
+    return 1.;
+  }
+  //==== initialize with large number
+  double toppt1=10000, toppt2=10000;
+  bool found_top = false, found_atop = false;
 
-
-
+  for(vector<Gen>::iterator genit=gens.begin(); genit!=gens.end(); genit++){
+    
+    if(genit->Status() == 22){
+      if(genit->PID() == 6){
+        toppt1= genit->Pt();
+        found_top = true;
+      }
+      else if(genit->PID() == -6){
+        toppt2= genit->Pt();
+        found_atop = true;
+      }
+    }
+    //==== after we found top pair, break the loop
+    if(found_top && found_atop) break;
+  }
+  double pt_reweight = 1.;
+  //==== if top pair is not found, return 1.
+  //==== the measurement covers only the range pt(top)<=800GeV, otherwise, return 1.
+  if(toppt1<=800 && toppt2 <=800){
+    pt_reweight*=exp(0.0615-0.0005*toppt1);
+    pt_reweight*=exp(0.0615-0.0005*toppt2);
+    pt_reweight = sqrt(pt_reweight);
+  }
+  return pt_reweight;
+}
 
