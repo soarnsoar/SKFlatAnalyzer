@@ -7,6 +7,8 @@ from CheckJobStatus import *
 from TimeTools import *
 import random
 
+## Arguments
+
 parser = argparse.ArgumentParser(description='SKFlat Command')
 parser.add_argument('-a', dest='Analyzer', default="")
 parser.add_argument('-i', dest='InputSample', default="")
@@ -21,7 +23,7 @@ parser.add_argument('--no_exec', action='store_true')
 parser.add_argument('--userflags', dest='Userflags', default="")
 args = parser.parse_args()
 
-## make flags
+## make userflags as a list
 Userflags = []
 if args.Userflags != "":
   Userflags = (args.Userflags).split(',')
@@ -55,6 +57,9 @@ SKFlatOutputDir = os.environ['SKFlatOutputDir']
 SKFlatSEDir = os.environ['SKFlatSEDir']
 SKFlat_LIB_PATH = os.environ['SKFlat_LIB_PATH']
 UID = str(os.getuid())
+HOSTNAME = os.environ['HOSTNAME']
+
+## Check joblog email
 
 if SKFlatLogEmail=='':
   print '[SKFlat.py] Put your email address in setup.sh'
@@ -63,7 +68,8 @@ SendLogToWeb = True
 if SKFlatLogWeb=='' or SKFlatLogWebDir=='':
   SendLogToWeb = False
 
-HOSTNAME = os.environ['HOSTNAME']
+## Check hostname
+
 IsKISTI = ("sdfarm.kr" in HOSTNAME)
 IsUI10 = ("ui10.sdfarm.kr" in HOSTNAME)
 IsUI20 = ("ui20.sdfarm.kr" in HOSTNAME)
@@ -76,7 +82,8 @@ if IsSNU:
 if IsKNU:
   HOSTNAME = "KNU"
 
-## Is Skim run?
+## Are you skimming trees?
+
 IsSkimTree = "SkimTree" in args.Analyzer
 if IsSkimTree:
   if not IsSNU:
@@ -85,6 +92,7 @@ if IsSkimTree:
   args.NJobs = 999999
 
 ## Machine-dependent variables
+
 if IsKNU:
   args.Queue = "cms"
 
@@ -104,7 +112,8 @@ else:
 InputSamples = []
 StringForHash = ""
 
-## When using list
+## When using txt file for input (i.e., -l option)
+
 if args.InputSampleList is not "":
   lines = open(args.InputSampleList)
   for line in lines:
@@ -135,7 +144,23 @@ str_RandomNumber = str(RandomNumber).replace('0.','')
 webdirname = timestamp+"_"+str_RandomNumber
 webdirpathbase = SKFlatRunlogDir+'/www/SKFlatAnalyzerJobLogs/'+webdirname
 
+## skim string
+
+SkimString = ""
+if args.Skim!="":
+  SkimString = args.Skim+"_"
+
+## Define MasterJobDir
+
+MasterJobDir = SKFlatRunlogDir+'/'+timestamp+'__'+args.Analyzer+'__'+'Year'+args.Year
+if args.Skim!="":
+  MasterJobDir += "__"+args.Skim
+for flag in Userflags:
+  MasterJobDir += '__'+flag
+MasterJobDir += '__'+HOSTNAME+'/'
+
 ## If KISTI, compress files
+
 if IsKISTI:
   cwd = os.getcwd()
   os.chdir(SKFlat_WD)
@@ -143,7 +168,30 @@ if IsKISTI:
   os.system('tar -czf '+str_RandomNumber+'_lib.tar.gz lib/*')
   os.chdir(cwd)
 
+## Copy shared library file
+
+if IsKISTI:
+
+  ## In KISTI, we have copy both library and data file
+
+  os.system('mkdir -p '+MasterJobDir)
+
+  os.system('cp '+SKFlat_WD+'/'+str_RandomNumber+'_data.tar.gz '+MasterJobDir+'/data.tar.gz')
+  os.system('cp '+SKFlat_WD+'/'+str_RandomNumber+'_lib.tar.gz '+MasterJobDir+'/lib.tar.gz')
+  os.system('cp '+SKFlat_WD+'/lib/DataFormats.tar.gz '+MasterJobDir)
+  os.system('cp '+SKFlat_WD+'/lib/AnalyzerTools.tar.gz '+MasterJobDir)
+  os.system('cp '+SKFlat_WD+'/lib/Analyzers.tar.gz '+MasterJobDir)
+
+else:
+
+  ## Else, we only have to copy libray
+
+  os.system('mkdir -p '+MasterJobDir+'/lib/')
+  os.system('cp '+SKFlat_LIB_PATH+'/* '+MasterJobDir+'/lib')
+
 ## Loop over samples
+
+# true or false for each sample
 SampleFinishedForEachSample = []
 PostJobFinishedForEachSample = []
 BaseDirForEachSample = []
@@ -164,44 +212,24 @@ for InputSample in InputSamples:
     InputSample = tmp.split(":")[0]
     DataPeriod = tmp.split(":")[1]
 
-  SkimString = ""
-  if args.Skim!="":
-    SkimString = args.Skim+"_"
-
   ## Prepare output
 
-  base_rundir = SKFlatRunlogDir+'/'+args.Analyzer+'__'+timestamp+'__'+'Year'+args.Year+'__'+SkimString+InputSample
+  base_rundir = MasterJobDir+InputSample
   if IsDATA:
     base_rundir = base_rundir+'_period'+DataPeriod
-  for flag in Userflags:
-    base_rundir += '__'+flag
-  base_rundir += '__'+HOSTNAME
   base_rundir = base_rundir+"/"
 
   os.system('mkdir -p '+base_rundir)
   os.system('mkdir -p '+base_rundir+'/output/')
 
-  ## Copy shared library file
-
-  if IsKISTI:
-    ## In KISTI, we have copy both library and data file
-    os.system('cp '+SKFlat_WD+'/'+str_RandomNumber+'_data.tar.gz '+base_rundir+'/data.tar.gz')
-    os.system('cp '+SKFlat_WD+'/'+str_RandomNumber+'_lib.tar.gz '+base_rundir+'/lib.tar.gz')
-    os.system('cp '+SKFlat_WD+'/lib/DataFormats.tar.gz '+base_rundir)
-    os.system('cp '+SKFlat_WD+'/lib/AnalyzerTools.tar.gz '+base_rundir)
-    os.system('cp '+SKFlat_WD+'/lib/Analyzers.tar.gz '+base_rundir)
-
-  else:
-    ## Else, we only have to copy libray
-    os.system('mkdir -p '+base_rundir+'/lib/')
-    os.system('cp '+SKFlat_LIB_PATH+'/* '+base_rundir+'/lib')
-
   ## Create webdir
+  ## cf) base_rundir = $SKFlatRunlogDir/2019_02_26_222038__GetEffLumi__Year2016__KISTI/WW_pythia/
 
-  this_webdir = webdirpathbase+'/'+base_rundir.replace(SKFlatRunlogDir,'')
+  this_webdir = webdirpathbase+'/'+base_rundir.replace(SKFlatRunlogDir,'').replace(HOSTNAME+'/',HOSTNAME+'__')
   os.system('mkdir -p '+this_webdir)
 
   ## If KNU, copy grid cert
+
   if IsKNU:
     os.system('cp /tmp/x509up_u'+UID+' '+base_rundir)
 
@@ -236,12 +264,16 @@ for InputSample in InputSamples:
   FileRanges = []
   temp_end_largerjob = 0
   nfile_checksum = 0
+
   ## First nfilepjob_remainder jobs will have (nfilepjob+1) files per job
+
   for it_job in range(0,nfilepjob_remainder):
     FileRanges.append(range(it_job*(nfilepjob+1),(it_job+1)*(nfilepjob+1)))
     temp_end_largerjob = (it_job+1)*(nfilepjob+1)
     nfile_checksum += len(range(it_job*(nfilepjob+1),(it_job+1)*(nfilepjob+1)))
+
   ## Remaining NJobs-nfilepjob_remainder jobs will have (nfilepjob) files per job
+
   for it_job in range(0,NJobs-nfilepjob_remainder):
     FileRanges.append(range(temp_end_largerjob+(it_job*nfilepjob),temp_end_largerjob+((it_job+1)*nfilepjob) ))
     nfile_checksum += len(range(temp_end_largerjob+(it_job*nfilepjob),temp_end_largerjob+((it_job+1)*nfilepjob) ))
@@ -250,6 +282,7 @@ for InputSample in InputSamples:
   FileRangesForEachSample.append(FileRanges)
 
   ## Get xsec and SumW
+
   this_xsec = 1.;
   this_sumw = 1.;
   if not IsDATA:
@@ -267,7 +300,7 @@ for InputSample in InputSamples:
 
   if IsKISTI:
 
-    commandsfilename = args.Analyzer+'_'+InputSample
+    commandsfilename = args.Analyzer+'_'+args.Year+'_'+InputSample
     if IsDATA:
       commandsfilename += '_'+DataPeriod
     for flag in Userflags:
@@ -277,17 +310,17 @@ for InputSample in InputSamples:
 SECTION=`printf %03d $1`
 WORKDIR=`pwd`
 echo "#### Extracting DataFormats ####"
-tar -zxvf DataFormats.tar.gz
+tar -zxf DataFormats.tar.gz
 echo "####  Extracting AnalyzerTools ####"
-tar -zxvf AnalyzerTools.tar.gz
+tar -zxf AnalyzerTools.tar.gz
 echo "####  Extracting Analyzers ####"
-tar -zxvf Analyzers.tar.gz
+tar -zxf Analyzers.tar.gz
 echo "#### Extracting libraries ####"
-tar -zxvf lib.tar.gz
+tar -zxf lib.tar.gz
 echo "#### Extracting run files ####"
-tar -zxvf runFile.tar.gz
+tar -zxf runFile.tar.gz
 echo "#### Extracting data files ####"
-tar -zxvf data.tar.gz
+tar -zxf data.tar.gz
 echo "#### cmsenv ####"
 export CMS_PATH=/cvmfs/cms.cern.ch
 source $CMS_PATH/cmsset_default.sh
@@ -350,7 +383,7 @@ error = job_$(Process).err
 transfer_input_files = {0}, {1}, {4}, {5}, {6}, {7}
 transfer_output_remaps = "hists.root = output/hists_$(Process).root"
 queue {2}
-'''.format(base_rundir+'/runFile.tar.gz', base_rundir+'/lib.tar.gz',str(NJobs), commandsfilename, base_rundir+'/data.tar.gz', base_rundir+'/Analyzers.tar.gz', base_rundir+'/AnalyzerTools.tar.gz', base_rundir+'/DataFormats.tar.gz')
+'''.format(base_rundir+'/runFile.tar.gz', MasterJobDir+'/lib.tar.gz',str(NJobs), commandsfilename, MasterJobDir+'/data.tar.gz', MasterJobDir+'/Analyzers.tar.gz', MasterJobDir+'/AnalyzerTools.tar.gz', MasterJobDir+'/DataFormats.tar.gz')
       submit_command.close()
     if IsUI20:
       print>>submit_command,'''executable = {3}.sh
@@ -369,10 +402,8 @@ accounting_group=group_cms
 +SingularityBind = "/cvmfs, /cms, /share"
 transfer_output_remaps = "hists.root = output/hists_$(Process).root"
 queue {2}
-'''.format(base_rundir+'/runFile.tar.gz', base_rundir+'/lib.tar.gz',str(NJobs), commandsfilename, base_rundir+'/data.tar.gz', base_rundir+'/Analyzers.tar.gz', base_rundir+'/AnalyzerTools.tar.gz', base_rundir+'/DataFormats.tar.gz')
+'''.format(base_rundir+'/runFile.tar.gz', MasterJobDir+'/lib.tar.gz',str(NJobs), commandsfilename, MasterJobDir+'/data.tar.gz', MasterJobDir+'/Analyzers.tar.gz', MasterJobDir+'/AnalyzerTools.tar.gz', MasterJobDir+'/DataFormats.tar.gz')
       submit_command.close()
-
-
 
   CheckTotalNFile=0
   for it_job in range(0,len(FileRanges)):
@@ -386,7 +417,7 @@ queue {2}
     thisjob_dir = base_rundir+'/job_'+str(it_job)+'/'
 
     runfunctionname = "run"
-    libdir = (base_rundir+'/lib').replace('///','/').replace('//','/')+'/'
+    libdir = (MasterJobDir+'/lib').replace('///','/').replace('//','/')+'/'
     runCfileFullPath = ""
     if IsKISTI:
       libdir = './lib/'
@@ -403,7 +434,6 @@ queue {2}
     IncludeLine += 'R__LOAD_LIBRARY({0}libAnalyzerTools.so)\n'.format(libdir)
     IncludeLine += 'R__LOAD_LIBRARY({0}libAnalyzers.so)\n'.format(libdir)
     IncludeLine += 'R__LOAD_LIBRARY(/cvmfs/cms.cern.ch/slc6_amd64_gcc630/external/lhapdf/6.2.1-fmblme/lib/libLHAPDF.so)\n'
-    #IncludeLine = 'R__LOAD_LIBRARY({1}/{0}_C.so)'.format(args.Analyzer, libdir)
 
     out = open(runCfileFullPath, 'w')
     print>>out,'''{3}
@@ -539,6 +569,7 @@ root -l -b -q run.C 1>stdout.log 2>stderr.log
     KillCommand.close()
 
 ## remove tar.gz
+
 os.system('rm -f '+SKFlat_WD+'/'+str_RandomNumber+'_data.tar.gz')
 os.system('rm -f '+SKFlat_WD+'/'+str_RandomNumber+'_lib.tar.gz')
 
@@ -547,6 +578,7 @@ if args.no_exec:
 
 ## Set Output directory
 ## if args.Outputdir is not set, go to default setting
+
 FinalOutputPath = args.Outputdir
 if args.Outputdir=="":
   FinalOutputPath = SKFlatOutputDir+'/'+SKFlatV+'/'+args.Analyzer+'/'+args.Year+'/'
@@ -611,22 +643,17 @@ try:
         InputSample = tmp.split(":")[0]
         DataPeriod = tmp.split(":")[1]
 
-      SkimString = ""
-      if args.Skim!="":
-        SkimString = args.Skim+"_"
-
       ## Prepare output
       ## This should be copied from above
 
-      base_rundir = SKFlatRunlogDir+'/'+args.Analyzer+'__'+timestamp+'__'+'Year'+args.Year+'__'+SkimString+InputSample
+      base_rundir = MasterJobDir+InputSample
       if IsDATA:
         base_rundir = base_rundir+'_period'+DataPeriod
-      for flag in Userflags:
-        base_rundir += '__'+flag
-      base_rundir += '__'+HOSTNAME
       base_rundir = base_rundir+"/"
 
-      this_webdir = webdirpathbase+'/'+base_rundir.replace(SKFlatRunlogDir,'')
+      ## base_rundir = $SKFlatRunlogDir/2019_02_26_222038__GetEffLumi__Year2016__KISTI/WW_pythia/
+
+      this_webdir = webdirpathbase+'/'+base_rundir.replace(SKFlatRunlogDir,'').replace(HOSTNAME+'/',HOSTNAME+'__')
 
       if not SampleFinished:
 
@@ -745,7 +772,9 @@ try:
           ##---- END it_job loop
 
         if GotError:
+
           ## When error occured, change both Finished/PostJob Flag to True
+
           SampleFinishedForEachSample[it_sample] = True
           PostJobFinishedForEachSample[it_sample] = True
           break
@@ -781,12 +810,15 @@ try:
         statuslog.close()
 
         ## copy statuslog to webdir
+
         os.system('cp '+base_rundir+'/JobStatus.log '+this_webdir)
 
         ## This time, it is found to be finished
         ## Change the flag
+
         if ThisSampleFinished:
           SampleFinishedForEachSample[it_sample] = True
+
         ##---- END if finished
 
       else:
@@ -801,6 +833,7 @@ try:
 
 
           ## if Skim, no need to hadd. move on!
+
           if IsSkimTree:
             PostJobFinishedForEachSample[it_sample] = True
             continue
@@ -830,7 +863,7 @@ try:
     if SendLogToWeb:
 
       os.system('scp -r '+webdirpathbase+'/* '+SKFlatLogWeb+':'+SKFlatLogWebDir)
-      os.system('ssh -Y '+SKFlatLogWeb+' chmod -R 777 '+SKFlatLogWebDir+'/'+args.Analyzer+"*")
+      os.system('ssh -Y '+SKFlatLogWeb+' chmod -R 777 '+SKFlatLogWebDir+'/*'+args.Analyzer+"*")
 
     time.sleep(20)
 
