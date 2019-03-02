@@ -138,7 +138,7 @@ FileRangesForEachSample = []
 
 ## Get Random Number for webdir
 
-random.seed(StringForHash)
+random.seed(StringForHash+args.Year)
 RandomNumber = random.random()
 str_RandomNumber = str(RandomNumber).replace('0.','')
 webdirname = timestamp+"_"+str_RandomNumber
