@@ -835,10 +835,10 @@ void AnalyzerCore::SetupBTagger(std::vector<Jet::Tagger> taggers, std::vector<Je
       MapBTagSF[stagger + "_" + swp + "_lf"]              = new BTagSFUtil("incl"  ,  string(stagger), swp, DataYear, period_dependant,0);
       MapBTagSF[stagger + "_" + swp + "_hf"]              = new BTagSFUtil("mujets",  string(stagger), swp, DataYear, period_dependant,0);
       if(setup_systematics){
-	MapBTagSF[stagger + "_" + swp + "_lf_systup"]     = new BTagSFUtil("incl"  ,  string(stagger), swp, DataYear, period_dependant , 3);
-	MapBTagSF[stagger + "_" + swp + "_hf_systup"]     = new BTagSFUtil("mujets",  string(stagger), swp, DataYear, period_dependant , 1);
-	MapBTagSF[stagger + "_" + swp + "_lf_systdown"]   = new BTagSFUtil("incl"  ,  string(stagger), swp, DataYear, period_dependant , -3);
-	MapBTagSF[stagger + "_" + swp + "_hf_systdown"]   = new BTagSFUtil("mujets",  string(stagger), swp, DataYear, period_dependant , -1);
+        MapBTagSF[stagger + "_" + swp + "_lf_systup"]     = new BTagSFUtil("incl"  ,  string(stagger), swp, DataYear, period_dependant , 3);
+        MapBTagSF[stagger + "_" + swp + "_hf_systup"]     = new BTagSFUtil("mujets",  string(stagger), swp, DataYear, period_dependant , 1);
+        MapBTagSF[stagger + "_" + swp + "_lf_systdown"]   = new BTagSFUtil("incl"  ,  string(stagger), swp, DataYear, period_dependant , -3);
+        MapBTagSF[stagger + "_" + swp + "_hf_systdown"]   = new BTagSFUtil("mujets",  string(stagger), swp, DataYear, period_dependant , -1);
       }
     }
   }
