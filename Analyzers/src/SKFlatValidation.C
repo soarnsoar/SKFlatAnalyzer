@@ -102,6 +102,17 @@ void SKFlatValidation::initializeAnalyzer(){
 
   }
 
+  //==== B-Tagging
+  //==== add taggers and WP that you want to use in analysis
+  std::vector<Jet::Tagger> vtaggers;
+  vtaggers.push_back(Jet::DeepCSV);
+
+  std::vector<Jet::WP> v_wps;
+  v_wps.push_back(Jet::Medium);
+
+  //=== list of taggers, WP, setup systematics, use period SFs
+  SetupBTagger(vtaggers,v_wps, true, true);
+
 }
 
 void SKFlatValidation::executeEvent(){
@@ -194,7 +205,7 @@ void SKFlatValidation::executeEventFromParameter(AnalyzerParameter param){
     if(this_jet.Pt() > 30. && fabs(this_jet.Eta())<2.5){
       myjets.push_back(this_jet);
       HT += this_jet.Pt();
-      if(this_jet.IsTagged(Jet::CSVv2, Jet::Medium)) NBJets++;
+      if(IsBTagged(alljets.at(i), Jet::DeepCSV, Jet::Medium,true,0)) NBJets++;
     }
   }
 
