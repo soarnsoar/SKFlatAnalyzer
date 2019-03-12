@@ -365,46 +365,47 @@ double MCCorrection::ElectronID_SF(TString ID, double sceta, double pt, int sys)
 
   if( ID.Contains("HEEP") ){
 
-    TString this_key = "ID_SF_"+ID;
+    //==== https://twiki.cern.ch/twiki/bin/viewauth/CMS/EgammaRunIIRecommendations#HEEPV7_0
+    //==== summary: a simple robust ID designed to be safe for high electrons.
+    //==== The Et evolution of this ID must be well described in the MC therefore this ID is designed so its scale factor is flat vs Et.
+    //==== As a result the HEEP differs in that it provides just a single number for the barrel and a single number for the endcap.
+    //==== * note there almost certainly will have to be a retune for 2018 due to HCAL data/MC disagreements
+    //==== * 2018 prompt: expected Dec 2018
+
+/*
     if(fabs(sceta) < 1.479) this_key += "_Barrel";
     else                    this_key += "_Endcap";
+*/
 
-    TGraphAsymmErrors *this_graph = map_graph_Electron[this_key];
-    if(!this_graph){
-      if(IgnoreNoHist) return 1.;
-      else{
-        cout << "[MCCorrection::ElectronID_SF] (Graph) No "<<this_key<<endl;
-        exit(EXIT_FAILURE);
-      }
+    bool IsBarrel = fabs(sceta) < 1.479;
+    double this_SF(1.);
+    double this_SF_staterr(0.);
+    double this_SF_systerr(0.);
+    double this_SF_err(0.);
+
+    if(DataYear==2016){
+      this_SF         = (IsBarrel ? 0.971 : 0.983);
+      this_SF_staterr = (IsBarrel ? 0.001 : 0.001);
+
+      if(IsBarrel) this_SF_systerr = (pt<90. ? 0.01 : min(1.+(pt-90.)*0.0022,3)*0.01);
+      else         this_SF_systerr = (pt<90. ? 0.01 : min(1.+(pt-90.)*0.0143,4)*0.01);
+
+      this_SF_err = sqrt(this_SF_staterr*this_SF_staterr+this_SF_systerr*this_SF_systerr);
+    }
+    else if(DataYear==2017){ 
+      this_SF         = (IsBarrel ? 0.967 : 0.973);
+      this_SF_staterr = (IsBarrel ? 0.001 : 0.002);
+      
+      if(IsBarrel) this_SF_systerr = (pt<90. ? 0.01 : min(1.+(pt-90.)*0.0022,3)*0.01);
+      else         this_SF_systerr = (pt<90. ? 0.02 : min(1.+(pt-90.)*0.0143,5)*0.01);
+      
+      this_SF_err = sqrt(this_SF_staterr*this_SF_staterr+this_SF_systerr*this_SF_systerr);
+    }
+    else if(DataYear==2018){
+      //==== TODO not yet supported
     }
 
-    int NX = this_graph->GetN();
-
-    for(int j=0; j<NX; j++){
-
-      double x, x_low, x_high;
-      double y, y_low, y_high;
-      this_graph->GetPoint(j, x, y);
-      x_low = this_graph->GetErrorXlow(j);
-      x_high = this_graph->GetErrorXhigh(j);
-
-      if(j==0 && pt < x-x_low ) pt = x-x_low;
-      if(j==NX-1 && x+x_high <= pt ) pt = x-x_low;
-
-      if( x-x_low <= pt && pt < x+x_high){
-        y_low = this_graph->GetErrorYlow(j);
-        y_high = this_graph->GetErrorYhigh(j);
-
-        if(sys==0) return y;
-        else if(sys>0) return y+y_high;
-        else return y-y_low;
-
-      }
-
-    }
-    cout << "[MCCorrection::ElectronID_SF] (Graph) pt range strange.. "<<"ID_SF_"+ID<<", with pt = " << pt << endl;
-    exit(EXIT_FAILURE);
-    return 1.;
+    return this_SF+double(sys)*this_SF_err;
 
   }
   else{
