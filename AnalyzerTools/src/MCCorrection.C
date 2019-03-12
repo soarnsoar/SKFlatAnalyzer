@@ -387,8 +387,8 @@ double MCCorrection::ElectronID_SF(TString ID, double sceta, double pt, int sys)
       this_SF         = (IsBarrel ? 0.971 : 0.983);
       this_SF_staterr = (IsBarrel ? 0.001 : 0.001);
 
-      if(IsBarrel) this_SF_systerr = (pt<90. ? 0.01 : min(1.+(pt-90.)*0.0022,3)*0.01);
-      else         this_SF_systerr = (pt<90. ? 0.01 : min(1.+(pt-90.)*0.0143,4)*0.01);
+      if(IsBarrel) this_SF_systerr = (pt<90. ? 0.01 : min(1.+(pt-90.)*0.0022,3.)*0.01);
+      else         this_SF_systerr = (pt<90. ? 0.01 : min(1.+(pt-90.)*0.0143,4.)*0.01);
 
       this_SF_err = sqrt(this_SF_staterr*this_SF_staterr+this_SF_systerr*this_SF_systerr);
     }
@@ -396,8 +396,8 @@ double MCCorrection::ElectronID_SF(TString ID, double sceta, double pt, int sys)
       this_SF         = (IsBarrel ? 0.967 : 0.973);
       this_SF_staterr = (IsBarrel ? 0.001 : 0.002);
       
-      if(IsBarrel) this_SF_systerr = (pt<90. ? 0.01 : min(1.+(pt-90.)*0.0022,3)*0.01);
-      else         this_SF_systerr = (pt<90. ? 0.02 : min(1.+(pt-90.)*0.0143,5)*0.01);
+      if(IsBarrel) this_SF_systerr = (pt<90. ? 0.01 : min(1.+(pt-90.)*0.0022,3.)*0.01);
+      else         this_SF_systerr = (pt<90. ? 0.02 : min(1.+(pt-90.)*0.0143,5.)*0.01);
       
       this_SF_err = sqrt(this_SF_staterr*this_SF_staterr+this_SF_systerr*this_SF_systerr);
     }
