@@ -42,7 +42,7 @@ elif [[ $HOSTNAME == *"cms.snu.ac.kr"* ]]; then
 
 elif [[ $HOSTNAME == *"tamsa2"* ]]; then
 
-  echo "Working on tamsa1"
+  echo "Working on tamsa2"
   export SKFlatRunlogDir="/data7/Users/$USER/SKFlatRunlog/"
   export SKFlatOutputDir="/data7/Users/$USER/SKFlatOutput/"
   export DATA_DIR=$SKFlat_WD/data/$SKFlatV
