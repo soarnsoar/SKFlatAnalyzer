@@ -285,6 +285,7 @@ for InputSample in InputSamples:
     nfile_checksum += len(range(temp_end_largerjob+(it_job*nfilepjob),temp_end_largerjob+((it_job+1)*nfilepjob) ))
   SubmitOutput.write('nfile_checksum = '+str(nfile_checksum)+'\n')
   SubmitOutput.write('NTotalFiles = '+str(NTotalFiles)+'\n')
+  SubmitOutput.close()
   FileRangesForEachSample.append(FileRanges)
 
   ## Get xsec and SumW
@@ -750,10 +751,6 @@ try:
 
           elif "RUNNING" in this_status:
             outlog = str(it_job)+'\t| '+this_status.split()[1]+' %'
-
-            if len(this_status.split())<3 :
-              SubmitOutput.write('len(this_status.split())<3;; Priting this_status.split()\n')
-              SubmitOutput.write(this_status.split()+'\n')
 
             EventInfo = this_status.split()[2].split(':')
 
