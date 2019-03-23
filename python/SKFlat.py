@@ -1,4 +1,4 @@
-#!/usr/bin/python
+#!/usr/bin/env python
 
 import os,sys,time
 import argparse
@@ -54,10 +54,10 @@ SKFlatV = os.environ['SKFlatV']
 SAMPLE_DATA_DIR = SKFlat_WD+'/data/'+SKFlatV+'/'+args.Year+'/Sample/'
 SKFlatRunlogDir = os.environ['SKFlatRunlogDir']
 SKFlatOutputDir = os.environ['SKFlatOutputDir']
-SKFlatSEDir = os.environ['SKFlatSEDir']
 SKFlat_LIB_PATH = os.environ['SKFlat_LIB_PATH']
 UID = str(os.getuid())
 HOSTNAME = os.environ['HOSTNAME']
+SampleHOSTNAME = HOSTNAME
 
 ## Check joblog email
 
@@ -73,14 +73,22 @@ if SKFlatLogWeb=='' or SKFlatLogWebDir=='':
 IsKISTI = ("sdfarm.kr" in HOSTNAME)
 IsUI10 = ("ui10.sdfarm.kr" in HOSTNAME)
 IsUI20 = ("ui20.sdfarm.kr" in HOSTNAME)
-IsSNU = ("snu" in HOSTNAME)
+IsTAMSA1 = ("snu" in HOSTNAME)
+IsTAMSA2 = ("tamsa2" in HOSTNAME)
+IsSNU = IsTAMSA1 or IsTAMSA2
 IsKNU = ("knu" in HOSTNAME)
 if IsKISTI:
   HOSTNAME = "KISTI"
+  SampleHOSTNAME = "KISTI"
 if IsSNU:
-  HOSTNAME = "SNU"
+  if IsTAMSA1:
+    HOSTNAME = "TAMSA1"
+  elif IsTAMSA2:
+    HOSTNAME = "TAMSA2"
+  SampleHOSTNAME = "SNU"
 if IsKNU:
   HOSTNAME = "KNU"
+  SampleHOSTNAME = "KNU"
 
 ## Are you skimming trees?
 
@@ -159,20 +167,18 @@ for flag in Userflags:
   MasterJobDir += '__'+flag
 MasterJobDir += '__'+HOSTNAME+'/'
 
-## If KISTI, compress files
+## Condor
+if IsKISTI or IsTAMSA2:
 
-if IsKISTI:
+  ## If condor, compress files
+
   cwd = os.getcwd()
   os.chdir(SKFlat_WD)
   os.system('tar --exclude=data/'+SKFlatV+'/Sample -czf '+str_RandomNumber+'_data.tar.gz data/'+SKFlatV+'/')
   os.system('tar -czf '+str_RandomNumber+'_lib.tar.gz lib/*')
   os.chdir(cwd)
 
-## Copy shared library file
-
-if IsKISTI:
-
-  ## In KISTI, we have copy both library and data file
+  ## Copy shared library file
 
   os.system('mkdir -p '+MasterJobDir)
 
@@ -237,9 +243,9 @@ for InputSample in InputSamples:
 
   lines_files = []
 
-  tmpfilepath = SAMPLE_DATA_DIR+'/For'+HOSTNAME+'/'+SkimString+InputSample+'.txt'
+  tmpfilepath = SAMPLE_DATA_DIR+'/For'+SampleHOSTNAME+'/'+SkimString+InputSample+'.txt'
   if IsDATA:
-    tmpfilepath = SAMPLE_DATA_DIR+'/For'+HOSTNAME+'/'+SkimString+InputSample+'_'+DataPeriod+'.txt'
+    tmpfilepath = SAMPLE_DATA_DIR+'/For'+SampleHOSTNAME+'/'+SkimString+InputSample+'_'+DataPeriod+'.txt'
   lines_files = open(tmpfilepath).readlines()
   os.system('cp '+tmpfilepath+' '+base_rundir+'/input_filelist.txt')
 
@@ -279,6 +285,7 @@ for InputSample in InputSamples:
     nfile_checksum += len(range(temp_end_largerjob+(it_job*nfilepjob),temp_end_largerjob+((it_job+1)*nfilepjob) ))
   SubmitOutput.write('nfile_checksum = '+str(nfile_checksum)+'\n')
   SubmitOutput.write('NTotalFiles = '+str(NTotalFiles)+'\n')
+  SubmitOutput.close()
   FileRangesForEachSample.append(FileRanges)
 
   ## Get xsec and SumW
@@ -298,7 +305,7 @@ for InputSample in InputSamples:
 
   ## Write run script
 
-  if IsKISTI:
+  if IsKISTI or IsTAMSA2:
 
     commandsfilename = args.Analyzer+'_'+args.Year+'_'+InputSample
     if IsDATA:
@@ -385,7 +392,7 @@ transfer_output_remaps = "hists.root = output/hists_$(Process).root"
 queue {2}
 '''.format(base_rundir+'/runFile.tar.gz', MasterJobDir+'/lib.tar.gz',str(NJobs), commandsfilename, MasterJobDir+'/data.tar.gz', MasterJobDir+'/Analyzers.tar.gz', MasterJobDir+'/AnalyzerTools.tar.gz', MasterJobDir+'/DataFormats.tar.gz')
       submit_command.close()
-    if IsUI20:
+    elif IsUI20:
       print>>submit_command,'''executable = {3}.sh
 universe   = vanilla
 requirements = ( HasSingularity == true )
@@ -400,6 +407,22 @@ transfer_input_files = {0}, {1}, {4}, {5}, {6}, {7}
 accounting_group=group_cms
 +SingularityImage = "/cvmfs/singularity.opensciencegrid.org/opensciencegrid/osgvo-el6:latest"
 +SingularityBind = "/cvmfs, /cms, /share"
+transfer_output_remaps = "hists.root = output/hists_$(Process).root"
+queue {2}
+'''.format(base_rundir+'/runFile.tar.gz', MasterJobDir+'/lib.tar.gz',str(NJobs), commandsfilename, MasterJobDir+'/data.tar.gz', MasterJobDir+'/Analyzers.tar.gz', MasterJobDir+'/AnalyzerTools.tar.gz', MasterJobDir+'/DataFormats.tar.gz')
+      submit_command.close()
+    elif IsTAMSA2:
+      print>>submit_command,'''executable = {3}.sh
+universe   = vanilla
+arguments  = $(Process)
+log = condor.log
+getenv     = False
+should_transfer_files = YES
+when_to_transfer_output = ON_EXIT
+output = job_$(Process).log
+error = job_$(Process).err
+transfer_input_files = {0}, {1}, {4}, {5}, {6}, {7}
+accounting_group=group_cms
 transfer_output_remaps = "hists.root = output/hists_$(Process).root"
 queue {2}
 '''.format(base_rundir+'/runFile.tar.gz', MasterJobDir+'/lib.tar.gz',str(NJobs), commandsfilename, MasterJobDir+'/data.tar.gz', MasterJobDir+'/Analyzers.tar.gz', MasterJobDir+'/AnalyzerTools.tar.gz', MasterJobDir+'/DataFormats.tar.gz')
@@ -419,7 +442,7 @@ queue {2}
     runfunctionname = "run"
     libdir = (MasterJobDir+'/lib').replace('///','/').replace('//','/')+'/'
     runCfileFullPath = ""
-    if IsKISTI:
+    if IsKISTI or IsTAMSA2:
       libdir = './lib/'
       runfunctionname = "run_"+str(it_job).zfill(3)
       runCfileFullPath = base_rundir+'/run_'+str(it_job).zfill(3)+'.C'
@@ -486,12 +509,10 @@ void {2}(){{
       out.write('  m.SetOutfilePath("'+skimoutname+'");\n')
 
     else:
-      if IsKISTI:
+      if IsKISTI or IsTAMSA2:
         out.write('  m.SetOutfilePath("hists.root");\n')
       else:
         out.write('  m.SetOutfilePath("'+thisjob_dir+'/hists.root");\n')
-
-    IsSkimTree
 
     out.write('  m.Init();'+'\n')
     if not IsSkimTree:
@@ -504,7 +525,7 @@ void {2}(){{
 }'''
     out.close()
 
-    if IsSNU:
+    if IsTAMSA1:
       run_commands = open(thisjob_dir+'commands.sh','w')
       print>>run_commands,'''cd {0}
 echo "[SKFlat.py] Okay, let's run the analysis"
@@ -524,7 +545,7 @@ root -l -b -q run.C
       sublog.write('\nSubmission command was : '+cmd+'\n')
       sublog.close()
 
-    if IsKNU:
+    elif IsKNU:
       run_commands = open(thisjob_dir+'commands.sh','w')
       print>>run_commands,'''cd {0}
 cp ../x509up_u{1} /tmp/
@@ -545,7 +566,7 @@ root -l -b -q run.C 1>stdout.log 2>stderr.log
       sublog.write('\nSubmission command was : '+cmd+'\n')
       sublog.close()
 
-  if IsKISTI:
+  if IsKISTI or IsTAMSA2:
 
     cwd = os.getcwd()
     os.chdir(base_rundir)
@@ -598,7 +619,7 @@ print '- NJobs = '+str(NJobs)
 print '- Year = '+args.Year
 print '- UserFlags =',
 print Userflags
-if IsSNU or IsKNU:
+if IsTAMSA1 or IsKNU:
   print '- Queue = '+args.Queue
 print '- output will be send to : '+FinalOutputPath
 print '##################################################'
@@ -683,7 +704,7 @@ try:
         for it_job in range(0,len(FileRanges)):
 
           thisjob_dir = base_rundir+'/'
-          if IsKISTI:
+          if IsKISTI or IsTAMSA2:
             thisjob_dir = base_rundir
 
           this_status = ""
@@ -730,10 +751,6 @@ try:
 
           elif "RUNNING" in this_status:
             outlog = str(it_job)+'\t| '+this_status.split()[1]+' %'
-
-            if len(this_status.split())<3 :
-              SubmitOutput.write('len(this_status.split())<3;; Priting this_status.split()\n')
-              SubmitOutput.write(this_status.split()+'\n')
 
             EventInfo = this_status.split()[2].split(':')
 
@@ -846,7 +863,7 @@ try:
             cwd = os.getcwd()
             os.chdir(base_rundir)
 
-            if IsKISTI:
+            if IsKISTI or IsTAMSA2:
               os.system('hadd -f '+outputname+'.root output/*.root >> JobStatus.log')
               os.system('rm output/*.root')
             else:
@@ -886,7 +903,7 @@ Job started at {0}
 Job finished at {1}
 '''.format(string_JobStartTime,string_ThisTime)
 
-if IsSNU or IsKNU:
+if IsTAMSA1 or IsKNU:
   JobFinishEmail += 'Queue = '+args.Queue+'\n'
 
 EmailTitle = '['+HOSTNAME+']'+' Job Summary'
