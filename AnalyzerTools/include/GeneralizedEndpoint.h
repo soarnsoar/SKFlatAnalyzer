@@ -4,6 +4,9 @@
 #include <iostream>
 #include <map>
 
+//==== https://twiki.cern.ch/twiki/bin/viewauth/CMS/MuonReferenceSelectionAndCalibrationsRun2
+//==== https://github.com/cms-analysis/SUSYBSMAnalysis-Zprime2muAnalysis/blob/mini-AOD/src/GeneralizedEndpoint.cc
+
 using namespace std;
 
 struct ScaledPts {

@@ -49,15 +49,15 @@ ScaledPts GeneralizedEndpoint::GeneralizedEndpointPt(float MuonPt, int MuonCharg
 
   //Check the input format.
   if (fabs(MuonEta)>2.4) {
-    cerr<<"ERROR: MuonEta = "<< MuonEta << ", outisde valide range = [-2.4,2.4] "<<endl;
+    //cerr<<"ERROR: MuonEta = "<< MuonEta << ", outisde valide range = [-2.4,2.4] "<<endl;
     return out;
   }
   if (fabs(MuonPhi)>180) {
-    cerr<<"ERROR: MuonPhi = "<< MuonPhi << ", outisde valide range = [-180,180] "<<endl;
+    //cerr<<"ERROR: MuonPhi = "<< MuonPhi << ", outisde valide range = [-180,180] "<<endl;
     return out;
   }
   if (MuonCharge != 1 && MuonCharge != -1) {
-    cerr<<"ERROR: Invalide Muon Charge = "<< MuonCharge << endl;
+    //cerr<<"ERROR: Invalide Muon Charge = "<< MuonCharge << endl;
     return out;
   }
 
