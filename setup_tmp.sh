@@ -4,6 +4,7 @@ mkdir -p $SKFlat_LIB_PATH
 
 export SKFlatV="Run2Legacy_v1"
 mkdir -p $SKFlat_WD/data/$SKFlatV
+export DATA_DIR=$SKFlat_WD/data/$SKFlatV
 
 #### USER INFO ####
 export SKFlatLogEmail=''
@@ -15,7 +16,6 @@ if [[ $HOSTNAME == *"ui"*".sdfarm.kr"* ]]; then
   echo "Working on KISTI"
   export SKFlatRunlogDir="/cms/ldap_home/$USER/SKFlatRunlog/"
   export SKFlatOutputDir="/cms/ldap_home/$USER/SKFlatOutput/"
-  export DATA_DIR=data/$SKFlatV
 
   export CMS_PATH=/cvmfs/cms.cern.ch
   source $CMS_PATH/cmsset_default.sh
@@ -30,7 +30,6 @@ elif [[ $HOSTNAME == *"cms.snu.ac.kr"* ]]; then
   echo "Working on tamsa1"
   export SKFlatRunlogDir="/data7/Users/$USER/SKFlatRunlog/"
   export SKFlatOutputDir="/data7/Users/$USER/SKFlatOutput/"
-  export DATA_DIR=$SKFlat_WD/data/$SKFlatV
 
   export CMS_PATH=/cvmfs/cms.cern.ch
   source $CMS_PATH/cmsset_default.sh
@@ -45,7 +44,6 @@ elif [[ $HOSTNAME == *"tamsa2"* ]]; then
   echo "Working on tamsa2"
   export SKFlatRunlogDir="/data7/Users/$USER/SKFlatRunlog/"
   export SKFlatOutputDir="/data7/Users/$USER/SKFlatOutput/"
-  export DATA_DIR=$SKFlat_WD/data/$SKFlatV
 
   export CMS_PATH=/cvmfs/cms.cern.ch
   source $CMS_PATH/cmsset_default.sh
@@ -60,7 +58,6 @@ elif [[ $HOSTNAME == *"knu"* ]]; then
   echo "Working on KNU"
   export SKFlatRunlogDir="/u/user/$USER/scratch/SKFlatRunlog/"
   export SKFlatOutputDir="/u/user/$USER/scratch/SKFlatOutput/"
-  export DATA_DIR=$SKFlat_WD/data/$SKFlatV
 
   export CMS_PATH=/cvmfs/cms.cern.ch
   source $CMS_PATH/cmsset_default.sh
