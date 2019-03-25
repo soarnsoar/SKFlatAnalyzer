@@ -1,5 +1,5 @@
 import os
-from CheckZombieFile import *
+from CheckBadFile import *
 
 SKFlat_WD = os.environ['SKFlat_WD']
 SKFlatV = os.environ['SKFlatV']
@@ -9,6 +9,8 @@ USER = 'jalmond'
 Year = "2018"
 
 PDs = open('samples_'+Year+'.txt').readlines()
+
+out = open('remove_command.sh','w')
 
 for PD in PDs:
 
@@ -27,7 +29,10 @@ for PD in PDs:
     filepath_removable = File.replace('root://cms-xrdr.sdfarm.kr:1094///xrd/store/user/'+USER+'/SKFlat/','/xrootd_user/'+USER+'/xrootd/SKFlat/').strip('\n')
     filepath_access = File.replace('root://cms-xrdr.sdfarm.kr:1094///xrd','/xrootd').strip('\n')
 
-    if CheckZombieFile(filepath_access):
-      print '@@ '+filepath_removable
+    if CheckBadFile(filepath_access):
+      out.write('rm '+filepath_removable+'\n')
+      #print '@@ '+filepath_removable
       #print '@@ --> removed'
       #os.system('rm '+filepath_removable)
+
+out.close()
