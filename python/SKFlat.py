@@ -342,7 +342,7 @@ source /cvmfs/cms.cern.ch/slc6_amd64_gcc630/cms/cmssw/CMSSW_9_4_4/external/slc6_
 export SKFlatV="{0}"
 export SKFlat_WD=`pwd`
 export SKFlat_LIB_PATH=$SKFlat_WD/lib/
-export DATA_DIR=data/$SKFlatV
+export DATA_DIR=$SKFlat_WD/data/$SKFlatV
 export ROOT_INCLUDE_PATH=$ROOT_INCLUDE_PATH:$SKFlat_WD/DataFormats/include/:$SKFlat_WD/Analyzers/include/:$SKFlat_WD/AnalyzerTools/include/
 export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:$SKFlat_LIB_PATH
 
