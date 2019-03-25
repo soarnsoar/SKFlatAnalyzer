@@ -107,7 +107,7 @@ if IsKNU:
 
 ## Make Sample List
 
-InputSample_Data = ["DoubleMuon", "DoubleEG", "SingleMuon", "SingleElectron", "SinglePhoton", "MuonEG"]
+InputSample_Data = ["DoubleMuon", "DoubleEG", "SingleMuon", "SingleElectron", "SinglePhoton", "MuonEG", "EGamma"]
 AvailableDataPeriods = []
 if args.Year == "2016":
   AvailableDataPeriods = ["B_ver2","C","D","E","F","G","H"]
