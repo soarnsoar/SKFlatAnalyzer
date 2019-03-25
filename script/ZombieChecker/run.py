@@ -5,8 +5,8 @@ SKFlat_WD = os.environ['SKFlat_WD']
 SKFlatV = os.environ['SKFlatV']
 DATA_DIR = SKFlat_WD+'/data/'+SKFlatV+'/'
 
-USER = 'jhchoi'
-Year = "2016"
+USER = 'jalmond'
+Year = "2018"
 
 PDs = open('samples_'+Year+'.txt').readlines()
 
@@ -23,8 +23,11 @@ for PD in PDs:
   print PD
   print "###################"
   for File in Files:
-    File = File.replace('root://cms-xrdr.sdfarm.kr:1094///xrd/store/user/'+USER+'/SKFlat/','/xrootd_user/'+USER+'/xrootd/SKFlat/').strip('\n')
-    if CheckZombieFile(File):
-      print '@@ '+File
+
+    filepath_removable = File.replace('root://cms-xrdr.sdfarm.kr:1094///xrd/store/user/'+USER+'/SKFlat/','/xrootd_user/'+USER+'/xrootd/SKFlat/').strip('\n')
+    filepath_access = File.replace('root://cms-xrdr.sdfarm.kr:1094///xrd','/xrootd').strip('\n')
+
+    if CheckZombieFile(filepath_access):
+      print '@@ '+filepath_removable
       #print '@@ --> removed'
-      #os.system('rm '+File)
+      #os.system('rm '+filepath_removable)
