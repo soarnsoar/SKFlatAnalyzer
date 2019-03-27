@@ -148,8 +148,8 @@ FileRangesForEachSample = []
 ## Get Random Number for webdir
 
 random.seed(StringForHash+args.Year)
-RandomNumber = random.random()
-str_RandomNumber = str(RandomNumber).replace('0.','')
+RandomNumber = int(random.random()*10000)
+str_RandomNumber = str(RandomNumber)
 webdirname = timestamp+"_"+str_RandomNumber
 webdirpathbase = SKFlatRunlogDir+'/www/SKFlatAnalyzerJobLogs/'+webdirname
 
@@ -161,7 +161,7 @@ if args.Skim!="":
 
 ## Define MasterJobDir
 
-MasterJobDir = SKFlatRunlogDir+'/'+timestamp+'__'+args.Analyzer+'__'+'Year'+args.Year
+MasterJobDir = SKFlatRunlogDir+'/'+timestamp+'__'+str_RandomNumber+"__"+args.Analyzer+'__'+'Year'+args.Year
 if args.Skim!="":
   MasterJobDir += "__"+args.Skim
 for flag in Userflags:
