@@ -351,6 +351,18 @@ double MCCorrection::MuonTrigger_SF(TString ID, TString trig, std::vector<Muon> 
 
 }
 
+double MCCorrection::MuonTrigger_SF(TString ID, TString trig, std::vector<Muon *> muons, int sys){
+
+  std::vector<Muon> muvec;
+  for(unsigned int i=0; i<muons.size(); i++){
+    Muon this_muon = *(muons.at(i));
+    muvec.push_back( this_muon );
+  }
+
+  return MuonTrigger_SF(ID, trig, muvec, sys);
+
+}
+
 double MCCorrection::ElectronID_SF(TString ID, double sceta, double pt, int sys){
 
   if(ID=="Default") return 1.;
