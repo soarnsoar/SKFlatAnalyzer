@@ -51,5 +51,5 @@ void Particle::SetCharge(int q){
 }
 
 void Particle::Print(){
-  this->TLorentzVector::Print();
+  cout << "(Pt, Eta, Phi, M, Charge) = " << Pt() << "\t" << Eta() << "\t" << Phi() << "\t" << M() << "\t" << Charge() << endl;
 }
