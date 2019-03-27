@@ -49,3 +49,7 @@ Particle::~Particle()
 void Particle::SetCharge(int q){
   j_Charge = q;
 }
+
+void Particle::Print(){
+  this->TLorentzVector::Print();
+}
