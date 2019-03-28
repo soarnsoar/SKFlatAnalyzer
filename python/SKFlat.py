@@ -147,7 +147,7 @@ FileRangesForEachSample = []
 
 ## Get Random Number for webdir
 
-random.seed(StringForHash+args.Year)
+random.seed(hash(StringForHash+timestamp+args.Year))
 RandomNumber = int(random.random()*10000)
 str_RandomNumber = str(RandomNumber)
 webdirname = timestamp+"_"+str_RandomNumber
@@ -175,16 +175,15 @@ if IsKISTI or IsTAMSA2:
 
   cwd = os.getcwd()
   os.chdir(SKFlat_WD)
-  os.system('tar --exclude=data/'+SKFlatV+'/Sample -czf '+str_RandomNumber+'_data.tar.gz data/'+SKFlatV+'/')
-  os.system('tar -czf '+str_RandomNumber+'_lib.tar.gz lib/*')
+  os.system('make -s CondorTar')
   os.chdir(cwd)
 
   ## Copy shared library file
 
   os.system('mkdir -p '+MasterJobDir)
 
-  os.system('cp '+SKFlat_WD+'/'+str_RandomNumber+'_data.tar.gz '+MasterJobDir+'/data.tar.gz')
-  os.system('cp '+SKFlat_WD+'/'+str_RandomNumber+'_lib.tar.gz '+MasterJobDir+'/lib.tar.gz')
+  os.system('cp '+SKFlat_WD+'/tar/data.tar.gz '+MasterJobDir+'/data.tar.gz')
+  os.system('cp '+SKFlat_WD+'/tar/lib.tar.gz '+MasterJobDir+'/lib.tar.gz')
   os.system('cp '+SKFlat_WD+'/lib/DataFormats.tar.gz '+MasterJobDir)
   os.system('cp '+SKFlat_WD+'/lib/AnalyzerTools.tar.gz '+MasterJobDir)
   os.system('cp '+SKFlat_WD+'/lib/Analyzers.tar.gz '+MasterJobDir)
@@ -592,11 +591,6 @@ root -l -b -q run.C 1>stdout.log 2>stderr.log
       jobid = GetJobID(thisjob_dir, args.Analyzer, it_job, HOSTNAME)
       KillCommand.write('qdel '+jobid+' ## job_'+str(it_job)+' ##\n')
     KillCommand.close()
-
-## remove tar.gz
-
-os.system('rm -f '+SKFlat_WD+'/'+str_RandomNumber+'_data.tar.gz')
-os.system('rm -f '+SKFlat_WD+'/'+str_RandomNumber+'_lib.tar.gz')
 
 if args.no_exec:
   exit()
