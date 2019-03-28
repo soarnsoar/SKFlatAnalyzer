@@ -615,6 +615,7 @@ os.system('mkdir -p '+FinalOutputPath)
 
 print '##################################################'
 print 'Submission Finished'
+print '- JobID = '+str_RandomNumber
 print '- Analyzer = '+args.Analyzer
 print '- Skim = '+args.Skim
 print '- InputSamples =',
@@ -896,12 +897,13 @@ except KeyboardInterrupt:
 from SendEmail import *
 JobFinishEmail = '''#### Job Info ####
 HOST = {3}
+JobID = {6}
 Analyzer = {0}
 Skim = {5}
 # of Jobs = {4}
 InputSample = {1}
 Output sent to : {2}
-'''.format(args.Analyzer,InputSamples,FinalOutputPath,HOSTNAME,NJobs,args.Skim)
+'''.format(args.Analyzer,InputSamples,FinalOutputPath,HOSTNAME,NJobs,args.Skim,str_RandomNumber)
 JobFinishEmail += '''##################
 Job started at {0}
 Job finished at {1}
@@ -910,11 +912,11 @@ Job finished at {1}
 if IsTAMSA1 or IsKNU:
   JobFinishEmail += 'Queue = '+args.Queue+'\n'
 
-EmailTitle = '['+HOSTNAME+']'+' Job Summary'
+EmailTitle = '['+HOSTNAME+']'+' Summary of JobID '+str_RandomNumber
 if GotError:
   JobFinishEmail = "#### ERROR OCCURED ####\n"+JobFinishEmail
   JobFinishEmail = ErrorLog+"\n------------------------------------------------\n"+JobFinishEmail
-  EmailTitle = '[ERROR] Job Summary'
+  EmailTitle = '[ERROR] Summary of JobID '+str_RandomNumber
 
 if IsKNU:
   SendEmailbyGMail(USER,SKFlatLogEmail,EmailTitle,JobFinishEmail)
