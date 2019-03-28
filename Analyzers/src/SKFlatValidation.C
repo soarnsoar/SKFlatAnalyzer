@@ -188,6 +188,7 @@ void SKFlatValidation::executeEventFromParameter(AnalyzerParameter param){
   }
 
   std::vector<Muon> muons = GetMuons(param.Muon_Tight_ID, MinLeptonPt, 2.4);
+  if(param.Muon_UseTuneP) muons = UseTunePMuon(muons);
   std::vector<Electron> electrons = GetElectrons(param.Electron_Tight_ID, MinLeptonPt, 2.5);
 
   std::vector<Jet> myjets = JetsVetoLeptonInside( GetJets("tight", 30., 2.4), electrons, muons);
@@ -279,12 +280,6 @@ void SKFlatValidation::executeEventFromParameter(AnalyzerParameter param){
 
           double this_pt = muons.at(i).MiniAODPt();
           double this_eta = muons.at(i).Eta();
-
-          if(param.Muon_UseTuneP){
-            Particle this_tuneP = muons.at(i).TuneP4();
-            this_pt = this_tuneP.Pt();
-            this_eta = this_tuneP.Eta();
-          }
 
           double this_idsf  = mcCorr->MuonID_SF (param.Muon_ID_SF_Key,  this_eta, this_pt);
           double this_isosf = mcCorr->MuonISO_SF(param.Muon_ISO_SF_Key, this_eta, this_pt);
