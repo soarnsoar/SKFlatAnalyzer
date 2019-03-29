@@ -98,7 +98,6 @@ if IsSkimTree:
   if not IsSNU:
     print "Skimming only possible in SNU"
     exit()
-  args.NJobs = 999999
 
 ## Machine-dependent variables
 
@@ -290,8 +289,9 @@ for InputSample in InputSamples:
 
   ## Get xsec and SumW
 
-  this_xsec = 1.;
-  this_sumw = 1.;
+  this_dasname = ""
+  this_xsec = 1.
+  this_sumw = 1.
   if not IsDATA:
     lines_SamplePath = open(SAMPLE_DATA_DIR+'/CommonSampleInfo/'+InputSample+'.txt').readlines()
     for line in lines_SamplePath:
@@ -299,6 +299,7 @@ for InputSample in InputSamples:
         continue
       words = line.split()
       if InputSample==words[0]:
+        this_dasname = words[1]
         this_xsec = words[2]
         this_sumw = words[4]
         break
@@ -491,22 +492,20 @@ void {2}(){{
 
     if IsSkimTree:
       tmp_filename = lines_files[ FileRanges[it_job][0] ].strip('\n')
-      ## /data7/DATA/SKFlat/v949cand2_2/2017/DATA/SingleMuon/periodB/181107_231447/0000
+      ## /data7/DATA/SKFlat/v949cand2_2/2017/DATA/SingleMuon/periodB/181107_231447/0000/SKFlatNtuple_2017_DATA_100.root
       ## /data7/DATA/SKFlat/v949cand2_2/2017/MC/TTTo2L2Nu_TuneCP5_13TeV-powheg-pythia8/181108_152345/0000/SKFlatNtuple_2017_MC_100.root
-      dir1 = '/data7/DATA/SKFlat/'+SKFlatV+'/'+args.Year+'/'
-      dir2 = dir1
+      skimoutdir = '/data8/DATA/SKFlat/'+SKFlatV+'/'+args.Year+'/'
+      skimoutfilename = ""
       if IsDATA:
-        dir1 += "DATA/"
-        dir2 += "DATA_"+args.Analyzer+"/"
+        skimoutdir += "DATA_"+args.Analyzer+"/"+InputSample+"/period"+DataPeriod+"/"
+        skimoutfilename = "SKFlatNtuple_"+args.Year+"_DATA_"+str(it_job)+".root"
       else:
-        dir1 += "MC/"
-        dir2 += "MC_"+args.Analyzer+"/"
+        skimoutdir += "MC_"+args.Analyzer+"/"+this_dasname+"/"
+        skimoutfilename = "SKFlatNtuple_"+args.Year+"_MC_"+str(it_job)+".root"
+      skimoutdir += timestamp+"/"
 
-      skimoutname = tmp_filename.replace(dir1,dir2)
-
-      tmp_filename = skimoutname.split('/')[-1]
-      os.system('mkdir -p '+skimoutname.replace(tmp_filename,''))
-      out.write('  m.SetOutfilePath("'+skimoutname+'");\n')
+      os.system('mkdir -p '+skimoutdir)
+      out.write('  m.SetOutfilePath("'+skimoutdir+skimoutfilename+'");\n')
 
     else:
       if IsKISTI or IsTAMSA2:
