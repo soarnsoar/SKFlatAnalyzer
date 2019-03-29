@@ -53,6 +53,7 @@ void run_DATA(){
   m.Init();
   m.initializeAnalyzerTools();
   m.initializeAnalyzer();
+  m.SwitchToTempDir();
   m.Loop();
 
   m.WriteHist();

@@ -54,6 +54,7 @@ void run_MC(){
   m.Init();
   m.initializeAnalyzerTools();
   m.initializeAnalyzer();
+  m.SwitchToTempDir();
   m.Loop();
 
   m.WriteHist();
