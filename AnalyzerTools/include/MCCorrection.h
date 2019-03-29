@@ -6,6 +6,7 @@
 #include <fstream>
 #include <sstream>
 
+#include "TROOT.h"
 #include "TFile.h"
 #include "TString.h"
 #include "TH1D.h"
@@ -27,6 +28,7 @@ public:
   MCCorrection();
   ~MCCorrection();
 
+  TDirectory *histDir;
   void ReadHistograms();
 
   TString MCSample;

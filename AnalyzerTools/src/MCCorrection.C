@@ -4,12 +4,29 @@ MCCorrection::MCCorrection() :
 IgnoreNoHist(false)
 {
 
+  gROOT->cd();
+  histDir = NULL;
+  int counter = 0;
+  while (!histDir) {
+    //==== First, let's find a directory name that doesn't exist yet
+    std::stringstream dirname;
+    dirname << "MCCorrection" << counter;
+    if (gROOT->GetDirectory((dirname.str()).c_str())) {
+      ++counter;
+      continue;
+    }
+    //==== Let's try to make this directory
+    histDir = gROOT->mkdir((dirname.str()).c_str());
+  }
+  cout << "[MCCorrection::MCCorrection()] histDir name = " << histDir->GetName() << endl;
+
 }
 
 void MCCorrection::ReadHistograms(){
 
   TString datapath = getenv("DATA_DIR");
 
+  TDirectory* origDir = gDirectory;
 
   //==== ID/Trigger
   TString IDpath = datapath+"/"+TString::Itoa(DataYear,10)+"/ID/";
@@ -32,14 +49,19 @@ void MCCorrection::ReadHistograms(){
     TFile *file = new TFile(IDpath+"/Electron/"+d);
 
     if(f=="TH2F"){
-      map_hist_Electron[a+"_"+b+"_"+c] = (TH2F *)file->Get(e);
+      histDir->cd();
+      map_hist_Electron[a+"_"+b+"_"+c] = (TH2F *)file->Get(e)->Clone();
     }
     else if(f=="TGraphAsymmErrors"){
-      map_graph_Electron[a+"_"+b+"_"+c] = (TGraphAsymmErrors *)file->Get(e);
+      histDir->cd();
+      map_graph_Electron[a+"_"+b+"_"+c] = (TGraphAsymmErrors *)file->Get(e)->Clone();
     }
     else{
       cout << "[MCCorrection::MCCorrection] Wrong class type : " << elline << endl;
     }
+    file->Close();
+    delete file;
+    origDir->cd();
   }
 
   cout << "[MCCorrection::MCCorrection] map_hist_Electron :" << endl;
@@ -67,7 +89,11 @@ void MCCorrection::ReadHistograms(){
     is >> d; // <rootfilename>
     is >> e; // <histname>
     TFile *file = new TFile(IDpath+"/Muon/"+d);
-    map_hist_Muon[a+"_"+b+"_"+c] = (TH2F *)file->Get(e);
+    histDir->cd();
+    map_hist_Muon[a+"_"+b+"_"+c] = (TH2F *)file->Get(e)->Clone();
+    file->Close();
+    delete file;
+    origDir->cd();
   }
 
   cout << "[MCCorrection::MCCorrection] map_hist_Muon :" << endl;
@@ -93,7 +119,11 @@ void MCCorrection::ReadHistograms(){
     is >> c; // <histname>
     
     TFile *file = new TFile(PrefirePath+b);
-    map_hist_prefire[a + "_prefire"] = (TH2F *)file->Get(c);
+    histDir->cd();
+    map_hist_prefire[a + "_prefire"] = (TH2F *)file->Get(c)->Clone();
+    file->Close();
+    delete file;
+    origDir->cd();
   }
 
 
@@ -116,8 +146,16 @@ void MCCorrection::ReadHistograms(){
     if(DataYear == 2017 && a!=MCSample) continue;
     
     TFile *file = new TFile(PUReweightPath+c);
-    if((TH1D *)file->Get(a+"_"+b)) map_hist_pileup[a+"_"+b+"_pileup"] = (TH1D *)file->Get(a+"_"+b);
-    else cout << "[MCCorrection::ReadHistograms] No : " << a + "_" + b << endl;
+    if( (TH1D *)file->Get(a+"_"+b) ){
+      histDir->cd();
+      map_hist_pileup[a+"_"+b+"_pileup"] = (TH1D *)file->Get(a+"_"+b)->Clone();
+    }
+    else{
+      cout << "[MCCorrection::ReadHistograms] No : " << a + "_" + b << endl;
+    }
+    file->Close();
+    delete file;
+    origDir->cd();
   }
 /*
   cout << "[MCCorrection::MCCorrection] map_hist_pileup :" << endl;

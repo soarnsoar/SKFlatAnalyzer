@@ -517,15 +517,16 @@ void {2}(){{
     if args.Reduction>1:
       out.write('  m.MaxEvent=m.fChain->GetEntries()/'+str(args.Reduction)+';\n')
 
-    out.write('  m.Init();'+'\n')
-    if not IsSkimTree:
-      out.write('  m.initializeAnalyzerTools();'+'\n')
-    print>>out,'''  m.initializeAnalyzer();
+    print>>out,'''  m.Init();
+  m.initializeAnalyzerTools();
+  m.initializeAnalyzer();
+  m.SwitchToTempDir();
   m.Loop();
 
   m.WriteHist();
 
 }'''
+
     out.close()
 
     if IsTAMSA1:
