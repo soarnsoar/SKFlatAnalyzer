@@ -327,6 +327,27 @@ double MCCorrection::MuonTrigger_Eff(TString ID, TString trig, int DataOrMC, dou
 
     }
   }
+  else if(DataYear==2018){
+    if(trig=="IsoMu24"){
+      if(pt<26.) return 1.; //FIXME
+      if(eta>=2.4) eta = 2.39;
+
+      if(pt>1200.) pt = 1199.;
+    }
+    else if(trig=="Mu50"){
+      if(pt<52.) return 1.; //FIXME
+      if(eta>=2.4) eta = 2.39;
+
+      if(pt>1200.) pt = 1199.;
+    }
+    else{
+
+    }
+  }
+  else{
+    cout << "[MCCorrection::MuonTrigger_Eff] Wrong year : " << DataYear << endl;
+    exit(EXIT_FAILURE);
+  }
 
   TString histkey = "Trigger_Eff_DATA_"+trig+"_"+ID;
   if(DataOrMC==1) histkey = "Trigger_Eff_MC_"+trig+"_"+ID;
