@@ -108,6 +108,7 @@ std::vector<Muon> AnalyzerCore::GetAllMuons(){
     mu.SetIP3D(muon_3DIPVTX->at(i), muon_3DIPerrVTX->at(i));
     mu.SetTypeBit(muon_TypeBit->at(i));
     mu.SetIDBit(muon_IDBit->at(i));
+    mu.SetisPOGHighPt(muon_ishighpt->at(i));
     mu.SetChi2(muon_normchi->at(i));
     mu.SetIso(muon_PfChargedHadronIsoR04->at(i),muon_PfNeutralHadronIsoR04->at(i),muon_PfGammaIsoR04->at(i),muon_PFSumPUIsoR04->at(i),muon_trkiso->at(i));
 
