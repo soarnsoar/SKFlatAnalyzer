@@ -24,6 +24,19 @@ void SkimTree_LRSMHighPt::initializeAnalyzer(){
       "HLT_DoublePhoton70_v",
     };
   }
+  else if(DataYear==2018){
+    triggers = {
+      "HLT_Mu50_v",
+      "HLT_OldMu100_v",
+      "HLT_TkMu100_v",
+      "HLT_Ele32_WPTight_Gsf_v",
+      "HLT_Photon200_v",
+      "HLT_DoublePhoton70_v",
+    };
+  }
+  else{
+    cout << "[SkimTree_LRSMHighPt::initializeAnalyzer] DataYear is wrong : " << DataYear << endl;
+  }
 
   cout << "[SkimTree_LRSMHighPt::initializeAnalyzer] triggers to skim = " << endl;
   for(unsigned int i=0; i<triggers.size(); i++){
