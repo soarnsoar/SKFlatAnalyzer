@@ -3,6 +3,7 @@
 AnalyzerCore::AnalyzerCore(){
 
   mcCorr = new MCCorrection();
+  puppiCorr = new PuppiSoftdropMassCorr();
   fakeEst = new FakeBackgroundEstimator();
   cfEst = new CFBackgroundEstimator();
   pdfReweight = new PDFReweight();
@@ -37,6 +38,7 @@ AnalyzerCore::~AnalyzerCore(){
   //==== Tools
 
   delete mcCorr;
+  delete puppiCorr;
   delete fakeEst;
   delete cfEst;
   delete pdfReweight;
@@ -854,6 +856,9 @@ void AnalyzerCore::initializeAnalyzerTools(){
     mcCorr->SetDataYear(DataYear);
     mcCorr->ReadHistograms();
   }
+
+  puppiCorr->SetDataYear(DataYear);
+  puppiCorr->ReadHistograms();
 
   //==== FakeBackgroundEstimator
   fakeEst->SetDataYear(DataYear);
