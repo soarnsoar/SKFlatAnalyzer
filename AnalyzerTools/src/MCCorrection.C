@@ -4,21 +4,7 @@ MCCorrection::MCCorrection() :
 IgnoreNoHist(false)
 {
 
-  gROOT->cd();
-  histDir = NULL;
-  int counter = 0;
-  while (!histDir) {
-    //==== First, let's find a directory name that doesn't exist yet
-    std::stringstream dirname;
-    dirname << "MCCorrection" << counter;
-    if (gROOT->GetDirectory((dirname.str()).c_str())) {
-      ++counter;
-      continue;
-    }
-    //==== Let's try to make this directory
-    histDir = gROOT->mkdir((dirname.str()).c_str());
-  }
-  cout << "[MCCorrection::MCCorrection()] histDir name = " << histDir->GetName() << endl;
+  histDir = TDirectoryHelper::GetTempDirectory("MCCorrection");
 
 }
 

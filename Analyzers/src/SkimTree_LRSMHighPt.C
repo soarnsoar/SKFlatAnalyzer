@@ -2,6 +2,8 @@
 
 void SkimTree_LRSMHighPt::initializeAnalyzer(){
 
+  outfile->cd();
+  cout << "[SkimTree_LRSMHighPt::initializeAnalyzer()] gDirectory = " << gDirectory->GetName() << endl;
   newtree = fChain->CloneTree(0);
 
   triggers.clear();
@@ -61,6 +63,8 @@ void SkimTree_LRSMHighPt::executeEventFromParameter(AnalyzerParameter param){
 }
 
 SkimTree_LRSMHighPt::SkimTree_LRSMHighPt(){
+
+  newtree = NULL;
 
 }
 

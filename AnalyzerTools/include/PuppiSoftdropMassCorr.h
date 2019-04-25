@@ -6,12 +6,13 @@
 #include <fstream>
 #include <sstream>
 
-#include "TROOT.h"
 #include "TFile.h"
 #include "TString.h"
 #include "TF1.h"
 
 #include "FatJet.h"
+
+#include "TDirectoryHelper.h"
 
 class PuppiSoftdropMassCorr{
 

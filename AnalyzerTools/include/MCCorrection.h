@@ -6,7 +6,6 @@
 #include <fstream>
 #include <sstream>
 
-#include "TROOT.h"
 #include "TFile.h"
 #include "TString.h"
 #include "TH1D.h"
@@ -20,6 +19,8 @@
 #include "Photon.h"
 #include "Jet.h"
 #include "Gen.h"
+
+#include "TDirectoryHelper.h"
 
 class MCCorrection{
 
