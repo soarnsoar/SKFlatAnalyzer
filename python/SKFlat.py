@@ -305,7 +305,7 @@ Trial=0
 export CMS_PATH=/cvmfs/cms.cern.ch
 source $CMS_PATH/cmsset_default.sh
 export SCRAM_ARCH={2}
-export cmsswrel='{3}'
+export cmsswrel={3}
 cd /cvmfs/cms.cern.ch/$SCRAM_ARCH/cms/$cmsswrel/src
 echo "@@@@ SCRAM_ARCH = "$SCRAM_ARCH
 echo "@@@@ cmsswrel = "$cmsswrel
@@ -353,7 +353,6 @@ should_transfer_files = YES
 when_to_transfer_output = ON_EXIT
 output = job_$(Process).log
 error = job_$(Process).err
-transfer_input_files = {0}, {1}, {4}, {5}, {6}, {7}
 transfer_output_remaps = "hists.root = output/hists_$(Process).root"
 queue {0}
 '''.format(str(NJobs), commandsfilename)
