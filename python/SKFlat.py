@@ -149,7 +149,7 @@ FileRangesForEachSample = []
 ## Get Random Number for webdir
 
 random.seed(hash(StringForHash+timestamp+args.Year))
-RandomNumber = int(random.random()*10000)
+RandomNumber = int(random.random()*1000000)
 str_RandomNumber = str(RandomNumber)
 webdirname = timestamp+"_"+str_RandomNumber
 webdirpathbase = SKFlatRunlogDir+'/www/SKFlatAnalyzerJobLogs/'+webdirname
@@ -300,6 +300,9 @@ WORKDIR=`pwd`
 
 SumNoAuth=999
 Trial=0
+
+#### make sure use C locale
+export LC_ALL=C
 
 #### use cvmfs for root ####
 export CMS_PATH=/cvmfs/cms.cern.ch
