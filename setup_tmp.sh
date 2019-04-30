@@ -34,14 +34,14 @@ if [[ $HOSTNAME == *"ui"*".sdfarm.kr"* ]]; then
 elif [[ $HOSTNAME == *"cms.snu.ac.kr"* ]]; then
 
   echo "@@@@ Working on tamsa1"
-  export SKFlatRunlogDir="/data7/Users/$USER/SKFlatRunlog/"
-  export SKFlatOutputDir="/data7/Users/$USER/SKFlatOutput/"
+  export SKFlatRunlogDir="/data6/Users/$USER/SKFlatRunlog/"
+  export SKFlatOutputDir="/data6/Users/$USER/SKFlatOutput/"
 
 elif [[ $HOSTNAME == *"tamsa2"* ]]; then
 
   echo "@@@@ Working on tamsa2"
-  export SKFlatRunlogDir="/data7/Users/$USER/SKFlatRunlog/"
-  export SKFlatOutputDir="/data7/Users/$USER/SKFlatOutput/"
+  export SKFlatRunlogDir="/data6/Users/$USER/SKFlatRunlog/"
+  export SKFlatOutputDir="/data6/Users/$USER/SKFlatOutput/"
 
 elif [[ $HOSTNAME == *"knu"* ]]; then
 
