@@ -89,7 +89,7 @@ def CheckJobStatus(logfiledir, cycle, jobnumber, hostname):
 
   IsCycleRan = False
   for l in log_o:
-    if "Processing run" in l:
+    if "Processing " in l:
       IsCycleRan = True
       break
 
