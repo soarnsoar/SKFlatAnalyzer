@@ -47,9 +47,12 @@ string_ThisTime = ""
 ## Environment Variables
 
 USER = os.environ['USER']
-SKFlatLogEmail = os.environ['SKFlatLogEmail']
-SKFlatLogWeb = os.environ['SKFlatLogWeb']
-SKFlatLogWebDir = os.environ['SKFlatLogWebDir']
+exec('from UserInfo_'+USER+' import *')
+SKFlatLogEmail = UserInfo['SKFlatLogEmail']
+SKFlatLogWeb = UserInfo['SKFlatLogWeb']
+SKFlatLogWebDir = UserInfo['SKFlatLogWebDir']
+LogEvery = UserInfo['LogEvery']
+
 SCRAM_ARCH = os.environ['SCRAM_ARCH']
 cmsswrel = os.environ['cmsswrel']
 SKFlat_WD = os.environ['SKFlat_WD']
@@ -432,6 +435,8 @@ void {2}(){{
 
   m.SetTreeName("recoTree/SKFlat");
 '''.format(args.Analyzer, libdir, runfunctionname, IncludeLine)
+
+    out.write('  m.LogEvery = '+str(LogEvery)+';\n')
 
     if IsDATA:
       out.write('  m.IsDATA = true;\n')
