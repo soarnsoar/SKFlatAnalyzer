@@ -538,6 +538,7 @@ double MCCorrection::ElectronTrigger_Eff(TString ID, TString trig, int DataOrMC,
   double error = 0.;
 
   //==== XXX If you have min pt, apply it here
+  if(pt<50.) pt = 50.;
   if(pt>=500.) pt = 499.;
 
   if(sceta<-2.5) sceta = -2.5;
