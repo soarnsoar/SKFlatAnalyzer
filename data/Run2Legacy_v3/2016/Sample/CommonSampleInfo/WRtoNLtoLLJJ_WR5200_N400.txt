@@ -1,2 +1,0 @@
-# alias PD xsec nmc sumw
-WRtoNLtoLLJJ_WR5200_N400	WRtoNLtoLLJJ_WR5200_N400	1.	70000	56986
