@@ -26,7 +26,7 @@ if [[ $HOSTNAME == *"ui"*".sdfarm.kr"* ]]; then
   export SKFlatRunlogDir="/cms/ldap_home/$USER/SKFlatRunlog/"
   export SKFlatOutputDir="/cms/ldap_home/$USER/SKFlatOutput/"
 
-elif [[ $HOSTNAME == *"cms.snu.ac.kr"* ]]; then
+elif [[ $HOSTNAME == *"tamsa1"* ]]; then
 
   echo "@@@@ Working on tamsa1"
   export SKFlatRunlogDir="/data6/Users/$USER/SKFlatRunlog/"
