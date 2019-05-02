@@ -50,6 +50,9 @@ public:
 
   double ElectronReco_SF(double sceta, double pt, int sys=0);
   double ElectronID_SF(TString ID, double sceta, double pt, int sys=0);
+  double ElectronTrigger_Eff(TString ID, TString trig, int DataOrMC, double eta, double pt, int sys=0);
+  double ElectronTrigger_SF(TString ID, TString trig, std::vector<Electron> electrons, int sys=0);
+  double ElectronTrigger_SF(TString ID, TString trig, std::vector<Electron *> electrons, int sys=0);
   std::map< TString, TH2F* > map_hist_Electron;
   std::map< TString, TGraphAsymmErrors* > map_graph_Electron;
 
