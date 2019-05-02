@@ -813,12 +813,25 @@ try:
             cwd = os.getcwd()
             os.chdir(base_rundir)
 
-            if IsKISTI or IsTAMSA:
-              os.system('hadd -f '+outputname+'.root output/*.root >> JobStatus.log')
-              os.system('rm output/*.root')
+            #### if number of job is 1, we can just move the file, not hadd
+            nFiles = len( FileRangesForEachSample[it_sample] )
+            if nFiles==1:
+              if IsKISTI or IsTAMSA:
+                os.system('echo "nFiles = 1, so skipping hadd and just move the file" >> JobStatus.log')
+                os.system('ls -1 output/*.root >> JobStatus.log')
+                os.system('mv output/hists_0.root '+outputname+'.root')
+              else:
+                os.system('echo "nFiles = 1, so skipping hadd and just move the file" >> JobStatus.log')
+                os.system('ls -1 job_0/*.root >> JobStatus.log')
+                os.system('mv job_0/hists.root '+outputname+'.root')
+
             else:
-              os.system('hadd -f '+outputname+'.root job_*/*.root >> JobStatus.log')
-              os.system('rm job_*/*.root')
+              if IsKISTI or IsTAMSA:
+                os.system('hadd -f '+outputname+'.root output/*.root >> JobStatus.log')
+                os.system('rm output/*.root')
+              else:
+                os.system('hadd -f '+outputname+'.root job_*/*.root >> JobStatus.log')
+                os.system('rm job_*/*.root')
 
             ## Final Outputpath
 
