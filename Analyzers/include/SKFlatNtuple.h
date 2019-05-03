@@ -37,6 +37,7 @@ public :
    bool IsDATA;
    TString DataStream;
    TString MCSample;
+   bool IsFastSim;
    int DataYear;
    double xsec, sumW, weight_norm_1invpb;
    vector<TString> Userflags;

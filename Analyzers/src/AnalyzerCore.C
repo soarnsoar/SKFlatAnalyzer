@@ -828,18 +828,18 @@ std::vector<FatJet> AnalyzerCore::SmearSDMassFatJets(std::vector<FatJet> jets, i
 bool AnalyzerCore::PassMETFilter(){
 
   //==== https://twiki.cern.ch/twiki/bin/viewauth/CMS/MissingETOptionalFiltersRun2#Moriond_2018
-  //==== TODO If FastSIM, it should be changed
 
   if(!Flag_goodVertices) return false;
-  if(!Flag_globalSuperTightHalo2016Filter) return false;
+  if(!IsFastSim){
+    if(!Flag_globalSuperTightHalo2016Filter) return false;
+  }
   if(!Flag_HBHENoiseFilter) return false;
   if(!Flag_HBHENoiseIsoFilter) return false;
   if(!Flag_EcalDeadCellTriggerPrimitiveFilter) return false;
   if(!Flag_BadPFMuonFilter) return false;
-  if(!Flag_BadChargedCandidateFilter) return false;
+  //if(!Flag_BadChargedCandidateFilter) return false; // TODO 19/05/04 twiki says this is under review, and not recommended
   if(IsDATA && !Flag_eeBadScFilter) return false;
 
-  //TODO Check this
   if(DataYear>=2017){
     if(!Flag_ecalBadCalibReducedMINIAODFilter) return false;
   }
