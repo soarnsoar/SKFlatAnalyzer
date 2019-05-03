@@ -47,9 +47,12 @@ string_ThisTime = ""
 ## Environment Variables
 
 USER = os.environ['USER']
-SKFlatLogEmail = os.environ['SKFlatLogEmail']
-SKFlatLogWeb = os.environ['SKFlatLogWeb']
-SKFlatLogWebDir = os.environ['SKFlatLogWebDir']
+exec('from UserInfo_'+USER+' import *')
+SKFlatLogEmail = UserInfo['SKFlatLogEmail']
+SKFlatLogWeb = UserInfo['SKFlatLogWeb']
+SKFlatLogWebDir = UserInfo['SKFlatLogWebDir']
+LogEvery = UserInfo['LogEvery']
+
 SCRAM_ARCH = os.environ['SCRAM_ARCH']
 cmsswrel = os.environ['cmsswrel']
 SKFlat_WD = os.environ['SKFlat_WD']
@@ -76,14 +79,14 @@ if SKFlatLogWeb=='' or SKFlatLogWebDir=='':
 IsKISTI = ("sdfarm.kr" in HOSTNAME)
 IsUI10 = ("ui10.sdfarm.kr" in HOSTNAME)
 IsUI20 = ("ui20.sdfarm.kr" in HOSTNAME)
-IsTAMSA1 = ("snu" in HOSTNAME)
+IsTAMSA1 = ("tamsa1" in HOSTNAME)
 IsTAMSA2 = ("tamsa2" in HOSTNAME)
-IsSNU = IsTAMSA1 or IsTAMSA2
+IsTAMSA = IsTAMSA1 or IsTAMSA2
 IsKNU = ("knu" in HOSTNAME)
 if IsKISTI:
   HOSTNAME = "KISTI"
   SampleHOSTNAME = "KISTI"
-if IsSNU:
+if IsTAMSA:
   if IsTAMSA1:
     HOSTNAME = "TAMSA1"
   elif IsTAMSA2:
@@ -97,7 +100,7 @@ if IsKNU:
 
 IsSkimTree = "SkimTree" in args.Analyzer
 if IsSkimTree:
-  if not IsSNU:
+  if not IsTAMSA:
     print "Skimming only possible in SNU"
     exit()
 
@@ -149,10 +152,12 @@ FileRangesForEachSample = []
 ## Get Random Number for webdir
 
 random.seed(hash(StringForHash+timestamp+args.Year))
-RandomNumber = int(random.random()*10000)
+RandomNumber = int(random.random()*1000000)
 str_RandomNumber = str(RandomNumber)
 webdirname = timestamp+"_"+str_RandomNumber
 webdirpathbase = SKFlatRunlogDir+'/www/SKFlatAnalyzerJobLogs/'+webdirname
+while os.path.isdir(webdirpathbase):
+  webdirpathbase += '_'
 
 ## skim string
 
@@ -286,7 +291,7 @@ for InputSample in InputSamples:
 
   ## Write run script
 
-  if IsKISTI or IsTAMSA2:
+  if IsKISTI or IsTAMSA:
 
     commandsfilename = args.Analyzer+'_'+args.Year+'_'+InputSample
     if IsDATA:
@@ -300,6 +305,9 @@ WORKDIR=`pwd`
 
 SumNoAuth=999
 Trial=0
+
+#### make sure use C locale
+export LC_ALL=C
 
 #### use cvmfs for root ####
 export CMS_PATH=/cvmfs/cms.cern.ch
@@ -375,7 +383,7 @@ transfer_output_remaps = "hists.root = output/hists_$(Process).root"
 queue {0}
 '''.format(str(NJobs), commandsfilename)
       submit_command.close()
-    elif IsTAMSA2:
+    elif IsTAMSA:
       print>>submit_command,'''executable = {1}.sh
 universe   = vanilla
 arguments  = $(Process)
@@ -405,7 +413,7 @@ queue {0}
     runfunctionname = "run"
     libdir = (MasterJobDir+'/lib').replace('///','/').replace('//','/')+'/'
     runCfileFullPath = ""
-    if IsKISTI or IsTAMSA2:
+    if IsKISTI or IsTAMSA:
       runfunctionname = "run_"+str(it_job)
       runCfileFullPath = base_rundir+'/run_'+str(it_job)+'.C'
     else:
@@ -429,6 +437,8 @@ void {2}(){{
 
   m.SetTreeName("recoTree/SKFlat");
 '''.format(args.Analyzer, libdir, runfunctionname, IncludeLine)
+
+    out.write('  m.LogEvery = '+str(LogEvery)+';\n')
 
     if IsDATA:
       out.write('  m.IsDATA = true;\n')
@@ -469,7 +479,7 @@ void {2}(){{
       out.write('  m.SetOutfilePath("'+skimoutdir+skimoutfilename+'");\n')
 
     else:
-      if IsKISTI or IsTAMSA2:
+      if IsKISTI or IsTAMSA:
         out.write('  m.SetOutfilePath("hists.root");\n')
       else:
         out.write('  m.SetOutfilePath("'+thisjob_dir+'/hists.root");\n')
@@ -489,27 +499,7 @@ void {2}(){{
 
     out.close()
 
-    if IsTAMSA1:
-      run_commands = open(thisjob_dir+'commands.sh','w')
-      print>>run_commands,'''cd {0}
-echo "[SKFlat.py] Okay, let's run the analysis"
-root -l -b -q run.C
-'''.format(thisjob_dir)
-      run_commands.close()
-
-      jobname = 'job_'+str(it_job)+'_'+args.Analyzer
-      cmd = 'qsub -V -q '+args.Queue+' -N '+jobname+' -wd '+thisjob_dir+' commands.sh '
-
-      if not args.no_exec:
-        cwd = os.getcwd()
-        os.chdir(thisjob_dir)
-        os.system(cmd+' > submitlog.log')
-        os.chdir(cwd)
-      sublog = open(thisjob_dir+'/submitlog.log','a')
-      sublog.write('\nSubmission command was : '+cmd+'\n')
-      sublog.close()
-
-    elif IsKNU:
+    if IsKNU:
       run_commands = open(thisjob_dir+'commands.sh','w')
       print>>run_commands,'''cd {0}
 cp ../x509up_u{1} /tmp/
@@ -530,7 +520,7 @@ root -l -b -q run.C 1>stdout.log 2>stderr.log
       sublog.write('\nSubmission command was : '+cmd+'\n')
       sublog.close()
 
-  if IsKISTI or IsTAMSA2:
+  if IsKISTI or IsTAMSA:
 
     cwd = os.getcwd()
     os.chdir(base_rundir)
@@ -565,6 +555,9 @@ if args.Outputdir=="":
     FinalOutputPath += flag+"__"
   if IsDATA:
     FinalOutputPath += '/DATA/'
+if IsSkimTree:
+  FinalOutputPath = '/data8/DATA/SKFlat/'+SKFlatV+'/'+args.Year+'/'
+
 os.system('mkdir -p '+FinalOutputPath)
 
 print '##################################################'
@@ -578,7 +571,7 @@ print '- NJobs = '+str(NJobs)
 print '- Year = '+args.Year
 print '- UserFlags =',
 print Userflags
-if IsTAMSA1 or IsKNU:
+if IsKNU:
   print '- Queue = '+args.Queue
 print '- output will be send to : '+FinalOutputPath
 print '##################################################'
@@ -663,7 +656,7 @@ try:
         for it_job in range(0,len(FileRanges)):
 
           thisjob_dir = base_rundir+'/'
-          if IsKISTI or IsTAMSA2:
+          if IsKISTI or IsTAMSA:
             thisjob_dir = base_rundir
 
           this_status = ""
@@ -822,12 +815,25 @@ try:
             cwd = os.getcwd()
             os.chdir(base_rundir)
 
-            if IsKISTI or IsTAMSA2:
-              os.system('hadd -f '+outputname+'.root output/*.root >> JobStatus.log')
-              os.system('rm output/*.root')
+            #### if number of job is 1, we can just move the file, not hadd
+            nFiles = len( FileRangesForEachSample[it_sample] )
+            if nFiles==1:
+              if IsKISTI or IsTAMSA:
+                os.system('echo "nFiles = 1, so skipping hadd and just move the file" >> JobStatus.log')
+                os.system('ls -1 output/*.root >> JobStatus.log')
+                os.system('mv output/hists_0.root '+outputname+'.root')
+              else:
+                os.system('echo "nFiles = 1, so skipping hadd and just move the file" >> JobStatus.log')
+                os.system('ls -1 job_0/*.root >> JobStatus.log')
+                os.system('mv job_0/hists.root '+outputname+'.root')
+
             else:
-              os.system('hadd -f '+outputname+'.root job_*/*.root >> JobStatus.log')
-              os.system('rm job_*/*.root')
+              if IsKISTI or IsTAMSA:
+                os.system('hadd -f '+outputname+'.root output/*.root >> JobStatus.log')
+                os.system('rm output/*.root')
+              else:
+                os.system('hadd -f '+outputname+'.root job_*/*.root >> JobStatus.log')
+                os.system('rm job_*/*.root')
 
             ## Final Outputpath
 
@@ -863,7 +869,7 @@ Job started at {0}
 Job finished at {1}
 '''.format(string_JobStartTime,string_ThisTime)
 
-if IsTAMSA1 or IsKNU:
+if IsKNU:
   JobFinishEmail += 'Queue = '+args.Queue+'\n'
 
 EmailTitle = '['+HOSTNAME+']'+' Summary of JobID '+str_RandomNumber
