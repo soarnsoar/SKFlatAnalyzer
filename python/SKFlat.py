@@ -156,6 +156,8 @@ RandomNumber = int(random.random()*1000000)
 str_RandomNumber = str(RandomNumber)
 webdirname = timestamp+"_"+str_RandomNumber
 webdirpathbase = SKFlatRunlogDir+'/www/SKFlatAnalyzerJobLogs/'+webdirname
+while os.path.isdir(webdirpathbase):
+  webdirpathbase += '_'
 
 ## skim string
 
