@@ -18,5 +18,5 @@ WZZ	WZZ_TuneCP5_13TeV-amcatnlo-pythia8	0.05565	250000	219250
 WZ_pythia	WZ_TuneCP5_13TeV-pythia8	47.13	3885000	3885000
 ZZZ	ZZZ_TuneCP5_13TeV-amcatnlo-pythia8	0.01398	250000	214282
 ZZ_pythia	ZZ_TuneCP5_13TeV-pythia8	16.523	1979000	1979000
-ttW_Incl	ttWJets_TuneCP5_13TeV_madgraphMLM_pythia8	0.4611	12816567	12771749	## From XSDB
-ttZ_Incl	ttZJets_TuneCP5_13TeV_madgraphMLM_pythia8	0.5407	22646257	22604395	## From XSDB
+ttW	ttWJets_TuneCP5_13TeV_madgraphMLM_pythia8	0.4611	12816567	12771749	## From XSDB
+ttZ	ttZJets_TuneCP5_13TeV_madgraphMLM_pythia8	0.5407	22646257	22604395	## From XSDB
