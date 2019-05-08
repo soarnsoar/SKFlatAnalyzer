@@ -20,6 +20,7 @@ parser.add_argument('-q', dest='Queue', default="fastq")
 parser.add_argument('-y', dest='Year', default="2017")
 parser.add_argument('--skim', dest='Skim', default="")
 parser.add_argument('--no_exec', action='store_true')
+parser.add_argument('--FastSim', action='store_true')
 parser.add_argument('--userflags', dest='Userflags', default="")
 parser.add_argument('--reduction', dest='Reduction', default=1, type=float)
 args = parser.parse_args()
@@ -448,6 +449,11 @@ void {2}(){{
       out.write('  m.IsDATA = false;\n')
       out.write('  m.xsec = '+str(this_xsec)+';\n')
       out.write('  m.sumW = '+str(this_sumw)+';\n')
+
+      if args.FastSim:
+        out.write('  m.IsFastSim = true;\n')
+      else:
+        out.write('  m.IsFastSim = false;\n')
 
     out.write('  m.DataYear = '+str(args.Year)+';\n')
 
