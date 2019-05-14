@@ -1,0 +1,10 @@
+/data7/DATA/SKFlat/Run2Legacy_v3/2017/DATA/DoubleMuon/periodF/190416_161520/0000/SKFlatNtuple_2017_DATA_1.root
+/data7/DATA/SKFlat/Run2Legacy_v3/2017/DATA/DoubleMuon/periodF/190416_161520/0000/SKFlatNtuple_2017_DATA_10.root
+/data7/DATA/SKFlat/Run2Legacy_v3/2017/DATA/DoubleMuon/periodF/190416_161520/0000/SKFlatNtuple_2017_DATA_100.root
+/data7/DATA/SKFlat/Run2Legacy_v3/2017/DATA/DoubleMuon/periodF/190416_161520/0000/SKFlatNtuple_2017_DATA_101.root
+/data7/DATA/SKFlat/Run2Legacy_v3/2017/DATA/DoubleMuon/periodF/190416_161520/0000/SKFlatNtuple_2017_DATA_102.root
+/data7/DATA/SKFlat/Run2Legacy_v3/2017/DATA/DoubleMuon/periodF/190416_161520/0000/SKFlatNtuple_2017_DATA_103.root
+/data7/DATA/SKFlat/Run2Legacy_v3/2017/DATA/DoubleMuon/periodF/190416_161520/0000/SKFlatNtuple_2017_DATA_104.root
+/data7/DATA/SKFlat/Run2Legacy_v3/2017/DATA/DoubleMuon/periodF/190416_161520/0000/SKFlatNtuple_2017_DATA_105.root
+/data7/DATA/SKFlat/Run2Legacy_v3/2017/DATA/DoubleMuon/periodF/190416_161520/0000/SKFlatNtuple_2017_DATA_106.root
+/data7/DATA/SKFlat/Run2Legacy_v3/2017/DATA/DoubleMuon/periodF/190416_161520/0000/SKFlatNtuple_2017_DATA_107.root
