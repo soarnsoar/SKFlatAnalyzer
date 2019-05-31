@@ -48,6 +48,9 @@ void SkimTree_LRSMHighPt::initializeAnalyzer(){
     cout << "[SkimTree_LRSMHighPt::initializeAnalyzer]   " << triggers.at(i) << endl;
   }
 
+  fChain->SetBranchStatus("*",0);
+  fChain->SetBranchStatus("HLT_TriggerName",1);
+
 }
 
 void SkimTree_LRSMHighPt::executeEvent(){
@@ -56,6 +59,7 @@ void SkimTree_LRSMHighPt::executeEvent(){
   ev.SetTrigger(*HLT_TriggerName);
 
   if( ev.PassTrigger(triggers) ){
+    fChain->GetEntry(fChain->GetReadEntry(),true);
     newtree->Fill();
   }
 
