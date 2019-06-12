@@ -516,10 +516,11 @@ std::vector<Gen> AnalyzerCore::GetGens(){
 
 }
 
-std::vector<Muon> AnalyzerCore::UseTunePMuon(std::vector<Muon> muons){
+std::vector<Muon> AnalyzerCore::UseTunePMuon(const std::vector<Muon>& muons){
 
   std::vector<Muon> out;
   for(unsigned int i=0; i<muons.size(); i++){
+    //==== muons is a const vector. So in this function, we have to copy the elecements like below
     Muon this_muon=muons.at(i);
 
     Particle this_tunep4 = this_muon.TuneP4();
