@@ -1082,22 +1082,21 @@ bool AnalyzerCore::HasFlag(TString flag){
 
 }
 
-std::vector<Muon> AnalyzerCore::MuonWithoutGap(std::vector<Muon> muons){
+std::vector<Muon> AnalyzerCore::MuonWithoutGap(const std::vector<Muon>& muons){
 
   std::vector<Muon> out;
   for(unsigned int i=0; i<muons.size(); i++){
-    Muon this_muon = muons.at(i);
-    double this_eta = fabs( this_muon.Eta() );
+    double this_eta = fabs( muons.at(i).Eta() );
     if( 1.444 <= this_eta && this_eta < 1.566 ) continue;
 
-    out.push_back(this_muon);
+    out.push_back( muons.at(i) );
   }
 
   return out;
 
 }
 
-std::vector<Muon> AnalyzerCore::MuonPromptOnly(std::vector<Muon> muons, std::vector<Gen> gens){
+std::vector<Muon> AnalyzerCore::MuonPromptOnly(const std::vector<Muon>& muons, const std::vector<Gen>& gens){
 
   if(IsDATA) return muons;
 
@@ -1112,27 +1111,31 @@ std::vector<Muon> AnalyzerCore::MuonPromptOnly(std::vector<Muon> muons, std::vec
 
 }
 
-std::vector<Muon> AnalyzerCore::MuonUsePtCone(std::vector<Muon> muons){
+std::vector<Muon> AnalyzerCore::MuonUsePtCone(const std::vector<Muon>& muons){
 
   std::vector<Muon> out;
 
   for(unsigned int i=0; i<muons.size(); i++){
-    muons.at(i).SetPtEtaPhiM( muons.at(i).PtCone(), muons.at(i).Eta(), muons.at(i).Phi(), muons.at(i).M() );
-    out.push_back( muons.at(i) );
+    //==== muons is a const vector. So in this function, we have to copy the elements like below
+    Muon this_muon = muons.at(i);
+    this_muon.SetPtEtaPhiM( muons.at(i).PtCone(), muons.at(i).Eta(), muons.at(i).Phi(), muons.at(i).M() );
+    out.push_back( this_muon );
   }
 
   return out;
 
 }
 
-Muon AnalyzerCore::MuonUsePtCone(Muon muon){
+Muon AnalyzerCore::MuonUsePtCone(const Muon& muon){
 
-  muon.SetPtEtaPhiM( muon.PtCone(), muon.Eta(), muon.Phi(), muon.M() );
-  return muon;
+  //==== muon is a const object. So in this function, we have to copy the object like below
+  Muon this_muon = muon;
+  this_muon.SetPtEtaPhiM( muon.PtCone(), muon.Eta(), muon.Phi(), muon.M() );
+  return this_muon;
 
 }
 
-Particle AnalyzerCore::UpdateMET(Particle METv, std::vector<Muon> muons){
+Particle AnalyzerCore::UpdateMET(const Particle& METv, const std::vector<Muon>& muons){
 
   float met_x = METv.Px();
   float met_y = METv.Py();
@@ -1157,7 +1160,7 @@ Particle AnalyzerCore::UpdateMET(Particle METv, std::vector<Muon> muons){
 
 }
 
-std::vector<Muon> AnalyzerCore::MuonApplyPtCut(std::vector<Muon> muons, double ptcut){
+std::vector<Muon> AnalyzerCore::MuonApplyPtCut(const std::vector<Muon>& muons, double ptcut){
 
   std::vector<Muon> out;
 
@@ -1170,7 +1173,7 @@ std::vector<Muon> AnalyzerCore::MuonApplyPtCut(std::vector<Muon> muons, double p
 
 }
 
-std::vector<Electron> AnalyzerCore::ElectronPromptOnly(std::vector<Electron> electrons, std::vector<Gen> gens){
+std::vector<Electron> AnalyzerCore::ElectronPromptOnly(const std::vector<Electron>& electrons, const std::vector<Gen>& gens){
 
   if(IsDATA) return electrons;
 
@@ -1185,27 +1188,31 @@ std::vector<Electron> AnalyzerCore::ElectronPromptOnly(std::vector<Electron> ele
 
 }
 
-std::vector<Electron> AnalyzerCore::ElectronUsePtCone(std::vector<Electron> electrons){
+std::vector<Electron> AnalyzerCore::ElectronUsePtCone(const std::vector<Electron>& electrons){
 
   std::vector<Electron> out;
 
   for(unsigned int i=0; i<electrons.size(); i++){
-    electrons.at(i).SetPtEtaPhiM( electrons.at(i).PtCone(), electrons.at(i).Eta(), electrons.at(i).Phi(), electrons.at(i).M() );
-    out.push_back( electrons.at(i) );
+    //==== electrons is a const vector. So in this function, we have to copy the elements like below
+    Electron this_electron = electrons.at(i);
+    this_electron.SetPtEtaPhiM( electrons.at(i).PtCone(), electrons.at(i).Eta(), electrons.at(i).Phi(), electrons.at(i).M() );
+    out.push_back( this_electron );
   }
 
   return out;
 
 }
 
-Electron AnalyzerCore::ElectronUsePtCone(Electron electron){
+Electron AnalyzerCore::ElectronUsePtCone(const Electron& electron){
 
-  electron.SetPtEtaPhiM( electron.PtCone(), electron.Eta(), electron.Phi(), electron.M() );
-  return electron;
+  //==== electron is a const object. So in this function, we have to copy the object like below
+  Electron this_electron = electron;
+  this_electron.SetPtEtaPhiM( electron.PtCone(), electron.Eta(), electron.Phi(), electron.M() );
+  return this_electron;
 
 }
 
-std::vector<Electron> AnalyzerCore::ElectronApplyPtCut(std::vector<Electron> electrons, double ptcut){
+std::vector<Electron> AnalyzerCore::ElectronApplyPtCut(const std::vector<Electron>& electrons, double ptcut){
 
   std::vector<Electron> out;
 
@@ -1218,7 +1225,7 @@ std::vector<Electron> AnalyzerCore::ElectronApplyPtCut(std::vector<Electron> ele
 
 }
 
-std::vector<Jet> AnalyzerCore::JetsAwayFromFatJet(std::vector<Jet> jets, std::vector<FatJet> fatjets, double mindr){
+std::vector<Jet> AnalyzerCore::JetsAwayFromFatJet(const std::vector<Jet>& jets, const std::vector<FatJet>& fatjets, double mindr){
 
   std::vector<Jet> out;
   for(unsigned int i=0; i<jets.size(); i++){
@@ -1238,16 +1245,15 @@ std::vector<Jet> AnalyzerCore::JetsAwayFromFatJet(std::vector<Jet> jets, std::ve
 
 }
 
-std::vector<Jet> AnalyzerCore::JetsVetoLeptonInside(std::vector<Jet> jets, std::vector<Electron> els, std::vector<Muon> mus){
+std::vector<Jet> AnalyzerCore::JetsVetoLeptonInside(const std::vector<Jet>& jets, const std::vector<Electron>& els, const std::vector<Muon>& mus){
 
   std::vector<Jet> out;
   for(unsigned int i=0; i<jets.size(); i++){
-    Jet this_jet = jets.at(i);
 
     bool HasLeptonInside = false;
 
     for(unsigned int j=0; j<els.size(); j++){
-      if( this_jet.DeltaR( els.at(j) ) < 0.4 ){
+      if( jets.at(i).DeltaR( els.at(j) ) < 0.4 ){
         HasLeptonInside = true;
         break;
       }
@@ -1255,7 +1261,7 @@ std::vector<Jet> AnalyzerCore::JetsVetoLeptonInside(std::vector<Jet> jets, std::
     if(HasLeptonInside) continue;
 
     for(unsigned int j=0; j<mus.size(); j++){
-      if( this_jet.DeltaR( mus.at(j) ) < 0.4 ){
+      if( jets.at(i).DeltaR( mus.at(j) ) < 0.4 ){
         HasLeptonInside = true;
         break;
       }
@@ -1263,14 +1269,14 @@ std::vector<Jet> AnalyzerCore::JetsVetoLeptonInside(std::vector<Jet> jets, std::
     if(HasLeptonInside) continue;
 
     //==== if all fine,
-    out.push_back( this_jet );
+    out.push_back( jets.at(i) );
 
   }
   return out;
 
 }
 
-std::vector<Jet> AnalyzerCore::JetsAwayFromPhoton(std::vector<Jet> jets, std::vector<Photon> photons, double mindr){
+std::vector<Jet> AnalyzerCore::JetsAwayFromPhoton(const std::vector<Jet>& jets, const std::vector<Photon>& photons, double mindr){
   
   std::vector<Jet> out;
   for(unsigned int i=0; i<jets.size(); i++){
@@ -1291,7 +1297,7 @@ std::vector<Jet> AnalyzerCore::JetsAwayFromPhoton(std::vector<Jet> jets, std::ve
 }
 
 
-Particle AnalyzerCore::AddFatJetAndLepton(FatJet fatjet, Lepton lep){
+Particle AnalyzerCore::AddFatJetAndLepton(const FatJet& fatjet, const Lepton& lep){
 
   if(fatjet.DeltaR( lep )<0.8){
     return fatjet;
@@ -1305,7 +1311,7 @@ Particle AnalyzerCore::AddFatJetAndLepton(FatJet fatjet, Lepton lep){
 //=========================================================
 //==== Gen Matching Tools
 
-void AnalyzerCore::PrintGen(std::vector<Gen> gens){
+void AnalyzerCore::PrintGen(const std::vector<Gen>& gens){
 
   cout << "===========================================================" << endl;
   cout << "RunNumber:EventNumber = " << run << ":" << event << endl;
@@ -1319,7 +1325,7 @@ void AnalyzerCore::PrintGen(std::vector<Gen> gens){
 
 }
 
-Gen AnalyzerCore::GetGenMatchedLepton(Lepton lep, std::vector<Gen> gens){
+Gen AnalyzerCore::GetGenMatchedLepton(const Lepton& lep, const std::vector<Gen>& gens){
 
   //==== find status 1 lepton
 
@@ -1355,7 +1361,7 @@ Gen AnalyzerCore::GetGenMatchedLepton(Lepton lep, std::vector<Gen> gens){
 
 }
 
-Gen AnalyzerCore::GetGenMatchedPhoton(Lepton lep, std::vector<Gen> gens){
+Gen AnalyzerCore::GetGenMatchedPhoton(const Lepton& lep, const std::vector<Gen>& gens){
 
   double min_dR = 0.2;
   Gen gen_closest;
@@ -1390,7 +1396,7 @@ Gen AnalyzerCore::GetGenMatchedPhoton(Lepton lep, std::vector<Gen> gens){
 
 }
 
-vector<int> AnalyzerCore::TrackGenSelfHistory(Gen me, std::vector<Gen> gens){
+vector<int> AnalyzerCore::TrackGenSelfHistory(const Gen& me, const std::vector<Gen>& gens){
 
   int myindex = me.Index();
 
@@ -1419,7 +1425,7 @@ vector<int> AnalyzerCore::TrackGenSelfHistory(Gen me, std::vector<Gen> gens){
 
 }
 
-bool AnalyzerCore::IsFromHadron(Gen me, std::vector<Gen> gens){
+bool AnalyzerCore::IsFromHadron(const Gen& me, const std::vector<Gen>& gens){
 
   bool out = false;
 
@@ -1482,7 +1488,7 @@ bool AnalyzerCore::IsFromHadron(Gen me, std::vector<Gen> gens){
 
 }
 
-int AnalyzerCore::GetLeptonType(Lepton lep, std::vector<Gen> gens){
+int AnalyzerCore::GetLeptonType(const Lepton& lep, const std::vector<Gen>& gens){
 
   //==== [Type]
   //====  1 : EWPrompt
@@ -1701,7 +1707,7 @@ int AnalyzerCore::GetLeptonType(Lepton lep, std::vector<Gen> gens){
 
 }
 
-int AnalyzerCore::GetGenPhotonType(Gen genph, std::vector<Gen> gens){
+int AnalyzerCore::GetGenPhotonType(const Gen& genph, const std::vector<Gen>& gens){
 
   //==== [Type]
   //====  0 : Invalid input or Error or HardScatter is input when hardscatter is not final state
