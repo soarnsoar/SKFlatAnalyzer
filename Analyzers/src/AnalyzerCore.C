@@ -520,7 +520,7 @@ std::vector<Muon> AnalyzerCore::UseTunePMuon(const std::vector<Muon>& muons){
 
   std::vector<Muon> out;
   for(unsigned int i=0; i<muons.size(); i++){
-    //==== muons is a const vector. So in this function, we have to copy the elecements like below
+    //==== muons is a const vector. So in this function, we have to copy the elements like below
     Muon this_muon=muons.at(i);
 
     Particle this_tunep4 = this_muon.TuneP4();
@@ -680,10 +680,11 @@ std::vector<FatJet> AnalyzerCore::SelectFatJets(const std::vector<FatJet>& jets,
 
 }
 
-std::vector<Electron> AnalyzerCore::ScaleElectrons(std::vector<Electron> electrons, int sys){
+std::vector<Electron> AnalyzerCore::ScaleElectrons(const std::vector<Electron>& electrons, int sys){
 
   std::vector<Electron> out;
   for(unsigned int i=0; i<electrons.size(); i++){
+    //==== electrons is a const vector. So in this function, we have to copy the elements like below
     Electron this_electron = electrons.at(i);
 
     double this_sf = this_electron.EnShift(sys);
@@ -695,10 +696,11 @@ std::vector<Electron> AnalyzerCore::ScaleElectrons(std::vector<Electron> electro
   return out;
 
 }
-std::vector<Electron> AnalyzerCore::SmearElectrons(std::vector<Electron> electrons, int sys){
+std::vector<Electron> AnalyzerCore::SmearElectrons(const std::vector<Electron>& electrons, int sys){
 
   std::vector<Electron> out;
   for(unsigned int i=0; i<electrons.size(); i++){
+    //==== electrons is a const vector. So in this function, we have to copy the elements like below
     Electron this_electron = electrons.at(i);
 
     double this_sf = this_electron.ResShift(sys);
@@ -711,10 +713,11 @@ std::vector<Electron> AnalyzerCore::SmearElectrons(std::vector<Electron> electro
 
 }
 
-std::vector<Muon> AnalyzerCore::ScaleMuons(std::vector<Muon> muons, int sys){
+std::vector<Muon> AnalyzerCore::ScaleMuons(const std::vector<Muon>& muons, int sys){
 
   std::vector<Muon> out;
   for(unsigned int i=0; i<muons.size(); i++){
+    //==== muons is a const vector. So in this function, we have to copy the elements like below
     Muon this_muon = muons.at(i);
 
     //==== Even for TuneP muons, MomentumShift() are set correctly from AnalyzerCore::UseTunePMuon()
@@ -730,10 +733,11 @@ std::vector<Muon> AnalyzerCore::ScaleMuons(std::vector<Muon> muons, int sys){
 
 }
 
-std::vector<Jet> AnalyzerCore::ScaleJets(std::vector<Jet> jets, int sys){
+std::vector<Jet> AnalyzerCore::ScaleJets(const std::vector<Jet>& jets, int sys){
 
   std::vector<Jet> out;
   for(unsigned int i=0; i<jets.size(); i++){
+    //==== jets is a const vector. So in this function, we have to copy the elements like below
     Jet this_jet = jets.at(i);
 
     this_jet *= this_jet.EnShift(sys);
@@ -744,10 +748,11 @@ std::vector<Jet> AnalyzerCore::ScaleJets(std::vector<Jet> jets, int sys){
   return out;
 
 }
-std::vector<Jet> AnalyzerCore::SmearJets(std::vector<Jet> jets, int sys){
+std::vector<Jet> AnalyzerCore::SmearJets(const std::vector<Jet>& jets, int sys){
 
   std::vector<Jet> out;
   for(unsigned int i=0; i<jets.size(); i++){
+    //==== jets is a const vector. So in this function, we have to copy the elements like below
     Jet this_jet = jets.at(i);
 
     this_jet *= this_jet.ResShift(sys);
@@ -759,10 +764,11 @@ std::vector<Jet> AnalyzerCore::SmearJets(std::vector<Jet> jets, int sys){
 
 }
 
-std::vector<FatJet> AnalyzerCore::ScaleFatJets(std::vector<FatJet> jets, int sys){
+std::vector<FatJet> AnalyzerCore::ScaleFatJets(const std::vector<FatJet>& jets, int sys){
 
   std::vector<FatJet> out;
   for(unsigned int i=0; i<jets.size(); i++){
+    //==== jets is a const vector. So in this function, we have to copy the elements like below
     FatJet this_jet = jets.at(i);
 
     this_jet *= this_jet.EnShift(sys);
@@ -773,10 +779,11 @@ std::vector<FatJet> AnalyzerCore::ScaleFatJets(std::vector<FatJet> jets, int sys
   return out;
 
 }
-std::vector<FatJet> AnalyzerCore::SmearFatJets(std::vector<FatJet> jets, int sys){
+std::vector<FatJet> AnalyzerCore::SmearFatJets(const std::vector<FatJet>& jets, int sys){
 
   std::vector<FatJet> out;
   for(unsigned int i=0; i<jets.size(); i++){
+    //==== jets is a const vector. So in this function, we have to copy the elements like below
     FatJet this_jet = jets.at(i);
 
     this_jet *= this_jet.ResShift(sys);
@@ -788,10 +795,11 @@ std::vector<FatJet> AnalyzerCore::SmearFatJets(std::vector<FatJet> jets, int sys
 
 }
 //Fatjet SDMass systematics (https://twiki.cern.ch/twiki/bin/view/CMS/JetWtagging#2016%20scale%20factors%20and%20correctio)
-std::vector<FatJet> AnalyzerCore::ScaleSDMassFatJets(std::vector<FatJet> jets, int sys){
+std::vector<FatJet> AnalyzerCore::ScaleSDMassFatJets(const std::vector<FatJet>& jets, int sys){
   
   std::vector<FatJet> out;
   for(unsigned int i=0; i<jets.size(); i++){
+    //==== jets is a const vector. So in this function, we have to copy the elements like below
     FatJet this_jet = jets.at(i);
     double current_SDMass = this_jet.SDMass() * (1. + double(sys) * 0.0094 );
     this_jet.SetSDMass( current_SDMass );
@@ -802,10 +810,11 @@ std::vector<FatJet> AnalyzerCore::ScaleSDMassFatJets(std::vector<FatJet> jets, i
   return out;
   
 }
-std::vector<FatJet> AnalyzerCore::SmearSDMassFatJets(std::vector<FatJet> jets, int sys){
+std::vector<FatJet> AnalyzerCore::SmearSDMassFatJets(const std::vector<FatJet>& jets, int sys){
 
   std::vector<FatJet> out;
   for(unsigned int i=0; i<jets.size(); i++){
+    //==== jets is a const vector. So in this function, we have to copy the elements like below
     FatJet this_jet = jets.at(i);
     double current_SDMass = this_jet.SDMass() * (1. + double(sys) * 0.20 );
     this_jet.SetSDMass( current_SDMass );

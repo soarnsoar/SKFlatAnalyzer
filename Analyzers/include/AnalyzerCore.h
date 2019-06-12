@@ -100,18 +100,18 @@ public:
   //==== Systematics
   //==================
 
-  std::vector<Electron> ScaleElectrons(std::vector<Electron> electrons, int sys);
-  std::vector<Electron> SmearElectrons(std::vector<Electron> electrons, int sys);
+  std::vector<Electron> ScaleElectrons(const std::vector<Electron>& electrons, int sys);
+  std::vector<Electron> SmearElectrons(const std::vector<Electron>& electrons, int sys);
 
-  std::vector<Muon> ScaleMuons(std::vector<Muon> muons, int sys);
+  std::vector<Muon> ScaleMuons(const std::vector<Muon>& muons, int sys);
 
-  std::vector<Jet> ScaleJets(std::vector<Jet> jets, int sys);
-  std::vector<Jet> SmearJets(std::vector<Jet> jets, int sys);
+  std::vector<Jet> ScaleJets(const std::vector<Jet>& jets, int sys);
+  std::vector<Jet> SmearJets(const std::vector<Jet>& jets, int sys);
 
-  std::vector<FatJet> ScaleFatJets(std::vector<FatJet> jets, int sys);
-  std::vector<FatJet> SmearFatJets(std::vector<FatJet> jets, int sys);
-  std::vector<FatJet> ScaleSDMassFatJets(std::vector<FatJet> jets, int sys);
-  std::vector<FatJet> SmearSDMassFatJets(std::vector<FatJet> jets, int sys);
+  std::vector<FatJet> ScaleFatJets(const std::vector<FatJet>& jets, int sys);
+  std::vector<FatJet> SmearFatJets(const std::vector<FatJet>& jets, int sys);
+  std::vector<FatJet> ScaleSDMassFatJets(const std::vector<FatJet>& jets, int sys);
+  std::vector<FatJet> SmearSDMassFatJets(const std::vector<FatJet>& jets, int sys);
 
   //====================
   //==== Event Filters
