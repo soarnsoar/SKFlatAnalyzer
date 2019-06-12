@@ -596,93 +596,89 @@ std::vector<Muon> AnalyzerCore::UseTunePMuon(std::vector<Muon> muons){
 
 }
 
-std::vector<Muon> AnalyzerCore::SelectMuons(std::vector<Muon> muons, TString id, double ptmin, double fetamax){
+std::vector<Muon> AnalyzerCore::SelectMuons(std::vector<Muon>& muons, TString id, double ptmin, double fetamax){
 
   std::vector<Muon> out;
   for(unsigned int i=0; i<muons.size(); i++){
-    Muon this_muon=muons.at(i);
-    if(!( this_muon.Pt()>ptmin )){
-      //cout << "Fail Pt : pt = " << this_muon.Pt() << ", cut = " << ptmin << endl;
+    if(!( muons.at(i).Pt()>ptmin )){
+      //cout << "Fail Pt : pt = " << muons.at(i).Pt() << ", cut = " << ptmin << endl;
       continue;
     }
-    if(!( fabs(this_muon.Eta())<fetamax )){
-      //cout << "Fail Eta : eta = " << fabs(this_muon.Eta()) << ", cut = " << fetamax << endl;
+    if(!( fabs(muons.at(i).Eta())<fetamax )){
+      //cout << "Fail Eta : eta = " << fabs(muons.at(i).Eta()) << ", cut = " << fetamax << endl;
       continue;
     }
-    if(!( this_muon.PassID(id) )){
+    if(!( muons.at(i).PassID(id) )){
       //cout << "Fail ID" << endl;
       continue;
     }
-    out.push_back(this_muon);
+    out.push_back( muons.at(i) );
   }
   return out;
 
 }
 
-std::vector<Electron> AnalyzerCore::SelectElectrons(std::vector<Electron> electrons, TString id, double ptmin, double fetamax){
+std::vector<Electron> AnalyzerCore::SelectElectrons(std::vector<Electron>& electrons, TString id, double ptmin, double fetamax){
 
   std::vector<Electron> out;
   for(unsigned int i=0; i<electrons.size(); i++){
-    Electron this_electron= electrons.at(i);
-    if(!( this_electron.Pt()>ptmin )){
-      //cout << "Fail Pt : pt = " << this_electron.Pt() << ", cut = " << ptmin << endl;
+    if(!( electrons.at(i).Pt()>ptmin )){
+      //cout << "Fail Pt : pt = " << electrons.at(i).Pt() << ", cut = " << ptmin << endl;
       continue;
     }
-    if(!( fabs(this_electron.scEta())<fetamax )){
-      //cout << "Fail Eta : eta = " << fabs(this_electron.scEta()) << ", cut = " << fetamax << endl;
+    if(!( fabs(electrons.at(i).scEta())<fetamax )){
+      //cout << "Fail Eta : eta = " << fabs(electrons.at(i).scEta()) << ", cut = " << fetamax << endl;
       continue;
     }
-    if(!( this_electron.PassID(id) )){
+    if(!( electrons.at(i).PassID(id) )){
       //cout << "Fail ID" << endl;
       continue;
     }
-    out.push_back(this_electron);
+    out.push_back(electrons.at(i));
   }
   return out;
 
 }
 
-std::vector<Jet> AnalyzerCore::SelectJets(std::vector<Jet> jets, TString id, double ptmin, double fetamax){
+std::vector<Jet> AnalyzerCore::SelectJets(std::vector<Jet>& jets, TString id, double ptmin, double fetamax){
 
   std::vector<Jet> out;
   for(unsigned int i=0; i<jets.size(); i++){
-    Jet this_jet= jets.at(i);
-    if(!( this_jet.Pt()>ptmin )){
-      //cout << "Fail Pt : pt = " << this_jet.Pt() << ", cut = " << ptmin << endl;
+    if(!( jets.at(i).Pt()>ptmin )){
+      //cout << "Fail Pt : pt = " << jets.at(i).Pt() << ", cut = " << ptmin << endl;
       continue;
     }
-    if(!( fabs(this_jet.Eta())<fetamax )){
-      //cout << "Fail Eta : eta = " << fabs(this_jet.Eta()) << ", cut = " << fetamax << endl;
+    if(!( fabs(jets.at(i).Eta())<fetamax )){
+      //cout << "Fail Eta : eta = " << fabs(jets.at(i).Eta()) << ", cut = " << fetamax << endl;
       continue;
     }
-    if(!( this_jet.PassID(id) )){
+    if(!( jets.at(i).PassID(id) )){
       //cout << "Fail ID" << endl;
       continue;
     }
-    out.push_back(this_jet);
+    out.push_back( jets.at(i) );
   }
   return out;
 
 }
 
-std::vector<FatJet> AnalyzerCore::SelectFatJets(std::vector<FatJet> jets, TString id, double ptmin, double fetamax){
+std::vector<FatJet> AnalyzerCore::SelectFatJets(std::vector<FatJet>& jets, TString id, double ptmin, double fetamax){
 
   std::vector<FatJet> out;
   for(unsigned int i=0; i<jets.size(); i++){
-    FatJet this_jet= jets.at(i);
-    if(!( this_jet.Pt()>ptmin )){
-      //cout << "Fail Pt : pt = " << this_jet.Pt() << ", cut = " << ptmin << endl;
+    if(!( jets.at(i).Pt()>ptmin )){
+      //cout << "Fail Pt : pt = " << jets.at(i).Pt() << ", cut = " << ptmin << endl;
       continue;
     }
-    if(!( fabs(this_jet.Eta())<fetamax )){
-      //cout << "Fail Eta : eta = " << fabs(this_jet.Eta()) << ", cut = " << fetamax << endl;
+    if(!( fabs(jets.at(i).Eta())<fetamax )){
+      //cout << "Fail Eta : eta = " << fabs(jets.at(i).Eta()) << ", cut = " << fetamax << endl;
       continue;
     }
-    if(!( this_jet.PassID(id) )){
+    if(!( jets.at(i).PassID(id) )){
       //cout << "Fail ID" << endl;
       continue;
     }
-    out.push_back(this_jet);
+    out.push_back( jets.at(i) );
   }
   return out;
 
