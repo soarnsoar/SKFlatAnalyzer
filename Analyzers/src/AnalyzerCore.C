@@ -591,7 +591,7 @@ std::vector<Muon> AnalyzerCore::UseTunePMuon(std::vector<Muon> muons){
 
 }
 
-std::vector<Muon> AnalyzerCore::SelectMuons(std::vector<Muon>& muons, TString id, double ptmin, double fetamax){
+std::vector<Muon> AnalyzerCore::SelectMuons(const std::vector<Muon>& muons, TString id, double ptmin, double fetamax){
 
   std::vector<Muon> out;
   for(unsigned int i=0; i<muons.size(); i++){
@@ -613,7 +613,7 @@ std::vector<Muon> AnalyzerCore::SelectMuons(std::vector<Muon>& muons, TString id
 
 }
 
-std::vector<Electron> AnalyzerCore::SelectElectrons(std::vector<Electron>& electrons, TString id, double ptmin, double fetamax){
+std::vector<Electron> AnalyzerCore::SelectElectrons(const std::vector<Electron>& electrons, TString id, double ptmin, double fetamax){
 
   std::vector<Electron> out;
   for(unsigned int i=0; i<electrons.size(); i++){
@@ -635,7 +635,7 @@ std::vector<Electron> AnalyzerCore::SelectElectrons(std::vector<Electron>& elect
 
 }
 
-std::vector<Jet> AnalyzerCore::SelectJets(std::vector<Jet>& jets, TString id, double ptmin, double fetamax){
+std::vector<Jet> AnalyzerCore::SelectJets(const std::vector<Jet>& jets, TString id, double ptmin, double fetamax){
 
   std::vector<Jet> out;
   for(unsigned int i=0; i<jets.size(); i++){
@@ -657,7 +657,7 @@ std::vector<Jet> AnalyzerCore::SelectJets(std::vector<Jet>& jets, TString id, do
 
 }
 
-std::vector<FatJet> AnalyzerCore::SelectFatJets(std::vector<FatJet>& jets, TString id, double ptmin, double fetamax){
+std::vector<FatJet> AnalyzerCore::SelectFatJets(const std::vector<FatJet>& jets, TString id, double ptmin, double fetamax){
 
   std::vector<FatJet> out;
   for(unsigned int i=0; i<jets.size(); i++){

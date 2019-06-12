@@ -87,14 +87,14 @@ public:
   //==== Get AllObject in the begining, and apply cut
   //==================================================+
 
-  std::vector<Electron> SelectElectrons(std::vector<Electron>& electrons, TString id, double ptmin, double fetamax);
+  std::vector<Electron> SelectElectrons(const std::vector<Electron>& electrons, TString id, double ptmin, double fetamax);
 
   std::vector<Muon> UseTunePMuon(std::vector<Muon> muons);
-  std::vector<Muon> SelectMuons(std::vector<Muon>& muons, TString id, double ptmin, double fetamax);
+  std::vector<Muon> SelectMuons(const std::vector<Muon>& muons, TString id, double ptmin, double fetamax);
 
-  std::vector<Jet> SelectJets(std::vector<Jet>& jets, TString id, double ptmin, double fetamax);
+  std::vector<Jet> SelectJets(const std::vector<Jet>& jets, TString id, double ptmin, double fetamax);
 
-  std::vector<FatJet> SelectFatJets(std::vector<FatJet>& jets, TString id, double ptmin, double fetamax);
+  std::vector<FatJet> SelectFatJets(const std::vector<FatJet>& jets, TString id, double ptmin, double fetamax);
 
   //==================
   //==== Systematics
