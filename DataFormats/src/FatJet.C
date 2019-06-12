@@ -81,10 +81,10 @@ void FatJet::SetLSF(double lsf, int lsf_PID){
   j_lsf = lsf;
   j_lsf_pid = lsf_PID;
 }
-double FatJet::LSF(){
+double FatJet::LSF() const{
   return j_lsf;
 }
-double FatJet::LSF_PID(){
+double FatJet::LSF_PID() const{
   return j_lsf_pid;
 }
 
