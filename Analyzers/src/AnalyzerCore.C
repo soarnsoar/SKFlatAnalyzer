@@ -1245,7 +1245,7 @@ std::vector<Jet> AnalyzerCore::JetsAwayFromFatJet(const std::vector<Jet>& jets, 
 
 }
 
-std::vector<Jet> AnalyzerCore::JetsVetoLeptonInside(const std::vector<Jet>& jets, const std::vector<Electron>& els, const std::vector<Muon>& mus){
+std::vector<Jet> AnalyzerCore::JetsVetoLeptonInside(const std::vector<Jet>& jets, const std::vector<Electron>& els, const std::vector<Muon>& mus, double dR){
 
   std::vector<Jet> out;
   for(unsigned int i=0; i<jets.size(); i++){
@@ -1253,7 +1253,7 @@ std::vector<Jet> AnalyzerCore::JetsVetoLeptonInside(const std::vector<Jet>& jets
     bool HasLeptonInside = false;
 
     for(unsigned int j=0; j<els.size(); j++){
-      if( jets.at(i).DeltaR( els.at(j) ) < 0.4 ){
+      if( jets.at(i).DeltaR( els.at(j) ) < dR ){
         HasLeptonInside = true;
         break;
       }
@@ -1261,7 +1261,7 @@ std::vector<Jet> AnalyzerCore::JetsVetoLeptonInside(const std::vector<Jet>& jets
     if(HasLeptonInside) continue;
 
     for(unsigned int j=0; j<mus.size(); j++){
-      if( jets.at(i).DeltaR( mus.at(j) ) < 0.4 ){
+      if( jets.at(i).DeltaR( mus.at(j) ) < dR ){
         HasLeptonInside = true;
         break;
       }
@@ -1272,6 +1272,39 @@ std::vector<Jet> AnalyzerCore::JetsVetoLeptonInside(const std::vector<Jet>& jets
     out.push_back( jets.at(i) );
 
   }
+  return out;
+
+}
+
+std::vector<FatJet> AnalyzerCore::FatJetsVetoLeptonInside(const std::vector<FatJet>& jets, const std::vector<Electron>& els, const std::vector<Muon>& mus, double dR){
+
+  std::vector<FatJet> out;
+  for(unsigned int i=0; i<jets.size(); i++){
+    FatJet this_jet = jets.at(i);
+
+    bool HasLeptonInside = false;
+
+    for(unsigned int j=0; j<els.size(); j++){
+      if( this_jet.DeltaR( els.at(j) ) < dR ){
+        HasLeptonInside = true;
+        break;
+      }
+    }
+    if(HasLeptonInside) continue;
+
+    for(unsigned int j=0; j<mus.size(); j++){
+      if( this_jet.DeltaR( mus.at(j) ) < dR ){
+        HasLeptonInside = true;
+        break;
+      }
+    }
+    if(HasLeptonInside) continue;
+
+    //==== if all fine,
+    out.push_back( this_jet );
+
+  }
+
   return out;
 
 }
