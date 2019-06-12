@@ -236,7 +236,7 @@ std::vector<Electron> AnalyzerCore::GetElectrons(TString id, double ptmin, doubl
 
 }
 
-std::vector<Lepton *> AnalyzerCore::MakeLeptonPointerVector(std::vector<Muon>& muons, double TightIso, bool UseMini){
+std::vector<Lepton *> AnalyzerCore::MakeLeptonPointerVector(const std::vector<Muon>& muons, double TightIso, bool UseMini){
 
   std::vector<Lepton *> out;
   for(unsigned int i=0; i<muons.size(); i++){
@@ -258,7 +258,7 @@ std::vector<Lepton *> AnalyzerCore::MakeLeptonPointerVector(std::vector<Muon>& m
   return out;
 
 }
-std::vector<Lepton *> AnalyzerCore::MakeLeptonPointerVector(std::vector<Electron>& electrons, double TightIso, bool UseMini){
+std::vector<Lepton *> AnalyzerCore::MakeLeptonPointerVector(const std::vector<Electron>& electrons, double TightIso, bool UseMini){
 
   std::vector<Lepton *> out;
   for(unsigned int i=0; i<electrons.size(); i++){
