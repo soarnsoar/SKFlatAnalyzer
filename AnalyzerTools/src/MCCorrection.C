@@ -767,8 +767,8 @@ double MCCorrection::GetOfficialDYReweight(vector<Gen>& gens){
   mZ = genZ.M();
   ptZ = genZ.Pt();
 
-  int bin_mass = hist_DYPtReweight_2D->GetXaxis()->FindBin(zmass);
-  int bin_pt   = hist_DYPtReweight_2D->GetYaxis()->FindBin(zpt);
+  int bin_mass = hist_DYPtReweight_2D->GetXaxis()->FindBin(mZ);
+  int bin_pt   = hist_DYPtReweight_2D->GetYaxis()->FindBin(ptZ);
 
   double value = hist_DYPtReweight_2D->GetBinContent( bin_mass, bin_pt );
   return value;
