@@ -65,6 +65,9 @@ public:
 
   double GetTopPtReweight(std::vector<Gen> gens);
 
+  TH2D *hist_DYPtReweight_2D;
+  GenFinderForDY *genFinderDY;
+  double GetOfficialDYReweight(vector<Gen>& gens);
 };
 
 #endif

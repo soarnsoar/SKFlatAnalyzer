@@ -150,6 +150,11 @@ void MCCorrection::ReadHistograms(){
   }
 */
 
+  // == Get Official DY Pt reweight maps
+  TString DYPtReweightPath = datapath+"/"+TString::Itoa(DataYear,10)+"/DYPtReweight/Zpt_weights_"+TString::Itoa(DataYear,10)+".root";
+  TFile *file_DYPtReweightPath = new TFile(DYPtReweightPath);
+  hist_DYPtReweight_2D = (TH2D *)file_DYPtReweightPath->Get("zptmass_weights");
+
 }
 
 MCCorrection::~MCCorrection(){
@@ -756,3 +761,15 @@ double MCCorrection::GetTopPtReweight(std::vector<Gen> gens){
   return pt_reweight;
 }
 
+double MCCorrection::GetOfficialDYReweight(vector<Gen>& gens){
+  genFinderDY = new GenFinderForDY();
+  Particle genZ = genFinderDY->Find(gens);
+  mZ = genZ.M();
+  ptZ = genZ.Pt();
+
+  int bin_mass = hist_DYPtReweight_2D->GetXaxis()->FindBin(zmass);
+  int bin_pt   = hist_DYPtReweight_2D->GetYaxis()->FindBin(zpt);
+
+  double value = hist_DYPtReweight_2D->GetBinContent( bin_mass, bin_pt );
+  return value;
+}
