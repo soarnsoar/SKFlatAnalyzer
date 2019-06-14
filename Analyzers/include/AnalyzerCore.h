@@ -190,9 +190,6 @@ public:
   int GetGenPhotonType(Gen genph, std::vector<Gen> gens);
   bool IsSignalPID(int pid);
 
-  //==== Corrections Related with Gen Level Particles
-
-
   //==== Plotting
 
   std::map< TString, TH1D* > maphist_TH1D;
