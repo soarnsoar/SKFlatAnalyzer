@@ -154,7 +154,7 @@ void MCCorrection::ReadHistograms(){
   TString DYPtReweightPath = datapath+"/"+TString::Itoa(DataYear,10)+"/DYPtReweight/Zpt_weights_"+TString::Itoa(DataYear,10)+".root";
   TFile *file_DYPtReweightPath = new TFile(DYPtReweightPath);
   histDir->cd();
-  hist_DYPtReweight_2D = (TH2D *)file_DYPtReweightPath->Get("zptmass_weights");
+  hist_DYPtReweight_2D = (TH2D *)file_DYPtReweightPath->Get("zptmass_weights")->Clone();
   file_DYPtReweightPath->Close();
   delete file_DYPtReweightPath;
   origDir->cd();
