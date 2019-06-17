@@ -6,6 +6,8 @@ IgnoreNoHist(false)
 
   histDir = TDirectoryHelper::GetTempDirectory("MCCorrection");
 
+  genFinderDY = new GenFinderForDY();
+
 }
 
 void MCCorrection::ReadHistograms(){
@@ -161,6 +163,8 @@ void MCCorrection::ReadHistograms(){
 }
 
 MCCorrection::~MCCorrection(){
+
+  delete genFinderDY;
 
 }
 
@@ -764,15 +768,18 @@ double MCCorrection::GetTopPtReweight(const std::vector<Gen>& gens){
   return pt_reweight;
 }
 
-double MCCorrection::GetOfficialDYReweight(vector<Gen>& gens){
-  genFinderDY = new GenFinderForDY();
-  Particle genZ = genFinderDY->Find(gens);
-  mZ = genZ.M();
-  ptZ = genZ.Pt();
+double MCCorrection::GetOfficialDYReweight(const vector<Gen>& gens){
+
+  genFinderDY->Find(gens);
+  Particle genZ = genFinderDY->GenZ;
+
+  double mZ = genZ.M();
+  double ptZ = genZ.Pt();
 
   int bin_mass = hist_DYPtReweight_2D->GetXaxis()->FindBin(mZ);
   int bin_pt   = hist_DYPtReweight_2D->GetYaxis()->FindBin(ptZ);
 
   double value = hist_DYPtReweight_2D->GetBinContent( bin_mass, bin_pt );
   return value;
+
 }

@@ -15,7 +15,8 @@ public:
   ~GenFinderForDY();
 
   bool FoundGenZ;
-  Particle Find(vector<Gen>& gens);
+  Particle GenZ;
+  void Find(const vector<Gen>& gens);
   int MethodUsed;
   int LeptonPID;
   bool IsLepton(int pid);

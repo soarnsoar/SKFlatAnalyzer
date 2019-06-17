@@ -68,7 +68,7 @@ public:
 
   TH2D *hist_DYPtReweight_2D;
   GenFinderForDY *genFinderDY;
-  double GetOfficialDYReweight(vector<Gen>& gens);
+  double GetOfficialDYReweight(const vector<Gen>& gens);
 };
 
 #endif
