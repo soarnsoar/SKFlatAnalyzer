@@ -113,6 +113,7 @@ std::vector<Muon> AnalyzerCore::GetAllMuons(){
     mu.SetisPOGHighPt(muon_ishighpt->at(i));
     mu.SetChi2(muon_normchi->at(i));
     mu.SetIso(muon_PfChargedHadronIsoR04->at(i),muon_PfNeutralHadronIsoR04->at(i),muon_PfGammaIsoR04->at(i),muon_PFSumPUIsoR04->at(i),muon_trkiso->at(i));
+    mu.SetTrackerLayers(muon_trackerLayers->at(i));
 
     //==== Should be set after Eta is set
     mu.SetMiniIso(
@@ -179,6 +180,7 @@ std::vector<Electron> AnalyzerCore::GetAllElectrons(){
     el.SetPassConversionVeto(electron_passConversionVeto->at(i));
     el.SetNMissingHits(electron_mHits->at(i));
     el.SetRho(Rho);
+    el.SetIsGsfCtfScPixChargeConsistent(electron_isGsfCtfScPixChargeConsistent->at(i));
 
     el.SetCutBasedIDVariables(
       electron_Full5x5_SigmaIEtaIEta->at(i),
