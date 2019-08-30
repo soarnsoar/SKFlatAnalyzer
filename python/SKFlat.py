@@ -873,11 +873,12 @@ JobFinishEmail = '''#### Job Info ####
 HOST = {3}
 JobID = {6}
 Analyzer = {0}
+Year = {7}
 Skim = {5}
 # of Jobs = {4}
 InputSample = {1}
 Output sent to : {2}
-'''.format(args.Analyzer,InputSamples,FinalOutputPath,HOSTNAME,NJobs,args.Skim,str_RandomNumber)
+'''.format(args.Analyzer,InputSamples,FinalOutputPath,HOSTNAME,NJobs,args.Skim,str_RandomNumber,args.Year)
 JobFinishEmail += '''##################
 Job started at {0}
 Job finished at {1}
