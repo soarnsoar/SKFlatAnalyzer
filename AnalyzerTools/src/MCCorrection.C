@@ -343,7 +343,7 @@ double MCCorrection::MuonTrigger_Eff(TString ID, TString trig, int DataOrMC, dou
       if(pt<52.) return 1.; //FIXME
       if(eta>=2.4) eta = 2.39;
 
-      if(pt>800.) pt = 799.;
+      if(pt>1000.) pt = 999.;
     }
     else{
 
@@ -364,7 +364,7 @@ double MCCorrection::MuonTrigger_Eff(TString ID, TString trig, int DataOrMC, dou
       if(pt<52.) return 1.; //FIXME
       if(eta>=2.4) eta = 2.39;
 
-      if(pt>1200.) pt = 1199.;
+      if(pt>1000.) pt = 999.;
     }
     else{
 
@@ -381,7 +381,7 @@ double MCCorrection::MuonTrigger_Eff(TString ID, TString trig, int DataOrMC, dou
       if(pt<52.) return 1.; //FIXME
       if(eta>=2.4) eta = 2.39;
 
-      if(pt>1200.) pt = 1199.;
+      if(pt>1000.) pt = 999.;
     }
     else{
 
