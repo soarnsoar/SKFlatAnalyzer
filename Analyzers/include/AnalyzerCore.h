@@ -24,6 +24,7 @@
 #include "CFBackgroundEstimator.h"
 #include "BTagSFUtil.h"
 #include "GeneralizedEndpoint.h"
+#include "GEScaleSyst.h"
 #include "PDFReweight.h"
 
 #define M_Z 91.1876
@@ -139,6 +140,7 @@ public:
 
   //==== Muon GeneralizedEngpoint momentum scaling
   GeneralizedEndpoint *muonGE;
+  GEScaleSyst *muonGEScaleSyst;
 
   //==== Btag setup
   void SetupBTagger(std::vector<Jet::Tagger> taggers, std::vector<Jet::WP> wps, bool setup_systematics, bool period_dependant);
