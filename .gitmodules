@@ -1,0 +1,3 @@
+[submodule "external/GEScaleSyst"]
+	path = external/GEScaleSyst
+	url = git@github.com:khaosmos93/GEScaleSyst.git
