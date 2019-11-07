@@ -13,6 +13,13 @@ KNU :  ~/scartch/
 
 ## First time setup
 ```
+#### use the master branch of CMSSNU when making pull request
+#### --recursive for submodules
+git clone --recursive git@github.com:CMSSNU/SKFlatAnalyzer.git
+#### add your remote repo
+git add remote <nickname> git@github.com:<gitaccount>/SKFlatAnalyzer.git
+git checkout <your working branch>
+
 source setup.sh # This should be done for every new shell
 #### Setup user info
 #### Need to be done only once
