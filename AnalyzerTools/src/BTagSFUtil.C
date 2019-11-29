@@ -8,8 +8,6 @@
 //=== To do list
 //#################################################
 //--- TODO add fast sim efficiency once one is available  
-//--- TODO add 2016/2018 SF (when POG make available)
-//--- TODO add 2018 MC efficiencies (need 2018 TT sample)
 //--- TODO add AK8 code
 //--- TODO add charm tagging code
 //#################################################
@@ -91,7 +89,6 @@ BTagSFUtil::BTagSFUtil(string MeasurementType, string BTagAlgorithm,  TString Op
   while(getline(in,btagline)){
     std::istringstream is( btagline );
     
-    
     TString tstring_btagline = btagline;
     if(tstring_btagline.Contains("#")) continue;
 
@@ -114,13 +111,11 @@ BTagSFUtil::BTagSFUtil(string MeasurementType, string BTagAlgorithm,  TString Op
     
     if( (period_dependancy&& c=="PeriodDep") || (!period_dependancy && c!="PeriodDep")){   
       BTagCalibration calib(BTagAlgorithm, string(btagpath)+f);
-      
       ReaderMap[TString(a)+"_"+b+"_"+d+"_"+e+"_bc"] = new BTagCalibrationReader(&calib, op, MeasurementType, SystematicFlagBC); 
       ReaderMap[TString(a)+"_"+b+"_"+d+"_"+e+"_l"] = new BTagCalibrationReader(&calib, op, MeasurementType, SystematicFlagL);
       
     }
   }
-  
   
   TaggerName = BTagAlgorithm;
   TaggerOP = TaggerName;
@@ -178,8 +173,7 @@ float BTagSFUtil::GetJetSF(int JetFlavor, float JetPt, float JetEta) {
   //=== If period dependancy set true for other year give warning and set false 
 
   if (period_dependancy && DataYear != 2017) {
-    cout << "[BTagSFUtil::GetJetSF] period dependancy set true for year other than 2017.... This is not available currently, and is manually set false in BTagSFUtil for 2017/2018." << endl;
-    period_dependancy=false;
+    cout << "[BTagSFUtil::GetJetSF] period dependancy set true for year other than 2017.... This is not available currently...." << endl;
   }
   
 
@@ -350,7 +344,7 @@ void BTagSFUtil::ErrorLoadingCSV(TString tag_key, bool isperiodDep, TString Tagg
   //=== cout some possible errors to help user
   if(nlines == 0) cout << "[BTagSFUtil::ErrorLoadingCSV] error likely that " << btagpath << "/histmap.txt is empty" << endl;
   if(!TaggerFound) cout << "[BTagSFUtil::ErrorLoadingCSV] error likely that tagger " << TaggerName << " is not found in " << btagpath << "/histmap.txt " << endl;
-  if(isperiodDep && !isperiodDepAvailable) cout << "[BTagSFUtil::ErrorLoadingCSV] error in setup; user asked for period dependant SF's, which are not available for this Tagger/Year" <<endl;
+  if(isperiodDep && !isperiodDepAvailable) cout << "[BTagSFUtil::ErrorLoadingCSV] error in setup; user asked for period dependant SF's, which are not available for this Tagger/Year, in Analysis code change 4th argument in SetupBTagger() to false, i.e., SetupBTagger(vtaggers,v_wps, sys, false);" <<endl;
   
   //=== exit if no CSV file is found for user setup
   exit(EXIT_FAILURE);
@@ -382,11 +376,6 @@ bool BTagSFUtil::IsTagged(float JetDiscriminant, int JetFlavor, float JetPt, flo
 
   bool isBTagged = JetDiscriminant>TaggerCut;
   
-  //==== For now 2017 only SF are available so apply no SF to 2016/2018
-  if (DataYear == 2016) return isBTagged; 
-  if (DataYear == 2018) return isBTagged; 
-  
-
   //=== Data: no correction needed
   if (JetFlavor==-999999) return isBTagged; 
 

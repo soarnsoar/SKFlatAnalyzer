@@ -27,6 +27,28 @@ void JetTagging::executeEvent(){
 
   AnalyzerParameter param;
 
+  //==== clear parameter set                                                                                                                                                                                                                                                  
+  param.Clear();
+
+  //==== set which systematic sources you want to run this time                                                                                                                                                                                                               
+  //==== default syst_ is AnalyzerParameter::Central                                                                                                                                                                                                                          
+  param.syst_ = AnalyzerParameter::Central;
+
+
+  //==== And, Jet ID                                                                                                                                                                                                                                                          
+  param.Jet_ID = "tight";
+  param.FatJet_ID = "tight";
+
+
+  AllJets = GetAllJets();
+
+
+
+  //==== Now, all parameters are set. Run executeEventFromParameter() with this parameter set                                                                                                                                                                                 
+  executeEventFromParameter(param);
+
+
+
   
 
 }
@@ -42,14 +64,13 @@ void JetTagging::executeEventFromParameter(AnalyzerParameter param){
   Event ev = GetEvent();
   Particle METv = ev.GetMETVector();
 
-
   vector<Jet> this_AllJets = AllJets;
 
   /// use same ptmin / eta that CSV files use for SF
-  vector<Jet> jets = SelectJets(this_AllJets, param.Jet_ID, 20., 2.5);
+  vector<Jet> jets = SelectJets(this_AllJets, param.Jet_ID, 20., 2.4);
   std::sort(jets.begin(), jets.end(), PtComparing);
 
-  double etabins [5] = {0.,0.6, 1.2, 1.8,2.5};
+  double etabins [5] = {0.,0.6, 1.2, 1.8,2.4};
   double ptbins [7] = {20., 40., 60., 80., 100., 120., 3000.}; 
   TString yeartag= "2017";
   if(DataYear == 2016) yeartag= "2016";
@@ -125,7 +146,7 @@ void JetTagging::executeEventFromParameter(AnalyzerParameter param){
       
     }// 2017
 
-    if(DataYear == 2017){
+    if(DataYear == 2018){
 
       // Tagger and values from https://twiki.cern.ch/twiki/bin/viewauth/CMS/BtagRecommendation102X
 
