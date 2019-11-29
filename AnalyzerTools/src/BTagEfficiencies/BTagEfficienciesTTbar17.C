@@ -2,7 +2,7 @@
 be used only for the same MC samples or for events with similar topology */  
 
 
- float BTagSFUtil::TagEfficiencyB_2017(float JetPt, float JetEta) {
+float BTagSFUtil::TagEfficiencyB_2017(float JetPt, float JetEta) {
 
 
 	 if (TaggerOP=="CSVv2_Loose") { 
@@ -235,7 +235,7 @@ be used only for the same MC samples or for events with similar topology */
 		 } 
 	 return 1.; 
 } 
- float BTagSFUtil::TagEfficiencyC_2017(float JetPt, float JetEta) {
+float BTagSFUtil::TagEfficiencyC_2017(float JetPt, float JetEta) {
 
 
 	 if (TaggerOP=="CSVv2_Loose") { 
@@ -468,7 +468,7 @@ be used only for the same MC samples or for events with similar topology */
 		 } 
 	 return 1.; 
 } 
- float BTagSFUtil::TagEfficiencyLight_2017(float JetPt, float JetEta) {
+float BTagSFUtil::TagEfficiencyLight_2017(float JetPt, float JetEta) {
 
 
 	 if (TaggerOP=="CSVv2_Loose") { 

@@ -82,7 +82,7 @@ void MakeBTagEfficiencyFiles(TString year, bool set_verbose=false){
   
   for(unsigned int _a = 0; _a < fileflavour.size(); _a++){
 
-    lumi_file <<  " float BTagSFUtil::TagEfficiency"<< flavour.at(_a)<<"_20"<< year<<"(float JetPt, float JetEta) {" <<endl;
+    lumi_file <<  "float BTagSFUtil::TagEfficiency"<< flavour.at(_a)<<"_20"<< year<<"(float JetPt, float JetEta) {" <<endl;
     lumi_file <<  "\n" <<endl;
 
     vector <TString> taggers;
