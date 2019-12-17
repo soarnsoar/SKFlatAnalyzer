@@ -183,13 +183,13 @@ float BTagSFUtil::GetJetSF(int JetFlavor, float JetPt, float JetEta) {
       float Btag_SF_BF = GetJetSFPeriodDependant(JetFlavor, JetPt, JetEta, "2016_" +TaggerName + "_272007_278808", true, TaggerName);
       float Btag_SF_GH = GetJetSFPeriodDependant(JetFlavor, JetPt, JetEta, "2016_" +TaggerName + "_278820_284044", true, TaggerName);
       
-      double lumi_periodB = 5.929001722;
-      double lumi_periodC = 2.645968083;
-      double lumi_periodD = 4.35344881;
-      double lumi_periodE = 4.049732039;
-      double lumi_periodF = 3.157020934;
-      double lumi_periodG = 7.549615806;
-      double lumi_periodH = 8.545039549 + 0.216782873;
+      double lumi_periodB = 5.750490644;
+      double lumi_periodC = 2.572903489;
+      double lumi_periodD = 4.242291557;
+      double lumi_periodE = 4.025228137;
+      double lumi_periodF = 3.104509132;
+      double lumi_periodG = 7.575824256;
+      double lumi_periodH = 8.650628380;
       double total_lumi =  (lumi_periodB+lumi_periodC+lumi_periodD+lumi_periodE+lumi_periodF+lumi_periodG+lumi_periodH);
       
       double WeightBtoF = (lumi_periodB+lumi_periodC+lumi_periodD+lumi_periodE+lumi_periodF)/total_lumi;
@@ -205,9 +205,9 @@ float BTagSFUtil::GetJetSF(int JetFlavor, float JetPt, float JetEta) {
       float Btag_SF_EtoF = GetJetSFPeriodDependant(JetFlavor, JetPt, JetEta, "2017_" +TaggerName + "_304671_306462", true, TaggerName);
       
       /// lumi taken from https://twiki.cern.ch/twiki/bin/viewauth/CMS/PdmV2017Analysis and brilcal 
-      double lumi_periodB = 4.823;
-      double lumi_periodCtoE = 21.719;
-      double lumi_periodEtoF = 15.017;
+      double lumi_periodB = 4.7939;
+      double lumi_periodCtoE = 9.6327 + 4.2478 + 7.8380;
+      double lumi_periodEtoF = 1.4765 + 13.5401;
 
       double total_lumi = (lumi_periodB+lumi_periodCtoE + lumi_periodEtoF);
       
