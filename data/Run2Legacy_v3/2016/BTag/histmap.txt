@@ -1,2 +1,3 @@
-### taken from https://twiki.cern.ch/twiki/bin/viewauth/CMS/BtagRecommendation102X on Feb 6 2019
-2016 CSV All        272007 284044 NA
+### taken from https://twiki.cern.ch/twiki/bin/viewauth/CMS/BtagRecommendation2016Legacy on Nov 22 2019
+2016 DeepCSV All        272007 284044 DeepCSV_2016LegacySF_V1.csv
+2016 DeepJet All        272007 284044 DeepJet_2016LegacySF_V1.csv
