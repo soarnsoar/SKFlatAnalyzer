@@ -435,7 +435,7 @@ queue {0}
     IncludeLine += 'R__LOAD_LIBRARY({0}libDataFormats.so)\n'.format(libdir)
     IncludeLine += 'R__LOAD_LIBRARY({0}libAnalyzerTools.so)\n'.format(libdir)
     IncludeLine += 'R__LOAD_LIBRARY({0}libAnalyzers.so)\n'.format(libdir)
-    IncludeLine += 'R__LOAD_LIBRARY(/cvmfs/cms.cern.ch/slc6_amd64_gcc630/external/lhapdf/6.2.1-fmblme/lib/libLHAPDF.so)\n'
+    IncludeLine += 'R__LOAD_LIBRARY(/cvmfs/cms.cern.ch/slc7_amd64_gcc700/external/lhapdf/6.2.1-gnimlf3/lib/libLHAPDF.so)\n'
 
     out = open(runCfileFullPath, 'w')
     print>>out,'''{3}
