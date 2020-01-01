@@ -66,7 +66,8 @@ public:
     double dr03HcalTowerSumEt,
     double dr03TkSumPt,
     double ecalPFClusterIso,
-    double hcalPFClusterIso
+    double hcalPFClusterIso,
+    int ecalDriven
   );
   inline double Full5x5_sigmaIetaIeta() const { return j_Full5x5_sigmaIetaIeta; }
   inline double dEtaSeed() const { return j_dEtaSeed; }
@@ -82,6 +83,7 @@ public:
   inline double dr03TkSumPt() const { return j_dr03TkSumPt; }
   inline double ecalPFClusterIso() const { return j_ecalPFClusterIso; }
   inline double hcalPFClusterIso() const { return j_hcalPFClusterIso; }
+  inline bool isEcalDriven() const { return j_isEcalDriven; }
 
   void SetIDBit(unsigned int idbit);
 
@@ -150,6 +152,7 @@ private:
   int j_NMissingHits;
   double j_Full5x5_sigmaIetaIeta, j_dEtaSeed, j_dPhiIn, j_HoverE, j_InvEminusInvP, j_e2x5OverE5x5, j_e1x5OverE5x5, j_trkiso, j_dr03EcalRecHitSumEt, j_dr03HcalDepth1TowerSumEt;
   double j_dr03HcalTowerSumEt, j_dr03TkSumPt, j_ecalPFClusterIso, j_hcalPFClusterIso;
+  bool j_isEcalDriven;
   unsigned int j_IDBit;
   vector<int> j_IDCutBit;
   double j_RelPFIso_Rho;

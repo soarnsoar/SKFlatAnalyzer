@@ -199,7 +199,8 @@ std::vector<Electron> AnalyzerCore::GetAllElectrons(){
       electron_dr03HcalTowerSumEt->at(i),
       electron_dr03TkSumPt->at(i),
       electron_ecalPFClusterIso->at(i),
-      electron_hcalPFClusterIso->at(i)
+      electron_hcalPFClusterIso->at(i),
+      electron_ecalDriven->at(i)
     );
 
     el.SetIDBit(electron_IDBit->at(i));

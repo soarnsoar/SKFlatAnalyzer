@@ -31,6 +31,7 @@ Electron::Electron(){
   j_dr03TkSumPt = -999.;
   j_ecalPFClusterIso = -999.;
   j_hcalPFClusterIso = -999.;
+  j_isEcalDriven = false;
   j_IDBit = 0;
   j_IDCutBit.clear();
   j_Rho = -999.;
@@ -89,7 +90,8 @@ void Electron::SetCutBasedIDVariables(
     double dr03HcalTowerSumEt,
     double dr03TkSumPt,
     double ecalPFClusterIso,
-    double hcalPFClusterIso
+    double hcalPFClusterIso,
+    int ecalDriven
   ){
   j_Full5x5_sigmaIetaIeta = Full5x5_sigmaIetaIeta;
   j_dEtaSeed = dEtaSeed;
@@ -105,6 +107,9 @@ void Electron::SetCutBasedIDVariables(
   j_dr03TkSumPt = dr03TkSumPt;
   j_ecalPFClusterIso = ecalPFClusterIso;
   j_hcalPFClusterIso = hcalPFClusterIso;
+
+  if(ecalDriven==0) j_isEcalDriven = false;
+  else j_isEcalDriven = true;
 }
 
 void Electron::SetIDBit(unsigned int idbit){
