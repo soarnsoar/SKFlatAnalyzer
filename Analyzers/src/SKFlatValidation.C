@@ -137,6 +137,7 @@ void SKFlatValidation::executeEvent(){
 
   param.Electron_Tight_ID = "passMediumID";
   param.Electron_ID_SF_Key = "passMediumID";
+  param.Electron_Trigger_SF_Key = "Default";
 
   param.Muon_Tight_ID = "POGTightWithTightIso";
   param.Muon_ID_SF_Key = "NUM_TightID_DEN_genTracks";
@@ -155,6 +156,7 @@ void SKFlatValidation::executeEvent(){
 
   param.Electron_Tight_ID = "passHEEPID";
   param.Electron_ID_SF_Key = "HEEP";
+  param.Electron_Trigger_SF_Key = "HEEP";
 
   param.Muon_Tight_ID = "POGHighPtWithLooseTrkIso";
   param.Muon_ID_SF_Key = "NUM_HighPtID_DEN_genTracks";
@@ -311,7 +313,10 @@ void SKFlatValidation::executeEventFromParameter(AnalyzerParameter param){
         for(unsigned int i=0; i<electrons.size(); i++){
           double this_recosf = mcCorr->ElectronReco_SF(electrons.at(i).scEta(),electrons.at(i).Pt());
           double this_idsf = mcCorr->ElectronID_SF(param.Electron_ID_SF_Key, electrons.at(i).scEta(), electrons.at(i).Pt());
-          weight *= this_recosf*this_idsf;
+          double this_trigsf = mcCorr->ElectronTrigger_SF(param.Electron_Trigger_SF_Key, TriggerNameForSF_Electron, electrons);
+
+          weight *= this_recosf*this_idsf*this_trigsf;
+
         }
       }
 

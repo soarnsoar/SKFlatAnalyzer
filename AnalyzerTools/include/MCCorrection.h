@@ -39,6 +39,9 @@ public:
   int DataYear;
   void SetDataYear(int i);
 
+  bool IsFastSim;
+  void SetIsFastSim(bool b);
+
   bool IgnoreNoHist;
 
   double MuonReco_SF(TString key, double eta, double pt, int sys=0);
