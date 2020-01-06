@@ -8,6 +8,7 @@ AnalyzerCore::AnalyzerCore(){
   cfEst = new CFBackgroundEstimator();
   pdfReweight = new PDFReweight();
   muonGE = new GeneralizedEndpoint();
+  muonGEScaleSyst = new GEScaleSyst();
 
 }
 
@@ -531,7 +532,7 @@ std::vector<Muon> AnalyzerCore::UseTunePMuon(const std::vector<Muon>& muons){
     //==== 1) if tuneP Pt < 200 -> Rochester
     //==== 2) if tuneP pt >= 200 -> Generalized Endpoint
 
-    double new_pt, new_pt_up, new_pt_down;
+    double new_pt( this_tunep4.Pt() ), new_pt_up( this_tunep4.Pt() ), new_pt_down( this_tunep4.Pt() );
     if(this_tunep4.Pt()<200){
 
       //==== 19/03/24 (jskim) : For 99% of the muons, MiniAODPt and TunePPt are same
@@ -553,21 +554,33 @@ std::vector<Muon> AnalyzerCore::UseTunePMuon(const std::vector<Muon>& muons){
     }
     else{
 
-      //==== ScaledPts defined in GeneralizedEndpointPt.h ..
-      ScaledPts ptvalues = muonGE->GeneralizedEndpointPt(this_tunep4.Pt(), this_tunep4.Charge(), this_tunep4.Eta(), this_tunep4.Phi()*180./M_PI, event);
-      new_pt = ptvalues.ScaledPt;
-      //==== Mode == 1 : Kappa up
-      //==== Mode == 2 : Kappa down
-      new_pt_up = ptvalues.ScaeldPt_Up;
-      new_pt_down = ptvalues.ScaeldPt_Down;
+      //==== Unlike rochester, GE method should be only applied to MC
+
+      if(!IsDATA){
+
+        //==== ScaledPts defined in GeneralizedEndpointPt.h ..
+
+        ScaledPts ptvalues;
+        //==== TODO FIXME
+        //==== 19/09/02 : There is no GEScaleSyst map for 2016
+        if(DataYear==2016) ptvalues = muonGE->GeneralizedEndpointPt(this_tunep4.Pt(), this_tunep4.Charge(), this_tunep4.Eta(), this_tunep4.Phi()*180./M_PI, event);
+        else ptvalues = muonGEScaleSyst->GEPt(DataYear, this_tunep4.Pt(), this_tunep4.Eta(), this_tunep4.Phi(), this_tunep4.Charge());
+
+        new_pt = ptvalues.ScaledPt;
+        //==== Mode == 1 : Kappa up
+        //==== Mode == 2 : Kappa down
+        new_pt_up = ptvalues.ScaeldPt_Up;
+        new_pt_down = ptvalues.ScaeldPt_Down;
 
 /*
-      cout << "## GeneralizedEndpointPt ##" << endl;
-      cout << "old_pt = " << this_tunep4.Pt() << endl;
-      cout << "new_pt = " << new_pt << endl;
-      cout << "new_pt_up = " << new_pt_up << endl;
-      cout << "new_pt_down = " << new_pt_down << endl;
+        cout << "## GeneralizedEndpointPt ##" << endl;
+        cout << "old_pt = " << this_tunep4.Pt() << endl;
+        cout << "new_pt = " << new_pt << endl;
+        cout << "new_pt_up = " << new_pt_up << endl;
+        cout << "new_pt_down = " << new_pt_down << endl;
 */
+
+      }
 
     }
 

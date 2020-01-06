@@ -57,6 +57,9 @@ export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:$SKFlat_LIB_PATH
 
 source $SKFlat_WD/bin/BashColorSets.sh
 
+## submodules ##
+#source bin/CheckSubmodules.sh
+
 ## Todo list ##
 python python/PrintToDoLists.py
 source $SKFlat_WD/tmp/ToDoLists.sh
