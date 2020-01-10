@@ -778,7 +778,7 @@ try:
         ThisTime = datetime.datetime.now()
         string_ThisTime =  ThisTime.strftime('%Y-%m-%d %H:%M:%S')
 
-        statuslog.write('XSEC = '+XsecForEachSample[it_sample]+'\n')
+        statuslog.write('XSEC = '+str(XsecForEachSample[it_sample])+'\n')
         statuslog.write('EventDone = '+str(EventDone)+'\n')
         statuslog.write('EventTotal = '+str(EventTotal)+'\n')
         statuslog.write('EventLeft = '+str(EventTotal-EventDone)+'\n')
