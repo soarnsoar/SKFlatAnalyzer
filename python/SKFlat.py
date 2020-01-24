@@ -26,6 +26,7 @@ parser.add_argument('--FastSim', action='store_true')
 parser.add_argument('--userflags', dest='Userflags', default="")
 parser.add_argument('--nmax', dest='NMax', default=0, type=int)
 parser.add_argument('--reduction', dest='Reduction', default=1, type=float)
+parser.add_argument('--batchname',dest='BatchName', default="")
 args = parser.parse_args()
 
 ## make userflags as a list
@@ -547,7 +548,10 @@ root -l -b -q run.C 1>stdout.log 2>stderr.log
     cwd = os.getcwd()
     os.chdir(base_rundir)
     if not args.no_exec:
-      os.system('condor_submit submit.jds')
+      condorOptions = ''
+      if args.BatchName!="":
+        condorOptions = ' -batch-name '+args.BatchName
+      os.system('condor_submit submit.jds '+condorOptions)
     os.chdir(cwd)
 
   else:
