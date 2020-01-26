@@ -43,6 +43,8 @@ AnalyzerCore::~AnalyzerCore(){
   delete fakeEst;
   delete cfEst;
   delete pdfReweight;
+  delete muonGE;
+  delete muonGEScaleSyst;
 
 }
 
