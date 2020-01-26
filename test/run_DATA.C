@@ -3,6 +3,7 @@ R__LOAD_LIBRARY(libTree.so)
 R__LOAD_LIBRARY(libHist.so)
 R__LOAD_LIBRARY(libDataFormats.so)
 R__LOAD_LIBRARY(libAnalyzerTools.so)
+R__LOAD_LIBRARY(libGEScaleSyst.so)
 R__LOAD_LIBRARY(libAnalyzers.so)
 R__LOAD_LIBRARY(/cvmfs/cms.cern.ch/slc7_amd64_gcc700/external/lhapdf/6.2.1-gnimlf3/lib/libLHAPDF.so)
 

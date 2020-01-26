@@ -443,6 +443,7 @@ queue {0}
     IncludeLine += 'R__LOAD_LIBRARY(libHist.so)\n'
     IncludeLine += 'R__LOAD_LIBRARY({0}libDataFormats.so)\n'.format(libdir)
     IncludeLine += 'R__LOAD_LIBRARY({0}libAnalyzerTools.so)\n'.format(libdir)
+    IncludeLine += 'R__LOAD_LIBRARY({0}libGEScaleSyst.so)\n'.format(libdir)
     IncludeLine += 'R__LOAD_LIBRARY({0}libAnalyzers.so)\n'.format(libdir)
     IncludeLine += 'R__LOAD_LIBRARY(/cvmfs/cms.cern.ch/slc7_amd64_gcc700/external/lhapdf/6.2.1-gnimlf3/lib/libLHAPDF.so)\n'
 
