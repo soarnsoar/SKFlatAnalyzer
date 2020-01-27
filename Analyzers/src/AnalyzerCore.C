@@ -43,6 +43,8 @@ AnalyzerCore::~AnalyzerCore(){
   delete fakeEst;
   delete cfEst;
   delete pdfReweight;
+  delete muonGE;
+  delete muonGEScaleSyst;
 
 }
 
@@ -105,6 +107,8 @@ std::vector<Muon> AnalyzerCore::GetAllMuons(){
     //==== TuneP
     //==== Apply scailing later with AnalyzerCore::UseTunePMuon()
     mu.SetTuneP4(muon_TuneP_pt->at(i), muon_TuneP_ptError->at(i), muon_TuneP_eta->at(i), muon_TuneP_phi->at(i), muon_TuneP_charge->at(i));
+
+    mu.SetMVA(muon_MVA->at(i));
 
     mu.SetdXY(muon_dxyVTX->at(i), muon_dxyerrVTX->at(i));
     mu.SetdZ(muon_dzVTX->at(i), muon_dzerrVTX->at(i));
@@ -193,10 +197,20 @@ std::vector<Electron> AnalyzerCore::GetAllElectrons(){
       electron_e1x5OverE5x5->at(i),
       electron_trackIso->at(i),
       electron_dr03EcalRecHitSumEt->at(i),
-      electron_dr03HcalDepth1TowerSumEt->at(i)
+      electron_dr03HcalDepth1TowerSumEt->at(i),
+      electron_dr03HcalTowerSumEt->at(i),
+      electron_dr03TkSumPt->at(i),
+      electron_ecalPFClusterIso->at(i),
+      electron_hcalPFClusterIso->at(i),
+      electron_ecalDriven->at(i)
     );
 
     el.SetIDBit(electron_IDBit->at(i));
+    vector<int> temp_idcutbit;
+    for(unsigned int j=0; j<Electron::N_SELECTOR; j++){
+      temp_idcutbit.push_back( electron_IDCutBit->at( i*Electron::N_SELECTOR + j ) );
+    }
+    el.SetIDCutBit(temp_idcutbit);
     el.SetRelPFIso_Rho(electron_RelPFIso_Rho->at(i));
 
     //==== Should be ran after SCeta is set
@@ -512,6 +526,26 @@ std::vector<Gen> AnalyzerCore::GetGens(){
     gen.SetGenStatusFlag_isMostlyLikePythia6Status3( gen_isMostlyLikePythia6Status3->at(i) );
 
     out.push_back(gen);
+
+  }
+
+  return out;
+
+}
+
+std::vector<LHE> AnalyzerCore::GetLHEs(){
+
+  std::vector<LHE> out;
+  if(IsDATA) return out;
+
+  for(unsigned int i=0; i<LHE_Px->size(); i++){
+
+    LHE lhe;
+
+    lhe.SetPxPyPzE(LHE_Px->at(i), LHE_Py->at(i), LHE_Pz->at(i), LHE_E->at(i));
+    lhe.SetIndexIDStatus(i, LHE_ID->at(i), LHE_Status->at(i));
+
+    out.push_back(lhe);
 
   }
 
@@ -870,6 +904,7 @@ void AnalyzerCore::initializeAnalyzerTools(){
   if(!IsDATA){
     mcCorr->SetMCSample(MCSample);
     mcCorr->SetDataYear(DataYear);
+    mcCorr->SetIsFastSim(IsFastSim);
     mcCorr->ReadHistograms();
   }
 
