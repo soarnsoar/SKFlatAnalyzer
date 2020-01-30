@@ -78,11 +78,11 @@ void SkimTree_LRSMHighPt::executeEvent(){
   //==== Skim 1 ) trigger
   if(! (ev.PassTrigger(triggers)) ) return;
 
-  //==== Skim 2) at least one lepton (e or mu) with pt > "LeptonPtCut"
+  //==== Skim 2) at least two leptons (e or mu) with pt > "LeptonPtCut"
 
   vector<Muon> muons = GetMuons("NOCUT", LeptonPtCut, 2.4);
   vector<Electron> electrons = GetElectrons("NOCUT", LeptonPtCut, 2.4);
-  if( muons.size()+electrons.size() == 0 ) return;
+  if( muons.size()+electrons.size() < 2 ) return;
 
   //==== Skim 3) Jets
 
