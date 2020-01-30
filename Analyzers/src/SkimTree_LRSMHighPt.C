@@ -80,9 +80,14 @@ void SkimTree_LRSMHighPt::executeEvent(){
 
   //==== Skim 2) at least two leptons (e or mu) with pt > "LeptonPtCut"
 
-  vector<Muon> muons = GetMuons("NOCUT", LeptonPtCut, 2.4);
+  vector<Muon> allmuons = UseTunePMuon( GetAllMuons() );
+  int Nmuon = 0;
+  for(unsigned int i=0; i<allmuons.size(); i++){
+    if( allmuons.at(i).Pt() > LeptonPtCut ) Nmuon++;
+  }
   vector<Electron> electrons = GetElectrons("NOCUT", LeptonPtCut, 2.4);
-  if( muons.size()+electrons.size() < 2 ) return;
+  int Nelectron = electrons.size();
+  if( Nmuon+Nelectron < 2 ) return;
 
   //==== Skim 3) Jets
 
