@@ -11,8 +11,10 @@ void SkimTree_LRSMHighPt::initializeAnalyzer(){
   }
   else{
     cout << "[SkimTree_LRSMHighPt::initializeAnalyzer()] Throwing away gen_* and LHE_*" << endl;
-    newtree->SetBranchStatus("gen_*",0);
-    newtree->SetBranchStatus("LHE_*",0);
+    if(!IsDATA){
+      newtree->SetBranchStatus("gen_*",0);
+      newtree->SetBranchStatus("LHE_*",0);
+    }
   }
 
   triggers.clear();
