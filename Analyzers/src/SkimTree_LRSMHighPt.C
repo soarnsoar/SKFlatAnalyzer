@@ -14,6 +14,7 @@ void SkimTree_LRSMHighPt::initializeAnalyzer(){
     if(!IsDATA){
       newtree->SetBranchStatus("gen_*",0);
       newtree->SetBranchStatus("LHE_*",0);
+      newtree->SetBranchStatus("gen_weight",1); // for MCweight()
     }
   }
 
