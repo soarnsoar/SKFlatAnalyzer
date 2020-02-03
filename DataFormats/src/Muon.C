@@ -107,6 +107,9 @@ bool Muon::PassID(TString ID) const {
   //==== Customized
   if(ID=="TEST") return Pass_TESTID();
 
+  //==== No cut
+  if(ID=="NOCUT") return true;
+
   cout << "[Electron::PassID] No id : " << ID << endl;
   exit(EXIT_FAILURE);
 
