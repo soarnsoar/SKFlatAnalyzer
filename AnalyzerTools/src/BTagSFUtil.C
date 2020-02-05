@@ -23,10 +23,22 @@ void BTagSFUtil::SetPeriodDependancy(bool b){
   period_dependancy = b;
 }
 
-BTagSFUtil::BTagSFUtil(string MeasurementType, string BTagAlgorithm,  TString OperatingPoint, int year, bool pd,int SystematicIndex) {
+BTagSFUtil::BTagSFUtil(string MeasurementType, string BTagAlgorithm,  TString OperatingPoint, int year, bool pd, int SystematicIndex) {
+
+  cout << "[BTagSFUtil::BTagSFUtil] Contructing BTagSFUtil class with" << endl;
+  cout << "[BTagSFUtil::BTagSFUtil]   MeasurementType = " << MeasurementType << endl;
+  cout << "[BTagSFUtil::BTagSFUtil]   BTagAlgorithm = " << BTagAlgorithm << endl;
+  cout << "[BTagSFUtil::BTagSFUtil]   OperatingPoint = " << OperatingPoint << endl;
+  cout << "[BTagSFUtil::BTagSFUtil]   year = " << year << endl;
+  cout << "[BTagSFUtil::BTagSFUtil]   pd = " << pd << endl;
+  cout << "[BTagSFUtil::BTagSFUtil]   SystematicIndex = " << SystematicIndex << endl;
 
   //=== initialise global variables
   MCSample = "";
+
+  measurementType = MeasurementType;
+  taggerName = BTagAlgorithm;
+  operatingPoint = OperatingPoint;
   DataYear = year;
   period_dependancy = pd;
   
@@ -34,20 +46,13 @@ BTagSFUtil::BTagSFUtil(string MeasurementType, string BTagAlgorithm,  TString Op
   TString datapath = getenv("DATA_DIR");
   TString btagpath = datapath+"/"+TString::Itoa(DataYear,10)+"/BTag/";
 
-
   //=== set systematic flags
-  string SystematicFlagBC = "central";
-  string SystematicFlagL  = "central";
-  if (abs(SystematicIndex)<10) {
-    if (SystematicIndex==-1 || SystematicIndex==-2) SystematicFlagBC = "down";
-    else if (SystematicIndex==+1 || SystematicIndex==+2) SystematicFlagBC = "up";
-    else if (SystematicIndex==-3) SystematicFlagL = "down";
-    else if (SystematicIndex==+3) SystematicFlagL = "up";
-  }
+  string SystematicFlag = "central";
+  if(SystematicIndex<0) SystematicFlag = "down";
+  if(SystematicIndex>0) SystematicFlag = "up";
 
-
-  //=== Initialise TaggerCut, set by taggermap.txt
-  TaggerCut = -1;
+  //=== Initialise taggerCut, set by taggermap.txt
+  taggerCut = -1;
   ifstream in_tagger(btagpath+"/taggermap.txt");
   string btaggerline;
   while(getline(in_tagger,btaggerline)){
@@ -62,30 +67,43 @@ BTagSFUtil::BTagSFUtil(string MeasurementType, string BTagAlgorithm,  TString Op
     is_tag >> b; // TAGGER
     is_tag >> c; // WP
     is_tag >> cutvalue;  // cut value
-   if(a == DataYear && b == BTagAlgorithm && c == OperatingPoint ) {
-      TaggerCut = cutvalue; 
-      TString flavour_string = "Heavy Flavour"; 
-      TString systematic_string = SystematicFlagBC;
-      if(MeasurementType=="incl") { flavour_string = "Light Flavour"; systematic_string = SystematicFlagL;}
-      cout << "[BTagSFUtil::initializeAnalyzer] " << flavour_string << " : Year = "  << DataYear << "  : OperatingPoint = " << OperatingPoint << " : TaggerCut = " << TaggerCut << " : Systematic " << systematic_string <<  endl;
+
+    if(a == DataYear && b == BTagAlgorithm && c == OperatingPoint ) {
+      taggerCut = cutvalue; 
       break;
     }
   }// end of taggermap loop
-  
+  if(taggerCut<0){
+    cerr << "[BTagSFUtil::BTagSFUtil] Tagger working point not found from " << btagpath+"/taggermap.txt" << endl;
+    cerr << "[BTagSFUtil::BTagSFUtil] DataYear = " << DataYear << endl;
+    cerr << "[BTagSFUtil::BTagSFUtil] BTagAlgorithm = " << BTagAlgorithm << endl;
+    cerr << "[BTagSFUtil::BTagSFUtil] OperatingPoint = " << OperatingPoint << endl;
+    exit(EXIT_FAILURE);
+  }
 
   //=== Set OperatingPoint passed by var OperatingPoint
   BTagEntry::OperatingPoint op = BTagEntry::OP_LOOSE;
-  if (OperatingPoint=="Loose")        {op = BTagEntry::OP_LOOSE;        TaggerOP += "L";}
-  if (OperatingPoint=="Medium")       {op = BTagEntry::OP_MEDIUM;        TaggerOP += "M";}
-  if (OperatingPoint=="Tight")        {op = BTagEntry::OP_TIGHT;        TaggerOP += "T";}
+  if(OperatingPoint=="Loose"){
+    op = BTagEntry::OP_LOOSE;
+  }
+  else if(OperatingPoint=="Medium"){
+    op = BTagEntry::OP_MEDIUM;
+  }
+  else if(OperatingPoint=="Tight"){
+    op = BTagEntry::OP_TIGHT;
+  }
+  else{
+    cerr << "[BTagSFUtil::BTagSFUtil] Wrong OperatingPoint : " << OperatingPoint << endl;
+    exit(EXIT_FAILURE);
+  }
     
-
   //=== open histmap file to tell code which file to use depending on year/tagger
   ifstream in(btagpath+"/histmap.txt");
   string btagline;
-  if(period_dependancy) cout << "[BTagSFUtil::initializeAnalyzer] setting up Period dependant SF" << endl;
-  else  cout << "[BTagSFUtil::initializeAnalyzer] setting up non-period dependant SF" << endl;
+  if(period_dependancy) cout << "[BTagSFUtil::BTagSFUtil] setting up Period dependant SF" << endl;
+  else  cout << "[BTagSFUtil::BTagSFUtil] setting up non-period dependant SF" << endl;
 
+  btagReader = NULL;
   while(getline(in,btagline)){
     std::istringstream is( btagline );
     
@@ -110,33 +128,24 @@ BTagSFUtil::BTagSFUtil(string MeasurementType, string BTagAlgorithm,  TString Op
     if( b != BTagAlgorithm) continue;
     
     if( (period_dependancy&& c=="PeriodDep") || (!period_dependancy && c!="PeriodDep")){   
-      BTagCalibration calib(BTagAlgorithm, string(btagpath)+f);
-      ReaderMap[TString(a)+"_"+b+"_"+d+"_"+e+"_bc"] = new BTagCalibrationReader(&calib, op, MeasurementType, SystematicFlagBC); 
-      ReaderMap[TString(a)+"_"+b+"_"+d+"_"+e+"_l"] = new BTagCalibrationReader(&calib, op, MeasurementType, SystematicFlagL);
-      
+      BTagCalibration calib(BTagAlgorithm, MeasurementType, string(btagpath)+f);
+      btagReader = new BTagCalibrationReader(&calib, op, MeasurementType, SystematicFlag);
+      break;
     }
   }
-  
-  TaggerName = BTagAlgorithm;
-  TaggerOP = TaggerName;
-
-  if (TaggerCut==-1) 
-    cout << " " << TaggerName << " not supported for " << OperatingPoint << " WP" << endl;
-
-  FastSimSystematic = 0;
-  if (abs(SystematicIndex)>10) FastSimSystematic = SystematicIndex%10;
-
-  if (TaggerCut==-1) 
-    cout << "BTagSFUtil: " << BTagAlgorithm << " not a supported b-tagging algorithm" << endl;
+  if(!btagReader){
+    cout << "[BTagSFUtil::BTagSFUtil] csv file is not found for" << endl;
+    cout << "[BTagSFUtil::BTagSFUtil] measurementType = " << measurementType << endl;
+    cout << "[BTagSFUtil::BTagSFUtil] taggerName = " << taggerName << endl;
+    cout << "[BTagSFUtil::BTagSFUtil] operatingPoint = " << operatingPoint << endl;
+    exit(EXIT_FAILURE);
+  }
   
 }
 
 BTagSFUtil::~BTagSFUtil() {
 
-
-  for(map<TString, BTagCalibrationReader*>::iterator it = ReaderMap.begin(); it!= ReaderMap.end(); it++){
-    delete it->second;
-  }
+  delete btagReader;
 
 }
 
@@ -180,8 +189,8 @@ float BTagSFUtil::GetJetSF(int JetFlavor, float JetPt, float JetEta) {
   if (period_dependancy) {
     
     if(DataYear == 2016){
-      float Btag_SF_BF = GetJetSFPeriodDependant(JetFlavor, JetPt, JetEta, "2016_" +TaggerName + "_272007_278808", true, TaggerName);
-      float Btag_SF_GH = GetJetSFPeriodDependant(JetFlavor, JetPt, JetEta, "2016_" +TaggerName + "_278820_284044", true, TaggerName);
+      float Btag_SF_BF = GetJetSFPeriodDependant(JetFlavor, JetPt, JetEta, "2016_" +taggerName + "_272007_278808", true, taggerName);
+      float Btag_SF_GH = GetJetSFPeriodDependant(JetFlavor, JetPt, JetEta, "2016_" +taggerName + "_278820_284044", true, taggerName);
       
       double lumi_periodB = 5.750490644;
       double lumi_periodC = 2.572903489;
@@ -200,9 +209,9 @@ float BTagSFUtil::GetJetSF(int JetFlavor, float JetPt, float JetEta) {
     
     else if(DataYear == 2017){
 
-      float Btag_SF_B    = GetJetSFPeriodDependant(JetFlavor, JetPt, JetEta, "2017_" +TaggerName + "_297046_299329", true, TaggerName);
-      float Btag_SF_CtoE = GetJetSFPeriodDependant(JetFlavor, JetPt, JetEta, "2017_" +TaggerName + "_297020_304671", true, TaggerName);
-      float Btag_SF_EtoF = GetJetSFPeriodDependant(JetFlavor, JetPt, JetEta, "2017_" +TaggerName + "_304671_306462", true, TaggerName);
+      float Btag_SF_B    = GetJetSFPeriodDependant(JetFlavor, JetPt, JetEta, "2017_" +taggerName + "_297046_299329", true, taggerName);
+      float Btag_SF_CtoE = GetJetSFPeriodDependant(JetFlavor, JetPt, JetEta, "2017_" +taggerName + "_297020_304671", true, taggerName);
+      float Btag_SF_EtoF = GetJetSFPeriodDependant(JetFlavor, JetPt, JetEta, "2017_" +taggerName + "_304671_306462", true, taggerName);
       
       /// lumi taken from https://twiki.cern.ch/twiki/bin/viewauth/CMS/PdmV2017Analysis and brilcal 
       double lumi_periodB = 4.7939;
@@ -229,15 +238,15 @@ float BTagSFUtil::GetJetSF(int JetFlavor, float JetPt, float JetEta) {
 
     if(DataYear == 2016){
 
-      float Btag_SF_BH = GetJetSFPeriodDependant(JetFlavor, JetPt, JetEta, "2016_" +TaggerName + "_272007_284044", false, TaggerName);
+      float Btag_SF_BH = GetJetSFPeriodDependant(JetFlavor, JetPt, JetEta, "2016_" +taggerName + "_272007_284044", false, taggerName);
       return Btag_SF_BH;
     }
     else if(DataYear == 2017){
-      float Btag_SF_BF = GetJetSFPeriodDependant(JetFlavor, JetPt, JetEta, "2017_" +TaggerName + "_297046_306462",false,TaggerName);
+      float Btag_SF_BF = GetJetSFPeriodDependant(JetFlavor, JetPt, JetEta, "2017_" +taggerName + "_297046_306462",false,taggerName);
       return Btag_SF_BF;
     }
     else if(DataYear == 2018){
-      float Btag_SF_AD = GetJetSFPeriodDependant(JetFlavor, JetPt, JetEta, "2018_" +TaggerName + "_315252_325175",false,TaggerName);
+      float Btag_SF_AD = GetJetSFPeriodDependant(JetFlavor, JetPt, JetEta, "2018_" +taggerName + "_315252_325175",false,taggerName);
       return Btag_SF_AD;
     }
 
@@ -247,7 +256,7 @@ float BTagSFUtil::GetJetSF(int JetFlavor, float JetPt, float JetEta) {
   return Btag_SF;
 }
 
-float BTagSFUtil::GetJetSFPeriodDependant(int JetFlavor, float JetPt, float JetEta, TString tag_key, bool isPeriodDependant, TString TaggerName) {
+float BTagSFUtil::GetJetSFPeriodDependant(int JetFlavor, float JetPt, float JetEta, TString tag_key, bool isPeriodDependant, TString taggerName) {
 
   /// https://twiki.cern.ch/twiki/bin/viewauth/CMS/BtagRecommendation80XReReco for pt range and systematic correlations
   float Btag_SF=1.;
@@ -258,106 +267,26 @@ float BTagSFUtil::GetJetSFPeriodDependant(int JetFlavor, float JetPt, float JetE
   if     (JetPt > 999.99) ThisJetPt = 999.99;
   else if(JetPt < 20.   ) ThisJetPt = 20.;
  
-  //=== declare iterator to find BTagCalibrationReader in map
-  map <TString, BTagCalibrationReader*>::iterator reader_bf_it ;
-
-
-  if (abs(JetFlavor)==5) {
-
-    //=== access b flavour reader
-    reader_bf_it =    ReaderMap.find(tag_key+"_bc");
-    if(reader_bf_it == ReaderMap.end()) ErrorLoadingCSV(tag_key, isPeriodDependant, TaggerName);
-    else Btag_SF = reader_bf_it->second->eval(BTagEntry::FLAV_B, JetEta, ThisJetPt);
+  BTagEntry::JetFlavor jF = BTagEntry::FLAV_B;
+  if (abs(JetFlavor)==5){
+    jF = BTagEntry::FLAV_B;
   }
   else if (abs(JetFlavor)==4){ 
-
-    //=== access c flavour reader    
-    reader_bf_it = ReaderMap.find(tag_key+"_bc");
-    if(reader_bf_it == ReaderMap.end()) ErrorLoadingCSV(tag_key, isPeriodDependant, TaggerName);
-    else Btag_SF = reader_bf_it->second->eval(BTagEntry::FLAV_C, JetEta, ThisJetPt);
+    jF = BTagEntry::FLAV_C;
   }
-  else {
-
-    //=== access light flavour reader
-    reader_bf_it = ReaderMap.find(tag_key+"_l");
-    if(reader_bf_it == ReaderMap.end()) ErrorLoadingCSV(tag_key, isPeriodDependant, TaggerName);
-    else Btag_SF = reader_bf_it->second->eval(BTagEntry::FLAV_UDSG, JetEta, ThisJetPt);
-
+  else{
+    jF = BTagEntry::FLAV_UDSG;
   }
-    
-  return Btag_SF;
 
+  return btagReader->eval(jF, JetEta, ThisJetPt);
 }
-
-void BTagSFUtil::ErrorLoadingCSV(TString tag_key, bool isperiodDep, TString TaggerName){
-
-  cout << "[BTagSFUtil::ErrorLoadingCSV] no SF found for key " <<  tag_key << endl;
-  cout << "" << endl;
-  
-  TString year="2016";
-  if(tag_key.Contains("2017")) year="2017";
-  if(tag_key.Contains("2018")) year="2018";
-
-  //=== load histmap to check possible cvs files and check why error occured
-
-  TString datapath = getenv("DATA_DIR");
-  TString btagpath = datapath+"/"+TString::Itoa(DataYear,10)+"/BTag/";
-  ifstream in(btagpath+"/histmap.txt");
-  string btagline;
-
-  //=== let user know what options have been used in setup
-  if(period_dependancy) cout << "[BTagSFUtil::ErrorLoadingCSV] User requested period dependant SF" << endl;
-  else  cout << "[BTagSFUtil::ErrorLoadingCSV] User requested non-period dependant SF" << endl;
-
-  cout << "[BTagSFUtil::ErrorLoadingCSV] User running " << year << " year" << endl;
-  cout << "[BTagSFUtil::ErrorLoadingCSV] Using tagger: "<< TaggerName << endl;
-  cout << "[BTagSFUtil::ErrorLoadingCSV] available SF CSV files from " << btagpath << "/histmap.txt are;"  << endl;
-  
-
-  //=== Loop over histmap and output what is available
-  int nlines(0);
-  bool TaggerFound=false;
-  bool isperiodDepAvailable=false;
-  while(getline(in,btagline)){
-    std::istringstream is( btagline );
-
-    TString tstring_btagline = btagline;
-    if(tstring_btagline.Contains("#")) continue;
-    nlines++;
-
-    string a,f;
-    TString b,c,d,e;
-
-    is >> a; // YEAR                                                                                                                                                                                                                                                            
-    is >> b; // TAGGER                                                                                                                                                                                                                                                          
-    is >> c; // Period_dep                                                                                                                                                                                                                                                      
-    is >> d; // Run_start                                                                                                                                                                                                                                                       
-    is >> e; // Run_end                                                                                                                                                                                                                                                         
-    is >> f; // csv file                                                                                                                                                                                                                                                        
-    if( b == TaggerName) TaggerFound=true;
-    if( b == TaggerName && isperiodDep && c == "PeriodDep") isperiodDepAvailable=true;
-    cout << "[BTagSFUtil::ErrorLoadingCSV] available CVS files;  Year = "  << a << "  tagger = " << b << " csv file = " << f << endl;
-
-  }
-  
-
-  //=== cout some possible errors to help user
-  if(nlines == 0) cout << "[BTagSFUtil::ErrorLoadingCSV] error likely that " << btagpath << "/histmap.txt is empty" << endl;
-  if(!TaggerFound) cout << "[BTagSFUtil::ErrorLoadingCSV] error likely that tagger " << TaggerName << " is not found in " << btagpath << "/histmap.txt " << endl;
-  if(isperiodDep && !isperiodDepAvailable) cout << "[BTagSFUtil::ErrorLoadingCSV] error in setup; user asked for period dependant SF's, which are not available for this Tagger/Year, in Analysis code change 4th argument in SetupBTagger() to false, i.e., SetupBTagger(vtaggers,v_wps, sys, false);" <<endl;
-  
-  //=== exit if no CSV file is found for user setup
-  exit(EXIT_FAILURE);
-
-}
-
 
 bool BTagSFUtil::IsUncorrectedTagged(float JetDiscriminant, int JetFlavor, float JetPt, float JetEta) {
   /// return false if year is not set                                                                                                                                                                       
   if (DataYear == 0) return false;
 
 
-  bool isBTagged = JetDiscriminant>TaggerCut;
+  bool isBTagged = JetDiscriminant>taggerCut;
 
   return isBTagged;
 
@@ -374,7 +303,7 @@ bool BTagSFUtil::IsTagged(float JetDiscriminant, int JetFlavor, float JetPt, flo
   if (DataYear == 0) return false;
 
 
-  bool isBTagged = JetDiscriminant>TaggerCut;
+  bool isBTagged = JetDiscriminant>taggerCut;
   
   //=== Data: no correction needed
   if (JetFlavor==-999999) return isBTagged; 

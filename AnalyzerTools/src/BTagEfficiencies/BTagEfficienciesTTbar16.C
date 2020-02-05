@@ -5,7 +5,7 @@ be used only for the same MC samples or for events with similar topology */
 float BTagSFUtil::TagEfficiencyB_2016(float JetPt, float JetEta) {
 
 
-	 if (TaggerOP=="DeepCSV_Loose") { 
+	 if (operatingPoint=="DeepCSV_Loose") { 
 		 if (JetPt > 20.00000 && JetPt <= 40.00000){  
 			 if      (fabs(JetEta) > 0.00000   && fabs(JetEta) <= 0.60000) return 0.80661 ;  
 			 else if (fabs(JetEta) > 0.60000 && fabs(JetEta) <= 1.20000) return 0.80283;  
@@ -43,7 +43,7 @@ float BTagSFUtil::TagEfficiencyB_2016(float JetPt, float JetEta) {
 			 else if (fabs(JetEta) > 1.80000 && fabs(JetEta) <= 2.40000) return 0.81864;  
 			 } 
 		 } 
-	 if (TaggerOP=="DeepCSV_Medium") { 
+	 if (operatingPoint=="DeepCSV_Medium") { 
 		 if (JetPt > 20.00000 && JetPt <= 40.00000){  
 			 if      (fabs(JetEta) > 0.00000   && fabs(JetEta) <= 0.60000) return 0.63931 ;  
 			 else if (fabs(JetEta) > 0.60000 && fabs(JetEta) <= 1.20000) return 0.62995;  
@@ -81,7 +81,7 @@ float BTagSFUtil::TagEfficiencyB_2016(float JetPt, float JetEta) {
 			 else if (fabs(JetEta) > 1.80000 && fabs(JetEta) <= 2.40000) return 0.56218;  
 			 } 
 		 } 
-	 if (TaggerOP=="DeepCSV_Tight") { 
+	 if (operatingPoint=="DeepCSV_Tight") { 
 		 if (JetPt > 20.00000 && JetPt <= 40.00000){  
 			 if      (fabs(JetEta) > 0.00000   && fabs(JetEta) <= 0.60000) return 0.45517 ;  
 			 else if (fabs(JetEta) > 0.60000 && fabs(JetEta) <= 1.20000) return 0.44329;  
@@ -124,7 +124,7 @@ float BTagSFUtil::TagEfficiencyB_2016(float JetPt, float JetEta) {
 float BTagSFUtil::TagEfficiencyC_2016(float JetPt, float JetEta) {
 
 
-	 if (TaggerOP=="DeepCSV_Loose") { 
+	 if (operatingPoint=="DeepCSV_Loose") { 
 		 if (JetPt > 20.00000 && JetPt <= 40.00000){  
 			 if      (fabs(JetEta) > 0.00000   && fabs(JetEta) <= 0.60000) return 0.34206 ;  
 			 else if (fabs(JetEta) > 0.60000 && fabs(JetEta) <= 1.20000) return 0.35372;  
@@ -162,7 +162,7 @@ float BTagSFUtil::TagEfficiencyC_2016(float JetPt, float JetEta) {
 			 else if (fabs(JetEta) > 1.80000 && fabs(JetEta) <= 2.40000) return 0.38854;  
 			 } 
 		 } 
-	 if (TaggerOP=="DeepCSV_Medium") { 
+	 if (operatingPoint=="DeepCSV_Medium") { 
 		 if (JetPt > 20.00000 && JetPt <= 40.00000){  
 			 if      (fabs(JetEta) > 0.00000   && fabs(JetEta) <= 0.60000) return 0.11123 ;  
 			 else if (fabs(JetEta) > 0.60000 && fabs(JetEta) <= 1.20000) return 0.11399;  
@@ -200,7 +200,7 @@ float BTagSFUtil::TagEfficiencyC_2016(float JetPt, float JetEta) {
 			 else if (fabs(JetEta) > 1.80000 && fabs(JetEta) <= 2.40000) return 0.09532;  
 			 } 
 		 } 
-	 if (TaggerOP=="DeepCSV_Tight") { 
+	 if (operatingPoint=="DeepCSV_Tight") { 
 		 if (JetPt > 20.00000 && JetPt <= 40.00000){  
 			 if      (fabs(JetEta) > 0.00000   && fabs(JetEta) <= 0.60000) return 0.02587 ;  
 			 else if (fabs(JetEta) > 0.60000 && fabs(JetEta) <= 1.20000) return 0.02697;  
@@ -243,7 +243,7 @@ float BTagSFUtil::TagEfficiencyC_2016(float JetPt, float JetEta) {
 float BTagSFUtil::TagEfficiencyLight_2016(float JetPt, float JetEta) {
 
 
-	 if (TaggerOP=="DeepCSV_Loose") { 
+	 if (operatingPoint=="DeepCSV_Loose") { 
 		 if (JetPt > 20.00000 && JetPt <= 40.00000){  
 			 if      (fabs(JetEta) > 0.00000   && fabs(JetEta) <= 0.60000) return 0.16119 ;  
 			 else if (fabs(JetEta) > 0.60000 && fabs(JetEta) <= 1.20000) return 0.18085;  
@@ -281,7 +281,7 @@ float BTagSFUtil::TagEfficiencyLight_2016(float JetPt, float JetEta) {
 			 else if (fabs(JetEta) > 1.80000 && fabs(JetEta) <= 2.40000) return 0.16930;  
 			 } 
 		 } 
-	 if (TaggerOP=="DeepCSV_Medium") { 
+	 if (operatingPoint=="DeepCSV_Medium") { 
 		 if (JetPt > 20.00000 && JetPt <= 40.00000){  
 			 if      (fabs(JetEta) > 0.00000   && fabs(JetEta) <= 0.60000) return 0.02631 ;  
 			 else if (fabs(JetEta) > 0.60000 && fabs(JetEta) <= 1.20000) return 0.02970;  
@@ -319,7 +319,7 @@ float BTagSFUtil::TagEfficiencyLight_2016(float JetPt, float JetEta) {
 			 else if (fabs(JetEta) > 1.80000 && fabs(JetEta) <= 2.40000) return 0.01696;  
 			 } 
 		 } 
-	 if (TaggerOP=="DeepCSV_Tight") { 
+	 if (operatingPoint=="DeepCSV_Tight") { 
 		 if (JetPt > 20.00000 && JetPt <= 40.00000){  
 			 if      (fabs(JetEta) > 0.00000   && fabs(JetEta) <= 0.60000) return 0.00210 ;  
 			 else if (fabs(JetEta) > 0.60000 && fabs(JetEta) <= 1.20000) return 0.00235;  

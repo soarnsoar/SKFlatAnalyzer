@@ -951,7 +951,7 @@ double AnalyzerCore::GetPrefireWeight(int sys){
 }
 
 
-void AnalyzerCore::SetupBTagger(std::vector<Jet::Tagger> taggers, std::vector<Jet::WP> wps, bool setup_systematics, bool period_dependant){
+void AnalyzerCore::SetupBTagger(std::vector<JetTagging::Parameters> jtps, bool setup_systematics, bool period_dependant){
 
   //=== Btagging code for 2016/2017/2018
   
@@ -961,38 +961,47 @@ void AnalyzerCore::SetupBTagger(std::vector<Jet::Tagger> taggers, std::vector<Je
   //=== if function already called exit
   if(MapBTagSF.size() > 0) return;
 
-  for(std::vector<Jet::Tagger>::const_iterator it = taggers.begin(); it != taggers.end(); it++){
-    for(std::vector<Jet::WP>::const_iterator it2 = wps.begin(); it2 != wps.end(); it2++){
-    
-      //=== creat tmmp jet to get tagger string
-      Jet j;
-      TString stagger = j.TaggerString(*it);
-      TString swp = j.WPString(*it2);
-      
-      MapBTagSF[stagger + "_" + swp + "_lf"]              = new BTagSFUtil("incl"  ,  string(stagger), swp, DataYear, period_dependant,0);
-      MapBTagSF[stagger + "_" + swp + "_hf"]              = new BTagSFUtil("mujets",  string(stagger), swp, DataYear, period_dependant,0);
-      if(setup_systematics){
-        MapBTagSF[stagger + "_" + swp + "_lf_systup"]     = new BTagSFUtil("incl"  ,  string(stagger), swp, DataYear, period_dependant , 3);
-        MapBTagSF[stagger + "_" + swp + "_hf_systup"]     = new BTagSFUtil("mujets",  string(stagger), swp, DataYear, period_dependant , 1);
-        MapBTagSF[stagger + "_" + swp + "_lf_systdown"]   = new BTagSFUtil("incl"  ,  string(stagger), swp, DataYear, period_dependant , -3);
-        MapBTagSF[stagger + "_" + swp + "_hf_systdown"]   = new BTagSFUtil("mujets",  string(stagger), swp, DataYear, period_dependant , -1);
-      }
+  for(unsigned int i=0; i<jtps.size(); i++){
+
+    string stagger = JetTagging::TaggerToString( jtps.at(i).j_Tagger );
+    string swp = JetTagging::WPToString( jtps.at(i).j_WP );
+    string smt_l = JetTagging::MeasurmentTypeToString( jtps.at(i).j_MeasurmentType_Light );
+    string smt_h = JetTagging::MeasurmentTypeToString( jtps.at(i).j_MeasurmentType_Heavy );
+
+    MapBTagSF[stagger + "_" + swp + "_" + smt_l + "_lf"]              = new BTagSFUtil(smt_l, stagger, swp, DataYear, period_dependant, 0);
+    MapBTagSF[stagger + "_" + swp + "_" + smt_h + "_hf"]              = new BTagSFUtil(smt_h, stagger, swp, DataYear, period_dependant, 0);
+
+    if(setup_systematics){
+      MapBTagSF[stagger + "_" + swp + "_" + smt_l + "_lf_systup"]     = new BTagSFUtil(smt_l, stagger, swp, DataYear, period_dependant, 1);
+      MapBTagSF[stagger + "_" + swp + "_" + smt_h + "_hf_systup"]     = new BTagSFUtil(smt_h, stagger, swp, DataYear, period_dependant, 1);
+      MapBTagSF[stagger + "_" + swp + "_" + smt_l + "_lf_systdown"]   = new BTagSFUtil(smt_l, stagger, swp, DataYear, period_dependant, -1);
+      MapBTagSF[stagger + "_" + swp + "_" + smt_h + "_hf_systdown"]   = new BTagSFUtil(smt_h, stagger, swp, DataYear, period_dependant, -1);
     }
+
   }
-  return;
+
+  cout << "[AnalyzerCore::SetupBTagger] Listing MapBTagSF.." << endl;
+  for(std::map<TString,BTagSFUtil*>::iterator it=MapBTagSF.begin(); it!=MapBTagSF.end(); it++){
+    cout << "[AnalyzerCore::SetupBTagger]   key = " << it->first << endl;
+  }
 
 }
 
 
-bool AnalyzerCore::IsBTagged(Jet j, Jet::Tagger tagger, Jet::WP WP, bool applySF, int systematic){
+bool AnalyzerCore::IsBTagged(Jet j, JetTagging::Parameters jtp, bool applySF, int systematic){
 
   //=== function to check if jet is btagged using SF to correct MC tag rate
-  
-  //=== create key from configuration
-  TString map_key = j.TaggerString(tagger) + "_"+  j.WPString(WP) ;
 
-  if(j.hadronFlavour() == 0 || IsDATA) map_key += "_lf";
-  else map_key +="_hf";
+  string stagger = JetTagging::TaggerToString( jtp.j_Tagger );
+  string swp = JetTagging::WPToString( jtp.j_WP );
+  string smt_l = JetTagging::MeasurmentTypeToString( jtp.j_MeasurmentType_Light );
+  string smt_h = JetTagging::MeasurmentTypeToString( jtp.j_MeasurmentType_Heavy );
+
+  //=== create key from configuration
+  TString map_key = stagger + "_"+ swp;
+
+  if(j.hadronFlavour() == 0 || IsDATA) map_key += "_" + smt_l +"_lf";
+  else map_key += "_" + smt_h + "_hf";
 
   if(!IsDATA){
     if(systematic > 0) map_key += "_systup";
@@ -1004,7 +1013,7 @@ bool AnalyzerCore::IsBTagged(Jet j, Jet::Tagger tagger, Jet::WP WP, bool applySF
   std::map<TString,BTagSFUtil*>::iterator it_jet_btagger = MapBTagSF.find(map_key);
 
   if(it_jet_btagger == MapBTagSF.end()){
-    cout << "[AnalyzerCore::IsBTaggedCorrected]  ERROR, incorrect combination of tagger/WP : " << j.TaggerString(tagger) <<  "/" << j.WPString(WP) << " check SetupBTagger is correctly configured for tagger/WP and systematics" << endl;
+    cout << "[AnalyzerCore::IsBTaggedCorrected]  ERROR, incorrect combination of tagger/WP : " << stagger <<  "/" << swp << " check SetupBTagger is correctly configured for tagger/WP and systematics" << endl;
     exit(EXIT_FAILURE);
   }
   
@@ -1023,12 +1032,12 @@ bool AnalyzerCore::IsBTagged(Jet j, Jet::Tagger tagger, Jet::WP WP, bool applySF
     int m_nomVar=1;
     std::uint32_t seed = jet0eta + m_nomVar + (lumiNum_uint<<10) + (runNum_uint<<20) + evNum_uint;
 
-    if (it_jet_btagger->second->IsTagged(j.GetTaggerResult(tagger), jet_flavour, j.Pt(), j.Eta(),seed))
+    if (it_jet_btagger->second->IsTagged(j.GetTaggerResult( jtp.j_Tagger ), jet_flavour, j.Pt(), j.Eta(),seed))
       isBtag=true;
   }
   else{
     //===  dont apply correction to btag value
-    if (it_jet_btagger->second->IsUncorrectedTagged(j.GetTaggerResult(tagger), jet_flavour, j.Pt(), j.Eta()))
+    if (it_jet_btagger->second->IsUncorrectedTagged(j.GetTaggerResult( jtp.j_Tagger ), jet_flavour, j.Pt(), j.Eta()))
       isBtag=true;
   }
   return isBtag;
@@ -1952,11 +1961,11 @@ void AnalyzerCore::FillHist(TString histname,
 }
 
 void AnalyzerCore::FillHist(TString histname,
-			    double value_x, double value_y, double value_z,
-			    double weight,
-			    int n_binx, double x_min, double x_max,
-			    int n_biny, double y_min, double y_max,
-			    int n_binz, double z_min, double z_max){
+          double value_x, double value_y, double value_z,
+          double weight,
+          int n_binx, double x_min, double x_max,
+          int n_biny, double y_min, double y_max,
+          int n_binz, double z_min, double z_max){
   
   TH3D *this_hist = GetHist3D(histname);
   if( !this_hist ){
@@ -1970,11 +1979,11 @@ void AnalyzerCore::FillHist(TString histname,
 }
 
 void AnalyzerCore::FillHist(TString histname,
-			    double value_x, double value_y, double value_z,
-			    double weight,
-			    int n_binx, double *xbins,
-			    int n_biny, double *ybins,
-			    int n_binz, double *zbins){
+          double value_x, double value_y, double value_z,
+          double weight,
+          int n_binx, double *xbins,
+          int n_biny, double *ybins,
+          int n_binz, double *zbins){
   
   TH3D *this_hist = GetHist3D(histname);
   if( !this_hist ){

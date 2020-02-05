@@ -190,8 +190,10 @@ BTagCalibration::BTagCalibration(const std::string &taggr):
 {}
 
 BTagCalibration::BTagCalibration(const std::string &taggr,
+                                 const std::string &measurementType,
                                  const std::string &filename):
-  tagger_(taggr)
+  tagger_(taggr),
+  measurementType_(measurementType)
 {
   std::ifstream ifs(filename);
   readCSV(ifs);
@@ -237,6 +239,10 @@ void BTagCalibration::readCSV(std::istream &s)
     if (line.empty()) {  // skip empty lines
       continue;
     }
+    if (line.find(measurementType_) == std::string::npos){
+      continue;
+    }
+    //cout << "[BTagCalibration::readCSV] " << line << endl;
     addEntry(BTagEntry(line));
   }
 }

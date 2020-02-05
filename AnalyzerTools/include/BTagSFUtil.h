@@ -33,10 +33,6 @@ class BTagSFUtil{
   float GetJetSFPeriodDependant(int JetFlavor, float JetPt, float JetEta, TString iperiod, bool isperiodDep, TString tagger);
   float JetTagEfficiency(int JetFlavor, float JetPt, float JetEta);
 
-
-  // Function to warn user of incorrect setup
-  void ErrorLoadingCSV(TString tag_key, bool isperiodDep, TString TaggerName);
-
   // New functions for SKAnalzyer
   void SetMCSample(TString s);
   void SetDataYear(int i);
@@ -47,7 +43,7 @@ class BTagSFUtil{
 
 
   // map to store BTagCalibrationReader objects, determined by setup/year
-  std::map <TString, BTagCalibrationReader*> ReaderMap;
+  BTagCalibrationReader* btagReader;
   
   void GetBTagPayload(TString BTagAlgorithm, TString DataPeriod);
 
@@ -69,24 +65,12 @@ class BTagSFUtil{
   float TagEfficiencyC_2018(float JetPt, float JetEta);
   float TagEfficiencyLight_2018(float JetPt, float JetEta);
 
-  
-  TF1 *funSFb, *funSFlight[4][3];
+  string measurementType;
+  string taggerName;
+  string operatingPoint;
+  float taggerCut;
 
-  TString TaggerName, TaggerOP;
   TString MCSample;
-
-  float TaggerCut;
-  float BTagPtBinEdge[50];
-  float SFb_error[50];
-  float BTagEtaBinEdge[50];
-  float FastSimPtBinEdge[50], FastSimEtaBinEdge[50][3];
-  float FastSimCF_error[50][2][3]; 
-  float FastSimCF[50][2][3];
-
-  int nBTagEtaBins;
-  int nBTagPtBins;
-  int nFastSimPtBins, nFastSimEtaBins[3];
-  int FastSimSystematic;
 
   int DataYear;
 

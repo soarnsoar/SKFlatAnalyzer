@@ -16,6 +16,7 @@
 #include "Muon.h"
 #include "Electron.h"
 #include "Photon.h"
+#include "JetTaggingParameters.h"
 #include "Jet.h"
 #include "FatJet.h"
 
@@ -146,10 +147,10 @@ public:
   GEScaleSyst *muonGEScaleSyst;
 
   //==== Btag setup
-  void SetupBTagger(std::vector<Jet::Tagger> taggers, std::vector<Jet::WP> wps, bool setup_systematics, bool period_dependant);
+  void SetupBTagger(std::vector<JetTagging::Parameters> jtps, bool setup_systematics, bool period_dependant);
   
   //==== Is Btagged (using SF)
-  bool IsBTagged(Jet j, Jet::Tagger tagger, Jet::WP WP, bool applySF, int systematic );
+  bool IsBTagged(Jet j, JetTagging::Parameters jtp, bool applySF, int systematic );
 
  
   //==== Using new PDF set

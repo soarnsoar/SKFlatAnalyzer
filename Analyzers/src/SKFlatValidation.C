@@ -110,14 +110,11 @@ void SKFlatValidation::initializeAnalyzer(){
 
   //==== B-Tagging
   //==== add taggers and WP that you want to use in analysis
-  std::vector<Jet::Tagger> vtaggers;
-  vtaggers.push_back(Jet::DeepCSV);
-
-  std::vector<Jet::WP> v_wps;
-  v_wps.push_back(Jet::Medium);
+  std::vector<JetTagging::Parameters> jtps;
+  jtps.push_back( JetTagging::Parameters(JetTagging::DeepCSV, JetTagging::Medium, JetTagging::incl, JetTagging::comb) );
 
   //=== list of taggers, WP, setup systematics, use period SFs
-  SetupBTagger(vtaggers,v_wps, true, false);
+  SetupBTagger(jtps, true, false);
 
 }
 
@@ -211,7 +208,7 @@ void SKFlatValidation::executeEventFromParameter(AnalyzerParameter param){
   for(unsigned int i=0; i<myjets.size(); i++){
     Jet this_jet = myjets.at(i);
     HT += this_jet.Pt();
-    if(IsBTagged(this_jet, Jet::DeepCSV, Jet::Medium,true,0)) NBJets++;
+    if(IsBTagged(this_jet, JetTagging::Parameters(JetTagging::DeepCSV, JetTagging::Medium, JetTagging::incl, JetTagging::comb), true,0)) NBJets++;
   }
 
   //==== Based on which trigger is fired

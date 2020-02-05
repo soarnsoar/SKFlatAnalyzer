@@ -5,7 +5,7 @@ be used only for the same MC samples or for events with similar topology */
 float BTagSFUtil::TagEfficiencyB_2017(float JetPt, float JetEta) {
 
 
-	 if (TaggerOP=="CSVv2_Loose") { 
+	 if (operatingPoint=="CSVv2_Loose") { 
 		 if (JetPt > 20.00000 && JetPt <= 40.00000){  
 			 if      (fabs(JetEta) > 0.00000   && fabs(JetEta) <= 0.60000) return 0.83171 ;  
 			 else if (fabs(JetEta) > 0.60000 && fabs(JetEta) <= 1.20000) return 0.83576;  
@@ -43,7 +43,7 @@ float BTagSFUtil::TagEfficiencyB_2017(float JetPt, float JetEta) {
 			 else if (fabs(JetEta) > 1.80000 && fabs(JetEta) <= 2.40000) return 0.82657;  
 			 } 
 		 } 
-	 if (TaggerOP=="CSVv2_Medium") { 
+	 if (operatingPoint=="CSVv2_Medium") { 
 		 if (JetPt > 20.00000 && JetPt <= 40.00000){  
 			 if      (fabs(JetEta) > 0.00000   && fabs(JetEta) <= 0.60000) return 0.63876 ;  
 			 else if (fabs(JetEta) > 0.60000 && fabs(JetEta) <= 1.20000) return 0.61792;  
@@ -81,7 +81,7 @@ float BTagSFUtil::TagEfficiencyB_2017(float JetPt, float JetEta) {
 			 else if (fabs(JetEta) > 1.80000 && fabs(JetEta) <= 2.40000) return 0.57769;  
 			 } 
 		 } 
-	 if (TaggerOP=="CSVv2_Tight") { 
+	 if (operatingPoint=="CSVv2_Tight") { 
 		 if (JetPt > 20.00000 && JetPt <= 40.00000){  
 			 if      (fabs(JetEta) > 0.00000   && fabs(JetEta) <= 0.60000) return 0.41772 ;  
 			 else if (fabs(JetEta) > 0.60000 && fabs(JetEta) <= 1.20000) return 0.37257;  
@@ -119,7 +119,7 @@ float BTagSFUtil::TagEfficiencyB_2017(float JetPt, float JetEta) {
 			 else if (fabs(JetEta) > 1.80000 && fabs(JetEta) <= 2.40000) return 0.33157;  
 			 } 
 		 } 
-	 if (TaggerOP=="DeepCSV_Loose") { 
+	 if (operatingPoint=="DeepCSV_Loose") { 
 		 if (JetPt > 20.00000 && JetPt <= 40.00000){  
 			 if      (fabs(JetEta) > 0.00000   && fabs(JetEta) <= 0.60000) return 0.84366 ;  
 			 else if (fabs(JetEta) > 0.60000 && fabs(JetEta) <= 1.20000) return 0.85016;  
@@ -157,7 +157,7 @@ float BTagSFUtil::TagEfficiencyB_2017(float JetPt, float JetEta) {
 			 else if (fabs(JetEta) > 1.80000 && fabs(JetEta) <= 2.40000) return 0.87537;  
 			 } 
 		 } 
-	 if (TaggerOP=="DeepCSV_Medium") { 
+	 if (operatingPoint=="DeepCSV_Medium") { 
 		 if (JetPt > 20.00000 && JetPt <= 40.00000){  
 			 if      (fabs(JetEta) > 0.00000   && fabs(JetEta) <= 0.60000) return 0.66809 ;  
 			 else if (fabs(JetEta) > 0.60000 && fabs(JetEta) <= 1.20000) return 0.67499;  
@@ -195,7 +195,7 @@ float BTagSFUtil::TagEfficiencyB_2017(float JetPt, float JetEta) {
 			 else if (fabs(JetEta) > 1.80000 && fabs(JetEta) <= 2.40000) return 0.63515;  
 			 } 
 		 } 
-	 if (TaggerOP=="DeepCSV_Tight") { 
+	 if (operatingPoint=="DeepCSV_Tight") { 
 		 if (JetPt > 20.00000 && JetPt <= 40.00000){  
 			 if      (fabs(JetEta) > 0.00000   && fabs(JetEta) <= 0.60000) return 0.48662 ;  
 			 else if (fabs(JetEta) > 0.60000 && fabs(JetEta) <= 1.20000) return 0.48405;  
@@ -238,7 +238,7 @@ float BTagSFUtil::TagEfficiencyB_2017(float JetPt, float JetEta) {
 float BTagSFUtil::TagEfficiencyC_2017(float JetPt, float JetEta) {
 
 
-	 if (TaggerOP=="CSVv2_Loose") { 
+	 if (operatingPoint=="CSVv2_Loose") { 
 		 if (JetPt > 20.00000 && JetPt <= 40.00000){  
 			 if      (fabs(JetEta) > 0.00000   && fabs(JetEta) <= 0.60000) return 0.31723 ;  
 			 else if (fabs(JetEta) > 0.60000 && fabs(JetEta) <= 1.20000) return 0.34742;  
@@ -276,7 +276,7 @@ float BTagSFUtil::TagEfficiencyC_2017(float JetPt, float JetEta) {
 			 else if (fabs(JetEta) > 1.80000 && fabs(JetEta) <= 2.40000) return 0.41261;  
 			 } 
 		 } 
-	 if (TaggerOP=="CSVv2_Medium") { 
+	 if (operatingPoint=="CSVv2_Medium") { 
 		 if (JetPt > 20.00000 && JetPt <= 40.00000){  
 			 if      (fabs(JetEta) > 0.00000   && fabs(JetEta) <= 0.60000) return 0.10732 ;  
 			 else if (fabs(JetEta) > 0.60000 && fabs(JetEta) <= 1.20000) return 0.10329;  
@@ -314,7 +314,7 @@ float BTagSFUtil::TagEfficiencyC_2017(float JetPt, float JetEta) {
 			 else if (fabs(JetEta) > 1.80000 && fabs(JetEta) <= 2.40000) return 0.12662;  
 			 } 
 		 } 
-	 if (TaggerOP=="CSVv2_Tight") { 
+	 if (operatingPoint=="CSVv2_Tight") { 
 		 if (JetPt > 20.00000 && JetPt <= 40.00000){  
 			 if      (fabs(JetEta) > 0.00000   && fabs(JetEta) <= 0.60000) return 0.02926 ;  
 			 else if (fabs(JetEta) > 0.60000 && fabs(JetEta) <= 1.20000) return 0.02360;  
@@ -352,7 +352,7 @@ float BTagSFUtil::TagEfficiencyC_2017(float JetPt, float JetEta) {
 			 else if (fabs(JetEta) > 1.80000 && fabs(JetEta) <= 2.40000) return 0.02523;  
 			 } 
 		 } 
-	 if (TaggerOP=="DeepCSV_Loose") { 
+	 if (operatingPoint=="DeepCSV_Loose") { 
 		 if (JetPt > 20.00000 && JetPt <= 40.00000){  
 			 if      (fabs(JetEta) > 0.00000   && fabs(JetEta) <= 0.60000) return 0.33049 ;  
 			 else if (fabs(JetEta) > 0.60000 && fabs(JetEta) <= 1.20000) return 0.36373;  
@@ -390,7 +390,7 @@ float BTagSFUtil::TagEfficiencyC_2017(float JetPt, float JetEta) {
 			 else if (fabs(JetEta) > 1.80000 && fabs(JetEta) <= 2.40000) return 0.41965;  
 			 } 
 		 } 
-	 if (TaggerOP=="DeepCSV_Medium") { 
+	 if (operatingPoint=="DeepCSV_Medium") { 
 		 if (JetPt > 20.00000 && JetPt <= 40.00000){  
 			 if      (fabs(JetEta) > 0.00000   && fabs(JetEta) <= 0.60000) return 0.09688 ;  
 			 else if (fabs(JetEta) > 0.60000 && fabs(JetEta) <= 1.20000) return 0.10977;  
@@ -428,7 +428,7 @@ float BTagSFUtil::TagEfficiencyC_2017(float JetPt, float JetEta) {
 			 else if (fabs(JetEta) > 1.80000 && fabs(JetEta) <= 2.40000) return 0.11422;  
 			 } 
 		 } 
-	 if (TaggerOP=="DeepCSV_Tight") { 
+	 if (operatingPoint=="DeepCSV_Tight") { 
 		 if (JetPt > 20.00000 && JetPt <= 40.00000){  
 			 if      (fabs(JetEta) > 0.00000   && fabs(JetEta) <= 0.60000) return 0.02579 ;  
 			 else if (fabs(JetEta) > 0.60000 && fabs(JetEta) <= 1.20000) return 0.02785;  
@@ -471,7 +471,7 @@ float BTagSFUtil::TagEfficiencyC_2017(float JetPt, float JetEta) {
 float BTagSFUtil::TagEfficiencyLight_2017(float JetPt, float JetEta) {
 
 
-	 if (TaggerOP=="CSVv2_Loose") { 
+	 if (operatingPoint=="CSVv2_Loose") { 
 		 if (JetPt > 20.00000 && JetPt <= 40.00000){  
 			 if      (fabs(JetEta) > 0.00000   && fabs(JetEta) <= 0.60000) return 0.10332 ;  
 			 else if (fabs(JetEta) > 0.60000 && fabs(JetEta) <= 1.20000) return 0.12538;  
@@ -509,7 +509,7 @@ float BTagSFUtil::TagEfficiencyLight_2017(float JetPt, float JetEta) {
 			 else if (fabs(JetEta) > 1.80000 && fabs(JetEta) <= 2.40000) return 0.17714;  
 			 } 
 		 } 
-	 if (TaggerOP=="CSVv2_Medium") { 
+	 if (operatingPoint=="CSVv2_Medium") { 
 		 if (JetPt > 20.00000 && JetPt <= 40.00000){  
 			 if      (fabs(JetEta) > 0.00000   && fabs(JetEta) <= 0.60000) return 0.01066 ;  
 			 else if (fabs(JetEta) > 0.60000 && fabs(JetEta) <= 1.20000) return 0.01151;  
@@ -547,7 +547,7 @@ float BTagSFUtil::TagEfficiencyLight_2017(float JetPt, float JetEta) {
 			 else if (fabs(JetEta) > 1.80000 && fabs(JetEta) <= 2.40000) return 0.01840;  
 			 } 
 		 } 
-	 if (TaggerOP=="CSVv2_Tight") { 
+	 if (operatingPoint=="CSVv2_Tight") { 
 		 if (JetPt > 20.00000 && JetPt <= 40.00000){  
 			 if      (fabs(JetEta) > 0.00000   && fabs(JetEta) <= 0.60000) return 0.00131 ;  
 			 else if (fabs(JetEta) > 0.60000 && fabs(JetEta) <= 1.20000) return 0.00123;  
@@ -585,7 +585,7 @@ float BTagSFUtil::TagEfficiencyLight_2017(float JetPt, float JetEta) {
 			 else if (fabs(JetEta) > 1.80000 && fabs(JetEta) <= 2.40000) return 0.00195;  
 			 } 
 		 } 
-	 if (TaggerOP=="DeepCSV_Loose") { 
+	 if (operatingPoint=="DeepCSV_Loose") { 
 		 if (JetPt > 20.00000 && JetPt <= 40.00000){  
 			 if      (fabs(JetEta) > 0.00000   && fabs(JetEta) <= 0.60000) return 0.11391 ;  
 			 else if (fabs(JetEta) > 0.60000 && fabs(JetEta) <= 1.20000) return 0.13949;  
@@ -623,7 +623,7 @@ float BTagSFUtil::TagEfficiencyLight_2017(float JetPt, float JetEta) {
 			 else if (fabs(JetEta) > 1.80000 && fabs(JetEta) <= 2.40000) return 0.16752;  
 			 } 
 		 } 
-	 if (TaggerOP=="DeepCSV_Medium") { 
+	 if (operatingPoint=="DeepCSV_Medium") { 
 		 if (JetPt > 20.00000 && JetPt <= 40.00000){  
 			 if      (fabs(JetEta) > 0.00000   && fabs(JetEta) <= 0.60000) return 0.01447 ;  
 			 else if (fabs(JetEta) > 0.60000 && fabs(JetEta) <= 1.20000) return 0.01891;  
@@ -661,7 +661,7 @@ float BTagSFUtil::TagEfficiencyLight_2017(float JetPt, float JetEta) {
 			 else if (fabs(JetEta) > 1.80000 && fabs(JetEta) <= 2.40000) return 0.01652;  
 			 } 
 		 } 
-	 if (TaggerOP=="DeepCSV_Tight") { 
+	 if (operatingPoint=="DeepCSV_Tight") { 
 		 if (JetPt > 20.00000 && JetPt <= 40.00000){  
 			 if      (fabs(JetEta) > 0.00000   && fabs(JetEta) <= 0.60000) return 0.00158 ;  
 			 else if (fabs(JetEta) > 0.60000 && fabs(JetEta) <= 1.20000) return 0.00193;  
