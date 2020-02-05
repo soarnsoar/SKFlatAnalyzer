@@ -23,11 +23,6 @@ class BTagSFUtil{
   bool IsTagged(float JetDiscriminant, int JetFlavor, float JetPt, float JetEta, int seed);
   bool IsUncorrectedTagged(float JetDiscriminant, int JetFlavor, float JetPt, float JetEta);
 
-
-  // Function to setup rand numb generator
-  void RandInit(int seed);
-
-
   // Functions used in IsTagged to determine tag rate with syst                                                                                                                                                                                                      
   float GetJetSF(int JetFlavor, float JetPt, float JetEta);
   float GetJetSFPeriodDependant(int JetFlavor, float JetPt, float JetEta, TString iperiod, bool isperiodDep, TString tagger);
@@ -35,9 +30,6 @@ class BTagSFUtil{
 
   // New functions for SKAnalzyer
   void SetMCSample(TString s);
-  void SetDataYear(int i);
-  void SetPeriodDependancy(bool b);
-
 
  private:
 

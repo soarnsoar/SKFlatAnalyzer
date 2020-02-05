@@ -15,13 +15,6 @@
 void BTagSFUtil::SetMCSample(TString s){
   MCSample = s;
 }
-void BTagSFUtil::SetDataYear(int i){
-  DataYear = i;
-}
-
-void BTagSFUtil::SetPeriodDependancy(bool b){
-  period_dependancy = b;
-}
 
 BTagSFUtil::BTagSFUtil(string MeasurementType, string BTagAlgorithm,  TString OperatingPoint, int year, bool pd, int SystematicIndex) {
 
@@ -259,7 +252,6 @@ float BTagSFUtil::GetJetSF(int JetFlavor, float JetPt, float JetEta) {
 float BTagSFUtil::GetJetSFPeriodDependant(int JetFlavor, float JetPt, float JetEta, TString tag_key, bool isPeriodDependant, TString taggerName) {
 
   /// https://twiki.cern.ch/twiki/bin/viewauth/CMS/BtagRecommendation80XReReco for pt range and systematic correlations
-  float Btag_SF=1.;
 
   float ThisJetPt = JetPt;
 
@@ -325,6 +317,7 @@ bool BTagSFUtil::IsTagged(float JetDiscriminant, int JetFlavor, float JetPt, flo
     if( !isBTagged ) {
 
       float Btag_eff = JetTagEfficiency(JetFlavor, JetPt, fabs(JetEta));
+      cout << "Btag_eff = " << Btag_eff << endl;
       //=== fraction of jets that need to be upgraded
       float mistagPercent = (1.0 - Btag_SF) / (1.0 - (1./Btag_eff) );
       

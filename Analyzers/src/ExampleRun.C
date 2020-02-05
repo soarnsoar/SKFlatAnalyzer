@@ -330,12 +330,8 @@ void ExampleRun::executeEventFromParameter(AnalyzerParameter param){
 
   for(unsigned int ij = 0 ; ij < jets.size(); ij++){
 
-    if( abs(jets.at(ij).hadronFlavour()) < 4){
-      IsBTagged(jets.at(ij), JetTagging::Parameters(JetTagging::DeepCSV, JetTagging::Medium, JetTagging::incl, JetTagging::comb), true,0);
-    }
-
-    //if(IsBTagged(jets.at(ij), JetTagging::Parameters(JetTagging::DeepCSV, JetTagging::Medium, JetTagging::incl, JetTagging::comb), true,0)) n_bjet_deepcsv_m++; // method for getting btag with SF applied to MC
-    //if(IsBTagged(jets.at(ij), JetTagging::Parameters(JetTagging::DeepCSV, JetTagging::Medium, JetTagging::incl, JetTagging::comb),false,0)) n_bjet_deepcsv_m_noSF++; // method for getting btag with no SF applied to MC
+    if(IsBTagged(jets.at(ij), JetTagging::Parameters(JetTagging::DeepCSV, JetTagging::Medium, JetTagging::incl, JetTagging::comb), true,0)) n_bjet_deepcsv_m++; // method for getting btag with SF applied to MC
+    if(IsBTagged(jets.at(ij), JetTagging::Parameters(JetTagging::DeepCSV, JetTagging::Medium, JetTagging::incl, JetTagging::comb),false,0)) n_bjet_deepcsv_m_noSF++; // method for getting btag with no SF applied to MC
   }
 
   
