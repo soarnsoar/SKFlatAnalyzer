@@ -317,7 +317,6 @@ bool BTagSFUtil::IsTagged(float JetDiscriminant, int JetFlavor, float JetPt, flo
     if( !isBTagged ) {
 
       float Btag_eff = JetTagEfficiency(JetFlavor, JetPt, fabs(JetEta));
-      cout << "Btag_eff = " << Btag_eff << endl;
       //=== fraction of jets that need to be upgraded
       float mistagPercent = (1.0 - Btag_SF) / (1.0 - (1./Btag_eff) );
       

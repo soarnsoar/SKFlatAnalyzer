@@ -203,12 +203,14 @@ void SKFlatValidation::executeEventFromParameter(AnalyzerParameter param){
   std::vector<Electron> electrons = GetElectrons(param.Electron_Tight_ID, MinLeptonPt, 2.5);
 
   std::vector<Jet> myjets = JetsVetoLeptonInside( GetJets("tight", 30., 2.4), electrons, muons);
-  int NBJets=0;
+  int NBJets_NoSF=0;
+  int NBJets_WithSF=0;
   double HT=0;
   for(unsigned int i=0; i<myjets.size(); i++){
     Jet this_jet = myjets.at(i);
     HT += this_jet.Pt();
-    if(IsBTagged(this_jet, JetTagging::Parameters(JetTagging::DeepCSV, JetTagging::Medium, JetTagging::incl, JetTagging::comb), true,0)) NBJets++;
+    if(IsBTagged(this_jet, JetTagging::Parameters(JetTagging::DeepCSV, JetTagging::Medium, JetTagging::incl, JetTagging::comb), false,0)) NBJets_NoSF++;
+    if(IsBTagged(this_jet, JetTagging::Parameters(JetTagging::DeepCSV, JetTagging::Medium, JetTagging::incl, JetTagging::comb), true,0)) NBJets_WithSF++;
   }
 
   //==== Based on which trigger is fired
@@ -335,7 +337,7 @@ void SKFlatValidation::executeEventFromParameter(AnalyzerParameter param){
           //==== High ZMass event
           map_bool_To_Region["HigherDiLeptonPtCut_OS"] = HigherDiLeptonPtCut;
           //==== With B-jet, MET > 30 for dilepton ttbar
-          map_bool_To_Region["WithBJet_METgt30_OS"] = (NBJets>0) && (METv.Pt()>30.);
+          map_bool_To_Region["WithBJet_METgt30_OS"] = (NBJets_WithSF>0) && (METv.Pt()>30.);
         }
         else{
           //==== generic two SS lepton
@@ -345,7 +347,7 @@ void SKFlatValidation::executeEventFromParameter(AnalyzerParameter param){
           //==== High ZMass event
           map_bool_To_Region["HigherDiLeptonPtCut_SS"] = HigherDiLeptonPtCut;
           //==== With B-jet, MET > 30 for dilepton ttbar
-          map_bool_To_Region["WithBJet_METgt30_SS"] = (NBJets>0) && (METv.Pt()>30.);
+          map_bool_To_Region["WithBJet_METgt30_SS"] = (NBJets_WithSF>0) && (METv.Pt()>30.);
         }
 
       }
@@ -377,7 +379,8 @@ void SKFlatValidation::executeEventFromParameter(AnalyzerParameter param){
         JSFillHist(this_region, "HT_"+this_region, HT, weight, 1000, 0., 1000.);
 
         JSFillHist(this_region, "Jet_Size_"+this_region, myjets.size(), weight, 10, 0., 10.);
-        JSFillHist(this_region, "NBJets_"+this_region, NBJets, weight, 10, 0., 10.);
+        JSFillHist(this_region, "NBJets_NoSF_"+this_region, NBJets_NoSF, weight, 10, 0., 10.);
+        JSFillHist(this_region, "NBJets_WithSF_"+this_region, NBJets_WithSF, weight, 10, 0., 10.);
 
         FillLeptonPlots(leps, this_region, weight);
 
