@@ -69,7 +69,6 @@ void MeasureJetTaggingEfficiency::executeEvent(){
 
   /// use same ptmin / eta that CSV files use for SF
   vector<Jet> jets = GetJets("tight", 20., 2.4);
-  std::sort(jets.begin(), jets.end(), PtComparing);
 
   vector<double> vec_etabins = {0.,0.6, 1.2, 1.8, 2.4};
   vector<double> vec_ptbins = {20., 30., 50., 70., 100., 140., 200., 300., 500., 1000.};
@@ -94,7 +93,7 @@ void MeasureJetTaggingEfficiency::executeEvent(){
     if(fabs(jets.at(ij).hadronFlavour()) == 0) flav= "Light";
 
     double this_fabsEta = fabs(jets.at(ij).Eta());
-    double this_Pt = jets.at(ij).Pt()<PtMax ? jets.at(ij).Pt() : PtMax-1;
+    double this_Pt = jets.at(ij).Pt()<PtMax ? jets.at(ij).Pt() : PtMax-1; // put overflows in the last bin
 
     //==== First, fill the denominator
     FillHist("Jet_"+yeartag+"_eff_"+flav+"_denom", this_fabsEta, this_Pt, ev.MCweight(), NEtaBin, etabins, NPtBin, ptbins);

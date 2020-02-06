@@ -120,6 +120,16 @@ void SKFlatValidation::initializeAnalyzer(){
 
 void SKFlatValidation::executeEvent(){
 
+  //==== Found one strange event from /gv0/DATA/SKFlat/Run2Legacy_v4/2016/MC/DYJetsToLL_M-50_TuneCUETP8M1_13TeV-madgraphMLM-pythia8/191229_034335/0000/SKFlatNtuple_2016_MC_541.root
+  //==== (run,event,lumi) = (1,111148613,240842)
+  //==== - This event has "nan" for all pfMET_* variables
+  //==== - I found it contains a jet with "(Pt, Eta, Phi, M, Charge) = 162845	-2.38395	2.04845	250.096	0"
+  //==== - Let's not use this event.. it gives stderr when calculating MT()
+  //==== - The PR that fixes this issue was not included in CMSSW_10_2_18
+  //====   - https://hypernews.cern.ch/HyperNews/CMS/get/JetMET/1969/1.html
+  //====   - https://github.com/cms-sw/cmssw/pull/27988/files
+  if(pfMET_Type1_pt!=pfMET_Type1_pt) return;
+
   //==== Prefire reweight
 
   weight_Prefire = GetPrefireWeight(0);
