@@ -71,8 +71,18 @@ void MeasureJetTaggingEfficiency::executeEvent(){
   vector<Jet> jets = GetJets("tight", 20., 2.4);
   std::sort(jets.begin(), jets.end(), PtComparing);
 
-  double etabins [5] = {0.,0.6, 1.2, 1.8,2.4};
-  double ptbins [7] = {20., 40., 60., 80., 100., 120., 3000.}; 
+  vector<double> vec_etabins = {0.,0.6, 1.2, 1.8, 2.4};
+  vector<double> vec_ptbins = {20., 30., 50., 70., 100., 140., 200., 300., 500., 1000.};
+  double PtMax = vec_ptbins.at( vec_ptbins.size()-1 );
+
+  const int NEtaBin = vec_etabins.size()-1;
+  const int NPtBin = vec_ptbins.size()-1;
+
+  double etabins[NEtaBin+1];
+  for(int i=0; i<NEtaBin+1; i++) etabins[i] = vec_etabins.at(i);
+  double ptbins[NPtBin+1];
+  for(int i=0; i<NPtBin+1; i++) ptbins[i] = vec_ptbins.at(i);
+
   TString yeartag = TString::Itoa(DataYear,10);
 
   //==== code to measure btag efficiencies in TT MC
@@ -83,8 +93,11 @@ void MeasureJetTaggingEfficiency::executeEvent(){
     if(fabs(jets.at(ij).hadronFlavour()) == 4) flav= "C";
     if(fabs(jets.at(ij).hadronFlavour()) == 0) flav= "Light";
 
+    double this_fabsEta = fabs(jets.at(ij).Eta());
+    double this_Pt = jets.at(ij).Pt()<PtMax ? jets.at(ij).Pt() : PtMax-1;
+
     //==== First, fill the denominator
-    FillHist("Jet_"+yeartag+"_eff_"+flav+"_denom", fabs(jets.at(ij).Eta()), jets.at(ij).Pt(), ev.MCweight(), 4, etabins, 6, ptbins);
+    FillHist("Jet_"+yeartag+"_eff_"+flav+"_denom", this_fabsEta, this_Pt, ev.MCweight(), NEtaBin, etabins, NPtBin, ptbins);
 
     //==== Now looping over (tagger,working point)
     for(unsigned i_m=0; i_m<Taggers.size(); i_m++){ 
@@ -96,7 +109,7 @@ void MeasureJetTaggingEfficiency::executeEvent(){
       double this_taggerresult = jets.at(ij).GetTaggerResult( JetTagging::StringToTagger(Tagger) );
 
       if(this_taggerresult>CutValue){
-        FillHist("Jet_"+yeartag+"_"+Tagger+"_"+WP+"_eff_"+flav+"_num", fabs(jets.at(ij).Eta()), jets.at(ij).Pt(), ev.MCweight(), 4, etabins, 6, ptbins);
+        FillHist("Jet_"+yeartag+"_"+Tagger+"_"+WP+"_eff_"+flav+"_num", this_fabsEta, this_Pt, ev.MCweight(), NEtaBin, etabins, NPtBin, ptbins);
       }
 
     } // END Loop (tagger,working point)

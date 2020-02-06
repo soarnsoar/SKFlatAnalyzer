@@ -45,13 +45,15 @@ for Year in Years:
 
     for Tagger in Taggers:
 
+      print>>out,'''  if(taggerName=="{0}"){{'''.format(Tagger)
+
       for WP in WPs:
 
-        print>>out,'''  if(taggerName=="{0}" && operatingPoint=="{1}") {{'''.format(Tagger,WP)
+        print>>out,'''    if(operatingPoint=="{0}"){{'''.format(WP)
 
         h_Eff = f.Get('Jet_'+Year+'_'+Tagger+'_'+WP+'_eff_'+Flavour+'_num')
         if not h_Eff:
-          out.write('  }\n')
+          out.write('    }\n')
           continue
         h_Eff.Divide(h_Den)
 
@@ -60,7 +62,7 @@ for Year in Years:
           y_l = h_Eff.GetYaxis().GetBinLowEdge(iy+1)
           y_r = h_Eff.GetYaxis().GetBinUpEdge(iy+1)
 
-          print>>out,'''    if (JetPt > {0} && JetPt <= {1}){{'''.format(y_l,y_r)
+          print>>out,'''      if(JetPt > {0} && JetPt <= {1}){{'''.format(y_l,y_r)
 
           for ix in range(0,h_Eff.GetXaxis().GetNbins()):
 
@@ -69,14 +71,17 @@ for Year in Years:
 
             this_eff_str = '%.5f'%(h_Eff.GetBinContent(ix+1,iy+1))
 
-            print>>out,'''      if (fabs(JetEta) > {0} && fabs(JetEta) <= {1}) return {2};'''.format(x_l,x_r,this_eff_str)
+            print>>out,'''        if(fabs(JetEta) > {0} && fabs(JetEta) <= {1}) return {2};'''.format(x_l,x_r,this_eff_str)
 
             #print '%s\t%s\t%s\t\t[%f,%f]\t[%f,%f]'%(Tagger,Flavour,WP,x_l,x_r,y_l,y_r)
-          out.write('    }\n') ## End of this pt range
+          out.write('      }\n') ## End of this pt range
 
-        out.write('  }\n') ## end of this working point
+        out.write('    }\n') ## end of this working point
 
-    print>>out,'''  cout << "[BTagSFUtil::TagEfficiency{1}_{0}] No eff found for taggerName = " << taggerName << ", operatingPoint = " << operatingPoint << endl;'''.format(Year,Flavour)
+      out.write('  }  \n') ## end of this tagger
+    
+    print>>out,'''  cout << "[BTagSFUtil::TagEfficiency{1}_{0}] No eff found for taggerName = " << taggerName << ", operatingPoint = " << operatingPoint << endl;
+  cout << "[BTagSFUtil::TagEfficiency{1}_{0}] Or, wrong pt and eta range : pt = " << JetPt << ", eta = " << JetEta << endl;'''.format(Year,Flavour)
     out.write('  return 1.;\n')
     out.write('}\n') ## end of this flavour
 

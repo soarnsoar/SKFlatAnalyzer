@@ -144,21 +144,25 @@ BTagSFUtil::~BTagSFUtil() {
 
 float BTagSFUtil::JetTagEfficiency(int JetFlavor, float JetPt, float JetEta) {
 
+  float ThisJetPt = JetPt;
+
+  if     (JetPt > 999.99) ThisJetPt = 999.99;
+  else if(JetPt < 20.   ) ThisJetPt = 20.;
   
   if(DataYear == 2016){
-    if (abs(JetFlavor)==5) return TagEfficiencyB_2016(JetPt, JetEta);
-    else if (abs(JetFlavor)==4) return TagEfficiencyC_2016(JetPt, JetEta);
-    else return TagEfficiencyLight_2016(JetPt, JetEta);
+    if (abs(JetFlavor)==5) return TagEfficiencyB_2016(ThisJetPt, JetEta);
+    else if (abs(JetFlavor)==4) return TagEfficiencyC_2016(ThisJetPt, JetEta);
+    else return TagEfficiencyLight_2016(ThisJetPt, JetEta);
   }
   else  if(DataYear == 2017){
-    if (abs(JetFlavor)==5) return TagEfficiencyB_2017(JetPt, JetEta);
-    else if (abs(JetFlavor)==4) return TagEfficiencyC_2017(JetPt, JetEta);
-    else return TagEfficiencyLight_2017(JetPt, JetEta);
+    if (abs(JetFlavor)==5) return TagEfficiencyB_2017(ThisJetPt, JetEta);
+    else if (abs(JetFlavor)==4) return TagEfficiencyC_2017(ThisJetPt, JetEta);
+    else return TagEfficiencyLight_2017(ThisJetPt, JetEta);
   }
   else  if(DataYear == 2018){
-    if (abs(JetFlavor)==5) return TagEfficiencyB_2018(JetPt, JetEta);
-    else if (abs(JetFlavor)==4) return TagEfficiencyC_2018(JetPt, JetEta);
-    else return TagEfficiencyLight_2018(JetPt, JetEta);
+    if (abs(JetFlavor)==5) return TagEfficiencyB_2018(ThisJetPt, JetEta);
+    else if (abs(JetFlavor)==4) return TagEfficiencyC_2018(ThisJetPt, JetEta);
+    else return TagEfficiencyLight_2018(ThisJetPt, JetEta);
   }
 
   return -999999.;
