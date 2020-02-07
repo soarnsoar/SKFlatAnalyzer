@@ -22,6 +22,7 @@
 
 #include "TDirectoryHelper.h"
 #include "GenFinderForDY.h"
+#include "BTagCalibrationStandalone.h"
 
 class MCCorrection{
 
@@ -73,6 +74,15 @@ public:
   TH2D *hist_DYPtReweight_2D;
   GenFinderForDY *genFinderDY;
   double GetOfficialDYReweight(const vector<Gen>& gens, int sys=0);
+
+  //==== B Tagging
+
+  
+  std::vector<JetTagging::Parameters> jtps;
+  std::map< TString, BTagCalibrationReader* > map_BTagCalibrationReader;
+
+  void SetJetTaggingParameters(std::vector<JetTagging::Parameters> v);
+
 };
 
 #endif
