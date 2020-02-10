@@ -48,6 +48,7 @@ void ExampleRun::initializeAnalyzer(){
   //==== B-Tagging
   //==== add taggers and WP that you want to use in analysis
   std::vector<JetTagging::Parameters> jtps;
+  //==== If you want to use 1a or 2a method,
   jtps.push_back( JetTagging::Parameters(JetTagging::DeepCSV, JetTagging::Medium, JetTagging::incl, JetTagging::comb) );
 
   //================================
@@ -322,13 +323,26 @@ void ExampleRun::executeEventFromParameter(AnalyzerParameter param){
   //==== 2) jets : similar, but also when applying new JEC, ordering is changes. This is important if you use leading jets
   std::sort(jets.begin(), jets.end(), PtComparing);
 
-  int n_bjet_deepcsv_m=0;
-  int n_bjet_deepcsv_m_noSF=0;
+  int NBJets_NoSF(0), NBJets_WithSF_2a(0);
+  JetTagging::Parameters jtp_DeepCSV_Medium = JetTagging::Parameters(JetTagging::DeepCSV,
+                                                                     JetTagging::Medium,
+                                                                     JetTagging::incl, JetTagging::comb);
 
+  //==== b tagging
+
+  //==== method 1a)
+  //==== multiply "btagWeight" to the event weight
+  double btagWeight = mcCorr->GetBTaggingReweight_1a(jets, jtp_DeepCSV_Medium);
+
+  //==== method 2a)
   for(unsigned int ij = 0 ; ij < jets.size(); ij++){
 
-    //if(IsBTagged(jets.at(ij), JetTagging::Parameters(JetTagging::DeepCSV, JetTagging::Medium, JetTagging::incl, JetTagging::comb), true,0)) n_bjet_deepcsv_m++; // method for getting btag with SF applied to MC
-    //if(IsBTagged(jets.at(ij), JetTagging::Parameters(JetTagging::DeepCSV, JetTagging::Medium, JetTagging::incl, JetTagging::comb),false,0)) n_bjet_deepcsv_m_noSF++; // method for getting btag with no SF applied to MC
+    double this_discr = jets.at(ij).GetTaggerResult(JetTagging::DeepCSV);
+    //==== No SF
+    if( this_discr > mcCorr->GetJetTaggingCutValue(JetTagging::DeepCSV, JetTagging::Medium) ) NBJets_NoSF++;
+    //==== 2a
+    if( mcCorr->IsBTagged_2a(jtp_DeepCSV_Medium, jets.at(ij)) ) NBJets_WithSF_2a++;
+
   }
 
   
