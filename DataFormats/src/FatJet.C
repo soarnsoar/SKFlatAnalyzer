@@ -117,7 +117,7 @@ bool FatJet::PassID(TString ID) const {
 
 }
 
-double FatJet::GetTaggerResult(JetTagging::Tagger tg){
+double FatJet::GetTaggerResult(JetTagging::Tagger tg) const{
   if(tg==JetTagging::CSVv2) return j_CSVv2;
   else if(tg==JetTagging::DeepCSV) return j_DeepCSV;
   else if(tg==JetTagging::DeepJet) return j_DeepFlavour_b+j_DeepFlavour_bb+j_DeepFlavour_lepb;

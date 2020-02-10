@@ -30,30 +30,46 @@ Flavours = [
 'C',
 'Light',
 ]
+cond_Flavours = [
+'JetFlavor==5',
+'JetFlavor==4',
+'JetFlavor<=3',
+]
+
+out = open('JetTagEfficiencies.C','w')
+print>>out,'''double MCCorrection::GetMCJetTagEff(JetTagging::Tagger tagger, JetTagging::WP wp, int JetFlavor, double JetPt, double JetEta){
+
+  if(JetPt<20) JetPt = 20.;
+  if(JetPt>=1000.) JetPt = 999.;
+
+'''
 
 for Year in Years:
 
   f = ROOT.TFile(SKFlatOutputDir+SKFlatV+'/MeasureJetTaggingEfficiency/'+Year+'/MeasureJetTaggingEfficiency_'+sample+'.root')
 
-  out = open('BTagEfficienciesTTbar'+Year.replace('20','')+'.C','w')
+  out.write('  if(DataYear==%s){\n'%Year)
 
-  for Flavour in Flavours:
+  for it_Flavour in range(0,len(Flavours)):
+
+    Flavour = Flavours[it_Flavour]
+    cond_Flavour = cond_Flavours[it_Flavour]
 
     h_Den = f.Get('Jet_'+Year+'_eff_'+Flavour+'_denom')
 
-    print>>out,'''float BTagSFUtil::TagEfficiency{1}_{0}(float JetPt, float JetEta) {{'''.format(Year,Flavour)
+    out.write('    if('+cond_Flavour+'){\n')
 
     for Tagger in Taggers:
 
-      print>>out,'''  if(taggerName=="{0}"){{'''.format(Tagger)
+      print>>out,'''      if(tagger==JetTagging::{0}){{'''.format(Tagger)
 
       for WP in WPs:
 
-        print>>out,'''    if(operatingPoint=="{0}"){{'''.format(WP)
+        print>>out,'''        if(wp==JetTagging::{0}){{'''.format(WP)
 
         h_Eff = f.Get('Jet_'+Year+'_'+Tagger+'_'+WP+'_eff_'+Flavour+'_num')
         if not h_Eff:
-          out.write('    }\n')
+          out.write('        }\n')
           continue
         h_Eff.Divide(h_Den)
 
@@ -62,7 +78,7 @@ for Year in Years:
           y_l = h_Eff.GetYaxis().GetBinLowEdge(iy+1)
           y_r = h_Eff.GetYaxis().GetBinUpEdge(iy+1)
 
-          print>>out,'''      if(JetPt > {0} && JetPt <= {1}){{'''.format(y_l,y_r)
+          print>>out,'''          if(JetPt >= {0} && JetPt < {1}){{'''.format(y_l,y_r)
 
           for ix in range(0,h_Eff.GetXaxis().GetNbins()):
 
@@ -71,19 +87,22 @@ for Year in Years:
 
             this_eff_str = '%.5f'%(h_Eff.GetBinContent(ix+1,iy+1))
 
-            print>>out,'''        if(fabs(JetEta) > {0} && fabs(JetEta) <= {1}) return {2};'''.format(x_l,x_r,this_eff_str)
+            print>>out,'''            if(fabs(JetEta) >= {0} && fabs(JetEta) < {1}) return {2};'''.format(x_l,x_r,this_eff_str)
 
             #print '%s\t%s\t%s\t\t[%f,%f]\t[%f,%f]'%(Tagger,Flavour,WP,x_l,x_r,y_l,y_r)
-          out.write('      }\n') ## End of this pt range
+          out.write('          }\n') ## End of this pt range
 
-        out.write('    }\n') ## end of this working point
+        out.write('        }\n') ## end of this working point
 
-      out.write('  }  \n') ## end of this tagger
-    
-    print>>out,'''  cout << "[BTagSFUtil::TagEfficiency{1}_{0}] No eff found for taggerName = " << taggerName << ", operatingPoint = " << operatingPoint << endl;
-  cout << "[BTagSFUtil::TagEfficiency{1}_{0}] Or, wrong pt and eta range : pt = " << JetPt << ", eta = " << JetEta << endl;'''.format(Year,Flavour)
-    out.write('  return 1.;\n')
-    out.write('}\n') ## end of this flavour
+      out.write('      }\n') ## end of this tagger
 
-  out.close()
-  print 'cp '+'BTagEfficienciesTTbar'+Year.replace('20','')+'.C'+' '+SKFlat_WD+'/AnalyzerTools/src/BTagEfficiencies/'
+    out.write('    }\n') ## end of this flavour
+
+  out.write('  }\n') ## end of this Year
+
+print>>out,'''  cout << "[MCCorrection::GetMCJetTagEff] No eff found for tagger = " << tagger << ", wp = " << wp << endl;
+  cout << "[MCCorrection::GetMCJetTagEff] Or, wrong pt and eta range : pt = " << JetPt << ", eta = " << JetEta << endl;'''.format(Year,Flavour)
+out.write('  return 1.;\n')
+out.write('}\n') ## end of this flavour
+
+out.close()

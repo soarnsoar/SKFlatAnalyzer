@@ -103,7 +103,7 @@ bool Jet::PassID(TString ID) const {
 
 }
 
-double Jet::GetTaggerResult(JetTagging::Tagger tg){
+double Jet::GetTaggerResult(JetTagging::Tagger tg) const {
 
   if(tg==JetTagging::CSVv2) return j_CSVv2;
   else if(tg==JetTagging::DeepCSV) return j_DeepCSV;

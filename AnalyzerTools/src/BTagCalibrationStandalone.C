@@ -277,8 +277,10 @@ BTagCalibration::BTagCalibration(const std::string &taggr):
 {}
 
 BTagCalibration::BTagCalibration(const std::string &taggr,
+                                 const std::string &measurementType,
                                  const std::string &filename):
-  tagger_(taggr)
+  tagger_(taggr),
+  measurementType_(measurementType)
 {
   std::ifstream ifs(filename);
   if (!ifs.good()) {
@@ -330,6 +332,7 @@ void BTagCalibration::readCSV(std::istream &s)
     if (line.empty()) {  // skip empty lines
       continue;
     }
+    if(line.find(measurementType_)==std::string::npos) continue;
     addEntry(BTagEntry(line));
   }
 }
@@ -457,7 +460,6 @@ throw std::exception();
     if (be.params.jetFlavor != jf) {
       continue;
     }
-
     TmpEntry te;
     te.etaMin = be.params.etaMin;
     te.etaMax = be.params.etaMax;
@@ -507,9 +509,11 @@ double BTagCalibrationReader::BTagCalibrationReaderImpl::eval(
     ){
       if (use_discr) {                                    // discr. reshaping?
         if (e.discrMin <= discr && discr < e.discrMax) {  // check discr
+          //std::cout << "[BTagCalibrationReader::BTagCalibrationReaderImpl::eval] discr = " << discr << ", formula = " <<e.func.GetExpFormula () << ", sf = " << e.func.Eval(discr) << std::endl;
           return e.func.Eval(discr);
         }
       } else {
+        //std::cout << "[BTagCalibrationReader::BTagCalibrationReaderImpl::eval] Out of range : discr = " << discr << ", e.discrMin = " << e.discrMin << ", e.discrMax = " << e.discrMax << "; formula = " <<e.func.GetExpFormula () << std::endl;
         return e.func.Eval(pt);
       }
     }
@@ -534,6 +538,7 @@ double BTagCalibrationReader::BTagCalibrationReaderImpl::eval_auto_bounds(
   }
    
   if (eta_is_out_of_bounds) {
+    //std::cout << "[BTagCalibrationReader::BTagCalibrationReaderImpl::eval_auto_bounds] eta = " << eta << ", sf_bounds_eta.first = " << sf_bounds_eta.first << ", sf_bounds_eta.second = " << sf_bounds_eta.second << std::endl;
     return 1.;
   }
 
@@ -618,9 +623,11 @@ std::pair<float, float> BTagCalibrationReader::BTagCalibrationReaderImpl::min_ma
 
   const auto &entries = tmpData_.at(jf);
   float min_eta = 0., max_eta = 0.;
+  //std::cout << "[BTagCalibrationReader::BTagCalibrationReaderImpl::min_max_eta] entries.size() = " << entries.size() << std::endl;
   for (const auto & e: entries) {
 
       if (use_discr) {                                    // discr. reshaping?
+        //std::cout << "[BTagCalibrationReader::BTagCalibrationReaderImpl::min_max_eta] e.func.GetExpFormula () = " << e.func.GetExpFormula () << std::endl;
         if (e.discrMin <= discr && discr < e.discrMax) {  // check discr
           min_eta = min_eta < e.etaMin ? min_eta : e.etaMin;
           max_eta = max_eta > e.etaMax ? max_eta : e.etaMax;

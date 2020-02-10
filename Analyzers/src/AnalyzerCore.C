@@ -900,11 +900,14 @@ bool AnalyzerCore::PassMETFilter(){
 void AnalyzerCore::initializeAnalyzerTools(){
 
   //==== MCCorrection
+  mcCorr->SetMCSample(MCSample);
+  mcCorr->SetDataYear(DataYear);
+  mcCorr->SetIsDATA(IsDATA);
+  mcCorr->SetEventInfo(run, lumi, event);
+  mcCorr->SetIsFastSim(IsFastSim);
   if(!IsDATA){
-    mcCorr->SetMCSample(MCSample);
-    mcCorr->SetDataYear(DataYear);
-    mcCorr->SetIsFastSim(IsFastSim);
     mcCorr->ReadHistograms();
+    mcCorr->SetupJetTagging();
   }
 
   puppiCorr->SetDataYear(DataYear);

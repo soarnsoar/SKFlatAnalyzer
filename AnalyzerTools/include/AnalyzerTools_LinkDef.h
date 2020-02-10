@@ -14,6 +14,5 @@
 #pragma link C++ class PDFReweight+;
 #pragma link C++ class GeneralizedEndpoint+;
 #pragma link C++ class GenFinderForDY+;
-#pragma link C++ class BTagCalibrationStandalone+;
 
 #endif

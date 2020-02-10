@@ -110,7 +110,7 @@ class BTagCalibration
 public:
   BTagCalibration() {}
   BTagCalibration(const std::string &tagger);
-  BTagCalibration(const std::string &tagger, const std::string &filename);
+  BTagCalibration(const std::string &tagger, const std::string &measurementType, const std::string &filename);
   ~BTagCalibration() {}
 
   std::string tagger() const {return tagger_;}
@@ -126,7 +126,7 @@ public:
 protected:
   static std::string token(const BTagEntry::Parameters &par);
 
-  std::string tagger_;
+  std::string tagger_, measurementType_;
   std::map<std::string, std::vector<BTagEntry> > data_;
 
 };

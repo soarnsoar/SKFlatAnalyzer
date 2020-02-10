@@ -100,6 +100,10 @@ namespace JetTagging{
     WP j_WP;
     MeasurmentType j_MeasurmentType_Light, j_MeasurmentType_Heavy;
 
+    inline void Print(){
+      printf("(%s,%s,%s,%s)\n",TaggerToString(j_Tagger).c_str(),WPToString(j_WP).c_str(),MeasurmentTypeToString(j_MeasurmentType_Light).c_str(),MeasurmentTypeToString(j_MeasurmentType_Heavy).c_str());
+    }
+
   };
 
 } // namespace

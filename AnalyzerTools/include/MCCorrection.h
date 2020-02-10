@@ -23,6 +23,7 @@
 #include "TDirectoryHelper.h"
 #include "GenFinderForDY.h"
 #include "BTagCalibrationStandalone.h"
+#include "TRandom3.h"
 
 class MCCorrection{
 
@@ -39,6 +40,12 @@ public:
 
   int DataYear;
   void SetDataYear(int i);
+
+  bool IsDATA;
+  void SetIsDATA(bool b);
+
+  int run,lumi,event;
+  void SetEventInfo(int r, int l, int e);
 
   bool IsFastSim;
   void SetIsFastSim(bool b);
@@ -75,13 +82,33 @@ public:
   GenFinderForDY *genFinderDY;
   double GetOfficialDYReweight(const vector<Gen>& gens, int sys=0);
 
-  //==== B Tagging
+  //==== b tagging
 
-  
-  std::vector<JetTagging::Parameters> jtps;
-  std::map< TString, BTagCalibrationReader* > map_BTagCalibrationReader;
+  double GetJetTaggingCutValue(JetTagging::Tagger tagger, JetTagging::WP wp);
 
+  std::vector<JetTagging::Parameters> jetTaggingPars;
   void SetJetTaggingParameters(std::vector<JetTagging::Parameters> v);
+
+  std::map< std::string, BTagCalibrationReader* > map_BTagCalibrationReader;
+  void SetupJetTagging();
+
+  TH2D *hist_JetTagEff_B;
+  TH2D *hist_JetTagEff_C;
+  TH2D *hist_JetTagEff_Light;
+
+  double GetMCJetTagEff(JetTagging::Tagger tagger, JetTagging::WP wp, int JetFlavor, double JetPt, double JetEta);
+  double GetJetTaggingSF(JetTagging::Parameters jtp, int JetFlavor, double JetPt, double JetEta, double Jetdiscr, string Syst="central");
+
+  //==== https://twiki.cern.ch/twiki/bin/viewauth/CMS/BTagSFMethods
+
+  //==== 1a) Event reweighting using scale factors and MC b-tagging efficiencies
+  double GetBTaggingReweight_1a(const vector<Jet>& jets, JetTagging::Parameters jtp, string Syst="central");
+
+  //==== 2a) Jet-by-jet updating of the b-tagging status
+  bool IsBTagged_2a(JetTagging::Parameters jtp, const Jet& jet, string Syst="central");
+  //==== 2b) Reshaping of the b-tag discriminator distribution
+  double GetScaledJetTaggerResult_2b(JetTagging::Parameters jtp, const Jet& jet, string Syst="central");
+  bool IsBTagged_2b(JetTagging::Parameters jtp, const Jet& jet, string Syst="central");
 
 };
 

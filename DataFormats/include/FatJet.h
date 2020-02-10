@@ -39,7 +39,7 @@ public:
 
   bool PassID(TString ID) const;
 
-  double GetTaggerResult(JetTagging::Tagger tg);
+  double GetTaggerResult(JetTagging::Tagger tg) const;
 
   void SetPuppiTaus(double t1, double t2, double t3, double t4);
   double PuppiTau1() const { return j_puppi_tau1; }

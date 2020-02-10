@@ -112,6 +112,8 @@ void SKFlatValidation::initializeAnalyzer(){
   //==== add taggers and WP that you want to use in analysis
   std::vector<JetTagging::Parameters> jtps;
   jtps.push_back( JetTagging::Parameters(JetTagging::DeepCSV, JetTagging::Medium, JetTagging::incl, JetTagging::comb) );
+  jtps.push_back( JetTagging::Parameters(JetTagging::DeepCSV, JetTagging::Medium, JetTagging::iterativefit, JetTagging::iterativefit) );
+  mcCorr->SetJetTaggingParameters(jtps);
 
 }
 
@@ -210,12 +212,34 @@ void SKFlatValidation::executeEventFromParameter(AnalyzerParameter param){
   std::vector<Electron> electrons = GetElectrons(param.Electron_Tight_ID, MinLeptonPt, 2.5);
 
   std::vector<Jet> myjets = JetsVetoLeptonInside( GetJets("tight", 30., 2.4), electrons, muons);
-  int NBJets_NoSF=0;
-  int NBJets_WithSF=0;
+  int NBJets_NoSF(0), NBJets_WithSF_2a(0), NBJets_WithSF_2b(0);
   double HT=0;
+
+  JetTagging::Parameters jtp_DeepCSV_Medium = JetTagging::Parameters(JetTagging::DeepCSV,
+                                                                     JetTagging::Medium,
+                                                                     JetTagging::incl, JetTagging::comb);
+  JetTagging::Parameters jtp_DeepCSV_Medium_Reshape = JetTagging::Parameters(JetTagging::DeepCSV,
+                                                                             JetTagging::Medium,
+                                                                             JetTagging::iterativefit, JetTagging::iterativefit);
+
+  //==== b tag SF; method 1a
+  double btagWeight = mcCorr->GetBTaggingReweight_1a(myjets, jtp_DeepCSV_Medium);
+
   for(unsigned int i=0; i<myjets.size(); i++){
     Jet this_jet = myjets.at(i);
     HT += this_jet.Pt();
+
+    double this_discr = this_jet.GetTaggerResult(JetTagging::DeepCSV);
+
+    //==== No SF
+    if( this_discr > mcCorr->GetJetTaggingCutValue(JetTagging::DeepCSV, JetTagging::Medium) ) NBJets_NoSF++;
+
+    //==== 2a
+    if( mcCorr->IsBTagged_2a(jtp_DeepCSV_Medium, this_jet) ) NBJets_WithSF_2a++;
+
+    //==== 2b
+    if( mcCorr->IsBTagged_2b(jtp_DeepCSV_Medium_Reshape, this_jet) ) NBJets_WithSF_2b++;
+
   }
 
   //==== Based on which trigger is fired
@@ -341,8 +365,10 @@ void SKFlatValidation::executeEventFromParameter(AnalyzerParameter param){
           map_bool_To_Region["OnZ_OS"] = IsOnZ(Z.M(), 15.);
           //==== High ZMass event
           map_bool_To_Region["HigherDiLeptonPtCut_OS"] = HigherDiLeptonPtCut;
+          //==== OffZ, at least two jets, MET > 30 for dilepton ttbar
+          map_bool_To_Region["mllgt110_TwoJets_METgt30_OS"] = (Z.M() > 110) && (myjets.size()>2) && (METv.Pt()>30.);
           //==== With B-jet, MET > 30 for dilepton ttbar
-          map_bool_To_Region["WithBJet_METgt30_OS"] = (NBJets_WithSF>0) && (METv.Pt()>30.);
+          map_bool_To_Region["WithBJet_METgt30_OS"] = (NBJets_NoSF>0) && (METv.Pt()>30.);
         }
         else{
           //==== generic two SS lepton
@@ -351,8 +377,10 @@ void SKFlatValidation::executeEventFromParameter(AnalyzerParameter param){
           map_bool_To_Region["OnZ_SS"] = IsOnZ(Z.M(), 15.);
           //==== High ZMass event
           map_bool_To_Region["HigherDiLeptonPtCut_SS"] = HigherDiLeptonPtCut;
+          //==== OffZ, at least two jets, MET > 30 for dilepton ttbar
+          map_bool_To_Region["mllgt110_TwoJets_METgt30_SS"] = (Z.M() > 110) && (myjets.size()>2) && (METv.Pt()>30.);
           //==== With B-jet, MET > 30 for dilepton ttbar
-          map_bool_To_Region["WithBJet_METgt30_SS"] = (NBJets_WithSF>0) && (METv.Pt()>30.);
+          map_bool_To_Region["WithBJet_METgt30_SS"] = (NBJets_NoSF>0) && (METv.Pt()>30.);
         }
 
       }
@@ -385,7 +413,20 @@ void SKFlatValidation::executeEventFromParameter(AnalyzerParameter param){
 
         JSFillHist(this_region, "Jet_Size_"+this_region, myjets.size(), weight, 10, 0., 10.);
         JSFillHist(this_region, "NBJets_NoSF_"+this_region, NBJets_NoSF, weight, 10, 0., 10.);
-        JSFillHist(this_region, "NBJets_WithSF_"+this_region, NBJets_WithSF, weight, 10, 0., 10.);
+        JSFillHist(this_region, "NBJets_WithSF_1a_"+this_region, NBJets_NoSF, weight*btagWeight, 10, 0., 10.);
+        JSFillHist(this_region, "NBJets_WithSF_2a_"+this_region, NBJets_WithSF_2a, weight, 10, 0., 10.);
+        JSFillHist(this_region, "NBJets_WithSF_2b_"+this_region, NBJets_WithSF_2b, weight, 10, 0., 10.);
+
+        for(unsigned int ij=0; ij<myjets.size(); ij++){
+          TString this_itoa = TString::Itoa(ij,10);
+
+          double this_discr = myjets.at(ij).GetTaggerResult(JetTagging::DeepCSV);
+          JSFillHist(this_region, "Jet_"+this_itoa+"_DeepCSV_"+this_region, this_discr, weight, 120, 0., 1.2);
+
+          double this_discr_scaled = mcCorr->GetScaledJetTaggerResult_2b(jtp_DeepCSV_Medium_Reshape, myjets.at(ij));
+          JSFillHist(this_region, "Jet_"+this_itoa+"_DeepCSV_Scaled_"+this_region, this_discr_scaled, weight, 120, 0., 1.2);
+          //cout << myjets.at(ij).Pt() << "\t" << myjets.at(ij).Eta() << "\t" << myjets.at(ij).hadronFlavour() << "\t" << this_discr << "\t" << this_discr_scaled << "\t" << this_discr_scaled/this_discr << endl;
+        }
 
         FillLeptonPlots(leps, this_region, weight);
 
