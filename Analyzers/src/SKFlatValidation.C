@@ -109,10 +109,15 @@ void SKFlatValidation::initializeAnalyzer(){
   }
 
   //==== B-Tagging
+
   //==== add taggers and WP that you want to use in analysis
   std::vector<JetTagging::Parameters> jtps;
+  //==== If you want to use 1a and 2a method
   jtps.push_back( JetTagging::Parameters(JetTagging::DeepCSV, JetTagging::Medium, JetTagging::incl, JetTagging::comb) );
+  //==== If you want to use 2b, which is a reshaping method
   jtps.push_back( JetTagging::Parameters(JetTagging::DeepCSV, JetTagging::Medium, JetTagging::iterativefit, JetTagging::iterativefit) );
+  //==== now put temporary vector (jtps) to MCCorrection::jetTaggingPars
+  //==== jetTaggingPars will be looped over and used to read csv files when initializeAnalyzerTools() is ran.
   mcCorr->SetJetTaggingParameters(jtps);
 
 }
