@@ -50,6 +50,8 @@ void ExampleRun::initializeAnalyzer(){
   std::vector<JetTagging::Parameters> jtps;
   //==== If you want to use 1a or 2a method,
   jtps.push_back( JetTagging::Parameters(JetTagging::DeepCSV, JetTagging::Medium, JetTagging::incl, JetTagging::comb) );
+  //==== set
+  mcCorr->SetJetTaggingParameters(jtps);
 
   //================================
   //==== Example 2
