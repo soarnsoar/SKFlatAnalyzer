@@ -13,7 +13,7 @@ void MeasureJetTaggingEfficiency::initializeAnalyzer(){
   WPs.clear();
   CutValues.clear();
 
-  ifstream in_tagger(btagpath+"/taggermap.txt");
+  ifstream in_tagger(btagpath+"/CutValues.txt");
   string btaggerline;
   while(getline(in_tagger,btaggerline)){
     std::istringstream is_tag( btaggerline );
@@ -71,7 +71,7 @@ void MeasureJetTaggingEfficiency::executeEvent(){
   vector<Jet> jets = GetJets("tight", 20., 2.4);
 
   vector<double> vec_etabins = {0.,0.6, 1.2, 1.8, 2.4};
-  vector<double> vec_ptbins = {20., 30., 50., 70., 100., 140., 200., 300., 500., 1000.};
+  vector<double> vec_ptbins = {20., 30., 50., 70., 100., 140., 200., 300., 600., 1000.};
   double PtMax = vec_ptbins.at( vec_ptbins.size()-1 );
 
   const int NEtaBin = vec_etabins.size()-1;
