@@ -12,5 +12,7 @@
 #pragma link C++ class SKFlatValidation+;
 #pragma link C++ class SkimTree_LRSMHighPt+;
 #pragma link C++ class JetTagging+;
+#pragma link C++ class SkimTree_Dilepton+;
+#pragma link C++ class SkimTree_HNFake+;
 
 #endif
