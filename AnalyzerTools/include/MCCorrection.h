@@ -103,12 +103,11 @@ public:
 
   //==== 1a) Event reweighting using scale factors and MC b-tagging efficiencies
   double GetBTaggingReweight_1a(const vector<Jet>& jets, JetTagging::Parameters jtp, string Syst="central");
+  //==== 1d) Event reweighting using discriminator-dependent scale factors
+  double GetBTaggingReweight_1d(const vector<Jet>& jets, JetTagging::Parameters jtp, string Syst="central");
 
   //==== 2a) Jet-by-jet updating of the b-tagging status
   bool IsBTagged_2a(JetTagging::Parameters jtp, const Jet& jet, string Syst="central");
-  //==== 2b) Reshaping of the b-tag discriminator distribution
-  double GetScaledJetTaggerResult_2b(JetTagging::Parameters jtp, const Jet& jet, string Syst="central");
-  bool IsBTagged_2b(JetTagging::Parameters jtp, const Jet& jet, string Syst="central");
 
 };
 

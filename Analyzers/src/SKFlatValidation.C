@@ -114,7 +114,7 @@ void SKFlatValidation::initializeAnalyzer(){
   std::vector<JetTagging::Parameters> jtps;
   //==== If you want to use 1a and 2a method
   jtps.push_back( JetTagging::Parameters(JetTagging::DeepCSV, JetTagging::Medium, JetTagging::incl, JetTagging::comb) );
-  //==== If you want to use 2b, which is a reshaping method
+  //==== If you want to use 1d, which is a reshaping method
   jtps.push_back( JetTagging::Parameters(JetTagging::DeepCSV, JetTagging::Medium, JetTagging::iterativefit, JetTagging::iterativefit) );
   //==== now put temporary vector (jtps) to MCCorrection::jetTaggingPars
   //==== jetTaggingPars will be looped over and used to read csv files when initializeAnalyzerTools() is ran.
@@ -217,7 +217,7 @@ void SKFlatValidation::executeEventFromParameter(AnalyzerParameter param){
   std::vector<Electron> electrons = GetElectrons(param.Electron_Tight_ID, MinLeptonPt, 2.5);
 
   std::vector<Jet> myjets = JetsVetoLeptonInside( GetJets("tight", 30., 2.4), electrons, muons);
-  int NBJets_NoSF(0), NBJets_WithSF_2a(0), NBJets_WithSF_2b(0);
+  int NBJets_NoSF(0), NBJets_WithSF_2a(0);
   double HT=0;
 
   JetTagging::Parameters jtp_DeepCSV_Medium = JetTagging::Parameters(JetTagging::DeepCSV,
@@ -228,7 +228,8 @@ void SKFlatValidation::executeEventFromParameter(AnalyzerParameter param){
                                                                              JetTagging::iterativefit, JetTagging::iterativefit);
 
   //==== b tag SF; method 1a
-  double btagWeight = mcCorr->GetBTaggingReweight_1a(myjets, jtp_DeepCSV_Medium);
+  double btagWeight_1a = mcCorr->GetBTaggingReweight_1a(myjets, jtp_DeepCSV_Medium);
+  double btagWeight_1d = mcCorr->GetBTaggingReweight_1d(myjets, jtp_DeepCSV_Medium_Reshape);
 
   for(unsigned int i=0; i<myjets.size(); i++){
     Jet this_jet = myjets.at(i);
@@ -241,9 +242,6 @@ void SKFlatValidation::executeEventFromParameter(AnalyzerParameter param){
 
     //==== 2a
     if( mcCorr->IsBTagged_2a(jtp_DeepCSV_Medium, this_jet) ) NBJets_WithSF_2a++;
-
-    //==== 2b
-    if( mcCorr->IsBTagged_2b(jtp_DeepCSV_Medium_Reshape, this_jet) ) NBJets_WithSF_2b++;
 
   }
 
@@ -418,19 +416,16 @@ void SKFlatValidation::executeEventFromParameter(AnalyzerParameter param){
 
         JSFillHist(this_region, "Jet_Size_"+this_region, myjets.size(), weight, 10, 0., 10.);
         JSFillHist(this_region, "NBJets_NoSF_"+this_region, NBJets_NoSF, weight, 10, 0., 10.);
-        JSFillHist(this_region, "NBJets_WithSF_1a_"+this_region, NBJets_NoSF, weight*btagWeight, 10, 0., 10.);
+        JSFillHist(this_region, "NBJets_WithSF_1a_"+this_region, NBJets_NoSF, weight*btagWeight_1a, 10, 0., 10.);
+        JSFillHist(this_region, "NBJets_WithSF_1d_"+this_region, NBJets_NoSF, weight*btagWeight_1d, 10, 0., 10.);
         JSFillHist(this_region, "NBJets_WithSF_2a_"+this_region, NBJets_WithSF_2a, weight, 10, 0., 10.);
-        JSFillHist(this_region, "NBJets_WithSF_2b_"+this_region, NBJets_WithSF_2b, weight, 10, 0., 10.);
 
         for(unsigned int ij=0; ij<myjets.size(); ij++){
           TString this_itoa = TString::Itoa(ij,10);
 
           double this_discr = myjets.at(ij).GetTaggerResult(JetTagging::DeepCSV);
           JSFillHist(this_region, "Jet_"+this_itoa+"_DeepCSV_"+this_region, this_discr, weight, 120, 0., 1.2);
-
-          double this_discr_scaled = mcCorr->GetScaledJetTaggerResult_2b(jtp_DeepCSV_Medium_Reshape, myjets.at(ij));
-          JSFillHist(this_region, "Jet_"+this_itoa+"_DeepCSV_Scaled_"+this_region, this_discr_scaled, weight, 120, 0., 1.2);
-          //cout << myjets.at(ij).Pt() << "\t" << myjets.at(ij).Eta() << "\t" << myjets.at(ij).hadronFlavour() << "\t" << this_discr << "\t" << this_discr_scaled << "\t" << this_discr_scaled/this_discr << endl;
+          JSFillHist(this_region, "Jet_"+this_itoa+"_DeepCSV_Scaled_"+this_region, this_discr, weight*btagWeight_1d, 120, 0., 1.2);
         }
 
         FillLeptonPlots(leps, this_region, weight);

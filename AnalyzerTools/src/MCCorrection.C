@@ -932,15 +932,24 @@ void MCCorrection::SetupJetTagging(){
 
       //==== Now, contructing BTagCalibrationReader obect
 
-      std::vector<std::string> systvec= {"up", "down"};
-      if(this_mt_L=="iterativefit") systvec = {}; //TODO no systematic for iterativefit yet
+      std::vector<std::string> systvec_L = {"up", "down"};
+      std::vector<std::string> systvec_C = {"up", "down"};
+      std::vector<std::string> systvec_B = {"up", "down"};
+      if(this_mt_L=="iterativefit"){
+        systvec_L = {"up_hf","down_hf","up_jes","down_jes","up_lfstats1","down_lfstats1","up_lfstats2","down_lfstats2"};
+        systvec_C = {"up_cferr1","down_cferr1","up_cferr2","down_cferr2"};
+        systvec_B = {"up_hfstats1","down_hfstats1","up_hfstats2","down_hfstats2","up_lf","down_lf","up_jes","down_jes"};
+      }
 
-      map_BTagCalibrationReader[tmp_tagger+"_"+this_wp+"_L_"+this_mt_L] = new BTagCalibrationReader(op, "central", systvec);
+      //==== Load L
+      map_BTagCalibrationReader[tmp_tagger+"_"+this_wp+"_L_"+this_mt_L] = new BTagCalibrationReader(op, "central", systvec_L);
       map_BTagCalibrationReader[tmp_tagger+"_"+this_wp+"_L_"+this_mt_L]->load( tmp_map_BTagCalibration[tmp_tagger+"_"+this_key_L], BTagEntry::FLAV_UDSG, this_mt_L);
-
-      map_BTagCalibrationReader[tmp_tagger+"_"+this_wp+"_H_"+this_mt_H] = new BTagCalibrationReader(op, "central", systvec);
-      map_BTagCalibrationReader[tmp_tagger+"_"+this_wp+"_H_"+this_mt_H]->load( tmp_map_BTagCalibration[tmp_tagger+"_"+this_key_H], BTagEntry::FLAV_B, this_mt_H);
-      map_BTagCalibrationReader[tmp_tagger+"_"+this_wp+"_H_"+this_mt_H]->load( tmp_map_BTagCalibration[tmp_tagger+"_"+this_key_H], BTagEntry::FLAV_C, this_mt_H);
+      //==== Load C
+      map_BTagCalibrationReader[tmp_tagger+"_"+this_wp+"_C_"+this_mt_H] = new BTagCalibrationReader(op, "central", systvec_C);
+      map_BTagCalibrationReader[tmp_tagger+"_"+this_wp+"_C_"+this_mt_H]->load( tmp_map_BTagCalibration[tmp_tagger+"_"+this_key_H], BTagEntry::FLAV_C, this_mt_H);
+      //==== Load B
+      map_BTagCalibrationReader[tmp_tagger+"_"+this_wp+"_B_"+this_mt_H] = new BTagCalibrationReader(op, "central", systvec_B);
+      map_BTagCalibrationReader[tmp_tagger+"_"+this_wp+"_B_"+this_mt_H]->load( tmp_map_BTagCalibration[tmp_tagger+"_"+this_key_H], BTagEntry::FLAV_B, this_mt_H);
 
     }
 
@@ -967,11 +976,11 @@ double MCCorrection::GetJetTaggingSF(JetTagging::Parameters jtp, int JetFlavor, 
   string key = JetTagging::TaggerToString( jtp.j_Tagger )+"_"+this_wp;
   BTagEntry::JetFlavor jf = BTagEntry::FLAV_B;
   if(abs(JetFlavor)==5){
-    key += "_H_"+this_mt_H;
+    key += "_B_"+this_mt_H;
     jf = BTagEntry::FLAV_B;
   }
   else if(abs(JetFlavor)==4){
-    key += "_H_"+this_mt_H;
+    key += "_C_"+this_mt_H;
     jf = BTagEntry::FLAV_C;
   }
   else{
@@ -1079,6 +1088,34 @@ double MCCorrection::GetBTaggingReweight_1a(const vector<Jet>& jets, JetTagging:
 
 }
 
+double MCCorrection::GetBTaggingReweight_1d(const vector<Jet>& jets, JetTagging::Parameters jtp, string Syst){
+
+  if(IsDATA) return 1.;
+
+  if(jtp.j_MeasurmentType_Light!=JetTagging::iterativefit || 
+     jtp.j_MeasurmentType_Heavy!=JetTagging::iterativefit){
+    cout << "[MCCorrection::GetBTaggingReweight_1d] This method only works for iterativefit method" << endl;
+    cout << "[MCCorrection::GetBTaggingReweight_1d] jtp.j_MeasurmentType_Light = " << jtp.j_MeasurmentType_Light << endl;
+    cout << "[MCCorrection::GetBTaggingReweight_1d] jtp.j_MeasurmentType_Heavy = " << jtp.j_MeasurmentType_Heavy << endl;
+    exit(EXIT_FAILURE);
+    return 1.;
+  }
+
+  double rew(1.);
+  for(unsigned int i=0; i<jets.size(); i++){
+    double this_SF = GetJetTaggingSF(jtp,
+                                     jets.at(i).hadronFlavour(),
+                                     jets.at(i).Pt(),
+                                     jets.at(i).Eta(),
+                                     jets.at(i).GetTaggerResult(jtp.j_Tagger),
+                                     Syst );
+    rew *= this_SF;
+  }
+
+  return rew;
+
+}
+
 bool MCCorrection::IsBTagged_2a(JetTagging::Parameters jtp, const Jet& jet, string Syst){
 
   double this_discr = jet.GetTaggerResult(jtp.j_Tagger);
@@ -1137,36 +1174,4 @@ bool MCCorrection::IsBTagged_2a(JetTagging::Parameters jtp, const Jet& jet, stri
   return newBTag;
 
 }
-
-double MCCorrection::GetScaledJetTaggerResult_2b(JetTagging::Parameters jtp, const Jet& jet, string Syst){
-
-  if(jtp.j_MeasurmentType_Light!=JetTagging::iterativefit || jtp.j_MeasurmentType_Heavy!=JetTagging::iterativefit){
-    cout << "[MCCorrection::GetScaledJetTaggerResult_2b] This method only works for iterativefit method" << endl;
-    exit(EXIT_FAILURE);
-    return false;
-  }
-
-  double this_discr = jet.GetTaggerResult(jtp.j_Tagger);
-  if(IsDATA) return this_discr;
-
-  double Btag_SF =  GetJetTaggingSF(jtp,
-                                    jet.hadronFlavour(),
-                                    jet.Pt(),
-                                    jet.Eta(),
-                                    jet.GetTaggerResult(jtp.j_Tagger),
-                                    Syst );
-
-  return this_discr * Btag_SF;
-
-}
-
-bool MCCorrection::IsBTagged_2b(JetTagging::Parameters jtp, const Jet& jet, string Syst){
-
-  double new_discr = GetScaledJetTaggerResult_2b(jtp, jet, Syst);
-  double cutValue = GetJetTaggingCutValue(jtp.j_Tagger, jtp.j_WP);
-
-  return new_discr > cutValue;
-
-}
-
 
