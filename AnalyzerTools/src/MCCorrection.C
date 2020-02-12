@@ -1102,13 +1102,41 @@ double MCCorrection::GetBTaggingReweight_1d(const vector<Jet>& jets, JetTagging:
   }
 
   double rew(1.);
+
   for(unsigned int i=0; i<jets.size(); i++){
+
+    int abs_hadFlavour = abs(jets.at(i).hadronFlavour());
+    TString tmp_Syst(Syst);
+
+/*
+    systvec_L = {"up_hf","down_hf","up_jes","down_jes","up_lfstats1","down_lfstats1","up_lfstats2","down_lfstats2"};
+    systvec_C = {"up_cferr1","down_cferr1","up_cferr2","down_cferr2"};
+    systvec_B = {"up_hfstats1","down_hfstats1","up_hfstats2","down_hfstats2","up_lf","down_lf","up_jes","down_jes"};
+*/
+
+    bool GoodSyst = false;
+    if(abs_hadFlavour==5){
+      if(      tmp_Syst.Contains(TRegexp("hfstats[1-2]$")) ) GoodSyst = true;
+      else if( tmp_Syst.Contains(TRegexp("lf$"))           ) GoodSyst = true;
+      else if( tmp_Syst.Contains(TRegexp("jes$"))          ) GoodSyst = true;
+    }
+    else if(abs_hadFlavour==4){
+      if(      tmp_Syst.Contains(TRegexp("cferr[1-2]$"))   ) GoodSyst = true;
+    }
+    else{
+      if(      tmp_Syst.Contains(TRegexp("hf$")) )           GoodSyst = true;
+      else if( tmp_Syst.Contains(TRegexp("jes$")) )          GoodSyst = true;
+      else if( tmp_Syst.Contains(TRegexp("lfstats[1-2]$")) ) GoodSyst = true;
+    }
+
+    if(!GoodSyst) tmp_Syst = "central";
+
     double this_SF = GetJetTaggingSF(jtp,
                                      jets.at(i).hadronFlavour(),
                                      jets.at(i).Pt(),
                                      jets.at(i).Eta(),
                                      jets.at(i).GetTaggerResult(jtp.j_Tagger),
-                                     Syst );
+                                     string(tmp_Syst) );
     rew *= this_SF;
   }
 
