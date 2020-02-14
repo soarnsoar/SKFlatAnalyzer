@@ -54,7 +54,6 @@ string_ThisTime = ""
 USER = os.environ['USER']
 exec('from UserInfo_'+USER+' import *')
 SKFlatLogEmail = UserInfo['SKFlatLogEmail']
-SKFlatLogWeb = UserInfo['SKFlatLogWeb']
 SKFlatLogWebDir = UserInfo['SKFlatLogWebDir']
 LogEvery = UserInfo['LogEvery']
 
@@ -76,7 +75,7 @@ if SKFlatLogEmail=='':
   print '[SKFlat.py] Put your email address in setup.sh'
   exit()
 SendLogToWeb = True
-if SKFlatLogWeb=='' or SKFlatLogWebDir=='':
+if SKFlatLogWebDir=='':
   SendLogToWeb = False
 
 ## Check hostname
@@ -872,8 +871,7 @@ try:
 
     if SendLogToWeb:
 
-      os.system('scp -r '+webdirpathbase+'/* '+SKFlatLogWeb+':'+SKFlatLogWebDir)
-      os.system('ssh -Y '+SKFlatLogWeb+' chmod -R 777 '+SKFlatLogWebDir+'/*'+args.Analyzer+"*")
+      os.system('cp -r '+webdirpathbase+'/* '+SKFlatLogWebDir)
 
     time.sleep(20)
 
