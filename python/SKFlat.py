@@ -512,8 +512,8 @@ void {2}(){{
       out.write('  m.MaxEvent=m.fChain->GetEntries()/'+str(args.Reduction)+';\n')
 
     print>>out,'''  m.Init();
-  m.initializeAnalyzerTools();
   m.initializeAnalyzer();
+  m.initializeAnalyzerTools();
   m.SwitchToTempDir();
   m.Loop();
 
