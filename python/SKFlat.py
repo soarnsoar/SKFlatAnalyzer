@@ -337,6 +337,9 @@ eval `scramv1 runtime -sh`
 cd -
 source /cvmfs/cms.cern.ch/$SCRAM_ARCH/cms/$cmsswrel/external/$SCRAM_ARCH/bin/thisroot.sh
 
+### modifying LD_LIBRARY_PATH to use libraries in base_rundir
+export LD_LIBRARY_PATH=$(echo $LD_LIBRARY_PATH|sed 's@'$SKFlat_WD'/lib@{0}/lib@')
+
 while [ "$SumNoAuth" -ne 0 ]; do
 
   if [ "$Trial" -gt 9999 ]; then
@@ -361,7 +364,7 @@ while [ "$SumNoAuth" -ne 0 ]; do
 done
 
 cat err.log >&2
-'''.format(SKFlatV, base_rundir, SCRAM_ARCH, cmsswrel)
+'''.format(MasterJobDir, base_rundir, SCRAM_ARCH, cmsswrel)
     run_commands.close()
 
     submit_command = open(base_rundir+'/submit.jds','w')
