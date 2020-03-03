@@ -26,6 +26,7 @@ parser.add_argument('--FastSim', action='store_true')
 parser.add_argument('--userflags', dest='Userflags', default="")
 parser.add_argument('--nmax', dest='NMax', default=0, type=int)
 parser.add_argument('--reduction', dest='Reduction', default=1, type=float)
+parser.add_argument('--memory', dest='Memory', default=0, type=float)
 parser.add_argument('--batchname',dest='BatchName', default="")
 args = parser.parse_args()
 
@@ -336,6 +337,9 @@ eval `scramv1 runtime -sh`
 cd -
 source /cvmfs/cms.cern.ch/$SCRAM_ARCH/cms/$cmsswrel/external/$SCRAM_ARCH/bin/thisroot.sh
 
+### modifying LD_LIBRARY_PATH to use libraries in base_rundir
+export LD_LIBRARY_PATH=$(echo $LD_LIBRARY_PATH|sed 's@'$SKFlat_WD'/lib@{0}/lib@')
+
 while [ "$SumNoAuth" -ne 0 ]; do
 
   if [ "$Trial" -gt 9999 ]; then
@@ -360,7 +364,7 @@ while [ "$SumNoAuth" -ne 0 ]; do
 done
 
 cat err.log >&2
-'''.format(SKFlatV, base_rundir, SCRAM_ARCH, cmsswrel)
+'''.format(MasterJobDir, base_rundir, SCRAM_ARCH, cmsswrel)
     run_commands.close()
 
     submit_command = open(base_rundir+'/submit.jds','w')
@@ -401,6 +405,9 @@ queue {0}
       concurrency_limits=''
       if args.NMax:
         concurrency_limits='concurrency_limits = n'+str(args.NMax)+'.'+os.getenv("USER")
+      request_memory=''
+      if args.Memory:
+        request_memory='request_memory = '+str(args.Memory)
       print>>submit_command,'''executable = {1}.sh
 universe   = vanilla
 arguments  = $(Process)
@@ -412,8 +419,9 @@ output = job_$(Process).log
 error = job_$(Process).err
 transfer_output_remaps = "hists.root = output/hists_$(Process).root"
 {2}
+{3}
 queue {0}
-'''.format(str(NJobs), commandsfilename,concurrency_limits)
+'''.format(str(NJobs), commandsfilename,concurrency_limits,request_memory)
       submit_command.close()
 
   CheckTotalNFile=0
@@ -437,14 +445,7 @@ queue {0}
       os.system('mkdir -p '+thisjob_dir)
       runCfileFullPath = thisjob_dir+'run.C'
 
-    IncludeLine  = 'R__LOAD_LIBRARY(libPhysics.so)\n'
-    IncludeLine += 'R__LOAD_LIBRARY(libTree.so)\n'
-    IncludeLine += 'R__LOAD_LIBRARY(libHist.so)\n'
-    IncludeLine += 'R__LOAD_LIBRARY({0}libDataFormats.so)\n'.format(libdir)
-    IncludeLine += 'R__LOAD_LIBRARY({0}libAnalyzerTools.so)\n'.format(libdir)
-    IncludeLine += 'R__LOAD_LIBRARY({0}libGEScaleSyst.so)\n'.format(libdir)
-    IncludeLine += 'R__LOAD_LIBRARY({0}libAnalyzers.so)\n'.format(libdir)
-    IncludeLine += 'R__LOAD_LIBRARY(/cvmfs/cms.cern.ch/slc7_amd64_gcc700/external/lhapdf/6.2.1-gnimlf3/lib/libLHAPDF.so)\n'
+    IncludeLine = 'R__LOAD_LIBRARY(/cvmfs/cms.cern.ch/slc7_amd64_gcc700/external/lhapdf/6.2.1-gnimlf3/lib/libLHAPDF.so)\n'
 
     out = open(runCfileFullPath, 'w')
     print>>out,'''{3}
