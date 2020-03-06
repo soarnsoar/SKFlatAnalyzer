@@ -153,6 +153,7 @@ bool Electron::PassID(TString ID) const{
   if(ID=="passMediumID") return passMediumID();
   if(ID=="passTightID") return passTightID();
   if(ID=="passHEEPID") return passHEEPID();
+  if(ID=="passHEEPID2018Prompt") return passHEEP2018Prompt();
   if(ID=="passMVAID_noIso_WP80") return passMVAID_noIso_WP80();
   if(ID=="passMVAID_noIso_WP90") return passMVAID_noIso_WP90();
   if(ID=="passMVAID_iso_WP80") return passMVAID_iso_WP80();
