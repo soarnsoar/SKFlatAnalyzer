@@ -42,6 +42,7 @@ SingleTop_tch_antitop_Incl	ST_t-channel_antitop_4f_inclusiveDecays_13TeV_PSweigh
 SingleTop_tch_top_Incl	ST_t-channel_top_4f_inclusiveDecays_13TeV_PSweights-powhegV2-madspin	136.02	68001000	68001000
 TG	TGJets_TuneCUETP8M1_13TeV_amcatnlo_madspin_pythia8	2.967	1849504	368562
 TTG	TTGJets_TuneCUETP8M1_13TeV-amcatnloFXFX-madspin-pythia8	3.795	14748853	4774447
+TTJJ_powheg	TTToHadronic_TuneCP5_PSweights_13TeV-powheg-pythia8	380.10	67969400	67419006
 TTLJ_powheg	TTToSemilepton_TuneCUETP8M2_ttHtranche3_13TeV-powheg-pythia8	365.34	152669800	152669800
 TTLL_powheg	TTTo2L2Nu_TuneCUETP8M2_ttHtranche3_13TeV-powheg-pythia8	88.29	79140880	79140880
 VBF_HToZZTo4L	VBF_HToZZTo4L_M125_13TeV_powheg2_JHUgenV6_pythia8	0.001034	500000	499312
