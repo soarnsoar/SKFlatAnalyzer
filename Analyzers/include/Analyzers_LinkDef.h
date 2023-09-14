@@ -19,4 +19,9 @@
 #pragma link C++ class MeasureJetTaggingEfficiency+;
 #pragma link C++ class SkimTree_Dilepton+;
 
+
+#pragma link C++ class B_In_LHE+;
+#pragma link C++ class B_In_GEN+;
+#pragma link C++ class BasicTest+;
+
 #endif
