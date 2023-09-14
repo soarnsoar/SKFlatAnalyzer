@@ -26,6 +26,7 @@ public:
   double weight_Prefire;
   //
   TString ProcessName;
+  std::vector<LHE> LHEs;
 
   BasicTest();
   ~BasicTest();
