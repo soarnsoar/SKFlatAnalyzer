@@ -18,7 +18,7 @@ void BasicTest::initializeAnalyzer(){
   //==== Dimuon Z-peak with two muon IDs
   //==== I defined "vector<TString> MuonIDs;" in Analyzers/include/BasicTest.h
   MuonIDs = {
-    "POGMedium",
+    //"POGMedium",
     "POGTight"
   };
   //==== corresponding Muon ID SF Keys for mcCorr->MuonID_SF()
@@ -32,7 +32,8 @@ void BasicTest::initializeAnalyzer(){
   //----ProcessName-----//
 
   if(IsDATA){
-    ProcessName=DataStream;    
+    //ProcessName=DataStream;    
+    ProcessName="Data";
   }
   else{
     ProcessName=MCSample;
@@ -112,6 +113,46 @@ BasicTest::~BasicTest(){
 
 void BasicTest::executeEvent(){
 
+  //---LHE info---//
+  LHEs=GetLHEs();
+  unsigned int LHEsize=LHEs.size();
+  double LHE_px,LHE_py,LHE_pz,LHE_E,LHE_status,LHE_id,LHE_index, LHE_eta, LHE_phi;
+
+  bool doPrint = false;
+  unsigned int nb_LHE=0;
+  for(unsigned int i =0; i < LHEsize ; i++){
+    LHE_px=LHEs.at(i).Px();
+    LHE_py=LHEs.at(i).Py();
+    LHE_pz=LHEs.at(i).Pz();
+    LHE_E=LHEs.at(i).E();
+    LHE_status=LHEs.at(i).Status();
+    LHE_id=LHEs.at(i).ID();
+    LHE_index=LHEs.at(i).Index();
+    LHE_eta=LHEs.at(i).Eta();
+    LHE_phi=LHEs.at(i).Phi();
+    if ( (LHE_status == -1) && (abs(LHE_id) == 5)  ){
+      //doPrint=true;
+      nb_LHE=nb_LHE+1;
+    }
+      
+  }
+  if (nb_LHE==1) doPrint=true;
+  if (doPrint){  
+    cout << "=========================" << endl;
+    cout << "index" << setw(15)<< "id" << setw(15)<< "status" << setw(15)<< "px" << setw(15)<< "py" << setw(15)<< "pz" << setw(15)<< "E" << setw(15)<< "eta" << setw(15)<< "phi" << endl;
+    for(unsigned int i =0; i < LHEsize ; i++){
+      LHE_px=LHEs.at(i).Px();
+      LHE_py=LHEs.at(i).Py();
+      LHE_pz=LHEs.at(i).Pz();
+      LHE_E=LHEs.at(i).E();
+      LHE_status=LHEs.at(i).Status();
+      LHE_id=LHEs.at(i).ID();
+      LHE_index=LHEs.at(i).Index();
+      LHE_eta=LHEs.at(i).Eta();
+      LHE_phi=LHEs.at(i).Phi();
+      cout << LHE_index << setw(15)<< LHE_id << setw(15)<< LHE_status << setw(15)<< LHE_px << setw(15)<< LHE_py << setw(15)<< LHE_pz << setw(15)<< LHE_E << setw(15)<< LHE_eta << setw(15)<< LHE_phi << endl;
+    }
+  }
   //================================================================
   //====  Example 1
   //====  Dimuon Z-peak events with two muon IDs, with systematics
@@ -251,7 +292,7 @@ void BasicTest::executeEventFromParameter(AnalyzerParameter param){
   
 
 
-  FillHist(param.Name+"/"+ProcessName+"/NoCut_"+param.Name, 0., 1., 1, 0., 1.);
+  FillHist("NoCut/Events/"+ProcessName, 0., 1., 1, 0., 1.);
 
   //========================
   //==== MET Filter
@@ -414,7 +455,8 @@ void BasicTest::executeEventFromParameter(AnalyzerParameter param){
   //==== Now fill histograms
   //==========================
 
-  FillHist(param.Name+"/"+ProcessName+"/ZCand_Mass_"+param.Name, ZCand.M(), weight, 40, 70., 110.);
+  FillHist("BasicCut/ZCand_Mass/"+ProcessName, ZCand.M(), weight, 40, 70., 110.);
+  FillHist("BasicCut/ZCand_Mass_Wide/"+ProcessName, ZCand.M(), weight, 180, 40., 400.); //nbin,xmin,xmax
 
 }
 
