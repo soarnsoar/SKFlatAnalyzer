@@ -64,6 +64,8 @@ public:
     unsigned int nparton_outgoing;
     bool is_gbToZb;
     bool is_tautau;
+    bool is_mumu;
+    bool is_ee;
     TLorentzVector vb;
     std::vector<int> incoming_parton_pid;
 
@@ -99,11 +101,15 @@ public:
   void AnalyzeGEN();
   void AnalyzeLHE();
 
+  vector<double> v_xscale_binning;
+  vector<double> v_Q2scale_binning;
+  double* xscale_binning;
+  double* Q2scale_binning;
   //For Histograms//
   void FillHistRecoMuon(TString cutname);
   void FillHistRecoElectron(TString cutname);
   void FillHistBmatJet(TString cutname);
-
+  void FillHistJet(TString cutname, unsigned int jidx);
   //global varibles for recolevel
   double muon_pt,muon_eta,muon_phi,muon_dxy,muon_dz,
     muon_charge,muon_ip3d,muon_reliso,muon_jetptratio,
@@ -117,6 +123,7 @@ public:
 
 
   double dRToLHE,dRToBhad,ptratioToLHE,ptratioToBhad;
+
 
 
   B_Info_Analyzer();
