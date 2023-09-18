@@ -53,8 +53,24 @@ B_Info_Analyzer::B_Info_Analyzer(){//FYI : bottomness = -nb
 
 
 void B_Info_Analyzer::initializeAnalyzer(){
+  /*
+  double prenum,curnum;
+  prenum=xscale_binning[0];
+  for(int i = 1 ; i < 64 ; i++){
+    curnum=xscale_binning[i];
+    if( prenum >= curnum){
+      cout << "!!!!!" << "prenum=" << prenum << "   curnum=" << curnum << endl; 
+    }
+  }
 
-
+  prenum=Q2scale_binning[0];
+  for(int i = 1 ; i < 53 ; i++){
+    curnum=Q2scale_binning[i];
+    if( prenum >= curnum){
+      cout << "!!!!!" << "prenum=" << prenum << "   curnum=" << curnum << endl; 
+    }
+  }
+  */
   //================================================================
   //====  Example 1
   //====  Dimuon Z-peak events with two muon IDs, with systematics
@@ -426,41 +442,104 @@ void B_Info_Analyzer::AnalyzeLeptons(){
     
     //muon_jetptratio=muon_jetPtRatio->at(i);
     //muon_jetptrel=muon_jetPtRel->at(i);
-   
+    muon_dR_bmatj=AllMuons.at(i).DeltaR(myRECO.vBmatchedJet);   
 
 
     //(1)b/bbar event info
     FillHistRecoMuon("gbToZb");
+    if(myLHE.is_mumu){
+      FillHistRecoMuon("gbToZb_mm");
+    }
+    else if(myLHE.is_ee){
+      FillHistRecoMuon("gbToZb_ee");
+    }
+
+
     if(myLHE.evt_nb==1){
       FillHistRecoMuon("gbToZb_b");
+      if(myLHE.is_mumu){
+	FillHistRecoMuon("gbToZb_b_mm");
+      }
+      else if(myLHE.is_ee){
+	FillHistRecoMuon("gbToZb_b_ee");
+      }
+      
     }
     else if(myLHE.evt_nb==-1){
       FillHistRecoMuon("gbToZb_bbar");
+      if(myLHE.is_mumu){
+	FillHistRecoMuon("gbToZb_bbar_mm");
+      }
+      else if(myLHE.is_ee){
+	FillHistRecoMuon("gbToZb_bbar_ee");
+      }
     }
-    muon_dR_bmatj=AllMuons.at(i).DeltaR(myRECO.vBmatchedJet);
+
     //(2) leptons in BmatJet
     if(muon_dR_bmatj<myRECO.dRcut_bmatj_muon){
       FillHistRecoMuon("InBmatJet");
+      if(myLHE.is_mumu){
+	FillHistRecoMuon("InBmatJet_mm");
+      }
+      else if(myLHE.is_ee){
+	FillHistRecoMuon("InBmatJet_ee");
+      }
       nmuon_InBmatjet+=1;
       if(myLHE.evt_nb==1){
 	FillHistRecoMuon("InBmatJet_b");
+	if(myLHE.is_mumu){
+	  FillHistRecoMuon("InBmatJet_b_mm");
+	}
+	else if(myLHE.is_ee){
+	  FillHistRecoMuon("InBmatJet_b_ee");
+	}
       }
       else if(myLHE.evt_nb==-1){
 	FillHistRecoMuon("InBmatJet_bbar");
+	if(myLHE.is_mumu){
+	  FillHistRecoMuon("InBmatJet_bbar_mm");
+	}
+	else if(myLHE.is_ee){
+	  FillHistRecoMuon("InBmatJet_bbar_ee");
+	}
       }
     }//[END if muon in bmatjet]
     
   }//[END] muon loop
   //FillHist For event
   FillHist("gbToZb/nmuon/"+ProcessName, nmuon, weight, 10, 0., 10.);
-  FillHist("InBmatJet/nmuon/"+ProcessName, nmuon_InBmatjet, weight, 10, 0., 10.);  
+  FillHist("InBmatJet/nmuon/"+ProcessName, nmuon_InBmatjet, weight, 10, 0., 10.);
+  if(myLHE.is_mumu){
+    FillHist("gbToZb_mm/nmuon/"+ProcessName, nmuon, weight, 10, 0., 10.);
+    FillHist("InBmatJet_mm/nmuon/"+ProcessName, nmuon_InBmatjet, weight, 10, 0., 10.);
+  }
+  else if(myLHE.is_ee){
+    FillHist("gbToZb_ee/nmuon/"+ProcessName, nmuon, weight, 10, 0., 10.);
+    FillHist("InBmatJet_ee/nmuon/"+ProcessName, nmuon_InBmatjet, weight, 10, 0., 10.);
+  }
   if(myLHE.evt_nb==1){
     FillHist("gbToZb_b/nmuon/"+ProcessName, nmuon, weight, 10, 0., 10.);
     FillHist("InBmatJet_b/nmuon/"+ProcessName, nmuon_InBmatjet, weight, 10, 0., 10.);
+    if(myLHE.is_mumu){
+      FillHist("gbToZb_b_mm/nmuon/"+ProcessName, nmuon, weight, 10, 0., 10.);
+      FillHist("InBmatJet_b_mm/nmuon/"+ProcessName, nmuon_InBmatjet, weight, 10, 0., 10.);
+    }
+    else if(myLHE.is_ee){
+      FillHist("gbToZb_b_ee/nmuon/"+ProcessName, nmuon, weight, 10, 0., 10.);
+      FillHist("InBmatJet_b_ee/nmuon/"+ProcessName, nmuon_InBmatjet, weight, 10, 0., 10.);
+    }
   }
   else if(myLHE.evt_nb==-1) {
     FillHist("gbToZb_bbar/nmuon/"+ProcessName, nmuon, weight, 10, 0., 10.);
     FillHist("InBmatJet_bbar/nmuon/"+ProcessName, nmuon_InBmatjet, weight, 10, 0., 10.);
+    if(myLHE.is_mumu){
+      FillHist("gbToZb_bbar_mm/nmuon/"+ProcessName, nmuon, weight, 10, 0., 10.);
+      FillHist("InBmatJet_bbar_mm/nmuon/"+ProcessName, nmuon_InBmatjet, weight, 10, 0., 10.);
+    }
+    else if(myLHE.is_ee){
+      FillHist("gbToZb_bbar_ee/nmuon/"+ProcessName, nmuon, weight, 10, 0., 10.);
+      FillHist("InBmatJet_bbar_ee/nmuon/"+ProcessName, nmuon_InBmatjet, weight, 10, 0., 10.);
+    }
   }
 
 
@@ -484,26 +563,65 @@ void B_Info_Analyzer::AnalyzeLeptons(){
     //electron_jetptratio=electron_jetPtRatio->at(i);
     //electron_jetptrel=electron_jetPtRel->at(i);
    
-
+    electron_dR_bmatj=AllElectrons.at(i).DeltaR(myRECO.vBmatchedJet);
 
     //(1)b/bbar event info
     FillHistRecoElectron("gbToZb");
+    if(myLHE.is_mumu){
+      FillHistRecoElectron("gbToZb_mm");
+    }
+    else if(myLHE.is_ee){
+      FillHistRecoElectron("gbToZb_ee");
+    }
+
     if(myLHE.evt_nb==1){
       FillHistRecoElectron("gbToZb_b");
+      if(myLHE.is_mumu){
+	FillHistRecoElectron("gbToZb_b_mm");
+      }
+      else if(myLHE.is_ee){
+	FillHistRecoElectron("gbToZb_b_ee");
+      }
     }
     else if(myLHE.evt_nb==-1){
       FillHistRecoElectron("gbToZb_bbar");
+      if(myLHE.is_mumu){
+	FillHistRecoElectron("gbToZb_bbar_mm");
+      }
+      else if(myLHE.is_ee){
+	FillHistRecoElectron("gbToZb_bbar_ee");
+      }
     }
-    electron_dR_bmatj=AllElectrons.at(i).DeltaR(myRECO.vBmatchedJet);
+
     //(2) leptons in BmatJet
     if(electron_dR_bmatj<myRECO.dRcut_bmatj_electron){
       FillHistRecoElectron("InBmatJet");
+      if(myLHE.is_mumu){
+	FillHistRecoElectron("InBmatJet_mm");
+      }
+      else if(myLHE.is_ee){
+	FillHistRecoElectron("InBmatJet_ee");
+      }
       nelectron_InBmatjet+=1;
       if(myLHE.evt_nb==1){
 	FillHistRecoElectron("InBmatJet_b");
+	if(myLHE.is_mumu){
+	  FillHistRecoElectron("InBmatJet_b_mm");
+	}
+	else if(myLHE.is_ee){
+	  FillHistRecoElectron("InBmatJet_b_ee");
+	}
+
       }
       else if(myLHE.evt_nb==-1){
 	FillHistRecoElectron("InBmatJet_bbar");
+	if(myLHE.is_mumu){
+	  FillHistRecoElectron("InBmatJet_bbar_mm");
+	}
+	else if(myLHE.is_ee){
+	  FillHistRecoElectron("InBmatJet_bbar_ee");
+	}
+
       }
     }//[END if electron in bmatjet]
     
@@ -511,25 +629,76 @@ void B_Info_Analyzer::AnalyzeLeptons(){
   //FillHist For event
   FillHist("gbToZb/nelectron/"+ProcessName, nelectron, weight, 10, 0., 10.);
   FillHist("InBmatJet/nelectron/"+ProcessName, nelectron_InBmatjet, weight, 10, 0., 10.);
+  if(myLHE.is_mumu){
+    FillHist("gbToZb_mm/nelectron/"+ProcessName, nelectron, weight, 10, 0., 10.);
+    FillHist("InBmatJet_mm/nelectron/"+ProcessName, nelectron_InBmatjet, weight, 10, 0., 10.);
+  }
+  else if(myLHE.is_ee){
+    FillHist("gbToZb_ee/nelectron/"+ProcessName, nelectron, weight, 10, 0., 10.);
+    FillHist("InBmatJet_ee/nelectron/"+ProcessName, nelectron_InBmatjet, weight, 10, 0., 10.);
+  }
   if(myLHE.evt_nb==1){
     FillHist("gbToZb_b/nelectron/"+ProcessName, nelectron, weight, 10, 0., 10.);
     FillHist("InBmatJet_b/nelectron/"+ProcessName, nelectron_InBmatjet, weight, 10, 0., 10.);
+    if(myLHE.is_mumu){
+      FillHist("gbToZb_b_mm/nelectron/"+ProcessName, nelectron, weight, 10, 0., 10.);
+      FillHist("InBmatJet_b_mm/nelectron/"+ProcessName, nelectron_InBmatjet, weight, 10, 0., 10.);
+    }
+    else if(myLHE.is_ee){
+      FillHist("gbToZb_b_ee/nelectron/"+ProcessName, nelectron, weight, 10, 0., 10.);
+      FillHist("InBmatJet_b_ee/nelectron/"+ProcessName, nelectron_InBmatjet, weight, 10, 0., 10.);
+    }
+
   }
   else if(myLHE.evt_nb==-1){
     FillHist("gbToZb_bbar/nelectron/"+ProcessName, nelectron, weight, 10, 0., 10.);
     FillHist("InBmatJet_bbar/nelectron/"+ProcessName, nelectron_InBmatjet, weight, 10, 0., 10.);
+    if(myLHE.is_mumu){
+      FillHist("gbToZb_bbar_mm/nelectron/"+ProcessName, nelectron, weight, 10, 0., 10.);
+      FillHist("InBmatJet_bbar_mm/nelectron/"+ProcessName, nelectron_InBmatjet, weight, 10, 0., 10.);
+    }
+    else if(myLHE.is_ee){
+      FillHist("gbToZb_bbar_ee/nelectron/"+ProcessName, nelectron, weight, 10, 0., 10.);
+      FillHist("InBmatJet_bbar_ee/nelectron/"+ProcessName, nelectron_InBmatjet, weight, 10, 0., 10.);
+    }
+
   }
 
   //FillHist For event --lepton
   FillHist("gbToZb/nlepton/"+ProcessName, nmuon+nelectron, weight, 10, 0., 10.);
   FillHist("InBmatJet/nlepton/"+ProcessName, nmuon_InBmatjet+nelectron_InBmatjet, weight, 10, 0., 10.);
+  if(myLHE.is_mumu){
+    FillHist("gbToZb_mm/nlepton/"+ProcessName, nmuon+nelectron, weight, 10, 0., 10.);
+    FillHist("InBmatJet_mm/nlepton/"+ProcessName, nmuon_InBmatjet+nelectron_InBmatjet, weight, 10, 0., 10.);
+  }
+  else if(myLHE.is_ee){
+    FillHist("gbToZb_ee/nlepton/"+ProcessName, nmuon+nelectron, weight, 10, 0., 10.);
+    FillHist("InBmatJet_ee/nlepton/"+ProcessName, nmuon_InBmatjet+nelectron_InBmatjet, weight, 10, 0., 10.);
+  }
   if(myLHE.evt_nb==1){
     FillHist("gbToZb_b/nlepton/"+ProcessName, nmuon+nelectron, weight, 10, 0., 10.);
     FillHist("InBmatJet_b/nlepton/"+ProcessName, nmuon_InBmatjet+nelectron_InBmatjet, weight, 10, 0., 10.);
+    if(myLHE.is_mumu){
+      FillHist("gbToZb_b_mm/nlepton/"+ProcessName, nmuon+nelectron, weight, 10, 0., 10.);
+      FillHist("InBmatJet_b_mm/nlepton/"+ProcessName, nmuon_InBmatjet+nelectron_InBmatjet, weight, 10, 0., 10.);
+    }
+    else if(myLHE.is_ee){
+      FillHist("gbToZb_b_ee/nlepton/"+ProcessName, nmuon+nelectron, weight, 10, 0., 10.);
+      FillHist("InBmatJet_b_ee/nlepton/"+ProcessName, nmuon_InBmatjet+nelectron_InBmatjet, weight, 10, 0., 10.);
+    }
+
   }
   else if(myLHE.evt_nb==-1){
     FillHist("gbToZb_bbar/nlepton/"+ProcessName, nmuon+nelectron, weight, 10, 0., 10.);
     FillHist("InBmatJet_bbar/nlepton/"+ProcessName, nmuon_InBmatjet+nelectron_InBmatjet, weight, 10, 0., 10.);
+    if(myLHE.is_mumu){
+      FillHist("gbToZb_bbar_mm/nlepton/"+ProcessName, nmuon+nelectron, weight, 10, 0., 10.);
+      FillHist("InBmatJet_bbar_mm/nlepton/"+ProcessName, nmuon_InBmatjet+nelectron_InBmatjet, weight, 10, 0., 10.);
+    }
+    else if(myLHE.is_ee){
+      FillHist("gbToZb_bbar_ee/nlepton/"+ProcessName, nmuon+nelectron, weight, 10, 0., 10.);
+      FillHist("InBmatJet_bbar_ee/nlepton/"+ProcessName, nmuon_InBmatjet+nelectron_InBmatjet, weight, 10, 0., 10.);
+    }
   }
 
 }
@@ -589,20 +758,21 @@ void B_Info_Analyzer::AnalyzeLHE(){
   //genWeight_X1
 
   //Hist for all events
-
-  FillHist("gbToZb/Q2/"+ProcessName, myLHE.Q2, weight, 53, Q2scale_binning); //nbin,xmin,xmax
-  FillHist("gbToZb/x_b/"+ProcessName, myLHE.x_b, weight, 64, xscale_binning); //nbin,xmin,xmax
-  FillHist("gbToZb/x_g/"+ProcessName, myLHE.x_g, weight, 64, xscale_binning); //nbin,xmin,xmax
+  int nbin_Q2scale = v_Q2scale_binning.size()-1;
+  int nbin_xscale = v_xscale_binning.size()-1;
+  FillHist("gbToZb/Q2/"+ProcessName, myLHE.Q2, weight, nbin_Q2scale, Q2scale_binning); //nbin,xmin,xmax
+  FillHist("gbToZb/x_b/"+ProcessName, myLHE.x_b, weight, nbin_xscale, xscale_binning); //nbin,xmin,xmax
+  FillHist("gbToZb/x_g/"+ProcessName, myLHE.x_g, weight, nbin_xscale, xscale_binning); //nbin,xmin,xmax
   if(myLHE.evt_nb==1){
-    FillHist("gbToZb_b/Q2/"+ProcessName, myLHE.Q2, weight, 53, Q2scale_binning); //nbin,xmin,xmax
-    FillHist("gbToZb_b/x_b/"+ProcessName, myLHE.x_b, weight, 64,xscale_binning); 
-    FillHist("gbToZb_b/x_g/"+ProcessName, myLHE.x_g, weight, 64,xscale_binning); //nbin,xmin,xmax
+    FillHist("gbToZb_b/Q2/"+ProcessName, myLHE.Q2, weight, nbin_Q2scale, Q2scale_binning); //nbin,xmin,xmax
+    FillHist("gbToZb_b/x_b/"+ProcessName, myLHE.x_b, weight, nbin_xscale,xscale_binning); 
+    FillHist("gbToZb_b/x_g/"+ProcessName, myLHE.x_g, weight, nbin_xscale,xscale_binning); //nbin,xmin,xmax
   }
 
   else if(myLHE.evt_nb==-1){
-    FillHist("gbToZb_bbar/Q2/"+ProcessName, myLHE.Q2, weight, 53, Q2scale_binning); //nbin,xmin,xmax
-    FillHist("gbToZb_bbar/x_b/"+ProcessName, myLHE.x_b, weight, 64,xscale_binning); 
-    FillHist("gbToZb_bbar/x_g/"+ProcessName, myLHE.x_g, weight, 64,xscale_binning); //nbin,xmin,xmax
+    FillHist("gbToZb_bbar/Q2/"+ProcessName, myLHE.Q2, weight, nbin_Q2scale, Q2scale_binning); //nbin,xmin,xmax
+    FillHist("gbToZb_bbar/x_b/"+ProcessName, myLHE.x_b, weight, nbin_xscale,xscale_binning); 
+    FillHist("gbToZb_bbar/x_g/"+ProcessName, myLHE.x_g, weight, nbin_xscale,xscale_binning); //nbin,xmin,xmax
   }
 
 }
