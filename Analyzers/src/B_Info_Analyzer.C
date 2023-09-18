@@ -23,11 +23,37 @@ B_Info_Analyzer::B_Info_Analyzer(){//FYI : bottomness = -nb
   myRECO.dRcut_bmatj_electron=0.4;
   allow_tautau=false;
   doDebug=false;
+  //---[arr for non uniform Binning]
+  //(1) xscale
+  for(int ie=-7; ie < 0 ; ie++){
+    for(unsigned int ic=1; ic < 10 ; ic++){
+      double _num=ic*pow(10,ie);
+      v_xscale_binning.push_back(_num);
+    }
+  }
+  v_xscale_binning.push_back(1);
+  //array link to the vector 
+  xscale_binning = &v_xscale_binning[0];
+  
+
+  //(2)Q2 scale
+  
+  for(unsigned int ie=0; ie < 6 ; ie++){
+    for(unsigned int ic=1; ic < 10 ; ic++){
+      double _num=ic*pow(10,ie);
+      v_Q2scale_binning.push_back(_num);
+    }
+  }
+  //array link to the vector 
+  Q2scale_binning = &v_Q2scale_binning[0];
+
+
 }
 
 
 
 void B_Info_Analyzer::initializeAnalyzer(){
+
 
   //================================================================
   //====  Example 1
@@ -120,7 +146,7 @@ bool B_Info_Analyzer::Tag_gbToZb(){
   //incoming : 1 g + 1 b
   //outgoing : 1 b , no other partons
   double LHE_E,LHE_status,LHE_id;
-  unsigned int ntau = 0;
+  unsigned int ntau = 0, nmu = 0, nele = 0;
   for(unsigned int i =0; i < myLHE.LHEsize ; i++){
     LHE_E=LHEs.at(i).E();
     LHE_status=LHEs.at(i).Status();
@@ -144,6 +170,8 @@ bool B_Info_Analyzer::Tag_gbToZb(){
     }//[END]if incoming
     else if (LHE_status==1){//if outgoing
       if (abs(LHE_id)==15) ntau += 1;
+      else if (abs(LHE_id)==13) nmu += 1;
+      else if (abs(LHE_id)==11) nele += 1;
 
       if (abs(LHE_id)==5){
 	myLHE.nb_outgoing += 1;
@@ -166,6 +194,8 @@ bool B_Info_Analyzer::Tag_gbToZb(){
   //Whether it's a tautau event
   
   myLHE.is_tautau= (ntau==2) ? true : false;
+  myLHE.is_mumu= (nmu==2) ? true : false;
+  myLHE.is_ee= (nele==2) ? true : false;
 
   //Check whether g+b scattering
   if(1 != myLHE.ngluon_incoming) return false;
@@ -559,19 +589,20 @@ void B_Info_Analyzer::AnalyzeLHE(){
   //genWeight_X1
 
   //Hist for all events
-  FillHist("gbToZb/Q2/"+ProcessName, myLHE.Q2, weight, 10000, 0., 30000.); //nbin,xmin,xmax
-  FillHist("gbToZb/x_b/"+ProcessName, myLHE.x_b, weight, 1000, 0., 1.); //nbin,xmin,xmax
-  FillHist("gbToZb/x_g/"+ProcessName, myLHE.x_g, weight, 1000, 0., 1.); //nbin,xmin,xmax
+
+  FillHist("gbToZb/Q2/"+ProcessName, myLHE.Q2, weight, 53, Q2scale_binning); //nbin,xmin,xmax
+  FillHist("gbToZb/x_b/"+ProcessName, myLHE.x_b, weight, 64, xscale_binning); //nbin,xmin,xmax
+  FillHist("gbToZb/x_g/"+ProcessName, myLHE.x_g, weight, 64, xscale_binning); //nbin,xmin,xmax
   if(myLHE.evt_nb==1){
-    FillHist("gbToZb_b/Q2/"+ProcessName, myLHE.Q2, weight, 10000, 0., 30000.); //nbin,xmin,xmax
-    FillHist("gbToZb_b/x_b/"+ProcessName, myLHE.x_b, weight, 1000, 0., 1.); 
-    FillHist("gbToZb_b/x_g/"+ProcessName, myLHE.x_g, weight, 1000, 0., 1.); //nbin,xmin,xmax
+    FillHist("gbToZb_b/Q2/"+ProcessName, myLHE.Q2, weight, 53, Q2scale_binning); //nbin,xmin,xmax
+    FillHist("gbToZb_b/x_b/"+ProcessName, myLHE.x_b, weight, 64,xscale_binning); 
+    FillHist("gbToZb_b/x_g/"+ProcessName, myLHE.x_g, weight, 64,xscale_binning); //nbin,xmin,xmax
   }
 
   else if(myLHE.evt_nb==-1){
-    FillHist("gbToZb_bbar/Q2/"+ProcessName, myLHE.Q2, weight, 10000, 0., 30000.); //nbin,xmin,xmax
-    FillHist("gbToZb_bbar/x_b/"+ProcessName, myLHE.x_b, weight, 1000, 0., 1.); 
-    FillHist("gbToZb_bbar/x_g/"+ProcessName, myLHE.x_g, weight, 1000, 0., 1.); //nbin,xmin,xmax
+    FillHist("gbToZb_bbar/Q2/"+ProcessName, myLHE.Q2, weight, 53, Q2scale_binning); //nbin,xmin,xmax
+    FillHist("gbToZb_bbar/x_b/"+ProcessName, myLHE.x_b, weight, 64,xscale_binning); 
+    FillHist("gbToZb_bbar/x_g/"+ProcessName, myLHE.x_g, weight, 64,xscale_binning); //nbin,xmin,xmax
   }
 
 }
@@ -585,6 +616,20 @@ void B_Info_Analyzer::FillHistBmatJet(TString cutname){
   //FillHist(cutname+"/BmatchJet_charge/"+ProcessName,jet_charge->at(myRECO.ij_B), weight, 4, -2., 2.);
   
 }
+void B_Info_Analyzer::FillHistJet(TString cutname, unsigned int jidx){
+  FillHist(cutname+"/jet_chargedMultiplicity/"+ProcessName,jet_chargedMultiplicity->at(jidx), weight, 30, 0., 30.);
+  FillHist(cutname+"/jet_neutralMultiplicity/"+ProcessName,jet_neutralMultiplicity->at(jidx), weight, 30, 0., 30.);
+  FillHist(cutname+"/jet_pt/"+ProcessName,AllJets.at(jidx).Pt(), weight, 100, 0., 100.);
+  FillHist(cutname+"/jet_eta/"+ProcessName,AllJets.at(jidx).Eta(), weight, 100, -5., 5.);
+  FillHist(cutname+"/jet_charge/"+ProcessName,jet_charge->at(jidx), weight, 100, -2., 2.);
+  FillHist(cutname+"/jet_chargedHadronEnergyFraction/"+ProcessName,jet_chargedHadronEnergyFraction->at(jidx), weight, 100, 0., 1.);
+  FillHist(cutname+"/jet_neutralHadronEnergyFraction/"+ProcessName,jet_neutralHadronEnergyFraction->at(jidx), weight, 100, 0., 1.);
+  FillHist(cutname+"/jet_neutralEmEnergyFraction/"+ProcessName,jet_neutralEmEnergyFraction->at(jidx), weight, 100, 0., 1.);
+  FillHist(cutname+"/jet_chargedEmEnergyFraction/"+ProcessName,jet_chargedEmEnergyFraction->at(jidx), weight, 100, 0., 1.);
+  FillHist(cutname+"/jet_muonEnergyFraction/"+ProcessName,jet_muonEnergyFraction->at(jidx), weight, 100, 0., 1.);
+
+}
+
 void B_Info_Analyzer::AnalyzeBmatJet(){
   //pT ratio /dR between BmatJet and Bhadron || LHE b 
   //for(unsigned int i = 0 ; i < jetsize ; i++){ 
@@ -601,28 +646,61 @@ void B_Info_Analyzer::AnalyzeBmatJet(){
   for(unsigned int ij = 0; ij < jetsize; ij++){
     //jet_chargedMultiplicity->at(i), jet_neutralMultiplicity->at(i)
     if(ij==myRECO.ij_B){
-      FillHist("BmatJet/jet_chargedMultiplicity/"+ProcessName,jet_chargedMultiplicity->at(ij), weight, 30, 0., 30.);
-      FillHist("BmatJet/jet_neutralMultiplicity/"+ProcessName,jet_neutralMultiplicity->at(ij), weight, 30, 0., 30.);
-      FillHist("BmatJet/jet_charge/"+ProcessName,jet_charge->at(ij), weight, 100, -2., 2.);
+      FillHistJet("BmatJet",ij);
       FillHistBmatJet("BmatJet");
-      if(myLHE.evt_nb==1){
-	FillHist("BmatJet_b/jet_chargedMultiplicity/"+ProcessName,jet_chargedMultiplicity->at(ij), weight, 30, 0., 30.);
-	FillHist("BmatJet_b/jet_neutralMultiplicity/"+ProcessName,jet_neutralMultiplicity->at(ij), weight, 30, 0., 30.);
-	FillHist("BmatJet_b/jet_charge/"+ProcessName,jet_charge->at(ij), weight, 100, -2., 2.);
-	FillHistBmatJet("BmatJet_b");
+      //mu/e
+      if(myLHE.is_mumu){
+	FillHistJet("BmatJet_mm",ij);
+	FillHistBmatJet("BmatJet_mm");
       }
+      else if(myLHE.is_ee){
+	FillHistJet("BmatJet_ee",ij);
+	FillHistBmatJet("BmatJet_ee");
+      }
+      //[end] mu/e
+
+      //b event
+      if(myLHE.evt_nb==1){
+	FillHistJet("BmatJet_b",ij);
+	FillHistBmatJet("BmatJet_b");
+	if(myLHE.is_mumu){
+	  FillHistJet("BmatJet_b_mm",ij);
+	  FillHistBmatJet("BmatJet_b_mm");
+	}
+	else if(myLHE.is_ee){
+	  FillHistJet("BmatJet_b_ee",ij);
+	  FillHistBmatJet("BmatJet_b_ee");
+	}
+
+      }//[end] b event
+
+      //bbar event
       else if(myLHE.evt_nb==-1){
-	FillHist("BmatJet_bbar/jet_chargedMultiplicity/"+ProcessName,jet_chargedMultiplicity->at(ij), weight, 30, 0., 30.);
-	FillHist("BmatJet_bbar/jet_neutralMultiplicity/"+ProcessName,jet_neutralMultiplicity->at(ij), weight, 30, 0., 30.);
-	FillHist("BmatJet_bbar/jet_charge/"+ProcessName,jet_charge->at(ij), weight, 100, -2., 2.);
-	FillHistBmatJet("BmatJet_bbar");
+        FillHistJet("BmatJet_bbar",ij);
+        FillHistBmatJet("BmatJet_bbar");
+        if(myLHE.is_mumu){
+          FillHistJet("BmatJet_bbar_mm",ij);
+          FillHistBmatJet("BmatJet_bbar_mm");
+        }
+        else if(myLHE.is_ee){
+          FillHistJet("BmatJet_bbar_ee",ij);
+          FillHistBmatJet("BmatJet_bbar_ee");
+        }
+	
       }
 
     }
     else{//other jets
-      FillHist("NotBmatJet/jet_chargedMultiplicity/"+ProcessName,jet_chargedMultiplicity->at(ij), weight, 30, 0., 30.);
-      FillHist("NotBmatJet/jet_neutralMultiplicity/"+ProcessName,jet_neutralMultiplicity->at(ij), weight, 30, 0., 30.);
-      FillHist("NotBmatJet/jet_charge/"+ProcessName,jet_charge->at(ij), weight, 100, -2., 2.);
+      FillHistJet("NotBmatJet",ij);
+      if(myLHE.is_mumu){
+	FillHistJet("NotBmatJet_mm",ij);
+	FillHistBmatJet("NotBmatJet_mm");
+      }
+      else if(myLHE.is_ee){
+	FillHistJet("NotBmatJet_ee",ij);
+	FillHistBmatJet("NotBmatJet_ee");
+      }
+
     }
   }//[END for all jets]
 
