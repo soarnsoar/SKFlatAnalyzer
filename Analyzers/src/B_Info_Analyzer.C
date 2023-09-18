@@ -386,7 +386,7 @@ void B_Info_Analyzer::FillHistRecoMuon(TString cutname){
 
 }
 void B_Info_Analyzer::FillHistRecoElectron(TString cutname){
-
+  //cout << "electron_dR_bmatj" << electron_dR_bmatj << endl;
   //electron
   FillHist(cutname+"/electron_pt/"+ProcessName, electron_pt, weight, 100, 0., 100.);
   FillHist(cutname+"/electron_eta/"+ProcessName, electron_eta, weight, 100, -5., 5.);
@@ -562,13 +562,18 @@ void B_Info_Analyzer::AnalyzeLeptons(){
     
     //electron_jetptratio=electron_jetPtRatio->at(i);
     //electron_jetptrel=electron_jetPtRel->at(i);
-   
-    electron_dR_bmatj=AllElectrons.at(i).DeltaR(myRECO.vBmatchedJet);
 
+    electron_dR_bmatj=AllElectrons.at(i).DeltaR(myRECO.vBmatchedJet);
+    //cout << "[Start][in for loop]" << endl;
+    //cout << "electron_dR_bmatj=" << electron_dR_bmatj << endl;
+    bool is_mm=false;
+    bool is_mm_and_inbjet=false;
     //(1)b/bbar event info
     FillHistRecoElectron("gbToZb");
     if(myLHE.is_mumu){
+      //cout << "[gbToZb_mm]" << endl;
       FillHistRecoElectron("gbToZb_mm");
+      is_mm=true;
     }
     else if(myLHE.is_ee){
       FillHistRecoElectron("gbToZb_ee");
@@ -594,10 +599,12 @@ void B_Info_Analyzer::AnalyzeLeptons(){
     }
 
     //(2) leptons in BmatJet
-    if(electron_dR_bmatj<myRECO.dRcut_bmatj_electron){
+    if(electron_dR_bmatj < myRECO.dRcut_bmatj_electron){
       FillHistRecoElectron("InBmatJet");
       if(myLHE.is_mumu){
+	//cout << "[InBmatJet_mm]" << endl;
 	FillHistRecoElectron("InBmatJet_mm");
+	is_mm_and_inbjet=true;
       }
       else if(myLHE.is_ee){
 	FillHistRecoElectron("InBmatJet_ee");
@@ -624,7 +631,9 @@ void B_Info_Analyzer::AnalyzeLeptons(){
 
       }
     }//[END if electron in bmatjet]
-    
+    //if(is_mm_and_inbjet && !is_mm){
+    //  cout << "??? e is in z->mm && in bjet but not z->mm.." <<endl;
+    //}
   }//[END] electron loop
   //FillHist For event
   FillHist("gbToZb/nelectron/"+ProcessName, nelectron, weight, 10, 0., 10.);
@@ -792,11 +801,11 @@ void B_Info_Analyzer::FillHistJet(TString cutname, unsigned int jidx){
   FillHist(cutname+"/jet_pt/"+ProcessName,AllJets.at(jidx).Pt(), weight, 100, 0., 100.);
   FillHist(cutname+"/jet_eta/"+ProcessName,AllJets.at(jidx).Eta(), weight, 100, -5., 5.);
   FillHist(cutname+"/jet_charge/"+ProcessName,jet_charge->at(jidx), weight, 100, -2., 2.);
-  FillHist(cutname+"/jet_chargedHadronEnergyFraction/"+ProcessName,jet_chargedHadronEnergyFraction->at(jidx), weight, 100, 0., 1.);
-  FillHist(cutname+"/jet_neutralHadronEnergyFraction/"+ProcessName,jet_neutralHadronEnergyFraction->at(jidx), weight, 100, 0., 1.);
-  FillHist(cutname+"/jet_neutralEmEnergyFraction/"+ProcessName,jet_neutralEmEnergyFraction->at(jidx), weight, 100, 0., 1.);
-  FillHist(cutname+"/jet_chargedEmEnergyFraction/"+ProcessName,jet_chargedEmEnergyFraction->at(jidx), weight, 100, 0., 1.);
-  FillHist(cutname+"/jet_muonEnergyFraction/"+ProcessName,jet_muonEnergyFraction->at(jidx), weight, 100, 0., 1.);
+  FillHist(cutname+"/jet_chargedHadronEnergyFraction/"+ProcessName,jet_chargedHadronEnergyFraction->at(jidx), weight, 10000, 0., 1.);
+  FillHist(cutname+"/jet_neutralHadronEnergyFraction/"+ProcessName,jet_neutralHadronEnergyFraction->at(jidx), weight, 10000, 0., 1.);
+  FillHist(cutname+"/jet_neutralEmEnergyFraction/"+ProcessName,jet_neutralEmEnergyFraction->at(jidx), weight, 10000, 0., 1.);
+  FillHist(cutname+"/jet_chargedEmEnergyFraction/"+ProcessName,jet_chargedEmEnergyFraction->at(jidx), weight, 10000, 0., 1.);
+  FillHist(cutname+"/jet_muonEnergyFraction/"+ProcessName,jet_muonEnergyFraction->at(jidx), weight, 10000, 0., 1.);
 
 }
 
