@@ -48,6 +48,22 @@ B_Info_Analyzer::B_Info_Analyzer(){//FYI : bottomness = -nb
   Q2scale_binning = &v_Q2scale_binning[0];
 
 
+  //-- Event Category--//
+  Cat_b_bbar[0]="";
+  Cat_b_bbar[1]="_b";
+  Cat_b_bbar[2]="_bbar";
+  Cat_b_bbar_size = 3;
+
+  Cat_Z_To_mm_ee[0]="";
+  Cat_Z_To_mm_ee[1]="_mm";
+  Cat_Z_To_mm_ee[2]="_ee";
+  Cat_Z_To_mm_ee_size = 3;
+
+  Cat_lepton_charge[0]="";
+  Cat_lepton_charge[1]="_lepp";
+  Cat_lepton_charge[2]="_lepm";
+  Cat_lepton_charge_size = 3;
+
 }
 
 
@@ -161,12 +177,13 @@ bool B_Info_Analyzer::Tag_gbToZb(){
   //We want event with
   //incoming : 1 g + 1 b
   //outgoing : 1 b , no other partons
-  double LHE_E,LHE_status,LHE_id;
+  //double LHE_E;
+  double LHE_status,LHE_id;
   unsigned int ntau = 0, nmu = 0, nele = 0;
   for(unsigned int i =0; i < myLHE.LHEsize ; i++){
-    LHE_E=LHEs.at(i).E();
-    LHE_status=LHEs.at(i).Status();
-    LHE_id=LHEs.at(i).ID();
+    //LHE_E=LHEs.at(i).E();
+    LHE_status=LHEs[i].Status();
+    LHE_id=LHEs[i].ID();
     //LHE_index=LHEs.at(i).Index();
     //LHE_pt=LHEs.at(i).Pt();
     //LHE_eta=LHEs.at(i).Eta();
@@ -191,7 +208,7 @@ bool B_Info_Analyzer::Tag_gbToZb(){
 
       if (abs(LHE_id)==5){
 	myLHE.nb_outgoing += 1;
-	myLHE.vb=LHEs.at(i);
+	myLHE.vb=LHEs[i];
 	myLHE.nparton_outgoing += 1;
       }
       else if(
@@ -280,7 +297,8 @@ void B_Info_Analyzer::Tag_B_Hadron(){
   int _nb = 0;
   
   double _Bhad_pt=1;
-  double GEN_status,GEN_id,GEN_pt,GEN_eta,GEN_phi,GEN_m;
+  //double GEN_status,GEN_eta,GEN_phi,GEN_m;
+  double GEN_id,GEN_pt;
   myGEN.Bhad_idx=-1;
   for(unsigned int i =0; i < myGEN.GENsize ; i++){
     //GEN_index=GENs.at(i).Index();
@@ -288,12 +306,12 @@ void B_Info_Analyzer::Tag_B_Hadron(){
     //GEN_py=GENs.at(i).Py();
     //GEN_pz=GENs.at(i).Pz();
 
-    GEN_status=GENs.at(i).Status();
-    GEN_id=GENs.at(i).PID();
-    GEN_pt=GENs.at(i).Pt();
-    GEN_eta=GENs.at(i).Eta();
-    GEN_phi=GENs.at(i).Phi();
-    GEN_m=GENs.at(i).M();    
+    //GEN_status=GENs.at(i).Status();
+    GEN_id=GENs[i].PID();
+    GEN_pt=GENs[i].Pt();
+    //GEN_eta=GENs.at(i).Eta();
+    //GEN_phi=GENs.at(i).Phi();
+    //GEN_m=GENs.at(i).M();    
     
     //CheckIsBhadAndNb(int pid)
     _nb=CheckIsBhadAndNb(GEN_id);
@@ -308,7 +326,7 @@ void B_Info_Analyzer::Tag_B_Hadron(){
   }//[END] for GEN particles
   if(myGEN.Bhad_idx>-1){ //HasBhadron
     myGEN.HasBhadron=true;
-    myGEN.vBhad=GENs.at(myGEN.Bhad_idx);
+    myGEN.vBhad=GENs[myGEN.Bhad_idx];
 
   }//[END]HasBhadron
   
@@ -322,14 +340,15 @@ void B_Info_Analyzer::Loop_genBMatchedRecoJet(){
   jetsize=AllJets.size();
   double _RECO_bj_pt=-999.;
   myRECO.ij_B=-1;//Bmatched jet's jet idx
-  double jet_pt=-999., jet_eta=-999., jet_phi =-999, jet_m = -999, jet_E=-999, jet_flavor= -100;
+  double jet_pt=-999., jet_flavor= -100;
+  //double jet_eta=-999., jet_phi =-999, jet_m = -999, jet_E=-999;
   for( unsigned int ij = 0 ; ij < jetsize; ij++){
-    jet_pt = AllJets.at(ij).Pt();
-    jet_eta = AllJets.at(ij).Eta();
-    jet_phi = AllJets.at(ij).Phi();
-    jet_m = AllJets.at(ij).M();
-    jet_E = AllJets.at(ij).E();
-    jet_flavor = AllJets.at(ij).GenHFHadronMatcherFlavour();
+    jet_pt = AllJets[ij].Pt();
+    //jet_eta = AllJets.at(ij).Eta();
+    //jet_phi = AllJets.at(ij).Phi();
+    //jet_m = AllJets.at(ij).M();
+    //jet_E = AllJets.at(ij).E();
+    jet_flavor = AllJets[ij].GenHFHadronMatcherFlavour();
 
     if (  
 	(jet_flavor==5)  &&
@@ -342,15 +361,40 @@ void B_Info_Analyzer::Loop_genBMatchedRecoJet(){
   if(myRECO.ij_B > -1){
     myRECO.HasBmatchedRecoJet=true;
     myRECO.vBmatchedJet.SetPtEtaPhiM(
-				       AllJets.at(myRECO.ij_B).Pt(),
-				       AllJets.at(myRECO.ij_B).Eta(),
-				       AllJets.at(myRECO.ij_B).Phi(),
-				       AllJets.at(myRECO.ij_B).M()
+				       AllJets[myRECO.ij_B].Pt(),
+				       AllJets[myRECO.ij_B].Eta(),
+				       AllJets[myRECO.ij_B].Phi(),
+				       AllJets[myRECO.ij_B].M()
 				       );
   }//[END] if there's Bhad matched jet
 }//[END]B_Info_Analyzer::Loop_genBMatchedRecoJet()
 
 /////---Histogram Set---/////
+
+void B_Info_Analyzer::FillHistSetRecoMuon(TString cutname){
+  TString this_suffix="";
+  for(unsigned int i1 = 0 ; i1 < Cat_b_bbar_size; i1++){
+    for(unsigned int i2 = 0 ; i2 < Cat_Z_To_mm_ee_size; i2++){
+      for(unsigned int i3 = 0 ; i3 < Cat_lepton_charge_size; i3++){
+
+	this_suffix=Cat_b_bbar[i1]+Cat_Z_To_mm_ee[i2]+Cat_lepton_charge[i3];
+	//--Check category condition
+	if((i1==1)&&(myLHE.evt_nb!=1)) continue; //if not bevent, skip
+	if((i1==2)&&(myLHE.evt_nb!=-1)) continue; //if not bbarevent, skip
+
+	if((i2==1)&&(!myLHE.is_mumu)) continue; //if not mumu, skip
+	if((i2==2)&&(!myLHE.is_ee)) continue; //if not ee, skip
+
+	if((i3==1)&&(muon_charge < 0)) continue; //if not positive muon, skip
+	if((i3==2)&&(muon_charge > 0)) continue; //if not negative muon, skip
+	//--Fill
+	FillHistRecoMuon(cutname+this_suffix);
+	
+      }
+    }
+  } 
+  
+}
 
 void B_Info_Analyzer::FillHistRecoMuon(TString cutname){
   //muon
@@ -365,6 +409,8 @@ void B_Info_Analyzer::FillHistRecoMuon(TString cutname){
   FillHist(cutname+"/muon_charge/"+ProcessName, muon_charge, weight, 4, -2., 2.);
 
   FillHist(cutname+"/muon_dR_bmatj/"+ProcessName, muon_dR_bmatj, weight, 100, 0., 5.);
+
+  
 
   //FillHist(cutname+"/muon_jetptratio/"+ProcessName, muon_jetptratio, weight, 100, 0., 2.);
   //FillHist(cutname+"/muon_jetptrel/"+ProcessName, muon_jetptrel, weight, 100, 0., 50.);
@@ -385,6 +431,62 @@ void B_Info_Analyzer::FillHistRecoMuon(TString cutname){
   //FillHist(cutname+"/lepton_jetptrel/"+ProcessName, muon_jetptrel, weight, 100, 0., 50.);
 
 }
+void B_Info_Analyzer::FillHistReco_nMuon(){
+  TString this_suffix="";
+  for(unsigned int i1 = 0 ; i1 < Cat_b_bbar_size; i1++){
+    for(unsigned int i2 = 0 ; i2 < Cat_Z_To_mm_ee_size; i2++){
+      this_suffix=Cat_b_bbar[i1]+Cat_Z_To_mm_ee[i2];
+      //--Check category condition
+      if((i1==1)&&(myLHE.evt_nb!=1)) continue; //if not bevent, skip
+      if((i1==2)&&(myLHE.evt_nb!=-1)) continue; //if not bbarevent, skip
+      
+      if((i2==1)&&(!myLHE.is_mumu)) continue; //if not mumu, skip
+      if((i2==2)&&(!myLHE.is_ee)) continue; //if not ee, skip
+      
+      //--Fill
+      FillHist("Lepton"+this_suffix+"/nmuon/"+ProcessName, nmuon, weight, 10, 0., 10.);
+      FillHist("LeptonInBmatJet"+this_suffix+"/nmuon/"+ProcessName, nmuon_InBmatjet, weight, 10, 0., 10.);
+      FillHist("LeptonOutOfBmatJet"+this_suffix+"/nmuon/"+ProcessName, nmuon_OutOfBmatjet, weight, 10, 0., 10.);
+
+      FillHist("Lepton"+this_suffix+"/nmuon_p/"+ProcessName, nmuon_p, weight, 10, 0., 10.);
+      FillHist("LeptonInBmatJet"+this_suffix+"/nmuon_p/"+ProcessName, nmuon_p_InBmatjet, weight, 10, 0., 10.);
+      FillHist("LeptonOutOfBmatJet"+this_suffix+"/nmuon_p/"+ProcessName, nmuon_p_OutOfBmatjet, weight, 10, 0., 10.);
+
+      FillHist("Lepton"+this_suffix+"/nmuon_n/"+ProcessName, nmuon_n, weight, 10, 0., 10.);
+      FillHist("LeptonInBmatJet"+this_suffix+"/nmuon_n/"+ProcessName, nmuon_n_InBmatjet, weight, 10, 0., 10.);
+      FillHist("LeptonOutOfBmatJet"+this_suffix+"/nmuon_n/"+ProcessName, nmuon_n_OutOfBmatjet, weight, 10, 0., 10.);
+      
+      
+    }//[END]loop cat_ztommee
+  }//[END]loop cat bbbar
+}
+
+void B_Info_Analyzer::FillHistSetRecoElectron(TString cutname){
+  TString this_suffix="";
+  for(unsigned int i1 = 0 ; i1 < Cat_b_bbar_size; i1++){
+    for(unsigned int i2 = 0 ; i2 < Cat_Z_To_mm_ee_size; i2++){
+      for(unsigned int i3 = 0 ; i3 < Cat_lepton_charge_size; i3++){
+
+	this_suffix=Cat_b_bbar[i1]+Cat_Z_To_mm_ee[i2]+Cat_lepton_charge[i3];
+	//--Check category condition
+	if((i1==1)&&(myLHE.evt_nb!=1)) continue; //if not bevent, skip
+	if((i1==2)&&(myLHE.evt_nb!=-1)) continue; //if not bbarevent, skip
+
+	if((i2==1)&&(!myLHE.is_mumu)) continue; //if not mumu, skip
+	if((i2==2)&&(!myLHE.is_ee)) continue; //if not ee, skip
+
+	if((i3==1)&&(electron_charge < 0)) continue; //if not positive electron, skip
+	if((i3==2)&&(electron_charge > 0)) continue; //if not negative electron, skip
+	//--Fill
+	FillHistRecoElectron(cutname+this_suffix);
+	
+      }
+    }
+  } 
+  
+}
+
+
 void B_Info_Analyzer::FillHistRecoElectron(TString cutname){
   //cout << "electron_dR_bmatj" << electron_dR_bmatj << endl;
   //electron
@@ -419,298 +521,179 @@ void B_Info_Analyzer::FillHistRecoElectron(TString cutname){
 
 }
 
+void B_Info_Analyzer::FillHistReco_nElectron(){
+  TString this_suffix="";
+  for(unsigned int i1 = 0 ; i1 < Cat_b_bbar_size; i1++){
+    for(unsigned int i2 = 0 ; i2 < Cat_Z_To_mm_ee_size; i2++){
+      this_suffix=Cat_b_bbar[i1]+Cat_Z_To_mm_ee[i2];
+      //--Check category condition
+      if((i1==1)&&(myLHE.evt_nb!=1)) continue; //if not bevent, skip
+      if((i1==2)&&(myLHE.evt_nb!=-1)) continue; //if not bbarevent, skip
+      
+      if((i2==1)&&(!myLHE.is_mumu)) continue; //if not mumu, skip
+      if((i2==2)&&(!myLHE.is_ee)) continue; //if not ee, skip
+      
+      //--Fill
+      FillHist("Lepton"+this_suffix+"/nelectron/"+ProcessName, nelectron, weight, 10, 0., 10.);
+      FillHist("LeptonInBmatJet"+this_suffix+"/nelectron/"+ProcessName, nelectron_InBmatjet, weight, 10, 0., 10.);
+      FillHist("LeptonOutOfBmatJet"+this_suffix+"/nelectron/"+ProcessName, nelectron_OutOfBmatjet, weight, 10, 0., 10.);
+      
+      FillHist("Lepton"+this_suffix+"/nelectron_p/"+ProcessName, nelectron_p, weight, 10, 0., 10.);
+      FillHist("LeptonInBmatJet"+this_suffix+"/nelectron_p/"+ProcessName, nelectron_p_InBmatjet, weight, 10, 0., 10.);
+      FillHist("LeptonOutOfBmatJet"+this_suffix+"/nelectron_p/"+ProcessName, nelectron_p_OutOfBmatjet, weight, 10, 0., 10.);
+
+      FillHist("Lepton"+this_suffix+"/nelectron_n/"+ProcessName, nelectron_n, weight, 10, 0., 10.);
+      FillHist("LeptonInBmatJet"+this_suffix+"/nelectron_n/"+ProcessName, nelectron_n_InBmatjet, weight, 10, 0., 10.);
+      FillHist("LeptonOutOfBmatJet"+this_suffix+"/nelectron_n/"+ProcessName, nelectron_n_OutOfBmatjet, weight, 10, 0., 10.);
+
+
+    }//[END]loop cat_ztoee mm
+  }//[END]loop cat bbbar
+}
+
+
+void B_Info_Analyzer::FillHistReco_nLepton(){
+  TString this_suffix="";
+  for(unsigned int i1 = 0 ; i1 < Cat_b_bbar_size; i1++){
+    for(unsigned int i2 = 0 ; i2 < Cat_Z_To_mm_ee_size; i2++){
+      this_suffix=Cat_b_bbar[i1]+Cat_Z_To_mm_ee[i2];
+      //--Check category condition
+      if((i1==1)&&(myLHE.evt_nb!=1)) continue; //if not bevent, skip
+      if((i1==2)&&(myLHE.evt_nb!=-1)) continue; //if not bbarevent, skip
+      
+      if((i2==1)&&(!myLHE.is_mumu)) continue; //if not mumu, skip
+      if((i2==2)&&(!myLHE.is_ee)) continue; //if not ee, skip
+      
+      //--Fill
+      FillHist("Lepton"+this_suffix+"/nlepton/"+ProcessName, nelectron+nmuon, weight, 10, 0., 10.);
+      FillHist("LeptonInBmatJet"+this_suffix+"/nlepton/"+ProcessName, nelectron_InBmatjet+nmuon_InBmatjet, weight, 10, 0., 10.);
+      FillHist("LeptonOutOfBmatJet"+this_suffix+"/nlepton/"+ProcessName, nelectron_OutOfBmatjet+nmuon_OutOfBmatjet, weight, 10, 0., 10.);
+      
+      FillHist("Lepton"+this_suffix+"/nlepton_p/"+ProcessName, nelectron_p+nmuon_p, weight, 10, 0., 10.);
+      FillHist("LeptonInBmatJet"+this_suffix+"/nlepton_p/"+ProcessName, nelectron_p_InBmatjet+nmuon_p_InBmatjet, weight, 10, 0., 10.);
+      FillHist("LeptonOutOfBmatJet"+this_suffix+"/nlepton_p/"+ProcessName, nelectron_p_OutOfBmatjet+nmuon_p_OutOfBmatjet, weight, 10, 0., 10.);
+      
+      FillHist("Lepton"+this_suffix+"/nlepton_n/"+ProcessName, nelectron_n+nmuon_n, weight, 10, 0., 10.);
+      FillHist("LeptonInBmatJet"+this_suffix+"/nlepton_n/"+ProcessName, nelectron_n_InBmatjet+nmuon_n_InBmatjet, weight, 10, 0., 10.);
+      FillHist("LeptonOutOfBmatJet"+this_suffix+"/nlepton_n/"+ProcessName, nelectron_n_OutOfBmatjet+nmuon_n_OutOfBmatjet, weight, 10, 0., 10.);
+    }//[END] ztommee cat
+  }//[END] cat bbbar cat   
+}//[END]function FillHistReco_nLepton
+
+
+
+
+
 
 
 /////---[END]Histogram Sets---/////
 
 
 void B_Info_Analyzer::AnalyzeLeptons(){
+
+
   //(A) muon 
-  unsigned int nmuon=0,nmuon_InBmatjet=0;
+
+
+
+  //---For Muon--//
+  nmuon=0,nmuon_InBmatjet=0, nmuon_OutOfBmatjet=0;
+  nmuon_p=0,nmuon_p_InBmatjet=0, nmuon_p_OutOfBmatjet=0;
+  nmuon_n=0,nmuon_n_InBmatjet=0, nmuon_n_OutOfBmatjet=0;
   
   for(unsigned int i=0; i < muonsize; i++){
     nmuon+=1;
-    muon_pt=AllMuons.at(i).Pt();
-    muon_eta=AllMuons.at(i).Eta();
-    muon_phi=AllMuons.at(i).Phi();
+    muon_pt=AllMuons[i].Pt();
+    muon_eta=AllMuons[i].Eta();
+    muon_phi=AllMuons[i].Phi();
 
-    muon_dxy=AllMuons.at(i).dXY();
-    muon_dz=AllMuons.at(i).dZ();
-    muon_ip3d=AllMuons.at(i).IP3D();
-    muon_reliso=AllMuons.at(i).RelIso();
-    muon_charge=AllMuons.at(i).Charge();
+    muon_dxy=AllMuons[i].dXY();
+    muon_dz=AllMuons[i].dZ();
+    muon_ip3d=AllMuons[i].IP3D();
+    muon_reliso=AllMuons[i].RelIso();
+    muon_charge=AllMuons[i].Charge();
     
+    muon_charge>0 ? nmuon_p+=1 : nmuon_n+=1; // count muon+ muon-
+
     //muon_jetptratio=muon_jetPtRatio->at(i);
     //muon_jetptrel=muon_jetPtRel->at(i);
-    muon_dR_bmatj=AllMuons.at(i).DeltaR(myRECO.vBmatchedJet);   
-
+    muon_dR_bmatj=AllMuons[i].DeltaR(myRECO.vBmatchedJet);   
 
     //(1)b/bbar event info
-    FillHistRecoMuon("gbToZb");
-    if(myLHE.is_mumu){
-      FillHistRecoMuon("gbToZb_mm");
-    }
-    else if(myLHE.is_ee){
-      FillHistRecoMuon("gbToZb_ee");
-    }
-
-
-    if(myLHE.evt_nb==1){
-      FillHistRecoMuon("gbToZb_b");
-      if(myLHE.is_mumu){
-	FillHistRecoMuon("gbToZb_b_mm");
-      }
-      else if(myLHE.is_ee){
-	FillHistRecoMuon("gbToZb_b_ee");
-      }
-      
-    }
-    else if(myLHE.evt_nb==-1){
-      FillHistRecoMuon("gbToZb_bbar");
-      if(myLHE.is_mumu){
-	FillHistRecoMuon("gbToZb_bbar_mm");
-      }
-      else if(myLHE.is_ee){
-	FillHistRecoMuon("gbToZb_bbar_ee");
-      }
-    }
+    FillHistSetRecoMuon("Lepton");
 
     //(2) leptons in BmatJet
     if(muon_dR_bmatj<myRECO.dRcut_bmatj_muon){
-      FillHistRecoMuon("InBmatJet");
-      if(myLHE.is_mumu){
-	FillHistRecoMuon("InBmatJet_mm");
-      }
-      else if(myLHE.is_ee){
-	FillHistRecoMuon("InBmatJet_ee");
-      }
+      FillHistSetRecoMuon("LeptonInBmatJet");
       nmuon_InBmatjet+=1;
-      if(myLHE.evt_nb==1){
-	FillHistRecoMuon("InBmatJet_b");
-	if(myLHE.is_mumu){
-	  FillHistRecoMuon("InBmatJet_b_mm");
-	}
-	else if(myLHE.is_ee){
-	  FillHistRecoMuon("InBmatJet_b_ee");
-	}
-      }
-      else if(myLHE.evt_nb==-1){
-	FillHistRecoMuon("InBmatJet_bbar");
-	if(myLHE.is_mumu){
-	  FillHistRecoMuon("InBmatJet_bbar_mm");
-	}
-	else if(myLHE.is_ee){
-	  FillHistRecoMuon("InBmatJet_bbar_ee");
-	}
-      }
+      muon_charge>0 ? nmuon_p_InBmatjet+=1 : nmuon_n_InBmatjet+=1; // count muon+ muon-
+    }//[END if muon in bmatjet]
+    //(3) leptons outof BmatJet
+    else{
+      FillHistSetRecoMuon("LeptonOutOfBmatJet");
+      nmuon_OutOfBmatjet+=1;
+      muon_charge>0 ? nmuon_p_OutOfBmatjet+=1 : nmuon_n_OutOfBmatjet+=1; // count muon+ muon-
     }//[END if muon in bmatjet]
     
   }//[END] muon loop
   //FillHist For event
-  FillHist("gbToZb/nmuon/"+ProcessName, nmuon, weight, 10, 0., 10.);
-  FillHist("InBmatJet/nmuon/"+ProcessName, nmuon_InBmatjet, weight, 10, 0., 10.);
-  if(myLHE.is_mumu){
-    FillHist("gbToZb_mm/nmuon/"+ProcessName, nmuon, weight, 10, 0., 10.);
-    FillHist("InBmatJet_mm/nmuon/"+ProcessName, nmuon_InBmatjet, weight, 10, 0., 10.);
-  }
-  else if(myLHE.is_ee){
-    FillHist("gbToZb_ee/nmuon/"+ProcessName, nmuon, weight, 10, 0., 10.);
-    FillHist("InBmatJet_ee/nmuon/"+ProcessName, nmuon_InBmatjet, weight, 10, 0., 10.);
-  }
-  if(myLHE.evt_nb==1){
-    FillHist("gbToZb_b/nmuon/"+ProcessName, nmuon, weight, 10, 0., 10.);
-    FillHist("InBmatJet_b/nmuon/"+ProcessName, nmuon_InBmatjet, weight, 10, 0., 10.);
-    if(myLHE.is_mumu){
-      FillHist("gbToZb_b_mm/nmuon/"+ProcessName, nmuon, weight, 10, 0., 10.);
-      FillHist("InBmatJet_b_mm/nmuon/"+ProcessName, nmuon_InBmatjet, weight, 10, 0., 10.);
-    }
-    else if(myLHE.is_ee){
-      FillHist("gbToZb_b_ee/nmuon/"+ProcessName, nmuon, weight, 10, 0., 10.);
-      FillHist("InBmatJet_b_ee/nmuon/"+ProcessName, nmuon_InBmatjet, weight, 10, 0., 10.);
-    }
-  }
-  else if(myLHE.evt_nb==-1) {
-    FillHist("gbToZb_bbar/nmuon/"+ProcessName, nmuon, weight, 10, 0., 10.);
-    FillHist("InBmatJet_bbar/nmuon/"+ProcessName, nmuon_InBmatjet, weight, 10, 0., 10.);
-    if(myLHE.is_mumu){
-      FillHist("gbToZb_bbar_mm/nmuon/"+ProcessName, nmuon, weight, 10, 0., 10.);
-      FillHist("InBmatJet_bbar_mm/nmuon/"+ProcessName, nmuon_InBmatjet, weight, 10, 0., 10.);
-    }
-    else if(myLHE.is_ee){
-      FillHist("gbToZb_bbar_ee/nmuon/"+ProcessName, nmuon, weight, 10, 0., 10.);
-      FillHist("InBmatJet_bbar_ee/nmuon/"+ProcessName, nmuon_InBmatjet, weight, 10, 0., 10.);
-    }
-  }
+  FillHistReco_nMuon();
+  
 
+  
 
   
 
   //(B) electron
-  unsigned int nelectron=0,  nelectron_InBmatjet=0;
-
+  //---For Electron--//
+  nelectron=0,nelectron_InBmatjet=0, nelectron_OutOfBmatjet=0;
+  nelectron_p=0,nelectron_p_InBmatjet=0, nelectron_p_OutOfBmatjet=0;
+  nelectron_n=0,nelectron_n_InBmatjet=0, nelectron_n_OutOfBmatjet=0;
+  
   for(unsigned int i=0; i < electronsize; i++){
     nelectron+=1;
-    electron_pt=AllElectrons.at(i).Pt();
-    electron_eta=AllElectrons.at(i).Eta();
-    electron_phi=AllElectrons.at(i).Phi();
+    electron_pt=AllElectrons[i].Pt();
+    electron_eta=AllElectrons[i].Eta();
+    electron_phi=AllElectrons[i].Phi();
 
-    electron_dxy=AllElectrons.at(i).dXY();
-    electron_dz=AllElectrons.at(i).dZ();
-    electron_ip3d=AllElectrons.at(i).IP3D();
-    electron_reliso=AllElectrons.at(i).RelIso();
-    electron_charge=AllElectrons.at(i).Charge();
+    electron_dxy=AllElectrons[i].dXY();
+    electron_dz=AllElectrons[i].dZ();
+    electron_ip3d=AllElectrons[i].IP3D();
+    electron_reliso=AllElectrons[i].RelIso();
+    electron_charge=AllElectrons[i].Charge();
     
+    electron_charge>0 ? nelectron_p+=1 : nelectron_n+=1; // count electron+ electron-
+
     //electron_jetptratio=electron_jetPtRatio->at(i);
     //electron_jetptrel=electron_jetPtRel->at(i);
+    electron_dR_bmatj=AllElectrons[i].DeltaR(myRECO.vBmatchedJet);   
 
-    electron_dR_bmatj=AllElectrons.at(i).DeltaR(myRECO.vBmatchedJet);
-    //cout << "[Start][in for loop]" << endl;
-    //cout << "electron_dR_bmatj=" << electron_dR_bmatj << endl;
-    bool is_mm=false;
-    bool is_mm_and_inbjet=false;
     //(1)b/bbar event info
-    FillHistRecoElectron("gbToZb");
-    if(myLHE.is_mumu){
-      //cout << "[gbToZb_mm]" << endl;
-      FillHistRecoElectron("gbToZb_mm");
-      is_mm=true;
-    }
-    else if(myLHE.is_ee){
-      FillHistRecoElectron("gbToZb_ee");
-    }
-
-    if(myLHE.evt_nb==1){
-      FillHistRecoElectron("gbToZb_b");
-      if(myLHE.is_mumu){
-	FillHistRecoElectron("gbToZb_b_mm");
-      }
-      else if(myLHE.is_ee){
-	FillHistRecoElectron("gbToZb_b_ee");
-      }
-    }
-    else if(myLHE.evt_nb==-1){
-      FillHistRecoElectron("gbToZb_bbar");
-      if(myLHE.is_mumu){
-	FillHistRecoElectron("gbToZb_bbar_mm");
-      }
-      else if(myLHE.is_ee){
-	FillHistRecoElectron("gbToZb_bbar_ee");
-      }
-    }
+    FillHistSetRecoElectron("Lepton");
 
     //(2) leptons in BmatJet
-    if(electron_dR_bmatj < myRECO.dRcut_bmatj_electron){
-      FillHistRecoElectron("InBmatJet");
-      if(myLHE.is_mumu){
-	//cout << "[InBmatJet_mm]" << endl;
-	FillHistRecoElectron("InBmatJet_mm");
-	is_mm_and_inbjet=true;
-      }
-      else if(myLHE.is_ee){
-	FillHistRecoElectron("InBmatJet_ee");
-      }
+    if(electron_dR_bmatj<myRECO.dRcut_bmatj_electron){
+      FillHistSetRecoElectron("LeptonInBmatJet");
       nelectron_InBmatjet+=1;
-      if(myLHE.evt_nb==1){
-	FillHistRecoElectron("InBmatJet_b");
-	if(myLHE.is_mumu){
-	  FillHistRecoElectron("InBmatJet_b_mm");
-	}
-	else if(myLHE.is_ee){
-	  FillHistRecoElectron("InBmatJet_b_ee");
-	}
-
-      }
-      else if(myLHE.evt_nb==-1){
-	FillHistRecoElectron("InBmatJet_bbar");
-	if(myLHE.is_mumu){
-	  FillHistRecoElectron("InBmatJet_bbar_mm");
-	}
-	else if(myLHE.is_ee){
-	  FillHistRecoElectron("InBmatJet_bbar_ee");
-	}
-
-      }
+      electron_charge>0 ? nelectron_p_InBmatjet+=1 : nelectron_n_InBmatjet+=1; // count electron+ electron-
     }//[END if electron in bmatjet]
-    //if(is_mm_and_inbjet && !is_mm){
-    //  cout << "??? e is in z->mm && in bjet but not z->mm.." <<endl;
-    //}
+    //(3) leptons outof BmatJet
+    else{
+      FillHistSetRecoElectron("LeptonOutOfBmatJet");
+      nelectron_OutOfBmatjet+=1;
+      electron_charge>0 ? nelectron_p_OutOfBmatjet+=1 : nelectron_n_OutOfBmatjet+=1; // count electron+ electron-
+    }//[END if electron in bmatjet]
+    
   }//[END] electron loop
   //FillHist For event
-  FillHist("gbToZb/nelectron/"+ProcessName, nelectron, weight, 10, 0., 10.);
-  FillHist("InBmatJet/nelectron/"+ProcessName, nelectron_InBmatjet, weight, 10, 0., 10.);
-  if(myLHE.is_mumu){
-    FillHist("gbToZb_mm/nelectron/"+ProcessName, nelectron, weight, 10, 0., 10.);
-    FillHist("InBmatJet_mm/nelectron/"+ProcessName, nelectron_InBmatjet, weight, 10, 0., 10.);
-  }
-  else if(myLHE.is_ee){
-    FillHist("gbToZb_ee/nelectron/"+ProcessName, nelectron, weight, 10, 0., 10.);
-    FillHist("InBmatJet_ee/nelectron/"+ProcessName, nelectron_InBmatjet, weight, 10, 0., 10.);
-  }
-  if(myLHE.evt_nb==1){
-    FillHist("gbToZb_b/nelectron/"+ProcessName, nelectron, weight, 10, 0., 10.);
-    FillHist("InBmatJet_b/nelectron/"+ProcessName, nelectron_InBmatjet, weight, 10, 0., 10.);
-    if(myLHE.is_mumu){
-      FillHist("gbToZb_b_mm/nelectron/"+ProcessName, nelectron, weight, 10, 0., 10.);
-      FillHist("InBmatJet_b_mm/nelectron/"+ProcessName, nelectron_InBmatjet, weight, 10, 0., 10.);
-    }
-    else if(myLHE.is_ee){
-      FillHist("gbToZb_b_ee/nelectron/"+ProcessName, nelectron, weight, 10, 0., 10.);
-      FillHist("InBmatJet_b_ee/nelectron/"+ProcessName, nelectron_InBmatjet, weight, 10, 0., 10.);
-    }
+  FillHistReco_nElectron();
 
-  }
-  else if(myLHE.evt_nb==-1){
-    FillHist("gbToZb_bbar/nelectron/"+ProcessName, nelectron, weight, 10, 0., 10.);
-    FillHist("InBmatJet_bbar/nelectron/"+ProcessName, nelectron_InBmatjet, weight, 10, 0., 10.);
-    if(myLHE.is_mumu){
-      FillHist("gbToZb_bbar_mm/nelectron/"+ProcessName, nelectron, weight, 10, 0., 10.);
-      FillHist("InBmatJet_bbar_mm/nelectron/"+ProcessName, nelectron_InBmatjet, weight, 10, 0., 10.);
-    }
-    else if(myLHE.is_ee){
-      FillHist("gbToZb_bbar_ee/nelectron/"+ProcessName, nelectron, weight, 10, 0., 10.);
-      FillHist("InBmatJet_bbar_ee/nelectron/"+ProcessName, nelectron_InBmatjet, weight, 10, 0., 10.);
-    }
-
-  }
-
+    
   //FillHist For event --lepton
-  FillHist("gbToZb/nlepton/"+ProcessName, nmuon+nelectron, weight, 10, 0., 10.);
-  FillHist("InBmatJet/nlepton/"+ProcessName, nmuon_InBmatjet+nelectron_InBmatjet, weight, 10, 0., 10.);
-  if(myLHE.is_mumu){
-    FillHist("gbToZb_mm/nlepton/"+ProcessName, nmuon+nelectron, weight, 10, 0., 10.);
-    FillHist("InBmatJet_mm/nlepton/"+ProcessName, nmuon_InBmatjet+nelectron_InBmatjet, weight, 10, 0., 10.);
-  }
-  else if(myLHE.is_ee){
-    FillHist("gbToZb_ee/nlepton/"+ProcessName, nmuon+nelectron, weight, 10, 0., 10.);
-    FillHist("InBmatJet_ee/nlepton/"+ProcessName, nmuon_InBmatjet+nelectron_InBmatjet, weight, 10, 0., 10.);
-  }
-  if(myLHE.evt_nb==1){
-    FillHist("gbToZb_b/nlepton/"+ProcessName, nmuon+nelectron, weight, 10, 0., 10.);
-    FillHist("InBmatJet_b/nlepton/"+ProcessName, nmuon_InBmatjet+nelectron_InBmatjet, weight, 10, 0., 10.);
-    if(myLHE.is_mumu){
-      FillHist("gbToZb_b_mm/nlepton/"+ProcessName, nmuon+nelectron, weight, 10, 0., 10.);
-      FillHist("InBmatJet_b_mm/nlepton/"+ProcessName, nmuon_InBmatjet+nelectron_InBmatjet, weight, 10, 0., 10.);
-    }
-    else if(myLHE.is_ee){
-      FillHist("gbToZb_b_ee/nlepton/"+ProcessName, nmuon+nelectron, weight, 10, 0., 10.);
-      FillHist("InBmatJet_b_ee/nlepton/"+ProcessName, nmuon_InBmatjet+nelectron_InBmatjet, weight, 10, 0., 10.);
-    }
+  FillHistReco_nLepton();
+}//[END]AnalyzeLeptons
 
-  }
-  else if(myLHE.evt_nb==-1){
-    FillHist("gbToZb_bbar/nlepton/"+ProcessName, nmuon+nelectron, weight, 10, 0., 10.);
-    FillHist("InBmatJet_bbar/nlepton/"+ProcessName, nmuon_InBmatjet+nelectron_InBmatjet, weight, 10, 0., 10.);
-    if(myLHE.is_mumu){
-      FillHist("gbToZb_bbar_mm/nlepton/"+ProcessName, nmuon+nelectron, weight, 10, 0., 10.);
-      FillHist("InBmatJet_bbar_mm/nlepton/"+ProcessName, nmuon_InBmatjet+nelectron_InBmatjet, weight, 10, 0., 10.);
-    }
-    else if(myLHE.is_ee){
-      FillHist("gbToZb_bbar_ee/nlepton/"+ProcessName, nmuon+nelectron, weight, 10, 0., 10.);
-      FillHist("InBmatJet_bbar_ee/nlepton/"+ProcessName, nmuon_InBmatjet+nelectron_InBmatjet, weight, 10, 0., 10.);
-    }
-  }
 
-}
 
 
 
@@ -741,8 +724,8 @@ void B_Info_Analyzer::AnalyzeLHE(){
 
   int status=-999, pid=-999;
   for(unsigned int i = 0; i < myLHE.LHEsize ; i++){
-    status=LHEs.at(i).Status();
-    pid=LHEs.at(i).ID();
+    status=LHEs[i].Status();
+    pid=LHEs[i].ID();
     if(status==-1){
       myLHE.incoming_parton_pid.push_back(pid);
     }
@@ -751,16 +734,16 @@ void B_Info_Analyzer::AnalyzeLHE(){
   myLHE.x_b=-1;
   myLHE.x_g=-1;
   myLHE.Q2=-1;
-  if(abs(myLHE.incoming_parton_pid.at(0))==5){//1st parton is b
+  if(abs(myLHE.incoming_parton_pid[0])==5){//1st parton is b
     myLHE.x_b=genWeight_X1;
   }
-  else if (myLHE.incoming_parton_pid.at(0)==21){//1st parton is g
+  else if (myLHE.incoming_parton_pid[0]==21){//1st parton is g
     myLHE.x_g=genWeight_X1;
   }
-  else if(abs(myLHE.incoming_parton_pid.at(1))==5){//1st parton is b
+  else if(abs(myLHE.incoming_parton_pid[1])==5){//1st parton is b
     myLHE.x_b=genWeight_X2;
   }
-  else if (myLHE.incoming_parton_pid.at(1)==21){//1st parton is g
+  else if (myLHE.incoming_parton_pid[1]==21){//1st parton is g
     myLHE.x_g=genWeight_X2;
   }
   myLHE.Q2=genWeight_Q*genWeight_Q;
@@ -772,16 +755,28 @@ void B_Info_Analyzer::AnalyzeLHE(){
   FillHist("gbToZb/Q2/"+ProcessName, myLHE.Q2, weight, nbin_Q2scale, Q2scale_binning); //nbin,xmin,xmax
   FillHist("gbToZb/x_b/"+ProcessName, myLHE.x_b, weight, nbin_xscale, xscale_binning); //nbin,xmin,xmax
   FillHist("gbToZb/x_g/"+ProcessName, myLHE.x_g, weight, nbin_xscale, xscale_binning); //nbin,xmin,xmax
+  //log scale
+  FillHist("gbToZb/logQ2/"+ProcessName, log10(myLHE.Q2), weight, 100, 0, 4); //nbin,xmin,xmax
+  FillHist("gbToZb/logx_b/"+ProcessName, log10(myLHE.x_b), weight, 100, -9, 0); //nbin,xmin,xmax
+  FillHist("gbToZb/logx_g/"+ProcessName, log10(myLHE.x_g), weight, 100, -9, 0); //nbin,xmin,xmax
   if(myLHE.evt_nb==1){
     FillHist("gbToZb_b/Q2/"+ProcessName, myLHE.Q2, weight, nbin_Q2scale, Q2scale_binning); //nbin,xmin,xmax
     FillHist("gbToZb_b/x_b/"+ProcessName, myLHE.x_b, weight, nbin_xscale,xscale_binning); 
     FillHist("gbToZb_b/x_g/"+ProcessName, myLHE.x_g, weight, nbin_xscale,xscale_binning); //nbin,xmin,xmax
+
+    FillHist("gbToZb_b/logQ2/"+ProcessName, log10(myLHE.Q2), weight, 100, 0, 4); //nbin,xmin,xmax
+    FillHist("gbToZb_b/logx_b/"+ProcessName, log10(myLHE.x_b), weight, 100,-9, 0); 
+    FillHist("gbToZb_b/logx_g/"+ProcessName, log10(myLHE.x_g), weight, 100,-9, 0); //nbin,xmin,xmax
   }
 
   else if(myLHE.evt_nb==-1){
     FillHist("gbToZb_bbar/Q2/"+ProcessName, myLHE.Q2, weight, nbin_Q2scale, Q2scale_binning); //nbin,xmin,xmax
     FillHist("gbToZb_bbar/x_b/"+ProcessName, myLHE.x_b, weight, nbin_xscale,xscale_binning); 
     FillHist("gbToZb_bbar/x_g/"+ProcessName, myLHE.x_g, weight, nbin_xscale,xscale_binning); //nbin,xmin,xmax
+
+    FillHist("gbToZb_bbar/logQ2/"+ProcessName, log10(myLHE.Q2), weight, 100, 0, 4); //nbin,xmin,xmax
+    FillHist("gbToZb_bbar/logx_b/"+ProcessName, log10(myLHE.x_b), weight, 100,-9, 0); 
+    FillHist("gbToZb_bbar/logx_g/"+ProcessName, log10(myLHE.x_g), weight, 100,-9, 0); //nbin,xmin,xmax
   }
 
 }
@@ -796,16 +791,24 @@ void B_Info_Analyzer::FillHistBmatJet(TString cutname){
   
 }
 void B_Info_Analyzer::FillHistJet(TString cutname, unsigned int jidx){
-  FillHist(cutname+"/jet_chargedMultiplicity/"+ProcessName,jet_chargedMultiplicity->at(jidx), weight, 30, 0., 30.);
-  FillHist(cutname+"/jet_neutralMultiplicity/"+ProcessName,jet_neutralMultiplicity->at(jidx), weight, 30, 0., 30.);
-  FillHist(cutname+"/jet_pt/"+ProcessName,AllJets.at(jidx).Pt(), weight, 100, 0., 100.);
-  FillHist(cutname+"/jet_eta/"+ProcessName,AllJets.at(jidx).Eta(), weight, 100, -5., 5.);
-  FillHist(cutname+"/jet_charge/"+ProcessName,jet_charge->at(jidx), weight, 100, -2., 2.);
-  FillHist(cutname+"/jet_chargedHadronEnergyFraction/"+ProcessName,jet_chargedHadronEnergyFraction->at(jidx), weight, 10000, 0., 1.);
-  FillHist(cutname+"/jet_neutralHadronEnergyFraction/"+ProcessName,jet_neutralHadronEnergyFraction->at(jidx), weight, 10000, 0., 1.);
-  FillHist(cutname+"/jet_neutralEmEnergyFraction/"+ProcessName,jet_neutralEmEnergyFraction->at(jidx), weight, 10000, 0., 1.);
-  FillHist(cutname+"/jet_chargedEmEnergyFraction/"+ProcessName,jet_chargedEmEnergyFraction->at(jidx), weight, 10000, 0., 1.);
-  FillHist(cutname+"/jet_muonEnergyFraction/"+ProcessName,jet_muonEnergyFraction->at(jidx), weight, 10000, 0., 1.);
+  FillHist(cutname+"/jet_chargedMultiplicity/"+ProcessName,(*jet_chargedMultiplicity)[jidx], weight, 30, 0., 30.);
+  FillHist(cutname+"/jet_neutralMultiplicity/"+ProcessName,(*jet_neutralMultiplicity)[jidx], weight, 30, 0., 30.);
+  FillHist(cutname+"/jet_pt/"+ProcessName,AllJets[jidx].Pt(), weight, 100, 0., 100.);
+  FillHist(cutname+"/jet_eta/"+ProcessName,AllJets[jidx].Eta(), weight, 100, -5., 5.);
+  FillHist(cutname+"/jet_charge/"+ProcessName,(*jet_charge)[jidx], weight, 100, -2., 2.);
+  FillHist(cutname+"/jet_chargedHadronEnergyFraction/"+ProcessName,(*jet_chargedHadronEnergyFraction)[jidx], weight, 10000, 0., 1.);
+  FillHist(cutname+"/jet_neutralHadronEnergyFraction/"+ProcessName,(*jet_neutralHadronEnergyFraction)[jidx], weight, 10000, 0., 1.);
+  FillHist(cutname+"/jet_neutralEmEnergyFraction/"+ProcessName,(*jet_neutralEmEnergyFraction)[jidx], weight, 10000, 0., 1.);
+  FillHist(cutname+"/jet_chargedEmEnergyFraction/"+ProcessName,(*jet_chargedEmEnergyFraction)[jidx], weight, 10000, 0., 1.);
+  FillHist(cutname+"/jet_muonEnergyFraction/"+ProcessName,(*jet_muonEnergyFraction)[jidx], weight, 10000, 0., 1.);
+  //deep jet
+  FillHist(cutname+"/jet_DeepJet/"+ProcessName,(*jet_DeepJet)[jidx], weight, 100, 0., 1.);
+  FillHist(cutname+"/jet_DeepJet_CvsL/"+ProcessName,(*jet_DeepJet_CvsL)[jidx], weight, 100, 0., 1.);
+  FillHist(cutname+"/jet_DeepJet_CvsB/"+ProcessName,(*jet_DeepJet_CvsB)[jidx], weight, 100, 0., 1.);
+
+  FillHist(cutname+"/jet_DeepCSV/"+ProcessName,(*jet_DeepCSV)[jidx], weight, 100, 0., 1.);
+  FillHist(cutname+"/jet_DeepCSV_CvsL/"+ProcessName,(*jet_DeepCSV_CvsL)[jidx], weight, 100, 0., 1.);
+  FillHist(cutname+"/jet_DeepCSV_CvsB/"+ProcessName,(*jet_DeepCSV_CvsB)[jidx], weight, 100, 0., 1.);
 
 }
 
@@ -822,7 +825,7 @@ void B_Info_Analyzer::AnalyzeBmatJet(){
   
   //[TODO]jet charge/multiplicity...
   
-  for(unsigned int ij = 0; ij < jetsize; ij++){
+  for(int ij = 0; ij < jetsize; ij++){
     //jet_chargedMultiplicity->at(i), jet_neutralMultiplicity->at(i)
     if(ij==myRECO.ij_B){
       FillHistJet("BmatJet",ij);
