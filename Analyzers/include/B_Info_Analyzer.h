@@ -106,26 +106,47 @@ public:
   double* xscale_binning;
   double* Q2scale_binning;
   //For Histograms//
+  //---leptons
   void FillHistRecoMuon(TString cutname);
+  void FillHistSetRecoMuon(TString cutname);
+  void FillHistReco_nMuon();
   void FillHistRecoElectron(TString cutname);
+  void FillHistSetRecoElectron(TString cutname);
+  void FillHistReco_nElectron();
+
+  void FillHistReco_nLepton();
+
+
   void FillHistBmatJet(TString cutname);
   void FillHistJet(TString cutname, unsigned int jidx);
   //global varibles for recolevel
   double muon_pt,muon_eta,muon_phi,muon_dxy,muon_dz,
     muon_charge,muon_ip3d,muon_reliso,muon_jetptratio,
     muon_jetptrel,muon_dR_bmatj;
+  unsigned int nmuon,nmuon_InBmatjet, nmuon_OutOfBmatjet;
+  unsigned int nmuon_p,nmuon_p_InBmatjet, nmuon_p_OutOfBmatjet;
+  unsigned int nmuon_n,nmuon_n_InBmatjet, nmuon_n_OutOfBmatjet;
   TLorentzVector v_muon;
   
   double electron_pt,electron_eta,electron_phi,electron_dxy,electron_dz,
     electron_charge,electron_ip3d,electron_reliso,electron_jetptratio,
     electron_jetptrel,electron_dR_bmatj;
+  unsigned int nelectron,nelectron_InBmatjet, nelectron_OutOfBmatjet;
+  unsigned int nelectron_p,nelectron_p_InBmatjet, nelectron_p_OutOfBmatjet;
+  unsigned int nelectron_n,nelectron_n_InBmatjet, nelectron_n_OutOfBmatjet;
   TLorentzVector v_electron;
 
 
   double dRToLHE,dRToBhad,ptratioToLHE,ptratioToBhad;
 
-
-
+  //For Categorize
+  TString Cat_b_bbar[10];
+  TString Cat_Z_To_mm_ee[10];
+  TString Cat_lepton_charge[10];
+  unsigned int Cat_b_bbar_size;
+  unsigned int Cat_Z_To_mm_ee_size;
+  unsigned int Cat_lepton_charge_size;
+  
   B_Info_Analyzer();
   ~B_Info_Analyzer();
   

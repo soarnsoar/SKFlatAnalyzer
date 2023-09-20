@@ -61,7 +61,7 @@ B_Info_Analyzer::B_Info_Analyzer(){//FYI : bottomness = -nb
 
   Cat_lepton_charge[0]="";
   Cat_lepton_charge[1]="_lepp";
-  Cat_lepton_charge[2]="_lepm";
+  Cat_lepton_charge[2]="_lepn";
   Cat_lepton_charge_size = 3;
 
 }
