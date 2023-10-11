@@ -1,9 +1,9 @@
-#ifndef B_Info_Analyzer_h
-#define B_Info_Analyzer_h
+#ifndef BBbar_Analyzer_h
+#define BBbar_Analyzer_h
 
 #include "AnalyzerCore.h"
 #include <set>
-class B_Info_Analyzer : public AnalyzerCore {
+class BBbar_Analyzer : public AnalyzerCore {
 
 public:
 
@@ -16,9 +16,12 @@ public:
   void Loop_genBMatchedRecoJet();
   void ParseReco();
   void HistConf();
-
+  void RunProtoType();
+  void RunLeptonCutStudy();
   int CheckIsBhadAndNb(int pid);
 
+  bool ZTagCuts();
+  void BmatjetTag();
   void AnalyzeLeptons();
   void AnalyzeBmatJet();
 
@@ -46,6 +49,7 @@ public:
   double weight;
   //
   TString ProcessName;
+  TString EventTag;
   std::vector<Gen> GENs;
   std::vector<LHE> LHEs;
   //std::vector<int> BmesonPIDs;
@@ -96,6 +100,8 @@ public:
     double dRcut_bmatj_muon;
     double dRcut_bmatj_electron;
     unsigned int nBmatJet;
+    int idx_Zmuon1, idx_Zmuon2;
+    int idx_Zelectron1, idx_Zelectron2;
   };
   RECOinfo myRECO;
 
@@ -163,8 +169,8 @@ public:
   unsigned int Cat_lepton_charge_size;
   unsigned int Cat_1jet20_size;
   unsigned int Cat_pTatJetRF2_size;
-  B_Info_Analyzer();
-  ~B_Info_Analyzer();
+  BBbar_Analyzer();
+  ~BBbar_Analyzer();
   
 };
 
