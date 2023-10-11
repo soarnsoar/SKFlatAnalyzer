@@ -24,5 +24,6 @@
 #pragma link C++ class B_In_GEN+;
 #pragma link C++ class B_Info_Analyzer+;
 #pragma link C++ class BasicTest+;
+#pragma link C++ class BBbar_Analyzer+;
 
 #endif
