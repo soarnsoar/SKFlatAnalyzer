@@ -1,9 +1,9 @@
-#ifndef BBbar_Analyzer_h
-#define BBbar_Analyzer_h
+#ifndef B_Info_Analyzer_BASIC_v2309_h
+#define B_Info_Analyzer_BASIC_v2309_h
 
 #include "AnalyzerCore.h"
 #include <set>
-class BBbar_Analyzer : public AnalyzerCore {
+class B_Info_Analyzer_BASIC_v2309 : public AnalyzerCore {
 
 public:
 
@@ -16,14 +16,9 @@ public:
   void Loop_genBMatchedRecoJet();
   void ParseReco();
   void HistConf();
-  void RunProtoTypeMuon();
-  void RunProtoTypeElectron();
-  void RunLeptonCutStudyMuon();
-  void RunLeptonCutStudyElectron();
+
   int CheckIsBhadAndNb(int pid);
 
-  bool ZTagCuts();
-  void BmatjetTag();
   void AnalyzeLeptons();
   void AnalyzeBmatJet();
 
@@ -51,8 +46,6 @@ public:
   double weight;
   //
   TString ProcessName;
-  TString EventTag;
-  TString EventTagJetParton;
   std::vector<Gen> GENs;
   std::vector<LHE> LHEs;
   //std::vector<int> BmesonPIDs;
@@ -68,7 +61,6 @@ public:
     unsigned int ngluon_incoming;
     unsigned int nb_incoming;
     unsigned int nb_outgoing;
-    unsigned int abs_nb_outgoing;
     unsigned int nparton_outgoing;
     bool is_gbToZb;
     bool is_tautau;
@@ -104,8 +96,6 @@ public:
     double dRcut_bmatj_muon;
     double dRcut_bmatj_electron;
     unsigned int nBmatJet;
-    int idx_Zmuon1, idx_Zmuon2;
-    int idx_Zelectron1, idx_Zelectron2;
   };
   RECOinfo myRECO;
 
@@ -173,8 +163,8 @@ public:
   unsigned int Cat_lepton_charge_size;
   unsigned int Cat_1jet20_size;
   unsigned int Cat_pTatJetRF2_size;
-  BBbar_Analyzer();
-  ~BBbar_Analyzer();
+  B_Info_Analyzer_BASIC_v2309();
+  ~B_Info_Analyzer_BASIC_v2309();
   
 };
 
