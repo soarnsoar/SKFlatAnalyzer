@@ -589,6 +589,11 @@ bool BBbar_Analyzer::ZTagCuts(){
   return 1;
 
 }
+
+
+
+
+
 void BBbar_Analyzer::RunProtoTypeMuon(){
   TString ProtoTypeEventTag="ProtoType__"+EventTag;
   TString ProtoTypeEventTagJetParton="ProtoType__"+EventTagJetParton;
@@ -602,12 +607,12 @@ void BBbar_Analyzer::RunProtoTypeMuon(){
     double ptwrtbjet=AllMuons[i].P()*sin(AllMuons[i].Angle(AllJets[myRECO.ij_B].Vect()));
     int muon_charge=AllMuons[i].Charge();
     if ( muon_charge > 0){
-      FillHist(ProtoTypeEventTag+"_Muon/muonp_ptwrtbjet/"+ProcessName, ptwrtbjet, weight, 100, 0., 10.);
-      FillHist(ProtoTypeEventTagJetParton+"_Muon/muonp_ptwrtbjet/"+ProcessName, ptwrtbjet, weight, 100, 0., 10.);
+      FillHist(ProtoTypeEventTag+"_MuonPlus/muon_ptwrtbjet/"+ProcessName, ptwrtbjet, weight, 100, 0., 10.);
+      FillHist(ProtoTypeEventTagJetParton+"_MuonPlus/muon_ptwrtbjet/"+ProcessName, ptwrtbjet, weight, 100, 0., 10.);
     }
     else{
-      FillHist(ProtoTypeEventTag+"_Muon/muonn_ptwrtbjet/"+ProcessName, ptwrtbjet, weight, 100, 0., 10.);      
-      FillHist(ProtoTypeEventTagJetParton+"_Muon/muonn_ptwrtbjet/"+ProcessName, ptwrtbjet, weight, 100, 0., 10.);
+      FillHist(ProtoTypeEventTag+"_MuonMinus/muon_ptwrtbjet/"+ProcessName, ptwrtbjet, weight, 100, 0., 10.);      
+      FillHist(ProtoTypeEventTagJetParton+"_MuonMinus/muon_ptwrtbjet/"+ProcessName, ptwrtbjet, weight, 100, 0., 10.);
     }
     if(ptwrtbjet <0.6) continue;
     if(AllMuons[i].TrkIso()/AllMuons[i].Pt() <0.05) continue; // original, 0.1
@@ -617,22 +622,22 @@ void BBbar_Analyzer::RunProtoTypeMuon(){
   }
  
   if(v_bmuonidx.size()>0){
-    unsigned int i_bmuon=v_bmuonidx[0];
+    i_bmuon=v_bmuonidx[0];
     //--check only muon channel!
-    FillHist(ProtoTypeEventTag+"_AtLeast1MuonInBmatjet/bmuon_charge/"+ProcessName, AllMuons[i_bmuon].Charge(), weight, 4, -2., 2.);
-    FillHist(ProtoTypeEventTag+"_AtLeast1MuonInBmatjet/jet_charge/"+ProcessName, AllJets[myRECO.ij_B].Charge(), weight, 100, -2., 2.);
-    FillHist(ProtoTypeEventTag+"_AtLeast1MuonInBmatjet/bmuon_bjet_chargesum/"+ProcessName, AllMuons[i_bmuon].Charge()+AllJets[myRECO.ij_B].Charge(), weight, 100, -3., 3.);
-    FillHist(ProtoTypeEventTagJetParton+"_AtLeast1MuonInBmatjet/bmuon_charge/"+ProcessName, AllMuons[i_bmuon].Charge(), weight, 4, -2., 2.);
-    FillHist(ProtoTypeEventTagJetParton+"_AtLeast1MuonInBmatjet/jet_charge/"+ProcessName, AllJets[myRECO.ij_B].Charge(), weight, 100, -2., 2.);
-    FillHist(ProtoTypeEventTagJetParton+"_AtLeast1MuonInBmatjet/bmuon_bjet_chargesum/"+ProcessName, AllMuons[i_bmuon].Charge()+AllJets[myRECO.ij_B].Charge(), weight, 100, -3., 3.);
+    FillHist(ProtoTypeEventTag+"__AtLeast1MuonInBmatjet/bmuon_charge/"+ProcessName, AllMuons[i_bmuon].Charge(), weight, 4, -2., 2.);
+    FillHist(ProtoTypeEventTag+"__AtLeast1MuonInBmatjet/jet_charge/"+ProcessName, AllJets[myRECO.ij_B].Charge(), weight, 100, -2., 2.);
+    FillHist(ProtoTypeEventTag+"__AtLeast1MuonInBmatjet/bmuon_bjet_chargesum/"+ProcessName, AllMuons[i_bmuon].Charge()+AllJets[myRECO.ij_B].Charge(), weight, 100, -3., 3.);
+    FillHist(ProtoTypeEventTagJetParton+"__AtLeast1MuonInBmatjet/bmuon_charge/"+ProcessName, AllMuons[i_bmuon].Charge(), weight, 4, -2., 2.);
+    FillHist(ProtoTypeEventTagJetParton+"__AtLeast1MuonInBmatjet/jet_charge/"+ProcessName, AllJets[myRECO.ij_B].Charge(), weight, 100, -2., 2.);
+    FillHist(ProtoTypeEventTagJetParton+"__AtLeast1MuonInBmatjet/bmuon_bjet_chargesum/"+ProcessName, AllMuons[i_bmuon].Charge()+AllJets[myRECO.ij_B].Charge(), weight, 100, -3., 3.);
     if(v_bmuonidx.size()==1){
-      FillHist(ProtoTypeEventTag+"_Only1MuonInBmatjet/bmuon_charge/"+ProcessName, AllMuons[i_bmuon].Charge(), weight, 4, -2., 2.);
-      FillHist(ProtoTypeEventTag+"_Only1MuonInBmatjet/jet_charge/"+ProcessName, AllJets[myRECO.ij_B].Charge(), weight, 100, -2., 2.);
-      FillHist(ProtoTypeEventTag+"_Only1MuonInBmatjet/bmuon_bjet_chargesum/"+ProcessName, AllMuons[i_bmuon].Charge()+AllJets[myRECO.ij_B].Charge(), weight, 100, -3., 3.);
+      FillHist(ProtoTypeEventTag+"__Only1MuonInBmatjet/bmuon_charge/"+ProcessName, AllMuons[i_bmuon].Charge(), weight, 4, -2., 2.);
+      FillHist(ProtoTypeEventTag+"__Only1MuonInBmatjet/jet_charge/"+ProcessName, AllJets[myRECO.ij_B].Charge(), weight, 100, -2., 2.);
+      FillHist(ProtoTypeEventTag+"__Only1MuonInBmatjet/bmuon_bjet_chargesum/"+ProcessName, AllMuons[i_bmuon].Charge()+AllJets[myRECO.ij_B].Charge(), weight, 100, -3., 3.);
 
-      FillHist(ProtoTypeEventTagJetParton+"_Only1MuonInBmatjet/bmuon_charge/"+ProcessName, AllMuons[i_bmuon].Charge(), weight, 4, -2., 2.);
-      FillHist(ProtoTypeEventTagJetParton+"_Only1MuonInBmatjet/jet_charge/"+ProcessName, AllJets[myRECO.ij_B].Charge(), weight, 100, -2., 2.);
-      FillHist(ProtoTypeEventTagJetParton+"_Only1MuonInBmatjet/bmuon_bjet_chargesum/"+ProcessName, AllMuons[i_bmuon].Charge()+AllJets[myRECO.ij_B].Charge(), weight, 100, -3., 3.);
+      FillHist(ProtoTypeEventTagJetParton+"__Only1MuonInBmatjet/bmuon_charge/"+ProcessName, AllMuons[i_bmuon].Charge(), weight, 4, -2., 2.);
+      FillHist(ProtoTypeEventTagJetParton+"__Only1MuonInBmatjet/jet_charge/"+ProcessName, AllJets[myRECO.ij_B].Charge(), weight, 100, -2., 2.);
+      FillHist(ProtoTypeEventTagJetParton+"__Only1MuonInBmatjet/bmuon_bjet_chargesum/"+ProcessName, AllMuons[i_bmuon].Charge()+AllJets[myRECO.ij_B].Charge(), weight, 100, -3., 3.);
     }//[END] #muon==1
   }//[END] # muon>0
 }
@@ -651,12 +656,12 @@ void BBbar_Analyzer::RunProtoTypeElectron(){
     double ptwrtbjet=AllElectrons[i].P()*sin(AllElectrons[i].Angle(AllJets[myRECO.ij_B].Vect()));
     int electron_charge=AllElectrons[i].Charge();
     if ( electron_charge > 0){
-      FillHist(ProtoTypeEventTag+"_Electron/electronp_ptwrtbjet/"+ProcessName, ptwrtbjet, weight, 100, 0., 10.);
-      FillHist(ProtoTypeEventTagJetParton+"_Electron/electronp_ptwrtbjet/"+ProcessName, ptwrtbjet, weight, 100, 0., 10.);
+      FillHist(ProtoTypeEventTag+"_ElectronPlus/electron_ptwrtbjet/"+ProcessName, ptwrtbjet, weight, 100, 0., 10.);
+      FillHist(ProtoTypeEventTagJetParton+"_ElectronPlus/electron_ptwrtbjet/"+ProcessName, ptwrtbjet, weight, 100, 0., 10.);
     }
     else{
-      FillHist(ProtoTypeEventTag+"_Electron/electronn_ptwrtbjet/"+ProcessName, ptwrtbjet, weight, 100, 0., 10.);
-      FillHist(ProtoTypeEventTagJetParton+"_Electron/electronn_ptwrtbjet/"+ProcessName, ptwrtbjet, weight, 100, 0., 10.);
+      FillHist(ProtoTypeEventTag+"_ElectronMinus/electron_ptwrtbjet/"+ProcessName, ptwrtbjet, weight, 100, 0., 10.);
+      FillHist(ProtoTypeEventTagJetParton+"_ElectronMinus/electron_ptwrtbjet/"+ProcessName, ptwrtbjet, weight, 100, 0., 10.);
     }
     if(ptwrtbjet <0.6) continue;
     if(AllElectrons[i].ecalPFClusterIso()/AllElectrons[i].Pt() == 0.) continue;
@@ -666,32 +671,48 @@ void BBbar_Analyzer::RunProtoTypeElectron(){
   }
  
   if(v_belectronidx.size()>0){
-    unsigned int i_belectron=v_belectronidx[0];
+    i_belectron=v_belectronidx[0];
     //--check only electron channel!
-    FillHist(ProtoTypeEventTag+"_AtLeast1ElectronInBmatjet/belectron_charge/"+ProcessName, AllElectrons[i_belectron].Charge(), weight, 4, -2., 2.);
-    FillHist(ProtoTypeEventTag+"_AtLeast1ElectronInBmatjet/jet_charge/"+ProcessName, AllJets[myRECO.ij_B].Charge(), weight, 100, -2., 2.);
-    FillHist(ProtoTypeEventTag+"_AtLeast1ElectronInBmatjet/belectron_bjet_chargesum/"+ProcessName, AllElectrons[i_belectron].Charge()+AllJets[myRECO.ij_B].Charge(), weight, 100, -3., 3.);
+    FillHist(ProtoTypeEventTag+"__AtLeast1ElectronInBmatjet/belectron_charge/"+ProcessName, AllElectrons[i_belectron].Charge(), weight, 4, -2., 2.);
+    FillHist(ProtoTypeEventTag+"__AtLeast1ElectronInBmatjet/jet_charge/"+ProcessName, AllJets[myRECO.ij_B].Charge(), weight, 100, -2., 2.);
+    FillHist(ProtoTypeEventTag+"__AtLeast1ElectronInBmatjet/belectron_bjet_chargesum/"+ProcessName, AllElectrons[i_belectron].Charge()+AllJets[myRECO.ij_B].Charge(), weight, 100, -3., 3.);
 
-    FillHist(ProtoTypeEventTagJetParton+"_AtLeast1ElectronInBmatjet/belectron_charge/"+ProcessName, AllElectrons[i_belectron].Charge(), weight, 4, -2., 2.);
-    FillHist(ProtoTypeEventTagJetParton+"_AtLeast1ElectronInBmatjet/jet_charge/"+ProcessName, AllJets[myRECO.ij_B].Charge(), weight, 100, -2., 2.);
-    FillHist(ProtoTypeEventTagJetParton+"_AtLeast1ElectronInBmatjet/belectron_bjet_chargesum/"+ProcessName, AllElectrons[i_belectron].Charge()+AllJets[myRECO.ij_B].Charge(), weight, 100, -3., 3.);
+    FillHist(ProtoTypeEventTagJetParton+"__AtLeast1ElectronInBmatjet/belectron_charge/"+ProcessName, AllElectrons[i_belectron].Charge(), weight, 4, -2., 2.);
+    FillHist(ProtoTypeEventTagJetParton+"__AtLeast1ElectronInBmatjet/jet_charge/"+ProcessName, AllJets[myRECO.ij_B].Charge(), weight, 100, -2., 2.);
+    FillHist(ProtoTypeEventTagJetParton+"__AtLeast1ElectronInBmatjet/belectron_bjet_chargesum/"+ProcessName, AllElectrons[i_belectron].Charge()+AllJets[myRECO.ij_B].Charge(), weight, 100, -3., 3.);
 
     if(v_belectronidx.size()==1){
-      FillHist(ProtoTypeEventTag+"_Only1ElectronInBmatjet/belectron_charge/"+ProcessName, AllElectrons[i_belectron].Charge(), weight, 4, -2., 2.);
-      FillHist(ProtoTypeEventTag+"_Only1ElectronInBmatjet/jet_charge/"+ProcessName, AllJets[myRECO.ij_B].Charge(), weight, 100, -2., 2.);
-      FillHist(ProtoTypeEventTag+"_Only1ElectronInBmatjet/belectron_bjet_chargesum/"+ProcessName, AllElectrons[i_belectron].Charge()+AllJets[myRECO.ij_B].Charge(), weight, 100, -3., 3.);
+      FillHist(ProtoTypeEventTag+"__Only1ElectronInBmatjet/belectron_charge/"+ProcessName, AllElectrons[i_belectron].Charge(), weight, 4, -2., 2.);
+      FillHist(ProtoTypeEventTag+"__Only1ElectronInBmatjet/jet_charge/"+ProcessName, AllJets[myRECO.ij_B].Charge(), weight, 100, -2., 2.);
+      FillHist(ProtoTypeEventTag+"__Only1ElectronInBmatjet/belectron_bjet_chargesum/"+ProcessName, AllElectrons[i_belectron].Charge()+AllJets[myRECO.ij_B].Charge(), weight, 100, -3., 3.);
 
-      FillHist(ProtoTypeEventTagJetParton+"_Only1ElectronInBmatjet/belectron_charge/"+ProcessName, AllElectrons[i_belectron].Charge(), weight, 4, -2., 2.);
-      FillHist(ProtoTypeEventTagJetParton+"_Only1ElectronInBmatjet/jet_charge/"+ProcessName, AllJets[myRECO.ij_B].Charge(), weight, 100, -2., 2.);
-      FillHist(ProtoTypeEventTagJetParton+"_Only1ElectronInBmatjet/belectron_bjet_chargesum/"+ProcessName, AllElectrons[i_belectron].Charge()+AllJets[myRECO.ij_B].Charge(), weight, 100, -3., 3.);
+      FillHist(ProtoTypeEventTagJetParton+"__Only1ElectronInBmatjet/belectron_charge/"+ProcessName, AllElectrons[i_belectron].Charge(), weight, 4, -2., 2.);
+      FillHist(ProtoTypeEventTagJetParton+"__Only1ElectronInBmatjet/jet_charge/"+ProcessName, AllJets[myRECO.ij_B].Charge(), weight, 100, -2., 2.);
+      FillHist(ProtoTypeEventTagJetParton+"__Only1ElectronInBmatjet/belectron_bjet_chargesum/"+ProcessName, AllElectrons[i_belectron].Charge()+AllJets[myRECO.ij_B].Charge(), weight, 100, -3., 3.);
     }//[END] #electron==1
   }//[END] # electron>0
+}
+
+void BBbar_Analyzer::FillHistMuon(TString cutname){
+  FillHist(cutname+"/muon_P_jetrestf/"+ProcessName, p_jetrestf, weight, 200, 0., 10.);
+  FillHist(cutname+"/muon_dRbmatj/"+ProcessName, dR_l_j, weight, 200, 0., 5.);
+  FillHist(cutname+"/muon_ip3d/"+ProcessName, ip3d, weight, 100, -10., 10.);
+  FillHist(cutname+"/muon_nsip3d/"+ProcessName, nsip3d, weight, 100, 0., 10.);
+  FillHist(cutname+"/muon_logreliso/"+ProcessName, log10(reliso), weight, 100, -5., 1.);
+  FillHist(cutname+"/muon_logreltrkiso/"+ProcessName, log10(reltrkiso), weight, 100, -5., 1.);
+}
+
+void BBbar_Analyzer::FillHistMuonCharge(TString cutname){
+  FillHist(cutname+"/bmuon_charge/"+ProcessName, AllMuons[i_bmuon].Charge(), weight, 4, -2., 2.);
+  FillHist(cutname+"/jet_charge/"+ProcessName, AllJets[myRECO.ij_B].Charge(), weight, 100, -2., 2.);
+  FillHist(cutname+"/bmuon_bjet_chargesum/"+ProcessName, AllMuons[i_bmuon].Charge()+AllJets[myRECO.ij_B].Charge(), weight, 100, -3., 3.);
+
+
 }
 
 void BBbar_Analyzer::RunLeptonCutStudyMuon(){
   TString CutStudyEventTag=EventTag;
   CutStudyEventTag="CutStudy__"+CutStudyEventTag;
-
   TString CutStudyEventTagJetParton=EventTagJetParton;
   CutStudyEventTagJetParton="CutStudy__"+CutStudyEventTagJetParton;
   std::vector<int> v_bmuonidx;
@@ -703,118 +724,94 @@ void BBbar_Analyzer::RunLeptonCutStudyMuon(){
     //---Boost muon to jet restframe
     TLorentzVector vl(AllMuons[i]);
     vl.Boost(-AllJets[myRECO.ij_B].BoostVector());
-    double muon_p_jetrestf=vl.P();
-    double dR_mu_j=AllJets[myRECO.ij_B].DeltaR(AllMuons[i]);
+    //variables//
+    p_jetrestf=vl.P();//
+    dR_l_j=AllJets[myRECO.ij_B].DeltaR(AllMuons[i]);//
+    ip3d=AllMuons[i].IP3D();
+    nsip3d=AllMuons[i].IP3D()/AllMuons[i].IP3Derr();
+    reliso=AllMuons[i].RelIso();
+    reltrkiso=AllMuons[i].TrkIso()/AllMuons[i].Pt();
+
     int muon_charge=AllMuons[i].Charge();
     FillHist(CutStudyEventTag+"_Muon/NotZmuonCut/"+ProcessName, 0, weight, 2, -1., 1.);
     FillHist(CutStudyEventTagJetParton+"_Muon/NotZmuonCut/"+ProcessName, 0, weight, 2, -1., 1.);
     if ( muon_charge > 0){
-      FillHist(CutStudyEventTag+"_Muon/muonp_P_jetrestf/"+ProcessName, muon_p_jetrestf, weight, 200, 0., 10.);
-      FillHist(CutStudyEventTag+"_Muon/muonp_dRbmatj/"+ProcessName, dR_mu_j, weight, 200, 0., 5.);
-
-      FillHist(CutStudyEventTagJetParton+"_Muon/muonp_P_jetrestf/"+ProcessName, muon_p_jetrestf, weight, 200, 0., 10.);
-      FillHist(CutStudyEventTagJetParton+"_Muon/muonp_dRbmatj/"+ProcessName, dR_mu_j, weight, 200, 0., 5.);
+      FillHistMuon(CutStudyEventTag+"_MuonPlus");
+      FillHistMuon(CutStudyEventTagJetParton+"_MuonPlus");
     }
     else{
-      FillHist(CutStudyEventTag+"_Muon/muonn_P_jetrestf/"+ProcessName, muon_p_jetrestf, weight, 200, 0., 10.);
-      FillHist(CutStudyEventTag+"_Muon/muonn_dRbmatj/"+ProcessName, dR_mu_j, weight, 200, 0., 5.);
-
-      FillHist(CutStudyEventTagJetParton+"_Muon/muonn_P_jetrestf/"+ProcessName, muon_p_jetrestf, weight, 200, 0., 10.);
-      FillHist(CutStudyEventTagJetParton+"_Muon/muonn_dRbmatj/"+ProcessName, dR_mu_j, weight, 200, 0., 5.);
-
+      FillHistMuon(CutStudyEventTag+"_MuonMinus");
+      FillHistMuon(CutStudyEventTagJetParton+"_MuonMinus");
     }
     
-    if(dR_mu_j<0.5){
+    if(dR_l_j<0.5){
       if ( muon_charge > 0){
-	FillHist(CutStudyEventTag+"_MuonInBmatjet0p5/muonp_P_jetrestf/"+ProcessName, muon_p_jetrestf, weight, 200, 0., 10.);
-	FillHist(CutStudyEventTagJetParton+"_MuonInBmatjet0p5/muonp_P_jetrestf/"+ProcessName, muon_p_jetrestf, weight, 200, 0., 10.);
+	FillHistMuon(CutStudyEventTag+"_MuonPlus__dR0p5");
+	FillHistMuon(CutStudyEventTagJetParton+"_MuonPlus__dR0p5");
       }
       else{
-	FillHist(CutStudyEventTag+"_MuonInBmatjet0p5/muonn_P_jetrestf/"+ProcessName, muon_p_jetrestf, weight, 200, 0., 10.);
-	FillHist(CutStudyEventTagJetParton+"_MuonInBmatjet0p5/muonn_P_jetrestf/"+ProcessName, muon_p_jetrestf, weight, 200, 0., 10.);
+	FillHistMuon(CutStudyEventTag+"_MuonMinus__dR0p5");
+	FillHistMuon(CutStudyEventTagJetParton+"_MuonMinus__dR0p5");
       }
     }
-    if( (muon_p_jetrestf > 0.7)  && (muon_p_jetrestf < 2.5) ){
+    if(p_jetrestf > 0.7){
       if ( muon_charge > 0){
-        FillHist(CutStudyEventTag+"_MuonPjetrestf_0p7_2p5/muonp_dRbmatj/"+ProcessName, dR_mu_j, weight, 200, 0., 5.);
-        FillHist(CutStudyEventTagJetParton+"_MuonPjetrestf_0p7_2p5/muonp_dRbmatj/"+ProcessName, dR_mu_j, weight, 200, 0., 5.);
+	FillHistMuon(CutStudyEventTag+"_MuonPlus__Pjetrest__0p7");
+	FillHistMuon(CutStudyEventTagJetParton+"_MuonPlus__Pjetrest__0p7");
       }
       else{
-        FillHist(CutStudyEventTag+"_MuonPjetrestf_0p7_2p5/muonn_dRbmatj/"+ProcessName, dR_mu_j, weight, 200, 0., 5.);
-        FillHist(CutStudyEventTagJetParton+"_MuonPjetrestf_0p7_2p5/muonn_dRbmatj/"+ProcessName, dR_mu_j, weight, 200, 0., 5.);
+	FillHistMuon(CutStudyEventTag+"_MuonMinus__Pjetrest__0p7");
+	FillHistMuon(CutStudyEventTagJetParton+"_MuonMinus__Pjetrest__0p7");
       }
-
+      if(p_jetrestf < 2.5){
+	if ( muon_charge > 0){
+	  FillHistMuon(CutStudyEventTag+"_MuonPlus__Pjetrest__0p7_2p5");
+	  FillHistMuon(CutStudyEventTagJetParton+"_MuonPlus__Pjetrest__0p7_2p5");
+	}
+	else{
+	  FillHistMuon(CutStudyEventTag+"_MuonMinus__Pjetrest__0p7_2p5");
+	  FillHistMuon(CutStudyEventTagJetParton+"_MuonMinus__Pjetrest__0p7_2p5");
+	}
+      }
     }
 
 
-    if(dR_mu_j<0.4){
+    if(dR_l_j<0.4){
       v_nocut_bmuonidx.push_back(i);
       if ( muon_charge > 0){
-	FillHist(CutStudyEventTag+"_MuonInBmatjet0p4/muonp_P_jetrestf/"+ProcessName, muon_p_jetrestf, weight, 200, 0., 10.);
-	FillHist(CutStudyEventTagJetParton+"_MuonInBmatjet0p4/muonp_P_jetrestf/"+ProcessName, muon_p_jetrestf, weight, 200, 0., 10.);
+	FillHistMuon(CutStudyEventTag+"_MuonPlus__dR0p4");
+	FillHistMuon(CutStudyEventTagJetParton+"_MuonPlus__dR0p4");
       }
       else{
-	FillHist(CutStudyEventTag+"_MuonInBmatjet0p4/muonn_P_jetrestf/"+ProcessName, muon_p_jetrestf, weight, 200, 0., 10.);
-	FillHist(CutStudyEventTagJetParton+"_MuonInBmatjet0p4/muonn_P_jetrestf/"+ProcessName, muon_p_jetrestf, weight, 200, 0., 10.);
+	FillHistMuon(CutStudyEventTag+"_MuonMinus__dR0p4");
+	FillHistMuon(CutStudyEventTagJetParton+"_MuonMinus__dR0p4");
       }
     }
-    if( (muon_p_jetrestf > 0.7)  && (muon_p_jetrestf < 2.5) ){
-      if ( muon_charge > 0){
-        FillHist(CutStudyEventTag+"_MuonPjetrestf_0p7_2p5/muonp_dRbmatj/"+ProcessName, dR_mu_j, weight, 200, 0., 5.);
-        FillHist(CutStudyEventTagJetParton+"_MuonPjetrestf_0p7_2p5/muonp_dRbmatj/"+ProcessName, dR_mu_j, weight, 200, 0., 5.);
-      }
-      else{
-        FillHist(CutStudyEventTag+"_MuonPjetrestf_0p7_2p5/muonn_dRbmatj/"+ProcessName, dR_mu_j, weight, 200, 0., 5.);        
-	FillHist(CutStudyEventTagJetParton+"_MuonPjetrestf_0p7_2p5/muonn_dRbmatj/"+ProcessName, dR_mu_j, weight, 200, 0., 5.);
-      }
 
-    }
-
-    if(  (dR_mu_j<0.4) && (muon_p_jetrestf > 0.7) && (muon_p_jetrestf < 2.5) ){ 
+    if(  (dR_l_j<0.4) && (p_jetrestf > 0.7) ){
       v_bmuonidx.push_back(i);
     }
   }
  
   if(v_bmuonidx.size()>0){
-    unsigned int i_bmuon=v_bmuonidx[0];
+    i_bmuon=v_bmuonidx[0];
     //--check only muon channel!
-    FillHist(CutStudyEventTag+"_AtLeast1MuonInBmatjet/bmuon_charge/"+ProcessName, AllMuons[i_bmuon].Charge(), weight, 4, -2., 2.);
-    FillHist(CutStudyEventTag+"_AtLeast1MuonInBmatjet/jet_charge/"+ProcessName, AllJets[myRECO.ij_B].Charge(), weight, 100, -2., 2.);
-    FillHist(CutStudyEventTag+"_AtLeast1MuonInBmatjet/bmuon_bjet_chargesum/"+ProcessName, AllMuons[i_bmuon].Charge()+AllJets[myRECO.ij_B].Charge(), weight, 100, -3., 3.);
-
-    FillHist(CutStudyEventTagJetParton+"_AtLeast1MuonInBmatjet/bmuon_charge/"+ProcessName, AllMuons[i_bmuon].Charge(), weight, 4, -2., 2.);
-    FillHist(CutStudyEventTagJetParton+"_AtLeast1MuonInBmatjet/jet_charge/"+ProcessName, AllJets[myRECO.ij_B].Charge(), weight, 100, -2., 2.);
-    FillHist(CutStudyEventTagJetParton+"_AtLeast1MuonInBmatjet/bmuon_bjet_chargesum/"+ProcessName, AllMuons[i_bmuon].Charge()+AllJets[myRECO.ij_B].Charge(), weight, 100, -3., 3.);
+    FillHistMuonCharge(CutStudyEventTag+"__AtLeast1MuonInBmatjet");
+    FillHistMuonCharge(CutStudyEventTagJetParton+"__AtLeast1MuonInBmatjet");
 
     if(v_bmuonidx.size()==1){
-      FillHist(CutStudyEventTag+"_Only1MuonInBmatjet/bmuon_charge/"+ProcessName, AllMuons[i_bmuon].Charge(), weight, 4, -2., 2.);
-      FillHist(CutStudyEventTag+"_Only1MuonInBmatjet/jet_charge/"+ProcessName, AllJets[myRECO.ij_B].Charge(), weight, 100, -2., 2.);
-      FillHist(CutStudyEventTag+"_Only1MuonInBmatjet/bmuon_bjet_chargesum/"+ProcessName, AllMuons[i_bmuon].Charge()+AllJets[myRECO.ij_B].Charge(), weight, 100, -3., 3.);
-
-      FillHist(CutStudyEventTagJetParton+"_Only1MuonInBmatjet/bmuon_charge/"+ProcessName, AllMuons[i_bmuon].Charge(), weight, 4, -2., 2.);
-      FillHist(CutStudyEventTagJetParton+"_Only1MuonInBmatjet/jet_charge/"+ProcessName, AllJets[myRECO.ij_B].Charge(), weight, 100, -2., 2.);
-      FillHist(CutStudyEventTagJetParton+"_Only1MuonInBmatjet/bmuon_bjet_chargesum/"+ProcessName, AllMuons[i_bmuon].Charge()+AllJets[myRECO.ij_B].Charge(), weight, 100, -3., 3.);
+    FillHistMuonCharge(CutStudyEventTag+"__Only1MuonInBmatjet");
+    FillHistMuonCharge(CutStudyEventTagJetParton+"__Only1MuonInBmatjet");
     }//[END] #muon==1
   }//[END] # muon >0
   if(v_nocut_bmuonidx.size()>0){
-    unsigned int i_bmuon=v_nocut_bmuonidx[0];
+    i_bmuon=v_nocut_bmuonidx[0];
     //--check only muon channel!
-    FillHist("NoCutOnMuon__"+EventTag+"_AtLeast1MuonInBmatjet/bmuon_charge/"+ProcessName, AllMuons[i_bmuon].Charge(), weight, 4, -2., 2.);
-    FillHist("NoCutOnMuon__"+EventTag+"_AtLeast1MuonInBmatjet/jet_charge/"+ProcessName, AllJets[myRECO.ij_B].Charge(), weight, 100, -2., 2.);
-    FillHist("NoCutOnMuon__"+EventTag+"_AtLeast1MuonInBmatjet/bmuon_bjet_chargesum/"+ProcessName, AllMuons[i_bmuon].Charge()+AllJets[myRECO.ij_B].Charge(), weight, 100, -3., 3.);
-
-    FillHist("NoCutOnMuon__"+EventTagJetParton+"_AtLeast1MuonInBmatjet/bmuon_charge/"+ProcessName, AllMuons[i_bmuon].Charge(), weight, 4, -2., 2.);
-    FillHist("NoCutOnMuon__"+EventTagJetParton+"_AtLeast1MuonInBmatjet/jet_charge/"+ProcessName, AllJets[myRECO.ij_B].Charge(), weight, 100, -2., 2.);
-    FillHist("NoCutOnMuon__"+EventTagJetParton+"_AtLeast1MuonInBmatjet/bmuon_bjet_chargesum/"+ProcessName, AllMuons[i_bmuon].Charge()+AllJets[myRECO.ij_B].Charge(), weight, 100, -3., 3.);
-    
+    FillHistMuonCharge("NoCutOnLepton__"+EventTag+"__AtLeast1MuonInBmatjet");
+    FillHistMuonCharge("NoCutOnLepton__"+EventTagJetParton+"__AtLeast1MuonInBmatjet");
     if(v_nocut_bmuonidx.size()==1){
-      FillHist("NoCutOnMuon__"+EventTag+"_Only1MuonInBmatjet/bmuon_charge/"+ProcessName, AllMuons[i_bmuon].Charge(), weight, 4, -2., 2.);
-      FillHist("NoCutOnMuon__"+EventTag+"_Only1MuonInBmatjet/jet_charge/"+ProcessName, AllJets[myRECO.ij_B].Charge(), weight, 100, -2., 2.);
-      FillHist("NoCutOnMuon__"+EventTag+"_Only1MuonInBmatjet/bmuon_bjet_chargesum/"+ProcessName, AllMuons[i_bmuon].Charge()+AllJets[myRECO.ij_B].Charge(), weight, 100, -3., 3.);
-
-      FillHist("NoCutOnMuon__"+EventTagJetParton+"_Only1MuonInBmatjet/bmuon_charge/"+ProcessName, AllMuons[i_bmuon].Charge(), weight, 4, -2., 2.);
-      FillHist("NoCutOnMuon__"+EventTagJetParton+"_Only1MuonInBmatjet/jet_charge/"+ProcessName, AllJets[myRECO.ij_B].Charge(), weight, 100, -2., 2.);
-      FillHist("NoCutOnMuon__"+EventTagJetParton+"_Only1MuonInBmatjet/bmuon_bjet_chargesum/"+ProcessName, AllMuons[i_bmuon].Charge()+AllJets[myRECO.ij_B].Charge(), weight, 100, -3., 3.);
+      FillHistMuonCharge("NoCutOnLepton__"+EventTag+"__Only1MuonInBmatjet");
+      FillHistMuonCharge("NoCutOnLepton__"+EventTagJetParton+"__Only1MuonInBmatjet");
     }//[END] #muon==1
     
   }
@@ -826,12 +823,30 @@ void BBbar_Analyzer::RunLeptonCutStudyMuon(){
 
 
 
+void BBbar_Analyzer::FillHistElectron(TString cutname){
+  FillHist(cutname+"/electron_P_jetrestf/"+ProcessName, p_jetrestf, weight, 200, 0., 10.);
+  FillHist(cutname+"/electron_dRbmatj/"+ProcessName, dR_l_j, weight, 200, 0., 5.);
+  FillHist(cutname+"/electron_ip3d/"+ProcessName, ip3d, weight, 100, -10., 10.);
+  FillHist(cutname+"/electron_nsip3d/"+ProcessName, nsip3d, weight, 100, 0., 10.);
+  FillHist(cutname+"/electron_logreliso/"+ProcessName, log10(reliso), weight, 100, -5., 1.);
+  FillHist(cutname+"/electron_logreltrkiso/"+ProcessName, log10(reltrkiso), weight, 100, -5., 1.);
+  FillHist(cutname+"/electron_logrelecalclusteriso/"+ProcessName, log10(relecalclusteriso), weight, 100, -5., 1.);
+  FillHist(cutname+"/electron_IsGsfCtfScPixChargeConsistent/"+ProcessName, IsGsfCtfScPixChargeConsistent, weight, 4, -1., 3.);//
+}
+
+void BBbar_Analyzer::FillHistElectronCharge(TString cutname){
+  FillHist(cutname+"/belectron_charge/"+ProcessName, AllElectrons[i_belectron].Charge(), weight, 4, -2., 2.);
+  FillHist(cutname+"/jet_charge/"+ProcessName, AllJets[myRECO.ij_B].Charge(), weight, 100, -2., 2.);
+  FillHist(cutname+"/belectron_bjet_chargesum/"+ProcessName, AllElectrons[i_belectron].Charge()+AllJets[myRECO.ij_B].Charge(), weight, 100, -3., 3.);
+
+
+}
+
 void BBbar_Analyzer::RunLeptonCutStudyElectron(){
   TString CutStudyEventTag=EventTag;
-  TString CutStudyEventTagJetParton=EventTagJetParton;
   CutStudyEventTag="CutStudy__"+CutStudyEventTag;
-  EventTagJetParton="CutStudy__"+CutStudyEventTagJetParton;
-  
+  TString CutStudyEventTagJetParton=EventTagJetParton;
+  CutStudyEventTagJetParton="CutStudy__"+CutStudyEventTagJetParton;
   std::vector<int> v_belectronidx;
   std::vector<int> v_nocut_belectronidx;
   for(unsigned int i=0; i < electronsize; i++){
@@ -841,124 +856,107 @@ void BBbar_Analyzer::RunLeptonCutStudyElectron(){
     //---Boost electron to jet restframe
     TLorentzVector vl(AllElectrons[i]);
     vl.Boost(-AllJets[myRECO.ij_B].BoostVector());
-    double electron_p_jetrestf=vl.P();
-    double dR_e_j=AllJets[myRECO.ij_B].DeltaR(AllElectrons[i]);
+    //variables//
+    p_jetrestf=vl.P();//
+    dR_l_j=AllJets[myRECO.ij_B].DeltaR(AllElectrons[i]);//
+    ip3d=AllElectrons[i].IP3D();
+    nsip3d=AllElectrons[i].IP3D()/AllElectrons[i].IP3Derr();
+    reliso=AllElectrons[i].RelIso();
+    reltrkiso=AllElectrons[i].TrkIso()/AllElectrons[i].Pt();
+    relecalclusteriso=AllElectrons[i].ecalPFClusterIso()/AllElectrons[i].Pt();
+    IsGsfCtfScPixChargeConsistent=AllElectrons[i].IsGsfCtfScPixChargeConsistent();
+
     int electron_charge=AllElectrons[i].Charge();
     FillHist(CutStudyEventTag+"_Electron/NotZelectronCut/"+ProcessName, 0, weight, 2, -1., 1.);
     FillHist(CutStudyEventTagJetParton+"_Electron/NotZelectronCut/"+ProcessName, 0, weight, 2, -1., 1.);
     if ( electron_charge > 0){
-      FillHist(CutStudyEventTag+"_Electron/electronp_P_jetrestf/"+ProcessName, electron_p_jetrestf, weight, 200, 0., 10.);
-      FillHist(CutStudyEventTag+"_Electron/electronp_dRbmatj/"+ProcessName, dR_e_j, weight, 200, 0., 5.);
-
-      FillHist(CutStudyEventTagJetParton+"_Electron/electronp_P_jetrestf/"+ProcessName, electron_p_jetrestf, weight, 200, 0., 10.);
-      FillHist(CutStudyEventTagJetParton+"_Electron/electronp_dRbmatj/"+ProcessName, dR_e_j, weight, 200, 0., 5.);
+      FillHistElectron(CutStudyEventTag+"_ElectronPlus");
+      FillHistElectron(CutStudyEventTagJetParton+"_ElectronPlus");
     }
     else{
-      FillHist(CutStudyEventTag+"_Electron/electronn_P_jetrestf/"+ProcessName, electron_p_jetrestf, weight, 200, 0., 10.);
-      FillHist(CutStudyEventTag+"_Electron/electronn_dRbmatj/"+ProcessName, dR_e_j, weight, 200, 0., 5.);
-
-      FillHist(CutStudyEventTagJetParton+"_Electron/electronn_P_jetrestf/"+ProcessName, electron_p_jetrestf, weight, 200, 0., 10.);
-      FillHist(CutStudyEventTagJetParton+"_Electron/electronn_dRbmatj/"+ProcessName, dR_e_j, weight, 200, 0., 5.);
+      FillHistElectron(CutStudyEventTag+"_ElectronMinus");
+      FillHistElectron(CutStudyEventTagJetParton+"_ElectronMinus");
     }
-
-    if(dR_e_j<0.5){
+    
+    if(dR_l_j<0.5){
       if ( electron_charge > 0){
-	FillHist(CutStudyEventTag+"_ElectronInBmatjet0p5/electronp_P_jetrestf/"+ProcessName, electron_p_jetrestf, weight, 200, 0., 10.);
-	FillHist(CutStudyEventTagJetParton+"_ElectronInBmatjet0p5/electronp_P_jetrestf/"+ProcessName, electron_p_jetrestf, weight, 200, 0., 10.);
+	FillHistElectron(CutStudyEventTag+"_ElectronPlus__dR0p5");
+	FillHistElectron(CutStudyEventTagJetParton+"_ElectronPlus__dR0p5");
       }
       else{
-	FillHist(CutStudyEventTag+"_ElectronInBmatjet0p5/electronn_P_jetrestf/"+ProcessName, electron_p_jetrestf, weight, 200, 0., 10.);
-	FillHist(CutStudyEventTagJetParton+"_ElectronInBmatjet0p5/electronn_P_jetrestf/"+ProcessName, electron_p_jetrestf, weight, 200, 0., 10.);
+	FillHistElectron(CutStudyEventTag+"_ElectronMinus__dR0p5");
+	FillHistElectron(CutStudyEventTagJetParton+"_ElectronMinus__dR0p5");
       }
     }
-    if( (electron_p_jetrestf > 0.7)  && (electron_p_jetrestf < 2.5) ){
+    if(p_jetrestf > 0.7){
       if ( electron_charge > 0){
-        FillHist(CutStudyEventTag+"_ElectronPjetrestf_0p7_2p5/electronp_dRbmatj/"+ProcessName, dR_e_j, weight, 200, 0., 5.);
-        FillHist(CutStudyEventTagJetParton+"_ElectronPjetrestf_0p7_2p5/electronp_dRbmatj/"+ProcessName, dR_e_j, weight, 200, 0., 5.);
+	FillHistElectron(CutStudyEventTag+"_ElectronPlus__Pjetrest__0p7");
+	FillHistElectron(CutStudyEventTagJetParton+"_ElectronPlus__Pjetrest__0p7");
       }
       else{
-        FillHist(CutStudyEventTag+"_ElectronPjetrestf_0p7_2p5/electronn_dRbmatj/"+ProcessName, dR_e_j, weight, 200, 0., 5.);
-        FillHist(CutStudyEventTagJetParton+"_ElectronPjetrestf_0p7_2p5/electronn_dRbmatj/"+ProcessName, dR_e_j, weight, 200, 0., 5.);
+	FillHistElectron(CutStudyEventTag+"_ElectronMinus__Pjetrest__0p7");
+	FillHistElectron(CutStudyEventTagJetParton+"_ElectronMinus__Pjetrest__0p7");
       }
-
+      if(p_jetrestf < 2.5){
+	if ( electron_charge > 0){
+	  FillHistElectron(CutStudyEventTag+"_ElectronPlus__Pjetrest__0p7_2p5");
+	  FillHistElectron(CutStudyEventTagJetParton+"_ElectronPlus__Pjetrest__0p7_2p5");
+	}
+	else{
+	  FillHistElectron(CutStudyEventTag+"_ElectronMinus__Pjetrest__0p7_2p5");
+	  FillHistElectron(CutStudyEventTagJetParton+"_ElectronMinus__Pjetrest__0p7_2p5");
+	}
+      }
     }
 
 
-    if(dR_e_j<0.4){
+    if(dR_l_j<0.4){
       v_nocut_belectronidx.push_back(i);
       if ( electron_charge > 0){
-	FillHist(CutStudyEventTag+"_ElectronInBmatjet0p4/electronp_P_jetrestf/"+ProcessName, electron_p_jetrestf, weight, 200, 0., 10.);
-	FillHist(CutStudyEventTagJetParton+"_ElectronInBmatjet0p4/electronp_P_jetrestf/"+ProcessName, electron_p_jetrestf, weight, 200, 0., 10.);
+	FillHistElectron(CutStudyEventTag+"_ElectronPlus__dR0p4");
+	FillHistElectron(CutStudyEventTagJetParton+"_ElectronPlus__dR0p4");
       }
       else{
-	FillHist(CutStudyEventTag+"_ElectronInBmatjet0p4/electronn_P_jetrestf/"+ProcessName, electron_p_jetrestf, weight, 200, 0., 10.);
-	FillHist(CutStudyEventTagJetParton+"_ElectronInBmatjet0p4/electronn_P_jetrestf/"+ProcessName, electron_p_jetrestf, weight, 200, 0., 10.);
+	FillHistElectron(CutStudyEventTag+"_ElectronMinus__dR0p4");
+	FillHistElectron(CutStudyEventTagJetParton+"_ElectronMinus__dR0p4");
       }
     }
-    if( (electron_p_jetrestf > 0.7)  && (electron_p_jetrestf < 2.5) ){
-      if ( electron_charge > 0){
-        FillHist(CutStudyEventTag+"_ElectronPjetrestf_0p7_2p5/electronp_dRbmatj/"+ProcessName, dR_e_j, weight, 200, 0., 5.);
-        FillHist(CutStudyEventTagJetParton+"_ElectronPjetrestf_0p7_2p5/electronp_dRbmatj/"+ProcessName, dR_e_j, weight, 200, 0., 5.);
-      }
-      else{
-        FillHist(CutStudyEventTag+"_ElectronPjetrestf_0p7_2p5/electronn_dRbmatj/"+ProcessName, dR_e_j, weight, 200, 0., 5.);
-        FillHist(CutStudyEventTagJetParton+"_ElectronPjetrestf_0p7_2p5/electronn_dRbmatj/"+ProcessName, dR_e_j, weight, 200, 0., 5.);
-      }
 
-    }
-
-    if(  (dR_e_j<0.4) && (electron_p_jetrestf > 0.7) && (electron_p_jetrestf < 2.5) ){ 
+    if(  (dR_l_j<0.4) && (p_jetrestf > 0.7) ){
       v_belectronidx.push_back(i);
     }
   }
  
   if(v_belectronidx.size()>0){
-    unsigned int i_belectron=v_belectronidx[0];
+    i_belectron=v_belectronidx[0];
     //--check only electron channel!
-    FillHist(CutStudyEventTag+"_AtLeast1ElectronInBmatjet/belectron_charge/"+ProcessName, AllElectrons[i_belectron].Charge(), weight, 4, -2., 2.);
-    FillHist(CutStudyEventTag+"_AtLeast1ElectronInBmatjet/jet_charge/"+ProcessName, AllJets[myRECO.ij_B].Charge(), weight, 100, -2., 2.);
-    FillHist(CutStudyEventTag+"_AtLeast1ElectronInBmatjet/belectron_bjet_chargesum/"+ProcessName, AllElectrons[i_belectron].Charge()+AllJets[myRECO.ij_B].Charge(), weight, 100, -3., 3.);
-
-    FillHist(CutStudyEventTagJetParton+"_AtLeast1ElectronInBmatjet/belectron_charge/"+ProcessName, AllElectrons[i_belectron].Charge(), weight, 4, -2., 2.);
-    FillHist(CutStudyEventTagJetParton+"_AtLeast1ElectronInBmatjet/jet_charge/"+ProcessName, AllJets[myRECO.ij_B].Charge(), weight, 100, -2., 2.);
-    FillHist(CutStudyEventTagJetParton+"_AtLeast1ElectronInBmatjet/belectron_bjet_chargesum/"+ProcessName, AllElectrons[i_belectron].Charge()+AllJets[myRECO.ij_B].Charge(), weight, 100, -3., 3.);
+    FillHistElectronCharge(CutStudyEventTag+"__AtLeast1ElectronInBmatjet");
+    FillHistElectronCharge(CutStudyEventTagJetParton+"__AtLeast1ElectronInBmatjet");
 
     if(v_belectronidx.size()==1){
-      FillHist(CutStudyEventTag+"_Only1ElectronInBmatjet/belectron_charge/"+ProcessName, AllElectrons[i_belectron].Charge(), weight, 4, -2., 2.);
-      FillHist(CutStudyEventTag+"_Only1ElectronInBmatjet/jet_charge/"+ProcessName, AllJets[myRECO.ij_B].Charge(), weight, 100, -2., 2.);
-      FillHist(CutStudyEventTag+"_Only1ElectronInBmatjet/belectron_bjet_chargesum/"+ProcessName, AllElectrons[i_belectron].Charge()+AllJets[myRECO.ij_B].Charge(), weight, 100, -3., 3.);
-
-      FillHist(CutStudyEventTagJetParton+"_Only1ElectronInBmatjet/belectron_charge/"+ProcessName, AllElectrons[i_belectron].Charge(), weight, 4, -2., 2.);
-      FillHist(CutStudyEventTagJetParton+"_Only1ElectronInBmatjet/jet_charge/"+ProcessName, AllJets[myRECO.ij_B].Charge(), weight, 100, -2., 2.);
-      FillHist(CutStudyEventTagJetParton+"_Only1ElectronInBmatjet/belectron_bjet_chargesum/"+ProcessName, AllElectrons[i_belectron].Charge()+AllJets[myRECO.ij_B].Charge(), weight, 100, -3., 3.);
+    FillHistElectronCharge(CutStudyEventTag+"__Only1ElectronInBmatjet");
+    FillHistElectronCharge(CutStudyEventTagJetParton+"__Only1ElectronInBmatjet");
     }//[END] #electron==1
   }//[END] # electron >0
   if(v_nocut_belectronidx.size()>0){
-    unsigned int i_belectron=v_nocut_belectronidx[0];
+    i_belectron=v_nocut_belectronidx[0];
     //--check only electron channel!
-    FillHist("NoCutOnElectron__"+EventTag+"_AtLeast1ElectronInBmatjet/belectron_charge/"+ProcessName, AllElectrons[i_belectron].Charge(), weight, 4, -2., 2.);
-    FillHist("NoCutOnElectron__"+EventTag+"_AtLeast1ElectronInBmatjet/jet_charge/"+ProcessName, AllJets[myRECO.ij_B].Charge(), weight, 100, -2., 2.);
-    FillHist("NoCutOnElectron__"+EventTag+"_AtLeast1ElectronInBmatjet/belectron_bjet_chargesum/"+ProcessName, AllElectrons[i_belectron].Charge()+AllJets[myRECO.ij_B].Charge(), weight, 100, -3., 3.);
-    
-
-    FillHist("NoCutOnElectron__"+EventTagJetParton+"_AtLeast1ElectronInBmatjet/belectron_charge/"+ProcessName, AllElectrons[i_belectron].Charge(), weight, 4, -2., 2.);
-    FillHist("NoCutOnElectron__"+EventTagJetParton+"_AtLeast1ElectronInBmatjet/jet_charge/"+ProcessName, AllJets[myRECO.ij_B].Charge(), weight, 100, -2., 2.);
-    FillHist("NoCutOnElectron__"+EventTagJetParton+"_AtLeast1ElectronInBmatjet/belectron_bjet_chargesum/"+ProcessName, AllElectrons[i_belectron].Charge()+AllJets[myRECO.ij_B].Charge(), weight, 100, -3., 3.);
-    
-
+    FillHistElectronCharge("NoCutOnLepton__"+EventTag+"__AtLeast1ElectronInBmatjet");
+    FillHistElectronCharge("NoCutOnLepton__"+EventTagJetParton+"__AtLeast1ElectronInBmatjet");
     if(v_nocut_belectronidx.size()==1){
-      FillHist("NoCutOnElectron__"+EventTag+"_Only1ElectronInBmatjet/belectron_charge/"+ProcessName, AllElectrons[i_belectron].Charge(), weight, 4, -2., 2.);
-      FillHist("NoCutOnElectron__"+EventTag+"_Only1ElectronInBmatjet/jet_charge/"+ProcessName, AllJets[myRECO.ij_B].Charge(), weight, 100, -2., 2.);
-      FillHist("NoCutOnElectron__"+EventTag+"_Only1ElectronInBmatjet/belectron_bjet_chargesum/"+ProcessName, AllElectrons[i_belectron].Charge()+AllJets[myRECO.ij_B].Charge(), weight, 100, -3., 3.);
-
-      FillHist("NoCutOnElectron__"+EventTagJetParton+"_Only1ElectronInBmatjet/belectron_charge/"+ProcessName, AllElectrons[i_belectron].Charge(), weight, 4, -2., 2.);
-      FillHist("NoCutOnElectron__"+EventTagJetParton+"_Only1ElectronInBmatjet/jet_charge/"+ProcessName, AllJets[myRECO.ij_B].Charge(), weight, 100, -2., 2.);
-      FillHist("NoCutOnElectron__"+EventTagJetParton+"_Only1ElectronInBmatjet/belectron_bjet_chargesum/"+ProcessName, AllElectrons[i_belectron].Charge()+AllJets[myRECO.ij_B].Charge(), weight, 100, -3., 3.);
+      FillHistElectronCharge("NoCutOnLepton__"+EventTag+"__Only1ElectronInBmatjet");
+      FillHistElectronCharge("NoCutOnLepton__"+EventTagJetParton+"__Only1ElectronInBmatjet");
     }//[END] #electron==1
     
   }
 
 }
+
+
+
+
+
+
 
 
 
