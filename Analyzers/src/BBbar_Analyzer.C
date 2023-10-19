@@ -72,6 +72,30 @@ BBbar_Analyzer::BBbar_Analyzer(){//FYI : bottomness = -nb
   Cat_pTatJetRF2[0] =""; //oneCleanJet20Event && BmatJet20Event
   Cat_pTatJetRF2[1] ="_pTatJetRF2";
   Cat_pTatJetRF2_size = 2;
+
+
+  //-----Lepton Cut----//
+  MuonCut_v1p0.P_JetRest_min=0.7;
+  MuonCut_v1p0.P_JetRest_max=3;
+  MuonCut_v1p0.dR_l_bj_min=-1;
+  MuonCut_v1p0.dR_l_bj_max=0.4;
+  MuonCut_v1p0.reltrkiso_min=-1;
+  MuonCut_v1p0.reltrkiso_max=2.5;
+  MuonCut_v1p0.nsip3d_min=-1;
+  MuonCut_v1p0.nsip3d_max=3;
+
+  ElectronCut_v1p0.P_JetRest_min=0.7;
+  ElectronCut_v1p0.P_JetRest_max=3;
+  ElectronCut_v1p0.dR_l_bj_min=-1;
+  ElectronCut_v1p0.dR_l_bj_max=0.4;
+  ElectronCut_v1p0.reltrkiso_min=-1;
+  ElectronCut_v1p0.reltrkiso_max=2.5;
+  ElectronCut_v1p0.nsip3d_min=-1;
+  ElectronCut_v1p0.nsip3d_max=3;
+  ElectronCut_v1p0.bool_IsGsfCtfScPixChargeConsistent=true;
+
+  MuonCut_apply=MuonCut_v1p0;
+  ElectronCut_apply=ElectronCut_v1p0;
 }
 
 
@@ -698,8 +722,8 @@ void BBbar_Analyzer::FillHistMuon(TString cutname){
   FillHist(cutname+"/muon_dRbmatj/"+ProcessName, dR_l_j, weight, 200, 0., 5.);
   FillHist(cutname+"/muon_ip3d/"+ProcessName, ip3d, weight, 100, -10., 10.);
   FillHist(cutname+"/muon_nsip3d/"+ProcessName, nsip3d, weight, 100, 0., 10.);
-  FillHist(cutname+"/muon_logreliso/"+ProcessName, log10(reliso), weight, 100, -5., 1.);
-  FillHist(cutname+"/muon_logreltrkiso/"+ProcessName, log10(reltrkiso), weight, 100, -5., 1.);
+  FillHist(cutname+"/muon_logreliso/"+ProcessName, log10(reliso), weight, 100, -5., 2.);
+  FillHist(cutname+"/muon_logreltrkiso/"+ProcessName, log10(reltrkiso), weight, 100, -5., 2.);
 }
 
 void BBbar_Analyzer::FillHistMuonCharge(TString cutname){
@@ -744,33 +768,15 @@ void BBbar_Analyzer::RunLeptonCutStudyMuon(){
       FillHistMuon(CutStudyEventTagJetParton+"_MuonMinus");
     }
     
-    if(dR_l_j<0.5){
-      if ( muon_charge > 0){
-	FillHistMuon(CutStudyEventTag+"_MuonPlus__dR0p5");
-	FillHistMuon(CutStudyEventTagJetParton+"_MuonPlus__dR0p5");
-      }
-      else{
-	FillHistMuon(CutStudyEventTag+"_MuonMinus__dR0p5");
-	FillHistMuon(CutStudyEventTagJetParton+"_MuonMinus__dR0p5");
-      }
-    }
     if(p_jetrestf > 0.7){
-      if ( muon_charge > 0){
-	FillHistMuon(CutStudyEventTag+"_MuonPlus__Pjetrest__0p7");
-	FillHistMuon(CutStudyEventTagJetParton+"_MuonPlus__Pjetrest__0p7");
-      }
-      else{
-	FillHistMuon(CutStudyEventTag+"_MuonMinus__Pjetrest__0p7");
-	FillHistMuon(CutStudyEventTagJetParton+"_MuonMinus__Pjetrest__0p7");
-      }
-      if(p_jetrestf < 2.5){
+      if(p_jetrestf < 3){
 	if ( muon_charge > 0){
-	  FillHistMuon(CutStudyEventTag+"_MuonPlus__Pjetrest__0p7_2p5");
-	  FillHistMuon(CutStudyEventTagJetParton+"_MuonPlus__Pjetrest__0p7_2p5");
+	  FillHistMuon(CutStudyEventTag+"_MuonPlus__Pjetrest__0p7_3");
+	  FillHistMuon(CutStudyEventTagJetParton+"_MuonPlus__Pjetrest__0p7_3");
 	}
 	else{
-	  FillHistMuon(CutStudyEventTag+"_MuonMinus__Pjetrest__0p7_2p5");
-	  FillHistMuon(CutStudyEventTagJetParton+"_MuonMinus__Pjetrest__0p7_2p5");
+	  FillHistMuon(CutStudyEventTag+"_MuonMinus__Pjetrest__0p7_3");
+	  FillHistMuon(CutStudyEventTagJetParton+"_MuonMinus__Pjetrest__0p7_3");
 	}
       }
     }
@@ -788,7 +794,15 @@ void BBbar_Analyzer::RunLeptonCutStudyMuon(){
       }
     }
 
-    if(  (dR_l_j<0.4) && (p_jetrestf > 0.7) ){
+    if(  (dR_l_j< MuonCut_apply.dR_l_bj_max) && (p_jetrestf > MuonCut_apply.P_JetRest_min) && (p_jetrestf < MuonCut_apply.P_JetRest_max) && (nsip3d < MuonCut_apply.nsip3d_max) ){
+      if ( muon_charge > 0){
+	FillHistMuon(CutStudyEventTag+"_MuonPlus__v1p0");
+	FillHistMuon(CutStudyEventTagJetParton+"_MuonPlus__v1p0");
+      }
+      else{
+	FillHistMuon(CutStudyEventTag+"_MuonMinus__v1p0");
+	FillHistMuon(CutStudyEventTagJetParton+"_MuonMinus__v1p0");
+      }
       v_bmuonidx.push_back(i);
     }
   }
@@ -796,12 +810,12 @@ void BBbar_Analyzer::RunLeptonCutStudyMuon(){
   if(v_bmuonidx.size()>0){
     i_bmuon=v_bmuonidx[0];
     //--check only muon channel!
-    FillHistMuonCharge(CutStudyEventTag+"__AtLeast1MuonInBmatjet");
-    FillHistMuonCharge(CutStudyEventTagJetParton+"__AtLeast1MuonInBmatjet");
+    FillHistMuonCharge(CutStudyEventTag+"__AtLeast1MuonInBmatjet__v1p0");
+    FillHistMuonCharge(CutStudyEventTagJetParton+"__AtLeast1MuonInBmatjet__v1p0");
 
     if(v_bmuonidx.size()==1){
-    FillHistMuonCharge(CutStudyEventTag+"__Only1MuonInBmatjet");
-    FillHistMuonCharge(CutStudyEventTagJetParton+"__Only1MuonInBmatjet");
+    FillHistMuonCharge(CutStudyEventTag+"__Only1MuonInBmatjet__v1p0");
+    FillHistMuonCharge(CutStudyEventTagJetParton+"__Only1MuonInBmatjet__v1p0");
     }//[END] #muon==1
   }//[END] # muon >0
   if(v_nocut_bmuonidx.size()>0){
@@ -828,9 +842,9 @@ void BBbar_Analyzer::FillHistElectron(TString cutname){
   FillHist(cutname+"/electron_dRbmatj/"+ProcessName, dR_l_j, weight, 200, 0., 5.);
   FillHist(cutname+"/electron_ip3d/"+ProcessName, ip3d, weight, 100, -10., 10.);
   FillHist(cutname+"/electron_nsip3d/"+ProcessName, nsip3d, weight, 100, 0., 10.);
-  FillHist(cutname+"/electron_logreliso/"+ProcessName, log10(reliso), weight, 100, -5., 1.);
-  FillHist(cutname+"/electron_logreltrkiso/"+ProcessName, log10(reltrkiso), weight, 100, -5., 1.);
-  FillHist(cutname+"/electron_logrelecalclusteriso/"+ProcessName, log10(relecalclusteriso), weight, 100, -5., 1.);
+  FillHist(cutname+"/electron_logreliso/"+ProcessName, log10(reliso), weight, 100, -5., 2.);
+  FillHist(cutname+"/electron_logreltrkiso/"+ProcessName, log10(reltrkiso), weight, 100, -5., 2.);
+  FillHist(cutname+"/electron_logrelecalclusteriso/"+ProcessName, log10(relecalclusteriso), weight, 100, -5., 2.);
   FillHist(cutname+"/electron_IsGsfCtfScPixChargeConsistent/"+ProcessName, IsGsfCtfScPixChargeConsistent, weight, 4, -1., 3.);//
 }
 
@@ -878,33 +892,15 @@ void BBbar_Analyzer::RunLeptonCutStudyElectron(){
       FillHistElectron(CutStudyEventTagJetParton+"_ElectronMinus");
     }
     
-    if(dR_l_j<0.5){
-      if ( electron_charge > 0){
-	FillHistElectron(CutStudyEventTag+"_ElectronPlus__dR0p5");
-	FillHistElectron(CutStudyEventTagJetParton+"_ElectronPlus__dR0p5");
-      }
-      else{
-	FillHistElectron(CutStudyEventTag+"_ElectronMinus__dR0p5");
-	FillHistElectron(CutStudyEventTagJetParton+"_ElectronMinus__dR0p5");
-      }
-    }
     if(p_jetrestf > 0.7){
-      if ( electron_charge > 0){
-	FillHistElectron(CutStudyEventTag+"_ElectronPlus__Pjetrest__0p7");
-	FillHistElectron(CutStudyEventTagJetParton+"_ElectronPlus__Pjetrest__0p7");
-      }
-      else{
-	FillHistElectron(CutStudyEventTag+"_ElectronMinus__Pjetrest__0p7");
-	FillHistElectron(CutStudyEventTagJetParton+"_ElectronMinus__Pjetrest__0p7");
-      }
-      if(p_jetrestf < 2.5){
+      if(p_jetrestf < 3){
 	if ( electron_charge > 0){
-	  FillHistElectron(CutStudyEventTag+"_ElectronPlus__Pjetrest__0p7_2p5");
-	  FillHistElectron(CutStudyEventTagJetParton+"_ElectronPlus__Pjetrest__0p7_2p5");
+	  FillHistElectron(CutStudyEventTag+"_ElectronPlus__Pjetrest__0p7_3");
+	  FillHistElectron(CutStudyEventTagJetParton+"_ElectronPlus__Pjetrest__0p7_3");
 	}
 	else{
-	  FillHistElectron(CutStudyEventTag+"_ElectronMinus__Pjetrest__0p7_2p5");
-	  FillHistElectron(CutStudyEventTagJetParton+"_ElectronMinus__Pjetrest__0p7_2p5");
+	  FillHistElectron(CutStudyEventTag+"_ElectronMinus__Pjetrest__0p7_3");
+	  FillHistElectron(CutStudyEventTagJetParton+"_ElectronMinus__Pjetrest__0p7_3");
 	}
       }
     }
@@ -922,7 +918,15 @@ void BBbar_Analyzer::RunLeptonCutStudyElectron(){
       }
     }
 
-    if(  (dR_l_j<0.4) && (p_jetrestf > 0.7) ){
+    if(  (dR_l_j<ElectronCut_apply.dR_l_bj_max) && (p_jetrestf > ElectronCut_apply.P_JetRest_min) && (p_jetrestf < ElectronCut_apply.P_JetRest_max) && (reltrkiso < ElectronCut_apply.reltrkiso_max) && (nsip3d < ElectronCut_apply.nsip3d_max) && (IsGsfCtfScPixChargeConsistent==ElectronCut_apply.bool_IsGsfCtfScPixChargeConsistent)){
+      if ( electron_charge > 0){
+	FillHistElectron(CutStudyEventTag+"_ElectronPlus__v1p0");
+	FillHistElectron(CutStudyEventTagJetParton+"_ElectronPlus__v1p0");
+      }
+      else{
+	FillHistElectron(CutStudyEventTag+"_ElectronMinus__v1p0");
+	FillHistElectron(CutStudyEventTagJetParton+"_ElectronMinus__v1p0");
+      }
       v_belectronidx.push_back(i);
     }
   }
@@ -930,12 +934,12 @@ void BBbar_Analyzer::RunLeptonCutStudyElectron(){
   if(v_belectronidx.size()>0){
     i_belectron=v_belectronidx[0];
     //--check only electron channel!
-    FillHistElectronCharge(CutStudyEventTag+"__AtLeast1ElectronInBmatjet");
-    FillHistElectronCharge(CutStudyEventTagJetParton+"__AtLeast1ElectronInBmatjet");
+    FillHistElectronCharge(CutStudyEventTag+"__AtLeast1ElectronInBmatjet__v1p0");
+    FillHistElectronCharge(CutStudyEventTagJetParton+"__AtLeast1ElectronInBmatjet__v1p0");
 
     if(v_belectronidx.size()==1){
-    FillHistElectronCharge(CutStudyEventTag+"__Only1ElectronInBmatjet");
-    FillHistElectronCharge(CutStudyEventTagJetParton+"__Only1ElectronInBmatjet");
+    FillHistElectronCharge(CutStudyEventTag+"__Only1ElectronInBmatjet__v1p0");
+    FillHistElectronCharge(CutStudyEventTagJetParton+"__Only1ElectronInBmatjet__v1p0");
     }//[END] #electron==1
   }//[END] # electron >0
   if(v_nocut_belectronidx.size()>0){
@@ -976,6 +980,7 @@ void BBbar_Analyzer::AnalyzeRECO(){
   //(1-1) Set EventTag
   if(myLHE.evt_nb==1){
     EventTag+="bevt";
+
   }
   else if(myLHE.evt_nb==-1){
     EventTag+="bbar";
@@ -991,14 +996,17 @@ void BBbar_Analyzer::AnalyzeRECO(){
   else{
     EventTagJetParton="From_OtherParton";
   }
-
+  FillHist(EventTag+"/partonFlavour/"+ProcessName,AllJets[myRECO.ij_B].partonFlavour(),weight, 30, -5., 25.);
+  FillHist(EventTagJetParton+"/evt_nb/"+ProcessName,myLHE.evt_nb,weight, 4, -2., 2.);
   if(myLHE.is_ee){
     EventTag+="_ee";
+    EventTagJetParton+="_ee";
   }
   else if(myLHE.is_mumu){
     EventTag+="_mm";
+    EventTagJetParton+="_mm";
   }
-
+  
   //(1-2)For B hadron to lepton decay
   BBbar_Analyzer::RunProtoTypeMuon();
   BBbar_Analyzer::RunProtoTypeElectron();
