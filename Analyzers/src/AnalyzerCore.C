@@ -2406,6 +2406,14 @@ void AnalyzerCore::WriteHist(){
     outfile->cd();
 
   }
+  //jhchoi
+  
+  outfile->mkdir("OutTree");
+  outfile->cd("OutTree");
+  jhchoi_newtree->Write();
+  jhchoi_newtree2->Write();
+  outfile->cd();
+
 
 }
 

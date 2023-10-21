@@ -272,6 +272,9 @@ public:
 
   virtual void WriteHist();
 
+  //jhchoi
+  TTree *jhchoi_newtree;
+  TTree *jhchoi_newtree2;
   //==== Quick Plotters
   void FillLeptonPlots(std::vector<Lepton *> leps, TString this_region, double weight);
   void FillJetPlots(std::vector<Jet> jets, std::vector<FatJet> fatjets, TString this_region, double weight);

@@ -25,6 +25,7 @@
 #pragma link C++ class B_Info_Analyzer_BASIC_v2309+;
 #pragma link C++ class BasicTest+;
 #pragma link C++ class BBbar_Analyzer+;
+#pragma link C++ class ForTMVA_BBbarAnalyzer+;
 
 
 #endif
