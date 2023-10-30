@@ -275,6 +275,8 @@ public:
   //jhchoi
   TTree *jhchoi_newtree;
   TTree *jhchoi_newtree2;
+  TTree *jhchoi_newtree3;
+  TTree *jhchoi_newtree4;
   //==== Quick Plotters
   void FillLeptonPlots(std::vector<Lepton *> leps, TString this_region, double weight);
   void FillJetPlots(std::vector<Jet> jets, std::vector<FatJet> fatjets, TString this_region, double weight);
