@@ -1,8 +1,7 @@
-#include "ForTMVA_BBbarAnalyzer.h"
+#include "ForTMVA_BBbarAnalyzer_pjetrest0p7_3.h"
 
 
-ForTMVA_BBbarAnalyzer::ForTMVA_BBbarAnalyzer(){//FYI : bottomness = -nb
-
+ForTMVA_BBbarAnalyzer_pjetrest0p7_3::ForTMVA_BBbarAnalyzer_pjetrest0p7_3(){//FYI : bottomness = -nb
   //Set Hadron PID vector with nb=+1
   BhadronPIDs={
     -511,-521,-10511,-10521,-513,-523,-10513,-10523,-20513,-20523,-515,-525,-531,-10531,-533,-10533,-20533,-535,-541,-10541,-543,-10543,-20543,-545,//MESON
@@ -99,10 +98,12 @@ ForTMVA_BBbarAnalyzer::ForTMVA_BBbarAnalyzer(){//FYI : bottomness = -nb
   ElectronCut_apply=ElectronCut_v1p0;
 
   //---tree init---//
-  jhchoi_newtree=new TTree("TreeForTMVA_neg","TreeForTMVA_neg");
-  jhchoi_newtree2=new TTree("TreeForTMVA_pos","TreeForTMVA_pos");
+  jhchoi_newtree=new TTree("TreeForTMVA_neg_Train","TreeForTMVA_neg_Train");
+  jhchoi_newtree2=new TTree("TreeForTMVA_pos_Train","TreeForTMVA_pos_Train");
+  jhchoi_newtree3=new TTree("TreeForTMVA_neg_Test","TreeForTMVA_neg_Test");
+  jhchoi_newtree4=new TTree("TreeForTMVA_pos_Test","TreeForTMVA_pos_Test");
 
-  //tree#1 bevt
+  //tree#1 bevt Train
   jhchoi_newtree->Branch("bjet_charge",&bjet_charge);
   jhchoi_newtree->Branch("bjet_pt",&bjet_pt);
   jhchoi_newtree->Branch("bjet_eta",&bjet_eta);
@@ -172,8 +173,9 @@ ForTMVA_BBbarAnalyzer::ForTMVA_BBbarAnalyzer(){//FYI : bottomness = -nb
   //belectron1_IsGsfCtfScPixChargeConsistent=-10.;
   jhchoi_newtree->Branch("bjetPartonFlavourCharge",&bjetPartonFlavourCharge);
   jhchoi_newtree->Branch("weight",&weight);
+  jhchoi_newtree->Branch("isEvenEvent",&isEvenEvent);
 
-  //tree#2(bbar)
+  //tree#2(bbar Train)
   jhchoi_newtree2->Branch("bjet_charge",&bjet_charge);
   jhchoi_newtree2->Branch("bjet_pt",&bjet_pt);
   jhchoi_newtree2->Branch("bjet_eta",&bjet_eta);
@@ -242,9 +244,153 @@ ForTMVA_BBbarAnalyzer::ForTMVA_BBbarAnalyzer(){//FYI : bottomness = -nb
 
   jhchoi_newtree2->Branch("bjetPartonFlavourCharge",&bjetPartonFlavourCharge);
   jhchoi_newtree2->Branch("weight",&weight);
+  jhchoi_newtree2->Branch("isEvenEvent",&isEvenEvent);
+
+  //tree#3 bevt Test
+  jhchoi_newtree3->Branch("bjet_charge",&bjet_charge);
+  jhchoi_newtree3->Branch("bjet_pt",&bjet_pt);
+  jhchoi_newtree3->Branch("bjet_eta",&bjet_eta);
+  jhchoi_newtree3->Branch("bjet_phi",&bjet_phi);
+  jhchoi_newtree3->Branch("bjet_DeepJet",&bjet_DeepJet);
+  jhchoi_newtree3->Branch("bjet_DeepJet_CvsL",&bjet_DeepJet_CvsL);
+  jhchoi_newtree3->Branch("bjet_DeepJet_CvsB",&bjet_DeepJet_CvsB);
+  jhchoi_newtree3->Branch("bjet_chargedHadronEnergyFraction",&bjet_chargedHadronEnergyFraction);
+  jhchoi_newtree3->Branch("bjet_neutralHadronEnergyFraction",&bjet_neutralHadronEnergyFraction);
+  jhchoi_newtree3->Branch("bjet_neutralEmEnergyFraction",&bjet_neutralEmEnergyFraction);
+  jhchoi_newtree3->Branch("bjet_chargedEmEnergyFraction",&bjet_chargedEmEnergyFraction);
+  jhchoi_newtree3->Branch("bjet_muonEnergyFraction",&bjet_muonEnergyFraction);
+  
+  jhchoi_newtree3->Branch("bmuon1_pt",&bmuon1_pt);
+  jhchoi_newtree3->Branch("bmuon1_eta",&bmuon1_eta);
+  jhchoi_newtree3->Branch("bmuon1_phi",&bmuon1_phi);
+  jhchoi_newtree3->Branch("bmuon1_ptwrtbjet",&bmuon1_ptwrtbjet);
+  jhchoi_newtree3->Branch("bmuon1_p_jetrestf",&bmuon1_p_jetrestf);
+  jhchoi_newtree3->Branch("bmuon1_dR_l_j",&bmuon1_dR_l_j);
+  jhchoi_newtree3->Branch("bmuon1_nsip3d",&bmuon1_nsip3d);
+  jhchoi_newtree3->Branch("bmuon1_reltrkiso",&bmuon1_reltrkiso);
+  jhchoi_newtree3->Branch("bmuon1_reliso",&bmuon1_reliso);
+  jhchoi_newtree3->Branch("bmuon1_charge",&bmuon1_charge);
+  jhchoi_newtree3->Branch("bmuon2_pt",&bmuon2_pt);
+  jhchoi_newtree3->Branch("bmuon2_eta",&bmuon2_eta);
+  jhchoi_newtree3->Branch("bmuon2_phi",&bmuon2_phi);
+  jhchoi_newtree3->Branch("bmuon2_ptwrtbjet",&bmuon2_ptwrtbjet);
+  jhchoi_newtree3->Branch("bmuon2_p_jetrestf",&bmuon2_p_jetrestf);
+  jhchoi_newtree3->Branch("bmuon2_dR_l_j",&bmuon2_dR_l_j);
+  jhchoi_newtree3->Branch("bmuon2_nsip3d",&bmuon2_nsip3d);
+  jhchoi_newtree3->Branch("bmuon2_reltrkiso",&bmuon2_reltrkiso);
+  jhchoi_newtree3->Branch("bmuon2_reliso",&bmuon2_reliso);
+  jhchoi_newtree3->Branch("bmuon2_charge",&bmuon2_charge);
+  jhchoi_newtree3->Branch("n_bmuon",&n_bmuon);
+  //  belectron1_elecalclusteriso=-10.;
+  //belectron1_IsGsfCtfScPixChargeConsistent=-10.;
+
+  jhchoi_newtree3->Branch("belectron1_pt",&belectron1_pt);
+  jhchoi_newtree3->Branch("belectron1_eta",&belectron1_eta);
+  jhchoi_newtree3->Branch("belectron1_phi",&belectron1_phi);
+  jhchoi_newtree3->Branch("belectron1_ptwrtbjet",&belectron1_ptwrtbjet);
+  jhchoi_newtree3->Branch("belectron1_p_jetrestf",&belectron1_p_jetrestf);
+  jhchoi_newtree3->Branch("belectron1_dR_l_j",&belectron1_dR_l_j);
+  jhchoi_newtree3->Branch("belectron1_nsip3d",&belectron1_nsip3d);
+  jhchoi_newtree3->Branch("belectron1_reltrkiso",&belectron1_reltrkiso);
+  jhchoi_newtree3->Branch("belectron1_reliso",&belectron1_reliso);
+  jhchoi_newtree3->Branch("belectron1_charge",&belectron1_charge);
+  jhchoi_newtree3->Branch("belectron1_elecalclusteriso",&belectron1_elecalclusteriso);
+  jhchoi_newtree3->Branch("belectron1_IsGsfCtfScPixChargeConsistent",&belectron1_IsGsfCtfScPixChargeConsistent);
+
+  jhchoi_newtree3->Branch("belectron2_pt",&belectron2_pt);
+  jhchoi_newtree3->Branch("belectron2_eta",&belectron2_eta);
+  jhchoi_newtree3->Branch("belectron2_phi",&belectron2_phi);
+  jhchoi_newtree3->Branch("belectron2_ptwrtbjet",&belectron2_ptwrtbjet);
+  jhchoi_newtree3->Branch("belectron2_p_jetrestf",&belectron2_p_jetrestf);
+  jhchoi_newtree3->Branch("belectron2_dR_l_j",&belectron2_dR_l_j);
+  jhchoi_newtree3->Branch("belectron2_nsip3d",&belectron2_nsip3d);
+  jhchoi_newtree3->Branch("belectron2_reltrkiso",&belectron2_reltrkiso);
+  jhchoi_newtree3->Branch("belectron2_reliso",&belectron2_reliso);
+  jhchoi_newtree3->Branch("belectron2_charge",&belectron2_charge);
+  jhchoi_newtree3->Branch("belectron2_elecalclusteriso",&belectron2_elecalclusteriso);
+  jhchoi_newtree3->Branch("belectron2_IsGsfCtfScPixChargeConsistent",&belectron2_IsGsfCtfScPixChargeConsistent);
+
+  jhchoi_newtree3->Branch("n_belectron",&n_belectron);
+
+  //  belectron1_elecalclusteriso=-10.;
+  //belectron1_IsGsfCtfScPixChargeConsistent=-10.;
+  jhchoi_newtree3->Branch("bjetPartonFlavourCharge",&bjetPartonFlavourCharge);
+  jhchoi_newtree3->Branch("weight",&weight);
+  jhchoi_newtree3->Branch("isEvenEvent",&isEvenEvent);
+
+  //tree#4(bbar Test)
+  jhchoi_newtree4->Branch("bjet_charge",&bjet_charge);
+  jhchoi_newtree4->Branch("bjet_pt",&bjet_pt);
+  jhchoi_newtree4->Branch("bjet_eta",&bjet_eta);
+  jhchoi_newtree4->Branch("bjet_phi",&bjet_phi);
+  jhchoi_newtree4->Branch("bjet_DeepJet",&bjet_DeepJet);
+  jhchoi_newtree4->Branch("bjet_DeepJet_CvsL",&bjet_DeepJet_CvsL);
+  jhchoi_newtree4->Branch("bjet_DeepJet_CvsB",&bjet_DeepJet_CvsB);
+  jhchoi_newtree4->Branch("bjet_chargedHadronEnergyFraction",&bjet_chargedHadronEnergyFraction);
+  jhchoi_newtree4->Branch("bjet_neutralHadronEnergyFraction",&bjet_neutralHadronEnergyFraction);
+  jhchoi_newtree4->Branch("bjet_neutralEmEnergyFraction",&bjet_neutralEmEnergyFraction);
+  jhchoi_newtree4->Branch("bjet_chargedEmEnergyFraction",&bjet_chargedEmEnergyFraction);
+  jhchoi_newtree4->Branch("bjet_muonEnergyFraction",&bjet_muonEnergyFraction);
+  
+  jhchoi_newtree4->Branch("bmuon1_pt",&bmuon1_pt);
+  jhchoi_newtree4->Branch("bmuon1_eta",&bmuon1_eta);
+  jhchoi_newtree4->Branch("bmuon1_phi",&bmuon1_phi);
+  jhchoi_newtree4->Branch("bmuon1_ptwrtbjet",&bmuon1_ptwrtbjet);
+  jhchoi_newtree4->Branch("bmuon1_p_jetrestf",&bmuon1_p_jetrestf);
+  jhchoi_newtree4->Branch("bmuon1_dR_l_j",&bmuon1_dR_l_j);
+  jhchoi_newtree4->Branch("bmuon1_nsip3d",&bmuon1_nsip3d);
+  jhchoi_newtree4->Branch("bmuon1_reltrkiso",&bmuon1_reltrkiso);
+  jhchoi_newtree4->Branch("bmuon1_reliso",&bmuon1_reliso);
+  jhchoi_newtree4->Branch("bmuon1_charge",&bmuon1_charge);
+  jhchoi_newtree4->Branch("bmuon2_pt",&bmuon2_pt);
+  jhchoi_newtree4->Branch("bmuon2_eta",&bmuon2_eta);
+  jhchoi_newtree4->Branch("bmuon2_phi",&bmuon2_phi);
+  jhchoi_newtree4->Branch("bmuon2_ptwrtbjet",&bmuon2_ptwrtbjet);
+  jhchoi_newtree4->Branch("bmuon2_p_jetrestf",&bmuon2_p_jetrestf);
+  jhchoi_newtree4->Branch("bmuon2_dR_l_j",&bmuon2_dR_l_j);
+  jhchoi_newtree4->Branch("bmuon2_nsip3d",&bmuon2_nsip3d);
+  jhchoi_newtree4->Branch("bmuon2_reltrkiso",&bmuon2_reltrkiso);
+  jhchoi_newtree4->Branch("bmuon2_reliso",&bmuon2_reliso);
+  jhchoi_newtree4->Branch("bmuon2_charge",&bmuon2_charge);
+  jhchoi_newtree4->Branch("n_bmuon",&n_bmuon);
+
+  jhchoi_newtree4->Branch("belectron1_pt",&belectron1_pt);
+  jhchoi_newtree4->Branch("belectron1_eta",&belectron1_eta);
+  jhchoi_newtree4->Branch("belectron1_phi",&belectron1_phi);
+  jhchoi_newtree4->Branch("belectron1_ptwrtbjet",&belectron1_ptwrtbjet);
+  jhchoi_newtree4->Branch("belectron1_p_jetrestf",&belectron1_p_jetrestf);
+  jhchoi_newtree4->Branch("belectron1_dR_l_j",&belectron1_dR_l_j);
+  jhchoi_newtree4->Branch("belectron1_nsip3d",&belectron1_nsip3d);
+  jhchoi_newtree4->Branch("belectron1_reltrkiso",&belectron1_reltrkiso);
+  jhchoi_newtree4->Branch("belectron1_reliso",&belectron1_reliso);
+  jhchoi_newtree4->Branch("belectron1_charge",&belectron1_charge);
+  jhchoi_newtree4->Branch("belectron1_elecalclusteriso",&belectron1_elecalclusteriso);
+  jhchoi_newtree4->Branch("belectron1_IsGsfCtfScPixChargeConsistent",&belectron1_IsGsfCtfScPixChargeConsistent);
+
+
+
+  jhchoi_newtree4->Branch("belectron2_pt",&belectron2_pt);
+  jhchoi_newtree4->Branch("belectron2_eta",&belectron2_eta);
+  jhchoi_newtree4->Branch("belectron2_phi",&belectron2_phi);
+  jhchoi_newtree4->Branch("belectron2_ptwrtbjet",&belectron2_ptwrtbjet);
+  jhchoi_newtree4->Branch("belectron2_p_jetrestf",&belectron2_p_jetrestf);
+  jhchoi_newtree4->Branch("belectron2_dR_l_j",&belectron2_dR_l_j);
+  jhchoi_newtree4->Branch("belectron2_nsip3d",&belectron2_nsip3d);
+  jhchoi_newtree4->Branch("belectron2_reltrkiso",&belectron2_reltrkiso);
+  jhchoi_newtree4->Branch("belectron2_reliso",&belectron2_reliso);
+  jhchoi_newtree4->Branch("belectron2_charge",&belectron2_charge);
+  jhchoi_newtree4->Branch("belectron2_elecalclusteriso",&belectron2_elecalclusteriso);
+  jhchoi_newtree4->Branch("belectron2_IsGsfCtfScPixChargeConsistent",&belectron2_IsGsfCtfScPixChargeConsistent);
+
+
+  jhchoi_newtree4->Branch("n_belectron",&n_belectron);
+
+  jhchoi_newtree4->Branch("bjetPartonFlavourCharge",&bjetPartonFlavourCharge);
+  jhchoi_newtree4->Branch("weight",&weight);
+  jhchoi_newtree4->Branch("isEvenEvent",&isEvenEvent);
 }
 
-void ForTMVA_BBbarAnalyzer::InitTreeValues(){
+void ForTMVA_BBbarAnalyzer_pjetrest0p7_3::InitTreeValues(){
   //-----Variables to Store for Machine Learning------//
   bjet_charge=0.;
   bjet_pt=0.;
@@ -316,7 +462,7 @@ void ForTMVA_BBbarAnalyzer::InitTreeValues(){
 
 
 
-void ForTMVA_BBbarAnalyzer::initializeAnalyzer(){
+void ForTMVA_BBbarAnalyzer_pjetrest0p7_3::initializeAnalyzer(){
   /*
   double prenum,curnum;
   prenum=xscale_binning[0];
@@ -342,7 +488,7 @@ void ForTMVA_BBbarAnalyzer::initializeAnalyzer(){
 
   //==== if you use "--userflags RunSyst" with SKFlat.py, HasFlag("RunSyst") will return "true"
   RunSyst = HasFlag("RunSyst");
-  cout << "[ForTMVA_BBbarAnalyzer::initializeAnalyzer] RunSyst = " << RunSyst << endl;
+  cout << "[ForTMVA_BBbarAnalyzer_pjetrest0p7_3::initializeAnalyzer] RunSyst = " << RunSyst << endl;
 
   if(IsDATA){
     //ProcessName=DataStream;    
@@ -354,11 +500,11 @@ void ForTMVA_BBbarAnalyzer::initializeAnalyzer(){
       ProcessName="DY";
     }
   }
-  cout << "[ForTMVA_BBbarAnalyzer::initializeAnalyzer Setting ProcessName = " << ProcessName << endl;
+  cout << "[ForTMVA_BBbarAnalyzer_pjetrest0p7_3::initializeAnalyzer Setting ProcessName = " << ProcessName << endl;
 
 
   //==== (Example) Year-dependent variables
-  //==== I defined "TString IsoMuTriggerName;" and "double TriggerSafePtCut;" in Analyzers/include/ForTMVA_BBbarAnalyzer.h 
+  //==== I defined "TString IsoMuTriggerName;" and "double TriggerSafePtCut;" in Analyzers/include/ForTMVA_BBbarAnalyzer_pjetrest0p7_3.h 
   //==== IsoMuTriggerName is a year-dependent variable, and you don't want to do "if(Dataer==~~)" for every event (let's save cpu time).
   //==== Then, do it here, which only ran once for each macro
   //==== B-Tagging
@@ -376,7 +522,7 @@ void ForTMVA_BBbarAnalyzer::initializeAnalyzer(){
   //================================
 
   RunNewPDF = HasFlag("RunNewPDF");
-  cout << "[ForTMVA_BBbarAnalyzer::initializeAnalyzer] RunNewPDF = " << RunNewPDF << endl;
+  cout << "[ForTMVA_BBbarAnalyzer_pjetrest0p7_3::initializeAnalyzer] RunNewPDF = " << RunNewPDF << endl;
   if(RunNewPDF && !IsDATA){
 
     LHAPDFHandler LHAPDFHandler_Prod;
@@ -405,19 +551,19 @@ void ForTMVA_BBbarAnalyzer::initializeAnalyzer(){
   //================================================
 
   RunXSecSyst = HasFlag("RunXSecSyst");
-  cout << "[ForTMVA_BBbarAnalyzer::initializeAnalyzer] RunXSecSyst = " << RunXSecSyst << endl;
+  cout << "[ForTMVA_BBbarAnalyzer_pjetrest0p7_3::initializeAnalyzer] RunXSecSyst = " << RunXSecSyst << endl;
 
 }
 
-ForTMVA_BBbarAnalyzer::~ForTMVA_BBbarAnalyzer(){
+ForTMVA_BBbarAnalyzer_pjetrest0p7_3::~ForTMVA_BBbarAnalyzer_pjetrest0p7_3(){
 
   //==== Destructor of this Analyzer
 
 }
 
-bool ForTMVA_BBbarAnalyzer::Tag_gbToZb(){
+bool ForTMVA_BBbarAnalyzer_pjetrest0p7_3::Tag_gbToZb(){
   LHEs=GetLHEs();
-  ForTMVA_BBbarAnalyzer::myLHE.LHEsize = LHEs.size();  
+  ForTMVA_BBbarAnalyzer_pjetrest0p7_3::myLHE.LHEsize = LHEs.size();  
   myLHE.ngluon_incoming = 0;
   myLHE.nb_incoming = 0;
   myLHE.nb_outgoing = 0;
@@ -516,7 +662,7 @@ bool ForTMVA_BBbarAnalyzer::Tag_gbToZb(){
 
 }//[END]Tag_gbToZb()
 
-int ForTMVA_BBbarAnalyzer::CheckIsBhadAndNb(int pid){
+int ForTMVA_BBbarAnalyzer_pjetrest0p7_3::CheckIsBhadAndNb(int pid){
   //----if it is B hadron. return 0 if not B hadron
   //----return -1 if nbbar in hadron==1
   //----return +1 if nb in hadron==1
@@ -562,7 +708,7 @@ int ForTMVA_BBbarAnalyzer::CheckIsBhadAndNb(int pid){
   return 0;
 }
 
-void ForTMVA_BBbarAnalyzer::Tag_B_Hadron(){
+void ForTMVA_BBbarAnalyzer_pjetrest0p7_3::Tag_B_Hadron(){
   //init
   myGEN.HasBhadron = false;
 
@@ -606,7 +752,7 @@ void ForTMVA_BBbarAnalyzer::Tag_B_Hadron(){
   
 }//[END]Tag_B_Hadron()
 
-void ForTMVA_BBbarAnalyzer::Loop_genBMatchedRecoJet(){
+void ForTMVA_BBbarAnalyzer_pjetrest0p7_3::Loop_genBMatchedRecoJet(){
   //init
 
   myRECO.HasBmatchedRecoJet = false;
@@ -655,14 +801,14 @@ void ForTMVA_BBbarAnalyzer::Loop_genBMatchedRecoJet(){
     }
   }//[END] if there's Bhad matched jet
   
-}//[END]ForTMVA_BBbarAnalyzer::Loop_genBMatchedRecoJet()
+}//[END]ForTMVA_BBbarAnalyzer_pjetrest0p7_3::Loop_genBMatchedRecoJet()
 
 /////---Histogram Set---/////
 
 
 
 
-void ForTMVA_BBbarAnalyzer::AnalyzeGEN(){
+void ForTMVA_BBbarAnalyzer_pjetrest0p7_3::AnalyzeGEN(){
   //[TODO]
   //hadron pid by b or bbar
   //hadron nb(-bottomness) by b or bbar
@@ -680,7 +826,7 @@ void ForTMVA_BBbarAnalyzer::AnalyzeGEN(){
   //myGEN.Bhad_pid
   }
 }
-void ForTMVA_BBbarAnalyzer::AnalyzeLHE(){
+void ForTMVA_BBbarAnalyzer_pjetrest0p7_3::AnalyzeLHE(){
   //[TODO]
   //bjorken scale of b , bbar
   //Q scale
@@ -760,7 +906,7 @@ void ForTMVA_BBbarAnalyzer::AnalyzeLHE(){
 
 
 
-bool ForTMVA_BBbarAnalyzer::ZTagCuts(){
+bool ForTMVA_BBbarAnalyzer_pjetrest0p7_3::ZTagCuts(){
   //[1]---Z -> ll tag--//
 
   //for mumu channel
@@ -833,7 +979,7 @@ bool ForTMVA_BBbarAnalyzer::ZTagCuts(){
 
 
 //Sorting Leptons with P@j restframe , near 1.7
-int ForTMVA_BBbarAnalyzer::Rank1n2Leptons(std::vector<int> &v_blep_idx, std::vector<double> &v_blep_value){
+int ForTMVA_BBbarAnalyzer_pjetrest0p7_3::Rank1n2Leptons(std::vector<int> &v_blep_idx, std::vector<double> &v_blep_value){
   double center=1.7;
   unsigned int vsize=v_blep_idx.size();
   vector<double> v_diff;
@@ -872,7 +1018,7 @@ int ForTMVA_BBbarAnalyzer::Rank1n2Leptons(std::vector<int> &v_blep_idx, std::vec
 }
 
 
-void ForTMVA_BBbarAnalyzer::FillHistMuon(TString cutname){
+void ForTMVA_BBbarAnalyzer_pjetrest0p7_3::FillHistMuon(TString cutname){
   FillHist(cutname+"/muon_P_jetrestf/"+ProcessName, p_jetrestf, weight, 200, 0., 10.);
   FillHist(cutname+"/muon_dRbmatj/"+ProcessName, dR_l_j, weight, 200, 0., 5.);
   FillHist(cutname+"/muon_ip3d/"+ProcessName, ip3d, weight, 100, -10., 10.);
@@ -881,7 +1027,7 @@ void ForTMVA_BBbarAnalyzer::FillHistMuon(TString cutname){
   FillHist(cutname+"/muon_logreltrkiso/"+ProcessName, log10(reltrkiso), weight, 100, -5., 2.);
 }
 
-void ForTMVA_BBbarAnalyzer::FillHistMuonCharge(TString cutname){
+void ForTMVA_BBbarAnalyzer_pjetrest0p7_3::FillHistMuonCharge(TString cutname){
   FillHist(cutname+"/bmuon_charge/"+ProcessName, AllMuons[i_bmuon].Charge(), weight, 4, -2., 2.);
   FillHist(cutname+"/jet_charge/"+ProcessName, AllJets[myRECO.ij_B].Charge(), weight, 100, -2., 2.);
   FillHist(cutname+"/bmuon_bjet_chargesum/"+ProcessName, AllMuons[i_bmuon].Charge()+AllJets[myRECO.ij_B].Charge(), weight, 100, -3., 3.);
@@ -889,7 +1035,7 @@ void ForTMVA_BBbarAnalyzer::FillHistMuonCharge(TString cutname){
 
 }
 
-void ForTMVA_BBbarAnalyzer::RunLeptonCutStudyMuon(){
+void ForTMVA_BBbarAnalyzer_pjetrest0p7_3::RunLeptonCutStudyMuon(){
   TString CutStudyEventTag=EventTag;
   CutStudyEventTag="CutStudy__"+CutStudyEventTag;
   TString CutStudyEventTagJetParton=EventTagJetParton;
@@ -938,7 +1084,7 @@ void ForTMVA_BBbarAnalyzer::RunLeptonCutStudyMuon(){
     }
 
 
-    if(dR_l_j<0.4){
+    if((dR_l_j<0.4) && (p_jetrestf>0.7) && (p_jetrestf<3)){
       v_tmva_bmuonidx.push_back(i);
       v_tmva_bmuon_p_jetrestf.push_back(p_jetrestf);
       if ( muon_charge > 0){
@@ -994,7 +1140,7 @@ void ForTMVA_BBbarAnalyzer::RunLeptonCutStudyMuon(){
   }
 
 }
-void ForTMVA_BBbarAnalyzer::SetTreeValuesMuon(int i_bmuon1,int i_bmuon2,int nbmuon){
+void ForTMVA_BBbarAnalyzer_pjetrest0p7_3::SetTreeValuesMuon(int i_bmuon1,int i_bmuon2,int nbmuon){
   doFillTree=true;
   //--p jetrestf
   TLorentzVector vl(AllMuons[i_bmuon1]);
@@ -1089,7 +1235,7 @@ void ForTMVA_BBbarAnalyzer::SetTreeValuesMuon(int i_bmuon1,int i_bmuon2,int nbmu
 
 
 
-void ForTMVA_BBbarAnalyzer::FillHistElectron(TString cutname){
+void ForTMVA_BBbarAnalyzer_pjetrest0p7_3::FillHistElectron(TString cutname){
   FillHist(cutname+"/electron_P_jetrestf/"+ProcessName, p_jetrestf, weight, 200, 0., 10.);
   FillHist(cutname+"/electron_dRbmatj/"+ProcessName, dR_l_j, weight, 200, 0., 5.);
   FillHist(cutname+"/electron_ip3d/"+ProcessName, ip3d, weight, 100, -10., 10.);
@@ -1100,7 +1246,7 @@ void ForTMVA_BBbarAnalyzer::FillHistElectron(TString cutname){
   FillHist(cutname+"/electron_IsGsfCtfScPixChargeConsistent/"+ProcessName, IsGsfCtfScPixChargeConsistent, weight, 4, -1., 3.);//
 }
 
-void ForTMVA_BBbarAnalyzer::FillHistElectronCharge(TString cutname){
+void ForTMVA_BBbarAnalyzer_pjetrest0p7_3::FillHistElectronCharge(TString cutname){
   FillHist(cutname+"/belectron_charge/"+ProcessName, AllElectrons[i_belectron].Charge(), weight, 4, -2., 2.);
   FillHist(cutname+"/jet_charge/"+ProcessName, AllJets[myRECO.ij_B].Charge(), weight, 100, -2., 2.);
   FillHist(cutname+"/belectron_bjet_chargesum/"+ProcessName, AllElectrons[i_belectron].Charge()+AllJets[myRECO.ij_B].Charge(), weight, 100, -3., 3.);
@@ -1108,7 +1254,7 @@ void ForTMVA_BBbarAnalyzer::FillHistElectronCharge(TString cutname){
 
 }
 
-void ForTMVA_BBbarAnalyzer::RunLeptonCutStudyElectron(){
+void ForTMVA_BBbarAnalyzer_pjetrest0p7_3::RunLeptonCutStudyElectron(){
   TString CutStudyEventTag=EventTag;
   CutStudyEventTag="CutStudy__"+CutStudyEventTag;
   TString CutStudyEventTagJetParton=EventTagJetParton;
@@ -1160,7 +1306,8 @@ void ForTMVA_BBbarAnalyzer::RunLeptonCutStudyElectron(){
     }
 
 
-    if(dR_l_j<0.4){
+    //if(dR_l_j<0.4){
+    if((dR_l_j<0.4) && (p_jetrestf>0.7) && (p_jetrestf<3) && (IsGsfCtfScPixChargeConsistent)){
       v_tmva_belectronidx.push_back(i);
       v_tmva_belectron_p_jetrestf.push_back(p_jetrestf);
       if ( electron_charge > 0){
@@ -1213,14 +1360,14 @@ void ForTMVA_BBbarAnalyzer::RunLeptonCutStudyElectron(){
       int i_belectron2=idxIn100/100;
       SetTreeValuesElectron(i_belectron1,i_belectron2,v_tmva_belectronidx.size());
     }
-  }//end of if nocut belectron
+  }//end of if tmva belectron
 
 
 }
 
 
 
-void ForTMVA_BBbarAnalyzer::SetTreeValuesElectron(int i_belectron1,int i_belectron2,int nbelectron){
+void ForTMVA_BBbarAnalyzer_pjetrest0p7_3::SetTreeValuesElectron(int i_belectron1,int i_belectron2,int nbelectron){
   doFillTree=true;
   //--p jetrestf
   TLorentzVector vl(AllElectrons[i_belectron1]);
@@ -1325,7 +1472,7 @@ void ForTMVA_BBbarAnalyzer::SetTreeValuesElectron(int i_belectron1,int i_belectr
 
 
 
-void ForTMVA_BBbarAnalyzer::AnalyzeRECO(){
+void ForTMVA_BBbarAnalyzer_pjetrest0p7_3::AnalyzeRECO(){
 
   //call muon/electron
   AllMuons=GetAllMuons();
@@ -1334,7 +1481,7 @@ void ForTMVA_BBbarAnalyzer::AnalyzeRECO(){
   electronsize = AllElectrons.size();
   
   //(0) Apply some basic cuts
-  bool isGoodZ=ForTMVA_BBbarAnalyzer::ZTagCuts();
+  bool isGoodZ=ForTMVA_BBbarAnalyzer_pjetrest0p7_3::ZTagCuts();
   if(!isGoodZ) return;
   //->now Z is reconstructed
   //(1) Do Main Analysis
@@ -1369,15 +1516,17 @@ void ForTMVA_BBbarAnalyzer::AnalyzeRECO(){
   }
   
   //(1-2)For B hadron to lepton decay
-  //ForTMVA_BBbarAnalyzer::RunProtoTypeMuon();
-  //ForTMVA_BBbarAnalyzer::RunProtoTypeElectron();
-  ForTMVA_BBbarAnalyzer::RunLeptonCutStudyMuon();
-  ForTMVA_BBbarAnalyzer::RunLeptonCutStudyElectron();
+  //ForTMVA_BBbarAnalyzer_pjetrest0p7_3::RunProtoTypeMuon();
+  //ForTMVA_BBbarAnalyzer_pjetrest0p7_3::RunProtoTypeElectron();
+  ForTMVA_BBbarAnalyzer_pjetrest0p7_3::RunLeptonCutStudyMuon();
+  ForTMVA_BBbarAnalyzer_pjetrest0p7_3::RunLeptonCutStudyElectron();
   
 
 }
 
-void ForTMVA_BBbarAnalyzer::executeEvent(){
+void ForTMVA_BBbarAnalyzer_pjetrest0p7_3::executeEvent(){
+  isEvenEvent=((event%2)==0);
+
   EventTag="";
   EventTagJetParton="";
   doPrint=false;
@@ -1395,45 +1544,54 @@ void ForTMVA_BBbarAnalyzer::executeEvent(){
   //   b(or bbar)   -----o======     Z
   //
   
-  myLHE.is_gbToZb = ForTMVA_BBbarAnalyzer::Tag_gbToZb(); 
+  myLHE.is_gbToZb = ForTMVA_BBbarAnalyzer_pjetrest0p7_3::Tag_gbToZb(); 
   if(!myLHE.is_gbToZb) return;
   if (!allow_tautau){
     if (myLHE.is_tautau) return;
   }
   FillHist("gbToZb/evt_nb_LHE/"+ProcessName,myLHE.evt_nb,weight, 4, -2., 2.);
   //->For LHE info, tag events with one gluon and one b(bbar)quark 
-  // if b event : ForTMVA_BBbarAnalyzer::myLHE.evt_nb=1
-  // if bbar event : ForTMVA_BBbarAnalyzer::myLHE.evt_nb=-1
+  // if b event : ForTMVA_BBbarAnalyzer_pjetrest0p7_3::myLHE.evt_nb=1
+  // if bbar event : ForTMVA_BBbarAnalyzer_pjetrest0p7_3::myLHE.evt_nb=-1
 
   //(2)---Get the most energetic B-hadron info. in GEN
-  ForTMVA_BBbarAnalyzer::Tag_B_Hadron();
+  ForTMVA_BBbarAnalyzer_pjetrest0p7_3::Tag_B_Hadron();
   //->For GEN particles 
   //  -> Tag All B hadron and get the most energetic B-hadron info.
   
   //(3)---Check Jet matching to B-hadron
-  ForTMVA_BBbarAnalyzer::Loop_genBMatchedRecoJet();
+  ForTMVA_BBbarAnalyzer_pjetrest0p7_3::Loop_genBMatchedRecoJet();
 
 
   //(4)---Now basic generator level info is set. do analysis//fill histograms
-  ForTMVA_BBbarAnalyzer::AnalyzeLHE();
-  ForTMVA_BBbarAnalyzer::AnalyzeGEN();
+  ForTMVA_BBbarAnalyzer_pjetrest0p7_3::AnalyzeLHE();
+  ForTMVA_BBbarAnalyzer_pjetrest0p7_3::AnalyzeGEN();
   if(!myRECO.HasBmatchedRecoJet) return; // if there's no bmatjet->return
   if(!(1==myRECO.nBmatJet)) return;
-  ForTMVA_BBbarAnalyzer::AnalyzeRECO();
+  ForTMVA_BBbarAnalyzer_pjetrest0p7_3::AnalyzeRECO();
   //NowFillTree
   if(doFillTree){
     //cout<<"myLHE.evt_nb="<<myLHE.evt_nb<<endl;
     //cout<<"AllJets[myRECO.ij_B].partonFlavour()="<<AllJets[myRECO.ij_B].partonFlavour()<<endl;
     //cout << "bjetPartonFlavourCharge=" << bjetPartonFlavourCharge <<endl;
     if(bjetPartonFlavourCharge<0){//bevt
-      jhchoi_newtree->Fill();
+      if(event%2==0){
+	jhchoi_newtree->Fill();
+      }
+      else{
+	jhchoi_newtree3->Fill();
+      }
     }
     else if (bjetPartonFlavourCharge>0){//bbar
-
-      jhchoi_newtree2->Fill();
+      if(event%2==0){
+	jhchoi_newtree2->Fill();
+      }
+      else{
+	jhchoi_newtree4->Fill();
+      }
     }
   }
-  
+
   
   //  FillHist("BasicCut/ZCand_Mass/"+ProcessName, ZCand.M(), weight, 40, 70., 110.);
   

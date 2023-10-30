@@ -24,8 +24,12 @@
 #pragma link C++ class B_In_GEN+;
 #pragma link C++ class B_Info_Analyzer_BASIC_v2309+;
 #pragma link C++ class BasicTest+;
+#pragma link C++ class BBbarRecoTMVA+;
 #pragma link C++ class BBbar_Analyzer+;
 #pragma link C++ class ForTMVA_BBbarAnalyzer+;
+#pragma link C++ class ForTMVA_BBbarAnalyzer_pjetrest0p7_3+;
+#pragma link C++ class ForTMVA_BBbarAnalyzer_lepV1;
+
 
 
 #endif

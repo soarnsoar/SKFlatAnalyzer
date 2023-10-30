@@ -7,6 +7,8 @@ class BBbar_Analyzer : public AnalyzerCore {
 
 public:
 
+
+
   void initializeAnalyzer();
 
   void executeEventFromParameter(AnalyzerParameter param);

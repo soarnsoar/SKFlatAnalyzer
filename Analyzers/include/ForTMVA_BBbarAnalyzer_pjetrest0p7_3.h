@@ -1,9 +1,9 @@
-#ifndef ForTMVA_BBbarAnalyzer_h
-#define ForTMVA_BBbarAnalyzer_h
+#ifndef ForTMVA_BBbarAnalyzer_pjetrest0p7_3_h
+#define ForTMVA_BBbarAnalyzer_pjetrest0p7_3_h
 
 #include "AnalyzerCore.h"
 #include <set>
-class ForTMVA_BBbarAnalyzer : public AnalyzerCore {
+class ForTMVA_BBbarAnalyzer_pjetrest0p7_3 : public AnalyzerCore {
 
 public:
 
@@ -26,8 +26,8 @@ public:
   void FillHistElectron(TString cutname);
   int Rank1n2Leptons(std::vector<int> &v_blep_idx, std::vector<double> &v_blep_value);
   int CheckIsBhadAndNb(int pid);
- 
-
+  int myevent;
+  int isEvenEvent;
   struct MuonCut{
     double P_JetRest_min;
     double P_JetRest_max;
@@ -181,8 +181,8 @@ public:
   unsigned int Cat_lepton_charge_size;
   unsigned int Cat_1jet20_size;
   unsigned int Cat_pTatJetRF2_size;
-  ForTMVA_BBbarAnalyzer();
-  ~ForTMVA_BBbarAnalyzer();
+  ForTMVA_BBbarAnalyzer_pjetrest0p7_3();
+  ~ForTMVA_BBbarAnalyzer_pjetrest0p7_3();
 
 
   //---For Tree
