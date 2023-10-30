@@ -63,10 +63,19 @@ def CheckJobStatus(logfiledir, cycle, jobnumber, hostname):
     if "WARNING: Not mounting" in e_l:
       length_log_e -= 1
       is_not_mounting_err = True
+    elif "RequestsDependencyWarning" in e_l:
+      continue
+    elif "Your CPU supports instructions that" in e_l:
+      continue
+    elif "Using TensorFlow backend" in e_l:
+      continue
     else:
+      print 'err!!->',e_l
       length_log_e += 1
     
   if length_log_e > 0:
+    print "length_log_e>0,->",length_log_e
+    
     out = 'ERROR\n'
     out += '--------------------------------------\n'
     out += 'logfile : '+path_log_o+'\n'
