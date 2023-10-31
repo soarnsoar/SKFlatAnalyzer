@@ -4,6 +4,7 @@
 BBbarRecoTMVA::BBbarRecoTMVA(){//FYI : bottomness = -nb
   //Set Hadron PID vector with nb=+1
   initTMVAmodel();
+  initTMVAmodel2();
   BhadronPIDs={
     -511,-521,-10511,-10521,-513,-523,-10513,-10523,-20513,-20523,-515,-525,-531,-10531,-533,-10533,-20533,-535,-541,-10541,-543,-10543,-20543,-545,//MESON
     5122,5112,5212,5222,5114,5214,5224, //lambda and sigma baryon
@@ -175,6 +176,9 @@ BBbarRecoTMVA::BBbarRecoTMVA(){//FYI : bottomness = -nb
   jhchoi_newtree->Branch("bjetPartonFlavourCharge",&bjetPartonFlavourCharge);
   jhchoi_newtree->Branch("weight",&weight);
   jhchoi_newtree->Branch("isEvenEvent",&isEvenEvent);
+  jhchoi_newtree->Branch("DNN1",&DNN1);
+  jhchoi_newtree->Branch("DNN2",&DNN2);
+  jhchoi_newtree->Branch("DNN_Final",&DNN_Final);
 
   //tree#2(bbar Train)
   jhchoi_newtree2->Branch("bjet_charge",&bjet_charge);
@@ -246,7 +250,9 @@ BBbarRecoTMVA::BBbarRecoTMVA(){//FYI : bottomness = -nb
   jhchoi_newtree2->Branch("bjetPartonFlavourCharge",&bjetPartonFlavourCharge);
   jhchoi_newtree2->Branch("weight",&weight);
   jhchoi_newtree2->Branch("isEvenEvent",&isEvenEvent);
-
+  jhchoi_newtree2->Branch("DNN1",&DNN1);
+  jhchoi_newtree2->Branch("DNN2",&DNN2);
+  jhchoi_newtree2->Branch("DNN_Final",&DNN_Final);
   //tree#3 bevt Test
   jhchoi_newtree3->Branch("bjet_charge",&bjet_charge);
   jhchoi_newtree3->Branch("bjet_pt",&bjet_pt);
@@ -318,7 +324,9 @@ BBbarRecoTMVA::BBbarRecoTMVA(){//FYI : bottomness = -nb
   jhchoi_newtree3->Branch("bjetPartonFlavourCharge",&bjetPartonFlavourCharge);
   jhchoi_newtree3->Branch("weight",&weight);
   jhchoi_newtree3->Branch("isEvenEvent",&isEvenEvent);
-
+  jhchoi_newtree3->Branch("DNN1",&DNN1);
+  jhchoi_newtree3->Branch("DNN2",&DNN2);
+  jhchoi_newtree3->Branch("DNN_Final",&DNN_Final);
   //tree#4(bbar Test)
   jhchoi_newtree4->Branch("bjet_charge",&bjet_charge);
   jhchoi_newtree4->Branch("bjet_pt",&bjet_pt);
@@ -389,10 +397,14 @@ BBbarRecoTMVA::BBbarRecoTMVA(){//FYI : bottomness = -nb
   jhchoi_newtree4->Branch("bjetPartonFlavourCharge",&bjetPartonFlavourCharge);
   jhchoi_newtree4->Branch("weight",&weight);
   jhchoi_newtree4->Branch("isEvenEvent",&isEvenEvent);
+  jhchoi_newtree4->Branch("DNN1",&DNN1);
+  jhchoi_newtree4->Branch("DNN2",&DNN2);
+  jhchoi_newtree4->Branch("DNN_Final",&DNN_Final);
 }
 
 void BBbarRecoTMVA::initTMVAmodel(){
   TString xmlfile="/data6/Users/jhchoi/SKFlatAnalyzers/test/SKFlatAnalyzer/external/TMVA/epoch__batchsize__nlayer__dropout__2000__1000__16__0.1/nominal_odd_evt/TMVAClassification_DNN.weights.xml";
+  ///data6/Users/jhchoi/SKFlatAnalyzers/test/SKFlatAnalyzer/external/TMVA/epoch__batchsize__nlayer__dropout__2000__1000__16__0.1/switch_even_evt
   cout << "define tmvareader"<< endl;
   myreader=new TMVA::Reader("V");
   cout << "add variables"<< endl;
@@ -460,6 +472,83 @@ void BBbarRecoTMVA::initTMVAmodel(){
   TMVA::PyMethodBase::PyInitialize();
   cout << "bookmva"<< endl;
   myreader->BookMVA("PyKeras::DNN",xmlfile);
+  //Float_t ret=myreader->EvaluateMVA("PyKeras::DNN");
+
+
+  
+}
+
+
+void BBbarRecoTMVA::initTMVAmodel2(){
+  //TString xmlfile="/data6/Users/jhchoi/SKFlatAnalyzers/test/SKFlatAnalyzer/external/TMVA/epoch__batchsize__nlayer__dropout__2000__1000__16__0.1/nominal_odd_evt/TMVAClassification_DNN.weights.xml";
+  TString xmlfile ="/data6/Users/jhchoi/SKFlatAnalyzers/test/SKFlatAnalyzer/external/TMVA/epoch__batchsize__nlayer__dropout__2000__1000__16__0.1/switch_even_evt/TMVAClassification_DNN.weights.xml";
+  cout << "define tmvareader2"<< endl;
+  myreader2=new TMVA::Reader("V");
+  cout << "add variables"<< endl;
+  myreader2->AddVariable("belectron2_nsip3d",&belectron2_nsip3d);
+  myreader2->AddVariable("belectron2_p_jetrestf",&belectron2_p_jetrestf);
+  myreader2->AddVariable("bjet_eta",&bjet_eta);
+  myreader2->AddVariable("bmuon2_eta",&bmuon2_eta);
+  myreader2->AddVariable("bmuon1_charge",&bmuon1_charge_float);
+  myreader2->AddVariable("belectron2_IsGsfCtfScPixChargeConsistent",&belectron2_IsGsfCtfScPixChargeConsistent_float);
+  myreader2->AddVariable("bmuon2_reliso",&bmuon2_reliso);
+  myreader2->AddVariable("bmuon2_nsip3d",&bmuon2_nsip3d);
+  myreader2->AddVariable("belectron1_pt",&belectron1_pt);
+  myreader2->AddVariable("n_bmuon",&n_bmuon_float);
+  myreader2->AddVariable("belectron2_pt",&belectron2_pt);
+  myreader2->AddVariable("bmuon1_dR_l_j",&bmuon1_dR_l_j);
+  myreader2->AddVariable("belectron2_dR_l_j",&belectron2_dR_l_j);
+  myreader2->AddVariable("belectron1_p_jetrestf",&belectron1_p_jetrestf);
+  myreader2->AddVariable("bjet_DeepJet_CvsB",&bjet_DeepJet_CvsB);
+  myreader2->AddVariable("belectron1_ptwrtbjet",&belectron1_ptwrtbjet);
+  myreader2->AddVariable("bjet_chargedHadronEnergyFraction",&bjet_chargedHadronEnergyFraction);
+  myreader2->AddVariable("bjet_DeepJet_CvsL",&bjet_DeepJet_CvsL);
+  myreader2->AddVariable("bmuon2_ptwrtbjet",&bmuon2_ptwrtbjet);
+  myreader2->AddVariable("belectron1_dR_l_j",&belectron1_dR_l_j);
+  myreader2->AddVariable("belectron1_reltrkiso",&belectron1_reltrkiso);
+  myreader2->AddVariable("belectron2_charge",&belectron2_charge_float);
+  myreader2->AddVariable("bmuon2_phi",&bmuon2_phi);
+  myreader2->AddVariable("bjet_phi",&bjet_phi);
+  myreader2->AddVariable("belectron2_ptwrtbjet",&belectron2_ptwrtbjet);
+  myreader2->AddVariable("belectron2_elecalclusteriso",&belectron2_elecalclusteriso);
+  myreader2->AddVariable("bjet_chargedEmEnergyFraction",&bjet_chargedEmEnergyFraction);
+  myreader2->AddVariable("belectron1_nsip3d",&belectron1_nsip3d);
+  myreader2->AddVariable("belectron1_reliso",&belectron1_reliso);
+  myreader2->AddVariable("bjet_charge",&bjet_charge);
+  myreader2->AddVariable("bmuon1_p_jetrestf",&bmuon1_p_jetrestf);
+  myreader2->AddVariable("bmuon2_charge",&bmuon2_charge_float);
+  myreader2->AddVariable("bmuon1_reltrkiso",&bmuon1_reltrkiso);
+  myreader2->AddVariable("bmuon1_reliso",&bmuon1_reliso);
+  myreader2->AddVariable("bjet_neutralEmEnergyFraction",&bjet_neutralEmEnergyFraction);
+  myreader2->AddVariable("belectron1_charge",&belectron1_charge_float);
+  myreader2->AddVariable("bjet_neutralHadronEnergyFraction",&bjet_neutralHadronEnergyFraction);
+  myreader2->AddVariable("bmuon2_eta",&bmuon2_eta);
+  myreader2->AddVariable("bjet_DeepJet",&bjet_DeepJet);
+  myreader2->AddVariable("bmuon1_pt",&bmuon1_pt);
+  myreader2->AddVariable("bmuon2_reltrkiso",&bmuon2_reltrkiso);
+  myreader2->AddVariable("bmuon2_p_jetrestf",&bmuon2_p_jetrestf);
+  myreader2->AddVariable("belectron2_reliso",&belectron2_reliso);
+  myreader2->AddVariable("belectron1_IsGsfCtfScPixChargeConsistent",&belectron1_IsGsfCtfScPixChargeConsistent_float);
+  myreader2->AddVariable("belectron2_reltrkiso",&belectron2_reltrkiso);
+  myreader2->AddVariable("bmuon2_pt",&bmuon2_pt);
+  myreader2->AddVariable("bjet_pt",&bjet_pt);
+  myreader2->AddVariable("bmuon1_phi",&bmuon1_phi);
+  myreader2->AddVariable("belectron1_phi",&belectron1_phi);
+  myreader2->AddVariable("n_belectron",&n_belectron_float);
+  myreader2->AddVariable("bjet_muonEnergyFraction",&bjet_muonEnergyFraction);
+  myreader2->AddVariable("belectron2_phi",&belectron2_phi);
+  myreader2->AddVariable("bmuon2_eta",&bmuon2_eta);
+  myreader2->AddVariable("bmuon1_ptwrtbjet",&bmuon1_ptwrtbjet);
+  myreader2->AddVariable("bmuon1_nsip3d",&bmuon1_nsip3d);
+  myreader2->AddVariable("bmuon2_eta",&bmuon2_eta);
+  myreader2->AddVariable("belectron1_elecalclusteriso",&belectron1_elecalclusteriso);  
+  myreader2->AddVariable("bmuon2_dR_l_j",&bmuon2_dR_l_j);
+  cout << "setenv"<< endl;
+  setenv("KERAS_BACKEND", "tensorflow", true);
+  cout << "pyinit"<< endl;
+  TMVA::PyMethodBase::PyInitialize();
+  cout << "bookmva"<< endl;
+  myreader2->BookMVA("PyKeras::DNN",xmlfile);
   //Float_t ret=myreader->EvaluateMVA("PyKeras::DNN");
 
 
@@ -534,6 +623,9 @@ void BBbarRecoTMVA::InitTreeValues(){
   //truth
   bjetPartonFlavourCharge=0;
 
+  DNN1=0;
+  DNN2=0;
+  DNN_Final=0;
 }
 
 
@@ -1656,27 +1748,56 @@ void BBbarRecoTMVA::executeEvent(){
   BBbarRecoTMVA::AnalyzeRECO();
   //NowFillTree
   if(doFillTree){
-    double DNN=myreader->EvaluateMVA("PyKeras::DNN");
-    double DNN_cal=(DNN>=0&& DNN<0.414289119617)*((0.1)/(0.414289119617-0)*(DNN-0)+-1.0)+(DNN>=0.414289119617&& DNN<0.439458691961)*((0.1)/(0.439458691961-0.414289119617)*(DNN-0.414289119617)+-0.9)+(DNN>=0.439458691961&& DNN<0.448793102896)*((0.1)/(0.448793102896-0.439458691961)*(DNN-0.439458691961)+-0.8)+(DNN>=0.448793102896&& DNN<0.460169416224)*((0.1)/(0.460169416224-0.448793102896)*(DNN-0.448793102896)+-0.7)+(DNN>=0.460169416224&& DNN<0.469462155682)*((0.1)/(0.469462155682-0.460169416224)*(DNN-0.460169416224)+-0.6)+(DNN>=0.469462155682&& DNN<0.479921696507)*((0.1)/(0.479921696507-0.469462155682)*(DNN-0.469462155682)+-0.5)+(DNN>=0.479921696507&& DNN<0.486047403683)*((0.1)/(0.486047403683-0.479921696507)*(DNN-0.479921696507)+-0.4)+(DNN>=0.486047403683&& DNN<0.492673168588)*((0.1)/(0.492673168588-0.486047403683)*(DNN-0.486047403683)+-0.3)+(DNN>=0.492673168588&& DNN<0.496215244166)*((0.1)/(0.496215244166-0.492673168588)*(DNN-0.492673168588)+-0.2)+(DNN>=0.496215244166&& DNN<0.502132593956)*((0.1)/(0.502132593956-0.496215244166)*(DNN-0.496215244166)+-0.1)+(DNN>=0.502132593956&& DNN<0.508049943745)*((0.1)/(0.508049943745-0.502132593956)*(DNN-0.502132593956)+0)+(DNN>=0.508049943745&& DNN<0.511383661936)*((0.1)/(0.511383661936-0.508049943745)*(DNN-0.508049943745)+0.1)+(DNN>=0.511383661936&& DNN<0.517926083887)*((0.1)/(0.517926083887-0.511383661936)*(DNN-0.511383661936)+0.2)+(DNN>=0.517926083887&& DNN<0.524510177314)*((0.1)/(0.524510177314-0.517926083887)*(DNN-0.517926083887)+0.3)+(DNN>=0.524510177314&& DNN<0.536469891325)*((0.1)/(0.536469891325-0.524510177314)*(DNN-0.524510177314)+0.4)+(DNN>=0.536469891325&& DNN<0.547137789537)*((0.1)/(0.547137789537-0.536469891325)*(DNN-0.536469891325)+0.5)+(DNN>=0.547137789537&& DNN<0.558972489116)*((0.1)/(0.558972489116-0.547137789537)*(DNN-0.547137789537)+0.6)+(DNN>=0.558972489116&& DNN<0.570098773579)*((0.1)/(0.570098773579-0.558972489116)*(DNN-0.558972489116)+0.7)+(DNN>=0.570098773579&& DNN<0.599643851049)*((0.1)/(0.599643851049-0.570098773579)*(DNN-0.570098773579)+0.8)+(DNN>=0.599643851049&& DNN<1)*((0.1)/(1-0.599643851049)*(DNN-0.599643851049)+0.9);
-    FillHist("DNN/DNN_cal",DNN_cal,weight,100,-1.2,1.2);
-    FillHist("DNN/DNN",DNN_cal,weight,100,0.,1.);
+    double DNN1_raw=myreader->EvaluateMVA("PyKeras::DNN");
+    DNN1=(DNN1_raw>=0&& DNN1_raw<0.414289119617)*((0.1)/(0.414289119617-0)*(DNN1_raw-0)+-1.0)+(DNN1_raw>=0.414289119617&& DNN1_raw<0.439458691961)*((0.1)/(0.439458691961-0.414289119617)*(DNN1_raw-0.414289119617)+-0.9)+(DNN1_raw>=0.439458691961&& DNN1_raw<0.448793102896)*((0.1)/(0.448793102896-0.439458691961)*(DNN1_raw-0.439458691961)+-0.8)+(DNN1_raw>=0.448793102896&& DNN1_raw<0.460169416224)*((0.1)/(0.460169416224-0.448793102896)*(DNN1_raw-0.448793102896)+-0.7)+(DNN1_raw>=0.460169416224&& DNN1_raw<0.469462155682)*((0.1)/(0.469462155682-0.460169416224)*(DNN1_raw-0.460169416224)+-0.6)+(DNN1_raw>=0.469462155682&& DNN1_raw<0.479921696507)*((0.1)/(0.479921696507-0.469462155682)*(DNN1_raw-0.469462155682)+-0.5)+(DNN1_raw>=0.479921696507&& DNN1_raw<0.486047403683)*((0.1)/(0.486047403683-0.479921696507)*(DNN1_raw-0.479921696507)+-0.4)+(DNN1_raw>=0.486047403683&& DNN1_raw<0.492673168588)*((0.1)/(0.492673168588-0.486047403683)*(DNN1_raw-0.486047403683)+-0.3)+(DNN1_raw>=0.492673168588&& DNN1_raw<0.496215244166)*((0.1)/(0.496215244166-0.492673168588)*(DNN1_raw-0.492673168588)+-0.2)+(DNN1_raw>=0.496215244166&& DNN1_raw<0.502132593956)*((0.1)/(0.502132593956-0.496215244166)*(DNN1_raw-0.496215244166)+-0.1)+(DNN1_raw>=0.502132593956&& DNN1_raw<0.508049943745)*((0.1)/(0.508049943745-0.502132593956)*(DNN1_raw-0.502132593956)+0)+(DNN1_raw>=0.508049943745&& DNN1_raw<0.511383661936)*((0.1)/(0.511383661936-0.508049943745)*(DNN1_raw-0.508049943745)+0.1)+(DNN1_raw>=0.511383661936&& DNN1_raw<0.517926083887)*((0.1)/(0.517926083887-0.511383661936)*(DNN1_raw-0.511383661936)+0.2)+(DNN1_raw>=0.517926083887&& DNN1_raw<0.524510177314)*((0.1)/(0.524510177314-0.517926083887)*(DNN1_raw-0.517926083887)+0.3)+(DNN1_raw>=0.524510177314&& DNN1_raw<0.536469891325)*((0.1)/(0.536469891325-0.524510177314)*(DNN1_raw-0.524510177314)+0.4)+(DNN1_raw>=0.536469891325&& DNN1_raw<0.547137789537)*((0.1)/(0.547137789537-0.536469891325)*(DNN1_raw-0.536469891325)+0.5)+(DNN1_raw>=0.547137789537&& DNN1_raw<0.558972489116)*((0.1)/(0.558972489116-0.547137789537)*(DNN1_raw-0.547137789537)+0.6)+(DNN1_raw>=0.558972489116&& DNN1_raw<0.570098773579)*((0.1)/(0.570098773579-0.558972489116)*(DNN1_raw-0.558972489116)+0.7)+(DNN1_raw>=0.570098773579&& DNN1_raw<0.599643851049)*((0.1)/(0.599643851049-0.570098773579)*(DNN1_raw-0.570098773579)+0.8)+(DNN1_raw>=0.599643851049&& DNN1_raw<1)*((0.1)/(1-0.599643851049)*(DNN1_raw-0.599643851049)+0.9);
+
+    FillHist("DNN/DNN1",DNN1,weight,100,-1.2,1.2);
+    FillHist("DNN/DNN1_raw",DNN1_raw,weight,100,0.,1.);
+
+    double DNN2_raw=myreader2->EvaluateMVA("PyKeras::DNN");
+    DNN2=((DNN2_raw>=0&& DNN2_raw<0.440702643171)*((0.1)/(0.440702643171-0)*(DNN2_raw-0)+-1.0)+(DNN2_raw>=0.440702643171&& DNN2_raw<0.451453571147)*((0.1)/(0.451453571147-0.440702643171)*(DNN2_raw-0.440702643171)+-0.9)+(DNN2_raw>=0.451453571147&& DNN2_raw<0.454519425133)*((0.1)/(0.454519425133-0.451453571147)*(DNN2_raw-0.451453571147)+-0.8)+(DNN2_raw>=0.454519425133&& DNN2_raw<0.457912303543)*((0.1)/(0.457912303543-0.454519425133)*(DNN2_raw-0.454519425133)+-0.7)+(DNN2_raw>=0.457912303543&& DNN2_raw<0.460651133104)*((0.1)/(0.460651133104-0.457912303543)*(DNN2_raw-0.457912303543)+-0.6)+(DNN2_raw>=0.460651133104&& DNN2_raw<0.463757865143)*((0.1)/(0.463757865143-0.460651133104)*(DNN2_raw-0.460651133104)+-0.5)+(DNN2_raw>=0.463757865143&& DNN2_raw<0.465311231162)*((0.1)/(0.465311231162-0.463757865143)*(DNN2_raw-0.463757865143)+-0.4)+(DNN2_raw>=0.465311231162&& DNN2_raw<0.466987231341)*((0.1)/(0.466987231341-0.465311231162)*(DNN2_raw-0.465311231162)+-0.3)+(DNN2_raw>=0.466987231341&& DNN2_raw<0.467723036297)*((0.1)/(0.467723036297-0.466987231341)*(DNN2_raw-0.466987231341)+-0.2)+(DNN2_raw>=0.467723036297&& DNN2_raw<0.470298353645)*((0.1)/(0.470298353645-0.467723036297)*(DNN2_raw-0.467723036297)+-0.1)+(DNN2_raw>=0.470298353645&& DNN2_raw<0.472873670993)*((0.1)/(0.472873670993-0.470298353645)*(DNN2_raw-0.470298353645)+0)+(DNN2_raw>=0.472873670993&& DNN2_raw<0.474059134534)*((0.1)/(0.474059134534-0.472873670993)*(DNN2_raw-0.472873670993)+0.1)+(DNN2_raw>=0.474059134534&& DNN2_raw<0.476593573829)*((0.1)/(0.476593573829-0.474059134534)*(DNN2_raw-0.474059134534)+0.2)+(DNN2_raw>=0.476593573829&& DNN2_raw<0.478923622858)*((0.1)/(0.478923622858-0.476593573829)*(DNN2_raw-0.476593573829)+0.3)+(DNN2_raw>=0.478923622858&& DNN2_raw<0.48350196481)*((0.1)/(0.48350196481-0.478923622858)*(DNN2_raw-0.478923622858)+0.4)+(DNN2_raw>=0.48350196481&& DNN2_raw<0.488121184815)*((0.1)/(0.488121184815-0.48350196481)*(DNN2_raw-0.48350196481)+0.5)+(DNN2_raw>=0.488121184815&& DNN2_raw<0.494334648893)*((0.1)/(0.494334648893-0.488121184815)*(DNN2_raw-0.488121184815)+0.6)+(DNN2_raw>=0.494334648893&& DNN2_raw<0.500875137395)*((0.1)/(0.500875137395-0.494334648893)*(DNN2_raw-0.494334648893)+0.7)+(DNN2_raw>=0.500875137395&& DNN2_raw<0.536439043628)*((0.1)/(0.536439043628-0.500875137395)*(DNN2_raw-0.500875137395)+0.8)+(DNN2_raw>=0.536439043628&& DNN2_raw<1)*((0.1)/(1-0.536439043628)*(DNN2_raw-0.536439043628)+0.9));
+
+
+    FillHist("DNN/DNN2",DNN2,weight,100,-1.2,1.2);
+    FillHist("DNN/DNN2_raw",DNN2_raw,weight,100,0.,1.);
     //cout<<"myLHE.evt_nb="<<myLHE.evt_nb<<endl;
     //cout<<"AllJets[myRECO.ij_B].partonFlavour()="<<AllJets[myRECO.ij_B].partonFlavour()<<endl;
     //cout << "bjetPartonFlavourCharge=" << bjetPartonFlavourCharge <<endl;
     if(bjetPartonFlavourCharge<0){//bevt
       if(event%2==0){
+	DNN_Final=DNN2;
 	jhchoi_newtree->Fill();
+	FillHist("DNN/neg_event/DNN2_raw",DNN2_raw,weight,100,0,1);
+	FillHist("DNN/neg_event/DNN2",DNN2,weight,100,-1.2,1.2);
+	FillHist("DNN/neg_event/DNN_final",DNN2,weight,100,-1.2,1.2);
+	FillHist("DNN/all_event/DNN_final",DNN2,weight,100,-1.2,1.2);
+
       }
       else{
+	DNN_Final=DNN1;
 	jhchoi_newtree3->Fill();
+	FillHist("DNN/neg_event/DNN1_raw",DNN1_raw,weight,100,0,1);
+	FillHist("DNN/neg_event/DNN1",DNN1,weight,100,-1.2,1.2);
+	FillHist("DNN/neg_event/DNN_final",DNN1,weight,100,-1.2,1.2);
+	FillHist("DNN/all_event/DNN_final",DNN1,weight,100,-1.2,1.2);
       }
     }
     else if (bjetPartonFlavourCharge>0){//bbar
       if(event%2==0){
+	DNN_Final=DNN2;
 	jhchoi_newtree2->Fill();
+	FillHist("DNN/pos_event/DNN2_raw",DNN2_raw,weight,100,0.,1.);
+	FillHist("DNN/pos_event/DNN2",DNN2,weight,100,-1.2,1.2);
+	FillHist("DNN/pos_event/DNN_final",DNN2,weight,100,-1.2,1.2);
+	FillHist("DNN/all_event/DNN_final",DNN2,weight,100,-1.2,1.2);
       }
       else{
+	DNN_Final=DNN1;
 	jhchoi_newtree4->Fill();
+	FillHist("DNN/pos_event/DNN1_raw",DNN1_raw,weight,100,0.,1.);
+	FillHist("DNN/pos_event/DNN1",DNN1,weight,100,-1.2,1.2);
+	FillHist("DNN/pos_event/DNN_final",DNN1,weight,100,-1.2,1.2);
+	FillHist("DNN/all_event/DNN_final",DNN1,weight,100,-1.2,1.2);
       }
     }
   }
