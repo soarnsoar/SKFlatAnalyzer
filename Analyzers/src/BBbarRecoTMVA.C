@@ -698,12 +698,14 @@ void BBbarRecoTMVA::RunLeptonCutStudyMuon(){
 	int i_bmuon1=idxIn100%100;
 	int i_bmuon2=idxIn100/100;
 	SetTreeValuesMuon(i_bmuon1,i_bmuon2,v_tmva_bmuonidx.size());
+	
       }
     }//[end]if tmva muons are tagged
     
 }//end RunLeptonCutStudyMuon
 
 void BBbarRecoTMVA::SetTreeValuesMuon(int i_bmuon1,int i_bmuon2,int nbmuon){
+  cout << "SetTreeValuesMuon" << endl;
   doFillTree=true;
   //--p jetrestf
   TLorentzVector vl(AllMuons[i_bmuon1]);
@@ -786,17 +788,16 @@ void BBbarRecoTMVA::SetTreeValuesMuon(int i_bmuon1,int i_bmuon2,int nbmuon){
   bjet_muonEnergyFraction=(*jet_muonEnergyFraction)[myRECO.ij_B];
 
   bjetPartonFlavourCharge=0.;
-  if((AllJets[myRECO.ij_B].partonFlavour() == -5)  && (myLHE.evt_nb==-1)){
-    bjetPartonFlavourCharge=1.;
-
+  if(!IsDATA){
+    if((AllJets[myRECO.ij_B].partonFlavour() == -5)  && (myLHE.evt_nb==-1)){
+      bjetPartonFlavourCharge=1.;
+      
+    }
+    else if((AllJets[myRECO.ij_B].partonFlavour() == 5) && (myLHE.evt_nb==1) ){
+      bjetPartonFlavourCharge=-1.;
+    }
+   
   }
-  else if((AllJets[myRECO.ij_B].partonFlavour() == 5) && (myLHE.evt_nb==1) ){
-    bjetPartonFlavourCharge=-1.;
-  }
-  else{
-    doFillTree=false;
-  }
-
 }
 
 
@@ -967,17 +968,14 @@ void BBbarRecoTMVA::SetTreeValuesElectron(int i_belectron1,int i_belectron2,int 
 
 
   bjetPartonFlavourCharge=0.;
-  if((AllJets[myRECO.ij_B].partonFlavour() == -5 ) && (myLHE.evt_nb==-1)){
-    bjetPartonFlavourCharge=1.;
+  if(!IsDATA){
+    if((AllJets[myRECO.ij_B].partonFlavour() == -5 ) && (myLHE.evt_nb==-1)){
+      bjetPartonFlavourCharge=1.;
+    }
+    else if ((AllJets[myRECO.ij_B].partonFlavour() == 5) && (myLHE.evt_nb==1) ){
+      bjetPartonFlavourCharge=-1.;
+    }
   }
-  else if ((AllJets[myRECO.ij_B].partonFlavour() == 5) && (myLHE.evt_nb==1) ){
-    bjetPartonFlavourCharge=-1.;
-  }
-  else{
-    doFillTree=false;
-    //discard this event if there's any ambiguity
-  }
-
 }
 
 
