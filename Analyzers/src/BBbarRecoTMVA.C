@@ -473,8 +473,8 @@ void BBbarRecoTMVA::initializeAnalyzer(){
   jtps.push_back( JetTagging::Parameters(JetTagging::DeepJet, JetTagging::Tight, JetTagging::incl, JetTagging::comb) );
   //==== set
   mcCorr->SetJetTaggingParameters(jtps);
-
-
+  jtp=JetTagging::Parameters(JetTagging::DeepJet,JetTagging::Tight,JetTagging::incl,JetTagging::comb);
+  //btag_cut = mcCorr->MCCorrection::GetJetTaggingCutValue(JetTagging::DeepJet,JetTagging::Tight);
 
 
 }
@@ -680,6 +680,7 @@ void BBbarRecoTMVA::RunLeptonCutStudyMuon(){
 
 
     if((dR_l_j<0.4) && (p_jetrestf>0.7) && (p_jetrestf<3)){
+      FillHist("nTMVAmuon",1, weight, 1, 0, 2);
       v_tmva_bmuonidx.push_back(i);
       v_tmva_bmuon_p_jetrestf.push_back(p_jetrestf);
 
@@ -705,8 +706,10 @@ void BBbarRecoTMVA::RunLeptonCutStudyMuon(){
 }//end RunLeptonCutStudyMuon
 
 void BBbarRecoTMVA::SetTreeValuesMuon(int i_bmuon1,int i_bmuon2,int nbmuon){
-  cout << "SetTreeValuesMuon" << endl;
+  //cout << "SetTreeValuesMuon" << endl;
   doFillTree=true;
+  FillHist("SetTreeValuesMuon",1, weight, 1, 0, 2);
+
   //--p jetrestf
   TLorentzVector vl(AllMuons[i_bmuon1]);
   vl.Boost(-AllJets[myRECO.ij_B].BoostVector());
@@ -851,6 +854,7 @@ void BBbarRecoTMVA::RunLeptonCutStudyElectron(){
     int electron_charge=AllElectrons[i].Charge();
 
     if((dR_l_j<0.4) && (p_jetrestf>0.7) && (p_jetrestf<3) && (IsGsfCtfScPixChargeConsistent)){
+      FillHist("nTMVAelectron",1, weight, 1, 0, 1);
       v_tmva_belectronidx.push_back(i);
       v_tmva_belectron_p_jetrestf.push_back(p_jetrestf);
 
@@ -878,6 +882,8 @@ void BBbarRecoTMVA::RunLeptonCutStudyElectron(){
 
 
 void BBbarRecoTMVA::SetTreeValuesElectron(int i_belectron1,int i_belectron2,int nbelectron){
+
+  FillHist("SetTreeValuesElectron",1, weight, 1, 0, 2);
   doFillTree=true;
   //--p jetrestf
   TLorentzVector vl(AllElectrons[i_belectron1]);
@@ -984,17 +990,27 @@ void BBbarRecoTMVA::SetTreeValuesElectron(int i_belectron1,int i_belectron2,int 
 bool BBbarRecoTMVA::ZmmReco(){
 
   vector<int> idx_Zmuon;
+  vector<Muon> v_Zmuon;
+  double this_leptonid_sf=1.;
+  double this_trigger_sf=1.;
   for(int i = 0 ; i < muonsize; i++ ){
     double pt=AllMuons[i].Pt();
     double eta=AllMuons[i].Eta();
-    if(fabs(eta) < 2.4) continue; 
+    bool passID=AllMuons[i].PassID("POGTight");
+    if(fabs(eta) > 2.4) continue; 
     if(pt <15.) continue;
+    if (!passID) continue;
     idx_Zmuon.push_back(i);
-
+    v_Zmuon.push_back(AllMuons[i]);
+    if(!IsDATA) {
+      this_leptonid_sf*=mcCorr->MuonID_SF("NUM_TightID_DEN_TrackerMuons",  eta, AllMuons[i].MiniAODPt());
+    }
   }
+
+  this_trigger_sf*=mcCorr->MuonTrigger_SF("IsoMu27_POGTight", "HLT_IsoMu27_v", v_Zmuon, 0);
   if (idx_Zmuon.size()<2) return 0;
   if (AllMuons[idx_Zmuon[0]].Pt()<30) return 0;
-
+  
   int i_l1=idx_Zmuon[0];
   int i_l2=idx_Zmuon[1];
   myRECO.mZ=(AllMuons[i_l1]+AllMuons[i_l2]).M();
@@ -1005,6 +1021,8 @@ bool BBbarRecoTMVA::ZmmReco(){
 
   myRECO.idx_Zmuon1=i_l1;
   myRECO.idx_Zmuon2=i_l2;
+  myRECO.goodZmm=true;
+  weight*=this_leptonid_sf*this_trigger_sf;
   return 1;
 
 
@@ -1012,25 +1030,41 @@ bool BBbarRecoTMVA::ZmmReco(){
 
 bool BBbarRecoTMVA::ZeeReco(){
   vector<int> idx_Zelectron;
+  vector<Electron> v_Zelectron;
+  double this_leptonid_sf=1.;
+  double this_leptonreco_sf=1.;
+  double this_trigger_sf=1.;
   for(int i = 0 ; i < electronsize; i++ ){
     double pt=AllElectrons[i].Pt();
     double eta=AllElectrons[i].Eta();
+    bool passID=AllElectrons[i].PassID("passMediumID");
     if(fabs(eta) > 2.4) continue; 
     if(pt <15.) continue;
+    if (!passID) continue;
     idx_Zelectron.push_back(i);
+    v_Zelectron.push_back(AllElectrons[i]);
+    if(!IsDATA) {
+      this_leptonid_sf*=mcCorr->ElectronID_SF ("passMediumID",  AllElectrons[i].scEta(), pt);
+      this_leptonreco_sf*=mcCorr->ElectronReco_SF (AllElectrons[i].scEta(), pt,0);
 
+    }
   }
+
+  //this_trigger_sf*=ElectronTrigger_SF(TString ID, "HLT_Ele35_WPTight_Gsf_v", v_Zelectron, 0);
+
   if (idx_Zelectron.size()<2) return 0;
-  if (AllElectrons[idx_Zelectron[0]].Pt()<30) return 0;
+  if (AllElectrons[idx_Zelectron[0]].Pt()<38) return 0;
 
   int i_l1=idx_Zelectron[0];
   int i_l2=idx_Zelectron[1];
-  double mZ=(AllElectrons[i_l1]+AllElectrons[i_l2]).M();
+  myRECO.mZ=(AllElectrons[i_l1]+AllElectrons[i_l2]).M();
+  double mZ=myRECO.mZ;
   if(mZ < 60) return 0;
   if(mZ > 120) return 0;
-
+  weight*=this_leptonid_sf*this_leptonreco_sf;
   myRECO.idx_Zelectron1=i_l1;
   myRECO.idx_Zelectron2=i_l2;
+  myRECO.goodZmm=true;
   return 1;
 
 
@@ -1048,7 +1082,8 @@ bool BBbarRecoTMVA::Tag1bjet(){
   unsigned int _Nb=0;
   tightjets.clear();
   //tightjets.push_back(AllJets[myRECO.ij_B]);
-  double btag_cut = mcCorr->MCCorrection::GetJetTaggingCutValue(JetTagging::DeepJet,JetTagging::Tight);
+  //jtp=JetTagging::Parameters(JetTagging::DeepJet,JetTagging::Tight,JetTagging::incl,JetTagging::comb);
+  btag_cut = mcCorr->MCCorrection::GetJetTaggingCutValue(JetTagging::DeepJet,JetTagging::Tight);
   //cout << "btag_cut=" << btag_cut << endl;
   for(int i = 0 ; i < jetsize; i ++){
     double btag_score=AllJets[i].GetTaggerResult(JetTagging::DeepJet);
@@ -1056,7 +1091,7 @@ bool BBbarRecoTMVA::Tag1bjet(){
     if(btag_score < btag_cut) continue;
     if(AllJets[i].Pt() < 20) continue;
     if(fabs(AllJets[i].Eta()) > 2.4) continue;
-    if(!AllJets[i].PassID("tightLepVeto")){
+    if(AllJets[i].PassID("tightLepVeto")){
       _Nb+=1;
       myRECO.ij_B=i;
     }
@@ -1065,7 +1100,7 @@ bool BBbarRecoTMVA::Tag1bjet(){
   if(_Nb!=1) return 0;
   
 
-  JetTagging::Parameters jtp=JetTagging::Parameters(JetTagging::DeepJet,JetTagging::Tight,JetTagging::incl,JetTagging::comb);
+  
 
   if(!IsDATA){
     double btagWeight = mcCorr->GetBTaggingReweight_1a(tightjets, jtp);
@@ -1076,7 +1111,8 @@ bool BBbarRecoTMVA::Tag1bjet(){
 
 void BBbarRecoTMVA::AnalyzeRECO(){
 
-  Event ev = GetEvent();
+
+  
   //call muon/electron
   AllMuons=GetAllMuons();
   muonsize = AllMuons.size();
@@ -1087,22 +1123,37 @@ void BBbarRecoTMVA::AnalyzeRECO(){
 
   //(0) Apply some basic cuts
   TString MuonTriggerName = "HLT_IsoMu27_v";
-  TString ElectronTriggerName = "HLT_Ele27_WPTight_Gsf_v";
+  TString ElectronTriggerName = "HLT_Ele35_WPTight_Gsf_v";
   myRECO.passMuonTrigger=ev.PassTrigger(MuonTriggerName);
   myRECO.passElectronTrigger=ev.PassTrigger(ElectronTriggerName);
-  if( (!myRECO.passMuonTrigger) && (!myRECO.passElectronTrigger) ) return;
-  FillHist("PassTrigger",1, weight, 1, 0, 1);
-  if(myRECO.passMuonTrigger){
-    if (!ZmmReco()) return;
+
+  FillHist("PassBothTrigger",myRECO.passMuonTrigger*myRECO.passElectronTrigger, weight, 2, 0, 2);
+
+
+
+
+  myRECO.goodZee=ZeeReco();
+  myRECO.goodZmm=ZmmReco();
+
+  bool passMuonTriggerAndZmm=myRECO.passMuonTrigger&&myRECO.goodZmm;
+  bool passElectronTriggerAndZee=myRECO.passElectronTrigger&&myRECO.goodZee;
+
+  if((!passMuonTriggerAndZmm) && (!passElectronTriggerAndZee)) return;
+
+  
+
+  if(passMuonTriggerAndZmm){ 
+    ZllChannel="Zmm";
   }
-  FillHist("PassZmmReco",1, weight, 1, 0, 1);
-  if(myRECO.passElectronTrigger){
-    if (!ZeeReco()) return;
+  else if(passElectronTriggerAndZee){
+    ZllChannel="Zee";
   }
-  FillHist("PassZeeReco",1, weight, 1, 0, 1);
+  
+  FillHist("PassTrigger__and__GoodZ",1, weight, 1, 0, 2);
+
 
   if(!BBbarRecoTMVA::Tag1bjet()) return;
-  FillHist("Pass1bjet",1, weight, 1, 0, 1);
+  FillHist("Pass1bjet",1, weight, 1, 0, 2);
   //->now Z is reconstructed
   //(1) Do Main Analysis
   //(1-1) Set EventTag
@@ -1110,9 +1161,9 @@ void BBbarRecoTMVA::AnalyzeRECO(){
   //BBbarRecoTMVA::RunProtoTypeMuon();
   //BBbarRecoTMVA::RunProtoTypeElectron();
   BBbarRecoTMVA::RunLeptonCutStudyMuon();
-  FillHist("PassRunLeptonCutStudyMuon",1, weight, 1, 0, 1);
+  FillHist("PassRunLeptonCutStudyMuon",1, weight, 1, 0, 2);
   BBbarRecoTMVA::RunLeptonCutStudyElectron();
-  FillHist("PassRunLeptonCutStudyElectron",1, weight, 1, 0, 1);
+  FillHist("PassRunLeptonCutStudyElectron",1, weight, 1, 0, 2);
 
 }
 
@@ -1152,48 +1203,20 @@ double BBbarRecoTMVA::CalcDNN(){
    return DNN_s;
 }
 
-void BBbarRecoTMVA::executeEvent(){
+void BBbarRecoTMVA::FillHists(TString cutname){
 
-  FillHist("event_start",1, weight, 1, 0, 1);
-  isEvenEvent=((event%2)==0);
-
-  EventTag="";
-  EventTagJetParton="";
-  doPrint=false;
-  weight = 1.;//init event weight
-  if(!IsDATA) weight *= MCweight();
-
-  //initialize//
-  myLHE.incoming_parton_pid.clear();
-  InitTreeValues();
-  doFillTree=false;
-  //(1)---Let's tag only events with following process..
-  //         g      =====o----- b(or bbar)
-  //                     |
-  //                     |
-  //   b(or bbar)   -----o======     Z
-  //
-  
-  if ("DY"==ProcessName){
-    myLHE.is_gbToZb = BBbarRecoTMVA::Tag_gbToZb(); 
-    //BBbarRecoTMVA::AnalyzeLHE();
-  }
-  BBbarRecoTMVA::AnalyzeRECO();
-  //NowFillTree
-  if(doFillTree){
-
-    double DNNscore=CalcDNN();
-    TString cutname="recoZb";
 
     FillHist(cutname+"/mZ/"+ProcessName,myRECO.mZ, weight, 200, 60., 120.);
-    if(myRECO.passMuonTrigger){
+
+
+    if(myRECO.passMuonTrigger && myRECO.goodZmm){
       FillHist(cutname+"/Zmuon1_pt/"+ProcessName,AllMuons[myRECO.idx_Zmuon1].Pt(), weight, 100, 20., 220.);
       FillHist(cutname+"/Zmuon2_pt/"+ProcessName,AllMuons[myRECO.idx_Zmuon2].Pt(), weight, 100, 20., 220.);
 
       FillHist(cutname+"/Zmuon1_eta/"+ProcessName,AllMuons[myRECO.idx_Zmuon1].Eta(), weight, 100, -2.4, 2.4);
       FillHist(cutname+"/Zmuon2_eta/"+ProcessName,AllMuons[myRECO.idx_Zmuon2].Eta(), weight, 100, -2.4, 2.4);
     }
-    if(myRECO.passElectronTrigger){
+    if(myRECO.passElectronTrigger && myRECO.goodZee){
       FillHist(cutname+"/Zelectron1_pt/"+ProcessName,AllElectrons[myRECO.idx_Zelectron1].Pt(), weight, 100, 20., 220.);
       FillHist(cutname+"/Zelectron2_pt/"+ProcessName,AllElectrons[myRECO.idx_Zelectron2].Pt(), weight, 100, 20., 220.);
 
@@ -1214,6 +1237,7 @@ void BBbarRecoTMVA::executeEvent(){
       FillHist(cutname+"/bmuon1_eta/"+ProcessName, bmuon1_eta, weight, 100, -5., 5.);
       FillHist(cutname+"/bmuon1_phi/"+ProcessName, bmuon1_phi, weight, 100, -4., 4.);
       FillHist(cutname+"/bmuon1_ptwrtbjet/"+ProcessName, bmuon1_ptwrtbjet, weight, 100, 0., 10.);
+      FillHist(cutname+"/DNNscore_if_bmuon1/"+ProcessName, DNNscore, weight, 100, -1., 1.);  
     }
     if(bmuon2_pt>0){
       FillHist(cutname+"/bmuon2_p_jetrestf/"+ProcessName, bmuon2_p_jetrestf, weight, 200, 0., 10.);
@@ -1226,6 +1250,7 @@ void BBbarRecoTMVA::executeEvent(){
       FillHist(cutname+"/bmuon2_eta/"+ProcessName, bmuon2_eta, weight, 100, -5., 5.);
       FillHist(cutname+"/bmuon2_phi/"+ProcessName, bmuon2_phi, weight, 100, -4., 4.);
       FillHist(cutname+"/bmuon2_ptwrtbjet/"+ProcessName, bmuon2_ptwrtbjet, weight, 100, 0., 10.);
+      FillHist(cutname+"/DNNscore_if_bmuon2/"+ProcessName, DNNscore, weight, 100, -1., 1.);  
     }
     if(belectron1_pt>0){
       FillHist(cutname+"/belectron1_p_jetrestf/"+ProcessName, belectron1_p_jetrestf, weight, 200, 0., 10.);
@@ -1240,6 +1265,7 @@ void BBbarRecoTMVA::executeEvent(){
       FillHist(cutname+"/belectron1_eta/"+ProcessName, belectron1_eta, weight, 100, -5., 5.);
       FillHist(cutname+"/belectron1_phi/"+ProcessName, belectron1_phi, weight, 100, -4., 4.);
       FillHist(cutname+"/belectron1_ptwrtbjet/"+ProcessName, belectron1_ptwrtbjet, weight, 100, 0., 10.);
+      FillHist(cutname+"/DNNscore_if_belectron1/"+ProcessName, DNNscore, weight, 100, -1., 1.);  
     }
 
     if(belectron2_pt>0){
@@ -1255,6 +1281,7 @@ void BBbarRecoTMVA::executeEvent(){
       FillHist(cutname+"/belectron2_eta/"+ProcessName, belectron2_eta, weight, 100, -5., 5.);
       FillHist(cutname+"/belectron2_phi/"+ProcessName, belectron2_phi, weight, 100, -4., 4.);
       FillHist(cutname+"/belectron2_ptwrtbjet/"+ProcessName, belectron2_ptwrtbjet, weight, 100, 0., 10.);
+      FillHist(cutname+"/DNNscore_if_belectron2/"+ProcessName, DNNscore, weight, 100, -1., 1.);  
     }
 
     FillHist(cutname+"/bjet_charge/"+ProcessName, bjet_charge, weight, 100, -1., 1.);
@@ -1265,7 +1292,62 @@ void BBbarRecoTMVA::executeEvent(){
     FillHist(cutname+"/bjet_pt/"+ProcessName, bjet_pt, weight, 100, 20., 220.);
     FillHist(cutname+"/bjet_eta/"+ProcessName, bjet_eta, weight, 100, -3., 3.);
     FillHist(cutname+"/bjet_phi/"+ProcessName, bjet_phi, weight, 100, -4., 4.);
-    FillHist(cutname+"/DNNscore/"+ProcessName, DNNscore, weight, 100, -1., 1.);
+    FillHist(cutname+"/DNNscore/"+ProcessName, DNNscore, weight, 100, -1., 1.);  
+
+}
+
+void BBbarRecoTMVA::executeEvent(){
+  ev = GetEvent();
+  FillHist("event_start",1, weight, 1, 0, 1);
+  isEvenEvent=((event%2)==0);
+  //---initialize--//
+  //EventTag="";
+  //EventTagJetParton="";
+  ZllChannel="";
+  doPrint=false;
+  weight = 1.;//init event weight
+  myRECO.idx_Zmuon1=-1;
+  myRECO.idx_Zmuon2=-1;
+  myRECO.idx_Zelectron1=-1;
+  myRECO.idx_Zelectron2=-1;
+  myRECO.goodZmm=false;
+  myRECO.goodZee=false;
+  DNNscore=-999.;
+
+  weight*=GetPrefireWeight(0);
+  weight*=GetPileUpWeight(nPileUp,0);
+  if(!IsDATA){
+    weight *= MCweight();
+    weight *= ev.GetTriggerLumi("Full");
+  }
+  //initialize//
+  myLHE.incoming_parton_pid.clear();
+  InitTreeValues();
+  doFillTree=false;
+  //(1)---Let's tag only events with following process..
+  //         g      =====o----- b(or bbar)
+  //                     |
+  //                     |
+  //   b(or bbar)   -----o======     Z
+  //
+  
+  if (MCSample.Contains("DY")){
+    myLHE.is_gbToZb = BBbarRecoTMVA::Tag_gbToZb(); 
+    //BBbarRecoTMVA::AnalyzeLHE();
+  }
+  BBbarRecoTMVA::AnalyzeRECO();
+  //NowFillTree
+  if(doFillTree){
+
+    DNNscore=CalcDNN();
+    //TString cutname="recoZb";
+    FillHists("reco_Zb");
+    if(myRECO.passMuonTrigger&&myRECO.goodZmm){
+      FillHists("reco_Zmm_b");
+    }
+    else if(myRECO.passElectronTrigger&&myRECO.goodZee){
+      FillHists("reco_Zee_b");
+    }
 
   }//end dofilltree
   
