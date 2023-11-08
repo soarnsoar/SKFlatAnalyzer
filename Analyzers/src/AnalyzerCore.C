@@ -24,6 +24,11 @@ AnalyzerCore::AnalyzerCore(){
     std::vector<Jet> AnalyzerCore::ScaleJetsIndividualSource(const std::vector<Jet>& jets, int sys, TString source);
     vector<Jet> jets_AbsoluteStatUp = ScaleJetsIndividualSource(jets, 1, "AbsoluteStat");
   */
+  //
+  jhchoi_newtree=new TTree("dummyTree1","dummyTree1");
+  jhchoi_newtree2=new TTree("dummyTree2","dummyTree2");
+  jhchoi_newtree3=new TTree("dummyTree3","dummyTree3");
+  jhchoi_newtree4=new TTree("dummyTree4","dummyTree4");
 
   
 }
