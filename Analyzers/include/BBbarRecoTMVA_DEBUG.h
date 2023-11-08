@@ -1,5 +1,5 @@
-#ifndef BBbarRecoTMVA_h
-#define BBbarRecoTMVA_h
+#ifndef BBbarRecoTMVA_DEBUG_h
+#define BBbarRecoTMVA_DEBUG_h
 
 #include "AnalyzerCore.h"
 #include "TMVA/PyMethodBase.h"
@@ -8,9 +8,11 @@
 #include "TMVA/MethodCuts.h"
 
 #include <set>
-class BBbarRecoTMVA : public AnalyzerCore {
+class BBbarRecoTMVA_DEBUG : public AnalyzerCore {
 
 public:
+  void print(TString a);
+  int i_EVENT;
   Event ev;
   void initTMVAmodel_odd_pos();
   void initTMVAmodel_even_pos();
@@ -27,14 +29,12 @@ public:
   TGraph* tgr_even_neg;
 
   double CalcDNN();
-  double DNNscore;
-  double MET;
   void initializeAnalyzer();
   bool ZmmReco();
   bool ZeeReco();
   bool Tag1bjet();
   void executeEventFromParameter(AnalyzerParameter param);
-  void FillHists(TString cutname);
+  void executeExoticEvent();
   bool Tag_gbToZb();
   void Tag_B_Hadron();
   void Loop_genBMatchedRecoJet();
@@ -52,8 +52,6 @@ public:
   int CheckIsBhadAndNb(int pid);
   int myevent;
   int isEvenEvent;
-  double btag_cut;
-  JetTagging::Parameters jtp;
   struct MuonCut{
     double P_JetRest_min;
     double P_JetRest_max;
@@ -164,8 +162,6 @@ public:
     bool passElectronTrigger;
     bool goodZmm;
     bool goodZee;
-    bool passMuonTriggerAndZmm;
-    bool passElectronTriggerAndZee;
 
     double mZ;
     int ij_B;
@@ -207,11 +203,18 @@ public:
   Float_t dRToLHE,dRToBhad,ptratioToLHE,ptratioToBhad,charge_using_lep;
 
   //For Categorize
-  TString ZllChannel;
-  TString bLeptonChannel;
-  
-  BBbarRecoTMVA();
-  ~BBbarRecoTMVA();
+  TString Cat_b_bbar[10];
+  TString Cat_Z_To_mm_ee[10];
+  TString Cat_lepton_charge[10];
+  TString Cat_1jet20[10];
+  TString Cat_pTatJetRF2[10];
+  unsigned int Cat_b_bbar_size;
+  unsigned int Cat_Z_To_mm_ee_size;
+  unsigned int Cat_lepton_charge_size;
+  unsigned int Cat_1jet20_size;
+  unsigned int Cat_pTatJetRF2_size;
+  BBbarRecoTMVA_DEBUG();
+  ~BBbarRecoTMVA_DEBUG();
 
 
   //---For Tree
