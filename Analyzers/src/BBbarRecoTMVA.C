@@ -638,26 +638,6 @@ int BBbarRecoTMVA::Rank1n2Leptons(std::vector<int> &v_blep_idx, std::vector<doub
 }
 
 
-void BBbarRecoTMVA::FillHistMuon(TString cutname){
-
-    FillHist(cutname+"/muon_P_jetrestf/"+ProcessName, p_jetrestf, weight, 200, 0., 10.);
-    FillHist(cutname+"/muon_dRbmatj/"+ProcessName, dR_l_j, weight, 200, 0., 5.);
-    FillHist(cutname+"/muon_ip3d/"+ProcessName, ip3d, weight, 100, -10., 10.);
-    FillHist(cutname+"/muon_nsip3d/"+ProcessName, nsip3d, weight, 100, 0., 10.);
-    FillHist(cutname+"/muon_logreliso/"+ProcessName, log10(reliso), weight, 100, -5., 2.);
-    FillHist(cutname+"/muon_logreltrkiso/"+ProcessName, log10(reltrkiso), weight, 100, -5., 2.);
-
-}
-
-void BBbarRecoTMVA::FillHistMuonCharge(TString cutname){
-
-    FillHist(cutname+"/bmuon_charge/"+ProcessName, AllMuons[i_bmuon].Charge(), weight, 4, -2., 2.);
-    FillHist(cutname+"/jet_charge/"+ProcessName, AllJets[myRECO.ij_B].Charge(), weight, 100, -2., 2.);
-    FillHist(cutname+"/bmuon_bjet_chargesum/"+ProcessName, AllMuons[i_bmuon].Charge()+AllJets[myRECO.ij_B].Charge(), weight, 100, -3., 3.);
-
-
-}
-
 void BBbarRecoTMVA::RunLeptonCutStudyMuon(){
   std::vector<int> v_tmva_bmuonidx;
   std::vector<double> v_tmva_bmuon_p_jetrestf;
@@ -804,30 +784,6 @@ void BBbarRecoTMVA::SetTreeValuesMuon(int i_bmuon1,int i_bmuon2,int nbmuon){
 }
 
 
-
-
-
-void BBbarRecoTMVA::FillHistElectron(TString cutname){
-
-    FillHist(cutname+"/electron_P_jetrestf/"+ProcessName, p_jetrestf, weight, 200, 0., 10.);
-    FillHist(cutname+"/electron_dRbmatj/"+ProcessName, dR_l_j, weight, 200, 0., 5.);
-    FillHist(cutname+"/electron_ip3d/"+ProcessName, ip3d, weight, 100, -10., 10.);
-    FillHist(cutname+"/electron_nsip3d/"+ProcessName, nsip3d, weight, 100, 0., 10.);
-    FillHist(cutname+"/electron_logreliso/"+ProcessName, log10(reliso), weight, 100, -5., 2.);
-    FillHist(cutname+"/electron_logreltrkiso/"+ProcessName, log10(reltrkiso), weight, 100, -5., 2.);
-    FillHist(cutname+"/electron_logrelecalclusteriso/"+ProcessName, log10(relecalclusteriso), weight, 100, -5., 2.);
-    FillHist(cutname+"/electron_IsGsfCtfScPixChargeConsistent/"+ProcessName, IsGsfCtfScPixChargeConsistent, weight, 4, -1., 3.);//
-
-}
-
-void BBbarRecoTMVA::FillHistElectronCharge(TString cutname){
-
-    FillHist(cutname+"/belectron_charge/"+ProcessName, AllElectrons[i_belectron].Charge(), weight, 4, -2., 2.);
-    FillHist(cutname+"/jet_charge/"+ProcessName, AllJets[myRECO.ij_B].Charge(), weight, 100, -2., 2.);
-    FillHist(cutname+"/belectron_bjet_chargesum/"+ProcessName, AllElectrons[i_belectron].Charge()+AllJets[myRECO.ij_B].Charge(), weight, 100, -3., 3.);
-
-
-}
 
 void BBbarRecoTMVA::RunLeptonCutStudyElectron(){
 
@@ -989,30 +945,57 @@ void BBbarRecoTMVA::SetTreeValuesElectron(int i_belectron1,int i_belectron2,int 
 
 bool BBbarRecoTMVA::ZmmReco(){
 
+
+  
   vector<int> idx_Zmuon;
   vector<Muon> v_Zmuon;
   double this_leptonid_sf=1.;
   double this_trigger_sf=1.;
+  double this_iso_sf=1.;
+  double maxpt=-999.;
+  int i_l1=-1;
+  int i_l2=-1;
   for(int i = 0 ; i < muonsize; i++ ){
     double pt=AllMuons[i].Pt();
     double eta=AllMuons[i].Eta();
     bool passID=AllMuons[i].PassID("POGTight");
+    double reliso=AllMuons[i].RelIso();
     if(fabs(eta) > 2.4) continue; 
     if(pt <15.) continue;
     if (!passID) continue;
+    if(reliso>0.15) continue;//reliso0.15
+
     idx_Zmuon.push_back(i);
     v_Zmuon.push_back(AllMuons[i]);
     if(!IsDATA) {
       this_leptonid_sf*=mcCorr->MuonID_SF("NUM_TightID_DEN_TrackerMuons",  eta, AllMuons[i].MiniAODPt());
+      this_iso_sf = mcCorr->MuonISO_SF("NUM_TightRelIso_DEN_TightIDandIPCut", eta, AllMuons[i].MiniAODPt());
+    }
+    if(pt > maxpt){
+      maxpt = pt;
+      i_l1 = i;
     }
   }
 
   this_trigger_sf*=mcCorr->MuonTrigger_SF("IsoMu27_POGTight", "HLT_IsoMu27_v", v_Zmuon, 0);
   if (idx_Zmuon.size()<2) return 0;
-  if (AllMuons[idx_Zmuon[0]].Pt()<30) return 0;
+  if (maxpt<30.) return 0;
   
-  int i_l1=idx_Zmuon[0];
-  int i_l2=idx_Zmuon[1];
+  unsigned int SelectedMuonSize=idx_Zmuon.size();
+  //int i_l1=idx_Zmuon[0];
+  //int i_l2=idx_Zmuon[1];
+  double second_max_pt=-999;
+  for(int i = 0 ; i <SelectedMuonSize ; i++){
+    int idx=idx_Zmuon[i];
+    double pt=AllMuons[idx].Pt();
+    if(idx==i_l1)continue;
+    if(pt > second_max_pt){
+      second_max_pt=pt;
+      i_l2=idx;
+    }
+  }
+
+
   myRECO.mZ=(AllMuons[i_l1]+AllMuons[i_l2]).M();
   double mZ=myRECO.mZ;
   if(mZ < 60) return 0;
@@ -1084,6 +1067,16 @@ bool BBbarRecoTMVA::Tag1bjet(){
   //tightjets.push_back(AllJets[myRECO.ij_B]);
   //jtp=JetTagging::Parameters(JetTagging::DeepJet,JetTagging::Tight,JetTagging::incl,JetTagging::comb);
   btag_cut = mcCorr->MCCorrection::GetJetTaggingCutValue(JetTagging::DeepJet,JetTagging::Tight);
+  TLorentzVector l1;
+  TLorentzVector l2;
+  if(myRECO.passMuonTriggerAndZmm){
+    l1=AllMuons[myRECO.idx_Zmuon1];
+    l2=AllMuons[myRECO.idx_Zmuon2];
+  }
+  else if(myRECO.passElectronTriggerAndZee){
+    l1=AllElectrons[myRECO.idx_Zelectron1];
+    l2=AllElectrons[myRECO.idx_Zelectron2];
+  }
   //cout << "btag_cut=" << btag_cut << endl;
   for(int i = 0 ; i < jetsize; i ++){
     double btag_score=AllJets[i].GetTaggerResult(JetTagging::DeepJet);
@@ -1091,7 +1084,9 @@ bool BBbarRecoTMVA::Tag1bjet(){
     if(btag_score < btag_cut) continue;
     if(AllJets[i].Pt() < 20) continue;
     if(fabs(AllJets[i].Eta()) > 2.4) continue;
-    if(AllJets[i].PassID("tightLepVeto")){
+    if(AllJets[i].DeltaR(l1)<0.4) continue;
+    if(AllJets[i].DeltaR(l2)<0.4) continue;
+    if(AllJets[i].PassID("tight")){
       _Nb+=1;
       myRECO.ij_B=i;
     }
@@ -1114,7 +1109,8 @@ void BBbarRecoTMVA::AnalyzeRECO(){
 
   
   //call muon/electron
-  AllMuons=GetAllMuons();
+  vector<Muon> AllMuons_raw=GetAllMuons();
+  AllMuons=ScaleMuons(AllMuons_raw,0);
   muonsize = AllMuons.size();
   AllElectrons=GetAllElectrons();
   electronsize = AllElectrons.size();
@@ -1137,10 +1133,11 @@ void BBbarRecoTMVA::AnalyzeRECO(){
 
   bool passMuonTriggerAndZmm=myRECO.passMuonTrigger&&myRECO.goodZmm;
   bool passElectronTriggerAndZee=myRECO.passElectronTrigger&&myRECO.goodZee;
-
-  if((!passMuonTriggerAndZmm) && (!passElectronTriggerAndZee)) return;
-
   
+  if((!passMuonTriggerAndZmm) && (!passElectronTriggerAndZee)) return;
+  
+  myRECO.passMuonTriggerAndZmm=passMuonTriggerAndZmm;
+  myRECO.passElectronTriggerAndZee=passElectronTriggerAndZee;
 
   if(passMuonTriggerAndZmm){ 
     ZllChannel="Zmm";
@@ -1150,6 +1147,7 @@ void BBbarRecoTMVA::AnalyzeRECO(){
   }
   
   FillHist("PassTrigger__and__GoodZ",1, weight, 1, 0, 2);
+  FillHist("PasTrigger_and_GoodZ/mZ/"+ProcessName,myRECO.mZ, weight, 200, 60., 120.);
 
 
   if(!BBbarRecoTMVA::Tag1bjet()) return;
@@ -1207,6 +1205,9 @@ void BBbarRecoTMVA::FillHists(TString cutname){
 
 
     FillHist(cutname+"/mZ/"+ProcessName,myRECO.mZ, weight, 200, 60., 120.);
+    FillHist(cutname+"/MET/"+ProcessName,MET, weight, 100, 0., 200.);
+    FillHist(cutname+"/nPileUp/"+ProcessName,nPileUp, weight, 80, 0., 80.);
+    
 
 
     if(myRECO.passMuonTrigger && myRECO.goodZmm){
@@ -1215,6 +1216,9 @@ void BBbarRecoTMVA::FillHists(TString cutname){
 
       FillHist(cutname+"/Zmuon1_eta/"+ProcessName,AllMuons[myRECO.idx_Zmuon1].Eta(), weight, 100, -2.4, 2.4);
       FillHist(cutname+"/Zmuon2_eta/"+ProcessName,AllMuons[myRECO.idx_Zmuon2].Eta(), weight, 100, -2.4, 2.4);
+
+      FillHist(cutname+"/log_Zmuon1_reliso/"+ProcessName, log10(AllMuons[myRECO.idx_Zmuon1].RelIso()), weight, 100, -5., 2.);
+      FillHist(cutname+"/log_Zmuon2_reliso/"+ProcessName, log10(AllMuons[myRECO.idx_Zmuon1].RelIso()), weight, 100, -5., 2.);
     }
     if(myRECO.passElectronTrigger && myRECO.goodZee){
       FillHist(cutname+"/Zelectron1_pt/"+ProcessName,AllElectrons[myRECO.idx_Zelectron1].Pt(), weight, 100, 20., 220.);
@@ -1222,6 +1226,9 @@ void BBbarRecoTMVA::FillHists(TString cutname){
 
       FillHist(cutname+"/Zelectron1_eta/"+ProcessName,AllElectrons[myRECO.idx_Zelectron1].Eta(), weight, 100, -2.4, 2.4);
       FillHist(cutname+"/Zelectron2_eta/"+ProcessName,AllElectrons[myRECO.idx_Zelectron2].Eta(), weight, 100, -2.4, 2.4);
+
+      FillHist(cutname+"/log_Zelectron1_reliso/"+ProcessName, log10(AllElectrons[myRECO.idx_Zelectron1].RelIso()), weight, 100, -5., 2.);
+      FillHist(cutname+"/log_Zelectron2_reliso/"+ProcessName, log10(AllElectrons[myRECO.idx_Zelectron1].RelIso()), weight, 100, -5., 2.);
 
     }
     
@@ -1314,6 +1321,9 @@ void BBbarRecoTMVA::executeEvent(){
   myRECO.goodZee=false;
   DNNscore=-999.;
 
+  MET = ev.GetMETVector().Pt();
+
+
   weight*=GetPrefireWeight(0);
   weight*=GetPileUpWeight(nPileUp,0);
   if(!IsDATA){
@@ -1342,12 +1352,79 @@ void BBbarRecoTMVA::executeEvent(){
     DNNscore=CalcDNN();
     //TString cutname="recoZb";
     FillHists("reco_Zb");
+    if(nPileUp<10) FillHists("reco_Zb_nPileUpUnder10");
+    if(nPileUp>40)FillHists("reco_Zb_nPileUpOver40");
+    //bevent 10%up
+    if(ProcessName=="DY_gbToZb"){
+      weight*=1.1;
+      FillHists("reco_Zb_bevt0p1Up");      
+      weight*=1/1.1;
+    }
+    else{
+      FillHists("reco_Zb_bevt0p1Up");
+    }
+
+    //bbar 10%up
+    if(ProcessName=="DY_gbToZbbar"){
+      weight*=1.1;
+      FillHists("reco_Zb_bbar0p1Up");      
+      weight*=1/1.1;
+    }
+    else{
+      FillHists("reco_Zb_bbar0p1Up");
+    }
+
+
+
     if(myRECO.passMuonTrigger&&myRECO.goodZmm){
       FillHists("reco_Zmm_b");
+      //bevent 10%up
+      if(ProcessName=="DY_gbToZb"){
+	weight*=1.1;
+	FillHists("reco_Zmm_b_bevt0p1Up");
+	weight*=1/1.1;
+      }
+      else{
+	FillHists("reco_Zmm_b_bevt0p1Up");
+      }
+
+      //bbar 10%up
+      if(ProcessName=="DY_gbToZbbar"){
+	weight*=1.1;
+	FillHists("reco_Zmm_b_bbar0p1Up");      
+	weight*=1/1.1;
+      }
+      else{
+	FillHists("reco_Zmm_b_bbar0p1Up");
+      }
     }
     else if(myRECO.passElectronTrigger&&myRECO.goodZee){
       FillHists("reco_Zee_b");
+      //bevent 10%up
+      if(ProcessName=="DY_gbToZb"){
+	weight*=1.1;
+	FillHists("reco_Zee_b_bevt0p1Up");
+	weight*=1/1.1;
+      }
+      else{
+	FillHists("reco_Zee_b_bevt0p1Up");
+      }
+
+      //bbar 10%up
+      if(ProcessName=="DY_gbToZbbar"){
+	weight*=1.1;
+	FillHists("reco_Zee_b_bbar0p1Up");      
+	weight*=1/1.1;
+      }
+      else{
+	FillHists("reco_Zee_b_bbar0p1Up");
+      }
+
+
+
     }
+
+    //10%up only for bevent
 
   }//end dofilltree
   
