@@ -464,7 +464,11 @@ queue {0}
       os.system('mkdir -p '+thisjob_dir)
       runCfileFullPath = thisjob_dir+'run.C'
 
-    IncludeLine = 'R__LOAD_LIBRARY(/cvmfs/cms.cern.ch/slc7_amd64_gcc900/external/lhapdf/6.2.3/lib/libLHAPDF.so)\n'
+    #IncludeLine = 'R__LOAD_LIBRARY(/cvmfs/cms.cern.ch/slc7_amd64_gcc900/external/lhapdf/6.2.3/lib/libLHAPDF.so)\n"'
+    IncludeLine = 'R__LOAD_LIBRARY(/cvmfs/cms.cern.ch/slc7_amd64_gcc820/external/lhapdf/6.2.3/lib/libLHAPDF.so)\nR__LOAD_LIBRARY(/cvmfs/cms.cern.ch/slc7_amd64_gcc820/lcg/root/6.14.09-pafccj5/lib/libPyMVA.so)\n'
+    #IncludeLine = 'R__LOAD_LIBRARY(/cvmfs/cms.cern.ch/slc7_amd64_gcc700/external/lhapdf/6.2.3/lib/libLHAPDF.so)\n'
+    #IncludeLine = 'R__LOAD_LIBRARY(/cvmfs/cms.cern.ch/slc7_amd64_gcc900/external/lhapdf/6.2.3/lib/libLHAPDF.so)\nR__LOAD_LIBRARY(/cvmfs/cms.cern.ch/slc7_amd64_gcc900/lcg/root/6.22.06/lib/libPyMVA.so)\n'
+    #IncludeLine = 'R__LOAD_LIBRARY(/cvmfs/cms.cern.ch/slc7_amd64_gcc700/external/lhapdf/6.2.3-a2a84f5990d32c24c7240b02577bf55e/lib/libLHAPDF.so)\nR__LOAD_LIBRARY(/cvmfs/cms.cern.ch/slc7_amd64_gcc700/lcg/root/6.14.09-pohgbh/lib/libPyMVA.so)\n'
 
     out = open(runCfileFullPath, 'w')
     print>>out,'''{3}
@@ -883,21 +887,24 @@ try:
 
             else:
               if IsKISTI or IsTAMSA:
-                while True:
-                  nhadd=int(os.popen("pgrep -x hadd -u $USER |wc -l").read().strip())
-                  if nhadd<4: break
-                  os.system('echo "Too many hadd currently (nhadd='+str(nhadd)+'). Sleep 60s" >> JobStatus.log')
-                  time.sleep(60)                  
-                os.system('hadd -f '+outputname+'.root output/*.root >> JobStatus.log')
-                os.system('rm output/*.root')
-                #os.system('condor_run -a request_cpus=10 "hadd -j 10 -f '+outputname+'.root output/*.root 2>&1 >> JobStatus.log"')
+                #while True:
+                #  nhadd=int(os.popen("pgrep -x hadd -u $USER |wc -l").read().strip())
+                #  if nhadd<4: break
+                #  os.system('echo "Too many hadd currently (nhadd='+str(nhadd)+'). Sleep 60s" >> JobStatus.log')
+                #  time.sleep(60)
+                print "submit hadd"
+                os.chdir("output")
+                os.system("submit_hadd.sh")
+                #os.system('hadd -f '+outputname+'.root output/*.root >> JobStatus.log')
+                #os.system('rm output/*.root')
+                
               else:
-                os.system('hadd -f '+outputname+'.root job_*/*.root >> JobStatus.log')
+                os.system('hadd -f '+base_rundir+"/"+outputname+'.root '+base_rundir+'job_*/*.root >> JobStatus.log')
                 os.system('rm job_*/*.root')
 
             ## Final Outputpath
 
-            os.system('mv '+outputname+'.root '+FinalOutputPath)
+            #os.system('mv '+outputname+'.root '+FinalOutputPath)
             os.chdir(cwd)
 
           PostJobFinishedForEachSample[it_sample] = True
