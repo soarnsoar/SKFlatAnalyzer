@@ -494,6 +494,8 @@ bool BBbarRecoTMVA::Tag_gbToZb(){
   myLHE.abs_nb_outgoing = 0;
   myLHE.nparton_outgoing = 0;
   myLHE.evt_nb = 0;
+  myLHE.nincoming_b = 0;
+  myLHE.nincoming_bbar = 0;
 
   //for LHE
   //We want event with
@@ -514,11 +516,12 @@ bool BBbarRecoTMVA::Tag_gbToZb(){
       if(LHE_id==5){//if incoming b
 	myLHE.evt_nb += 1;
 	myLHE.nb_incoming    += 1;
-
+	myLHE.nincoming_b+=1;
       }
       else if(LHE_id==-5){//if bbar
 	myLHE.evt_nb += -1;
 	myLHE.nb_incoming    += 1;
+	myLHE.nincoming_bbar+=1;
       }
       else if(LHE_id==21){//if gluon
 	myLHE.ngluon_incoming += 1;
@@ -569,16 +572,20 @@ bool BBbarRecoTMVA::Tag_gbToZb(){
     }//[END]if outgoing
   }//[END]for each LHE
   //Whether it's a tautau event
-  if(myLHE.evt_nb==1){
-    ProcessName="DY_gbToZb";
+
+  if(myLHE.nincoming_bbar==1){
+    //ProcessName="DY_gbToZbbar";
+    IncomingPartonTag+="bbar";
   }
-  else if(myLHE.evt_nb==-1){
-    ProcessName="DY_gbToZbbar";
+  if(myLHE.nincoming_b==1){
+    //ProcessName="DY_gbToZb";
+    IncomingPartonTag+="bevt";
   }
-  else{
-    ProcessName="DY_others";
+  if(myLHE.nincoming_b==0 && myLHE.nincoming_bbar==0){
+    //ProcessName="DY_others";
+    IncomingPartonTag="others";
   }
-  
+
   myLHE.is_tautau= (ntau==2) ? true : false;
   myLHE.is_mumu= (nmu==2) ? true : false;
   myLHE.is_ee= (nele==2) ? true : false;
@@ -1203,104 +1210,110 @@ double BBbarRecoTMVA::CalcDNN(){
 
 void BBbarRecoTMVA::FillHists(TString cutname){
 
+  //IncomingPartonTag
 
-    FillHist(cutname+"/mZ/"+ProcessName,myRECO.mZ, weight, 200, 60., 120.);
-    FillHist(cutname+"/MET/"+ProcessName,MET, weight, 100, 0., 200.);
-    FillHist(cutname+"/nPileUp/"+ProcessName,nPileUp, weight, 80, 0., 80.);
-    
-
-
+  TString Tags[]={"","_"+IncomingPartonTag};
+  const int TagsSize=sizeof(Tags)/sizeof(TString);
+  for(int i = 0 ; i < TagsSize ; i++){
+    TString Tag=Tags[i];
+    TString this_ProcessName=ProcessName+Tag;
+    FillHist(cutname+"/mZ/"+this_ProcessName,myRECO.mZ, weight, 200, 60., 120.);
+    FillHist(cutname+"/MET/"+this_ProcessName,MET, weight, 100, 0., 200.);
+    FillHist(cutname+"/nPileUp/"+this_ProcessName,nPileUp, weight, 80, 0., 80.);
+  
+  
+  
     if(myRECO.passMuonTrigger && myRECO.goodZmm){
-      FillHist(cutname+"/Zmuon1_pt/"+ProcessName,AllMuons[myRECO.idx_Zmuon1].Pt(), weight, 100, 20., 220.);
-      FillHist(cutname+"/Zmuon2_pt/"+ProcessName,AllMuons[myRECO.idx_Zmuon2].Pt(), weight, 100, 20., 220.);
-
-      FillHist(cutname+"/Zmuon1_eta/"+ProcessName,AllMuons[myRECO.idx_Zmuon1].Eta(), weight, 100, -2.4, 2.4);
-      FillHist(cutname+"/Zmuon2_eta/"+ProcessName,AllMuons[myRECO.idx_Zmuon2].Eta(), weight, 100, -2.4, 2.4);
-
-      FillHist(cutname+"/log_Zmuon1_reliso/"+ProcessName, log10(AllMuons[myRECO.idx_Zmuon1].RelIso()), weight, 100, -5., 2.);
-      FillHist(cutname+"/log_Zmuon2_reliso/"+ProcessName, log10(AllMuons[myRECO.idx_Zmuon1].RelIso()), weight, 100, -5., 2.);
+      FillHist(cutname+"/Zmuon1_pt/"+this_ProcessName,AllMuons[myRECO.idx_Zmuon1].Pt(), weight, 100, 20., 220.);
+      FillHist(cutname+"/Zmuon2_pt/"+this_ProcessName,AllMuons[myRECO.idx_Zmuon2].Pt(), weight, 100, 20., 220.);
+      
+      FillHist(cutname+"/Zmuon1_eta/"+this_ProcessName,AllMuons[myRECO.idx_Zmuon1].Eta(), weight, 100, -2.4, 2.4);
+      FillHist(cutname+"/Zmuon2_eta/"+this_ProcessName,AllMuons[myRECO.idx_Zmuon2].Eta(), weight, 100, -2.4, 2.4);
+      
+      FillHist(cutname+"/log_Zmuon1_reliso/"+this_ProcessName, log10(AllMuons[myRECO.idx_Zmuon1].RelIso()), weight, 100, -5., 2.);
+      FillHist(cutname+"/log_Zmuon2_reliso/"+this_ProcessName, log10(AllMuons[myRECO.idx_Zmuon1].RelIso()), weight, 100, -5., 2.);
     }
     if(myRECO.passElectronTrigger && myRECO.goodZee){
-      FillHist(cutname+"/Zelectron1_pt/"+ProcessName,AllElectrons[myRECO.idx_Zelectron1].Pt(), weight, 100, 20., 220.);
-      FillHist(cutname+"/Zelectron2_pt/"+ProcessName,AllElectrons[myRECO.idx_Zelectron2].Pt(), weight, 100, 20., 220.);
-
-      FillHist(cutname+"/Zelectron1_eta/"+ProcessName,AllElectrons[myRECO.idx_Zelectron1].Eta(), weight, 100, -2.4, 2.4);
-      FillHist(cutname+"/Zelectron2_eta/"+ProcessName,AllElectrons[myRECO.idx_Zelectron2].Eta(), weight, 100, -2.4, 2.4);
-
-      FillHist(cutname+"/log_Zelectron1_reliso/"+ProcessName, log10(AllElectrons[myRECO.idx_Zelectron1].RelIso()), weight, 100, -5., 2.);
-      FillHist(cutname+"/log_Zelectron2_reliso/"+ProcessName, log10(AllElectrons[myRECO.idx_Zelectron1].RelIso()), weight, 100, -5., 2.);
-
+      FillHist(cutname+"/Zelectron1_pt/"+this_ProcessName,AllElectrons[myRECO.idx_Zelectron1].Pt(), weight, 100, 20., 220.);
+      FillHist(cutname+"/Zelectron2_pt/"+this_ProcessName,AllElectrons[myRECO.idx_Zelectron2].Pt(), weight, 100, 20., 220.);
+      
+      FillHist(cutname+"/Zelectron1_eta/"+this_ProcessName,AllElectrons[myRECO.idx_Zelectron1].Eta(), weight, 100, -2.4, 2.4);
+      FillHist(cutname+"/Zelectron2_eta/"+this_ProcessName,AllElectrons[myRECO.idx_Zelectron2].Eta(), weight, 100, -2.4, 2.4);
+      
+      FillHist(cutname+"/log_Zelectron1_reliso/"+this_ProcessName, log10(AllElectrons[myRECO.idx_Zelectron1].RelIso()), weight, 100, -5., 2.);
+      FillHist(cutname+"/log_Zelectron2_reliso/"+this_ProcessName, log10(AllElectrons[myRECO.idx_Zelectron1].RelIso()), weight, 100, -5., 2.);
+      
     }
     
     //---
     if(bmuon1_pt>0){
-      FillHist(cutname+"/bmuon1_p_jetrestf/"+ProcessName, bmuon1_p_jetrestf, weight, 200, 0., 10.);
-      FillHist(cutname+"/bmuon1_dR_l_j/"+ProcessName, bmuon1_dR_l_j, weight, 200, 0., 5.);
-      FillHist(cutname+"/bmuon1_nsip3d/"+ProcessName, bmuon1_nsip3d, weight, 100, -10., 10.);
-      FillHist(cutname+"/log_bmuon1_reliso/"+ProcessName, log10(bmuon1_reliso), weight, 100, -5., 2.);
-      FillHist(cutname+"/log_bmuon1_reltrkiso/"+ProcessName, log10(bmuon1_reltrkiso), weight, 100, -5., 2.);
-      FillHist(cutname+"/bmuon1_charge/"+ProcessName, bmuon1_charge, weight, 4, -2., 2.);
-      FillHist(cutname+"/bmuon1_pt/"+ProcessName, bmuon1_pt, weight, 100, 0., 100.);
-      FillHist(cutname+"/bmuon1_eta/"+ProcessName, bmuon1_eta, weight, 100, -5., 5.);
-      FillHist(cutname+"/bmuon1_phi/"+ProcessName, bmuon1_phi, weight, 100, -4., 4.);
-      FillHist(cutname+"/bmuon1_ptwrtbjet/"+ProcessName, bmuon1_ptwrtbjet, weight, 100, 0., 10.);
-      FillHist(cutname+"/DNNscore_if_bmuon1/"+ProcessName, DNNscore, weight, 100, -1., 1.);  
+      FillHist(cutname+"/bmuon1_p_jetrestf/"+this_ProcessName, bmuon1_p_jetrestf, weight, 200, 0., 10.);
+      FillHist(cutname+"/bmuon1_dR_l_j/"+this_ProcessName, bmuon1_dR_l_j, weight, 200, 0., 5.);
+      FillHist(cutname+"/bmuon1_nsip3d/"+this_ProcessName, bmuon1_nsip3d, weight, 100, -10., 10.);
+      FillHist(cutname+"/log_bmuon1_reliso/"+this_ProcessName, log10(bmuon1_reliso), weight, 100, -5., 2.);
+      FillHist(cutname+"/log_bmuon1_reltrkiso/"+this_ProcessName, log10(bmuon1_reltrkiso), weight, 100, -5., 2.);
+      FillHist(cutname+"/bmuon1_charge/"+this_ProcessName, bmuon1_charge, weight, 4, -2., 2.);
+      FillHist(cutname+"/bmuon1_pt/"+this_ProcessName, bmuon1_pt, weight, 100, 0., 100.);
+      FillHist(cutname+"/bmuon1_eta/"+this_ProcessName, bmuon1_eta, weight, 100, -5., 5.);
+      FillHist(cutname+"/bmuon1_phi/"+this_ProcessName, bmuon1_phi, weight, 100, -4., 4.);
+      FillHist(cutname+"/bmuon1_ptwrtbjet/"+this_ProcessName, bmuon1_ptwrtbjet, weight, 100, 0., 10.);
+      FillHist(cutname+"/DNNscore_if_bmuon1/"+this_ProcessName, DNNscore, weight, 100, -1., 1.);  
     }
     if(bmuon2_pt>0){
-      FillHist(cutname+"/bmuon2_p_jetrestf/"+ProcessName, bmuon2_p_jetrestf, weight, 200, 0., 10.);
-      FillHist(cutname+"/bmuon2_dR_l_j/"+ProcessName, bmuon2_dR_l_j, weight, 200, 0., 5.);
-      FillHist(cutname+"/bmuon2_nsip3d/"+ProcessName, bmuon2_nsip3d, weight, 100, -10., 10.);
-      FillHist(cutname+"/log_bmuon2_reliso/"+ProcessName, log10(bmuon2_reliso), weight, 100, -5., 2.);
-      FillHist(cutname+"/log_bmuon2_reltrkiso/"+ProcessName, log10(bmuon2_reltrkiso), weight, 100, -5., 2.);
-      FillHist(cutname+"/bmuon2_charge/"+ProcessName, bmuon2_charge, weight, 4, -2., 2.);
-      FillHist(cutname+"/bmuon2_pt/"+ProcessName, bmuon2_pt, weight, 100, 0., 100.);
-      FillHist(cutname+"/bmuon2_eta/"+ProcessName, bmuon2_eta, weight, 100, -5., 5.);
-      FillHist(cutname+"/bmuon2_phi/"+ProcessName, bmuon2_phi, weight, 100, -4., 4.);
-      FillHist(cutname+"/bmuon2_ptwrtbjet/"+ProcessName, bmuon2_ptwrtbjet, weight, 100, 0., 10.);
-      FillHist(cutname+"/DNNscore_if_bmuon2/"+ProcessName, DNNscore, weight, 100, -1., 1.);  
+      FillHist(cutname+"/bmuon2_p_jetrestf/"+this_ProcessName, bmuon2_p_jetrestf, weight, 200, 0., 10.);
+      FillHist(cutname+"/bmuon2_dR_l_j/"+this_ProcessName, bmuon2_dR_l_j, weight, 200, 0., 5.);
+      FillHist(cutname+"/bmuon2_nsip3d/"+this_ProcessName, bmuon2_nsip3d, weight, 100, -10., 10.);
+      FillHist(cutname+"/log_bmuon2_reliso/"+this_ProcessName, log10(bmuon2_reliso), weight, 100, -5., 2.);
+      FillHist(cutname+"/log_bmuon2_reltrkiso/"+this_ProcessName, log10(bmuon2_reltrkiso), weight, 100, -5., 2.);
+      FillHist(cutname+"/bmuon2_charge/"+this_ProcessName, bmuon2_charge, weight, 4, -2., 2.);
+      FillHist(cutname+"/bmuon2_pt/"+this_ProcessName, bmuon2_pt, weight, 100, 0., 100.);
+      FillHist(cutname+"/bmuon2_eta/"+this_ProcessName, bmuon2_eta, weight, 100, -5., 5.);
+      FillHist(cutname+"/bmuon2_phi/"+this_ProcessName, bmuon2_phi, weight, 100, -4., 4.);
+      FillHist(cutname+"/bmuon2_ptwrtbjet/"+this_ProcessName, bmuon2_ptwrtbjet, weight, 100, 0., 10.);
+      FillHist(cutname+"/DNNscore_if_bmuon2/"+this_ProcessName, DNNscore, weight, 100, -1., 1.);  
     }
     if(belectron1_pt>0){
-      FillHist(cutname+"/belectron1_p_jetrestf/"+ProcessName, belectron1_p_jetrestf, weight, 200, 0., 10.);
-      FillHist(cutname+"/belectron1_dR_l_j/"+ProcessName, belectron1_dR_l_j, weight, 200, 0., 5.);
-      FillHist(cutname+"/belectron1_nsip3d/"+ProcessName, belectron1_nsip3d, weight, 100, -10., 10.);
-      FillHist(cutname+"/log_belectron1_reliso/"+ProcessName, log10(belectron1_reliso), weight, 100, -5., 2.);
-      FillHist(cutname+"/log_belectron1_reltrkiso/"+ProcessName, log10(belectron1_reltrkiso), weight, 100, -5., 2.);
-      FillHist(cutname+"/log_belectron1_elecalclusteriso/"+ProcessName, log10(belectron1_elecalclusteriso), weight, 100, -5., 2.);
-      FillHist(cutname+"/belectron1_IsGsfCtfScPixChargeConsistent_float/"+ProcessName, belectron1_IsGsfCtfScPixChargeConsistent_float, weight, 2, 0., 2.);
-      FillHist(cutname+"/belectron1_charge/"+ProcessName, belectron1_charge, weight, 4, -2., 2.);
-      FillHist(cutname+"/belectron1_pt/"+ProcessName, belectron1_pt, weight, 100, 0., 100.);
-      FillHist(cutname+"/belectron1_eta/"+ProcessName, belectron1_eta, weight, 100, -5., 5.);
-      FillHist(cutname+"/belectron1_phi/"+ProcessName, belectron1_phi, weight, 100, -4., 4.);
-      FillHist(cutname+"/belectron1_ptwrtbjet/"+ProcessName, belectron1_ptwrtbjet, weight, 100, 0., 10.);
-      FillHist(cutname+"/DNNscore_if_belectron1/"+ProcessName, DNNscore, weight, 100, -1., 1.);  
+      FillHist(cutname+"/belectron1_p_jetrestf/"+this_ProcessName, belectron1_p_jetrestf, weight, 200, 0., 10.);
+      FillHist(cutname+"/belectron1_dR_l_j/"+this_ProcessName, belectron1_dR_l_j, weight, 200, 0., 5.);
+      FillHist(cutname+"/belectron1_nsip3d/"+this_ProcessName, belectron1_nsip3d, weight, 100, -10., 10.);
+      FillHist(cutname+"/log_belectron1_reliso/"+this_ProcessName, log10(belectron1_reliso), weight, 100, -5., 2.);
+      FillHist(cutname+"/log_belectron1_reltrkiso/"+this_ProcessName, log10(belectron1_reltrkiso), weight, 100, -5., 2.);
+      FillHist(cutname+"/log_belectron1_elecalclusteriso/"+this_ProcessName, log10(belectron1_elecalclusteriso), weight, 100, -5., 2.);
+      FillHist(cutname+"/belectron1_IsGsfCtfScPixChargeConsistent/"+this_ProcessName, belectron1_IsGsfCtfScPixChargeConsistent_float, weight, 2, 0., 2.);
+      FillHist(cutname+"/belectron1_charge/"+this_ProcessName, belectron1_charge, weight, 4, -2., 2.);
+      FillHist(cutname+"/belectron1_pt/"+this_ProcessName, belectron1_pt, weight, 100, 0., 100.);
+      FillHist(cutname+"/belectron1_eta/"+this_ProcessName, belectron1_eta, weight, 100, -5., 5.);
+      FillHist(cutname+"/belectron1_phi/"+this_ProcessName, belectron1_phi, weight, 100, -4., 4.);
+      FillHist(cutname+"/belectron1_ptwrtbjet/"+this_ProcessName, belectron1_ptwrtbjet, weight, 100, 0., 10.);
+      FillHist(cutname+"/DNNscore_if_belectron1/"+this_ProcessName, DNNscore, weight, 100, -1., 1.);  
     }
-
+    
     if(belectron2_pt>0){
-      FillHist(cutname+"/belectron2_p_jetrestf/"+ProcessName, belectron2_p_jetrestf, weight, 200, 0., 10.);
-      FillHist(cutname+"/belectron2_dR_l_j/"+ProcessName, belectron2_dR_l_j, weight, 200, 0., 5.);
-      FillHist(cutname+"/belectron2_nsip3d/"+ProcessName, belectron2_nsip3d, weight, 100, -10., 10.);
-      FillHist(cutname+"/log_belectron2_reliso/"+ProcessName, log10(belectron2_reliso), weight, 100, -5., 2.);
-      FillHist(cutname+"/log_belectron2_reltrkiso/"+ProcessName, log10(belectron2_reltrkiso), weight, 100, -5., 2.);
-      FillHist(cutname+"/log_belectron2_elecalclusteriso/"+ProcessName, log10(belectron2_elecalclusteriso), weight, 100, -5., 2.);
-      FillHist(cutname+"/belectron2_IsGsfCtfScPixChargeConsistent_float/"+ProcessName, belectron2_IsGsfCtfScPixChargeConsistent_float, weight, 2, 0., 2.);
-      FillHist(cutname+"/belectron2_charge/"+ProcessName, belectron2_charge, weight, 4, -2., 2.);
-      FillHist(cutname+"/belectron2_pt/"+ProcessName, belectron2_pt, weight, 100, 0., 100.);
-      FillHist(cutname+"/belectron2_eta/"+ProcessName, belectron2_eta, weight, 100, -5., 5.);
-      FillHist(cutname+"/belectron2_phi/"+ProcessName, belectron2_phi, weight, 100, -4., 4.);
-      FillHist(cutname+"/belectron2_ptwrtbjet/"+ProcessName, belectron2_ptwrtbjet, weight, 100, 0., 10.);
-      FillHist(cutname+"/DNNscore_if_belectron2/"+ProcessName, DNNscore, weight, 100, -1., 1.);  
+      FillHist(cutname+"/belectron2_p_jetrestf/"+this_ProcessName, belectron2_p_jetrestf, weight, 200, 0., 10.);
+      FillHist(cutname+"/belectron2_dR_l_j/"+this_ProcessName, belectron2_dR_l_j, weight, 200, 0., 5.);
+      FillHist(cutname+"/belectron2_nsip3d/"+this_ProcessName, belectron2_nsip3d, weight, 100, -10., 10.);
+      FillHist(cutname+"/log_belectron2_reliso/"+this_ProcessName, log10(belectron2_reliso), weight, 100, -5., 2.);
+      FillHist(cutname+"/log_belectron2_reltrkiso/"+this_ProcessName, log10(belectron2_reltrkiso), weight, 100, -5., 2.);
+      FillHist(cutname+"/log_belectron2_elecalclusteriso/"+this_ProcessName, log10(belectron2_elecalclusteriso), weight, 100, -5., 2.);
+      FillHist(cutname+"/belectron2_IsGsfCtfScPixChargeConsistent/"+this_ProcessName, belectron2_IsGsfCtfScPixChargeConsistent_float, weight, 2, 0., 2.);
+      FillHist(cutname+"/belectron2_charge/"+this_ProcessName, belectron2_charge, weight, 4, -2., 2.);
+      FillHist(cutname+"/belectron2_pt/"+this_ProcessName, belectron2_pt, weight, 100, 0., 100.);
+      FillHist(cutname+"/belectron2_eta/"+this_ProcessName, belectron2_eta, weight, 100, -5., 5.);
+      FillHist(cutname+"/belectron2_phi/"+this_ProcessName, belectron2_phi, weight, 100, -4., 4.);
+      FillHist(cutname+"/belectron2_ptwrtbjet/"+this_ProcessName, belectron2_ptwrtbjet, weight, 100, 0., 10.);
+      FillHist(cutname+"/DNNscore_if_belectron2/"+this_ProcessName, DNNscore, weight, 100, -1., 1.);  
     }
-
-    FillHist(cutname+"/bjet_charge/"+ProcessName, bjet_charge, weight, 100, -1., 1.);
-    FillHist(cutname+"/bjet_neutralEmEnergyFraction/"+ProcessName, bjet_neutralEmEnergyFraction, weight, 100, 0., 1.);
-    FillHist(cutname+"/bjet_neutralHadronEnergyFraction/"+ProcessName, bjet_neutralHadronEnergyFraction, weight, 100, 0., 1.);
-    FillHist(cutname+"/bjet_muonEnergyFraction/"+ProcessName, bjet_muonEnergyFraction, weight, 100, 0., 1.);
-    FillHist(cutname+"/bjet_DeepJet/"+ProcessName, bjet_DeepJet, weight, 100, 0., 1.);
-    FillHist(cutname+"/bjet_pt/"+ProcessName, bjet_pt, weight, 100, 20., 220.);
-    FillHist(cutname+"/bjet_eta/"+ProcessName, bjet_eta, weight, 100, -3., 3.);
-    FillHist(cutname+"/bjet_phi/"+ProcessName, bjet_phi, weight, 100, -4., 4.);
-    FillHist(cutname+"/DNNscore/"+ProcessName, DNNscore, weight, 100, -1., 1.);  
-
+    
+    FillHist(cutname+"/bjet_charge/"+this_ProcessName, bjet_charge, weight, 100, -1., 1.);
+    FillHist(cutname+"/bjet_neutralEmEnergyFraction/"+this_ProcessName, bjet_neutralEmEnergyFraction, weight, 100, 0., 1.);
+    FillHist(cutname+"/bjet_neutralHadronEnergyFraction/"+this_ProcessName, bjet_neutralHadronEnergyFraction, weight, 100, 0., 1.);
+    FillHist(cutname+"/bjet_muonEnergyFraction/"+this_ProcessName, bjet_muonEnergyFraction, weight, 100, 0., 1.);
+    FillHist(cutname+"/bjet_DeepJet/"+this_ProcessName, bjet_DeepJet, weight, 100, 0., 1.);
+    FillHist(cutname+"/bjet_pt/"+this_ProcessName, bjet_pt, weight, 100, 20., 220.);
+    FillHist(cutname+"/bjet_eta/"+this_ProcessName, bjet_eta, weight, 100, -3., 3.);
+    FillHist(cutname+"/bjet_phi/"+this_ProcessName, bjet_phi, weight, 100, -4., 4.);
+    FillHist(cutname+"/DNNscore/"+this_ProcessName, DNNscore, weight, 100, -1., 1.);  
+  }
 }
 
 void BBbarRecoTMVA::executeEvent(){
@@ -1311,6 +1324,7 @@ void BBbarRecoTMVA::executeEvent(){
   //EventTag="";
   //EventTagJetParton="";
   ZllChannel="";
+  IncomingPartonTag="";
   doPrint=false;
   weight = 1.;//init event weight
   myRECO.idx_Zmuon1=-1;
@@ -1341,83 +1355,85 @@ void BBbarRecoTMVA::executeEvent(){
   //   b(or bbar)   -----o======     Z
   //
   
-  if (MCSample.Contains("DY")){
+  //if (MCSample.Contains("DY")){
+  if(!IsDATA){
     myLHE.is_gbToZb = BBbarRecoTMVA::Tag_gbToZb(); 
-    //BBbarRecoTMVA::AnalyzeLHE();
   }
+  //BBbarRecoTMVA::AnalyzeLHE();
+  //}
   BBbarRecoTMVA::AnalyzeRECO();
   //NowFillTree
   if(doFillTree){
 
     DNNscore=CalcDNN();
     //TString cutname="recoZb";
-    FillHists("reco_Zb");
-    if(nPileUp<10) FillHists("reco_Zb_nPileUpUnder10");
-    if(nPileUp>40)FillHists("reco_Zb_nPileUpOver40");
+    FillHists("ZbRegion");
+    if(nPileUp<10) FillHists("ZbRegion_nPileUpUnder10");
+    if(nPileUp>40)FillHists("ZbRegion_nPileUpOver40");
     //bevent 10%up
-    if(ProcessName=="DY_gbToZb"){
+    if(IncomingPartonTag.Contains("bevt")){
       weight*=1.1;
-      FillHists("reco_Zb_bevt0p1Up");      
+      FillHists("ZbRegion_bevt0p1Up");      
       weight*=1/1.1;
     }
     else{
-      FillHists("reco_Zb_bevt0p1Up");
+      FillHists("ZbRegion_bevt0p1Up");
     }
 
     //bbar 10%up
-    if(ProcessName=="DY_gbToZbbar"){
+    if(IncomingPartonTag.Contains("bbar")){
       weight*=1.1;
-      FillHists("reco_Zb_bbar0p1Up");      
+      FillHists("ZbRegion_bbar0p1Up");      
       weight*=1/1.1;
     }
     else{
-      FillHists("reco_Zb_bbar0p1Up");
+      FillHists("ZbRegion_bbar0p1Up");
     }
 
 
 
     if(myRECO.passMuonTrigger&&myRECO.goodZmm){
-      FillHists("reco_Zmm_b");
+      FillHists("ZbRegion_Zmm_b");
       //bevent 10%up
-      if(ProcessName=="DY_gbToZb"){
+      if(IncomingPartonTag.Contains("bevt")){
 	weight*=1.1;
-	FillHists("reco_Zmm_b_bevt0p1Up");
+	FillHists("ZbRegion_Zmm_bevt0p1Up");
 	weight*=1/1.1;
       }
       else{
-	FillHists("reco_Zmm_b_bevt0p1Up");
+	FillHists("ZbRegion_Zmm_b_bevt0p1Up");
       }
 
       //bbar 10%up
-      if(ProcessName=="DY_gbToZbbar"){
+      if(IncomingPartonTag.Contains("bbar")){
 	weight*=1.1;
-	FillHists("reco_Zmm_b_bbar0p1Up");      
+	FillHists("ZbRegion_Zmm_b_bbar0p1Up");      
 	weight*=1/1.1;
       }
       else{
-	FillHists("reco_Zmm_b_bbar0p1Up");
+	FillHists("ZbRegion_Zmm_b_bbar0p1Up");
       }
     }
     else if(myRECO.passElectronTrigger&&myRECO.goodZee){
-      FillHists("reco_Zee_b");
+      FillHists("ZbRegion_Zee_b");
       //bevent 10%up
-      if(ProcessName=="DY_gbToZb"){
+      if(IncomingPartonTag.Contains("bevt")){
 	weight*=1.1;
-	FillHists("reco_Zee_b_bevt0p1Up");
+	FillHists("ZbRegion_Zee_b_bevt0p1Up");
 	weight*=1/1.1;
       }
       else{
-	FillHists("reco_Zee_b_bevt0p1Up");
+	FillHists("ZbRegion_Zee_b_bevt0p1Up");
       }
 
       //bbar 10%up
-      if(ProcessName=="DY_gbToZbbar"){
+      if(IncomingPartonTag.Contains("bbar")){
 	weight*=1.1;
-	FillHists("reco_Zee_b_bbar0p1Up");      
+	FillHists("ZbRegion_Zee_b_bbar0p1Up");      
 	weight*=1/1.1;
       }
       else{
-	FillHists("reco_Zee_b_bbar0p1Up");
+	FillHists("ZbRegion_Zee_b_bbar0p1Up");
       }
 
 
