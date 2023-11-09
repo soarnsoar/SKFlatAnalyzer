@@ -1154,7 +1154,7 @@ void BBbarRecoTMVA::AnalyzeRECO(){
   }
   
   FillHist("PassTrigger__and__GoodZ",1, weight, 1, 0, 2);
-  FillHist("PasTrigger_and_GoodZ/mZ/"+ProcessName,myRECO.mZ, weight, 200, 60., 120.);
+  FillHist("PassTrigger_and_GoodZ/mZ/"+ProcessName, myRECO.mZ, weight, 200, 60., 120.);
 
 
   if(!BBbarRecoTMVA::Tag1bjet()) return;
@@ -1369,7 +1369,7 @@ void BBbarRecoTMVA::executeEvent(){
     //TString cutname="recoZb";
     FillHists("ZbRegion");
     if(nPileUp<10) FillHists("ZbRegion_nPileUpUnder10");
-    if(nPileUp>40)FillHists("ZbRegion_nPileUpOver40");
+    if(nPileUp>40) FillHists("ZbRegion_nPileUpOver40");
     //bevent 10%up
     if(IncomingPartonTag.Contains("bevt")){
       weight*=1.1;
@@ -1393,7 +1393,7 @@ void BBbarRecoTMVA::executeEvent(){
 
 
     if(myRECO.passMuonTrigger&&myRECO.goodZmm){
-      FillHists("ZbRegion_Zmm_b");
+      FillHists("ZbRegion_Zmm");
       //bevent 10%up
       if(IncomingPartonTag.Contains("bevt")){
 	weight*=1.1;
@@ -1401,39 +1401,39 @@ void BBbarRecoTMVA::executeEvent(){
 	weight*=1/1.1;
       }
       else{
-	FillHists("ZbRegion_Zmm_b_bevt0p1Up");
+	FillHists("ZbRegion_Zmm_bevt0p1Up");
       }
 
       //bbar 10%up
       if(IncomingPartonTag.Contains("bbar")){
 	weight*=1.1;
-	FillHists("ZbRegion_Zmm_b_bbar0p1Up");      
+	FillHists("ZbRegion_Zmm_bbar0p1Up");      
 	weight*=1/1.1;
       }
       else{
-	FillHists("ZbRegion_Zmm_b_bbar0p1Up");
+	FillHists("ZbRegion_Zmm_bbar0p1Up");
       }
     }
     else if(myRECO.passElectronTrigger&&myRECO.goodZee){
-      FillHists("ZbRegion_Zee_b");
+      FillHists("ZbRegion_Zee");
       //bevent 10%up
       if(IncomingPartonTag.Contains("bevt")){
 	weight*=1.1;
-	FillHists("ZbRegion_Zee_b_bevt0p1Up");
+	FillHists("ZbRegion_Zee_bevt0p1Up");
 	weight*=1/1.1;
       }
       else{
-	FillHists("ZbRegion_Zee_b_bevt0p1Up");
+	FillHists("ZbRegion_Zee_bevt0p1Up");
       }
 
       //bbar 10%up
       if(IncomingPartonTag.Contains("bbar")){
 	weight*=1.1;
-	FillHists("ZbRegion_Zee_b_bbar0p1Up");      
+	FillHists("ZbRegion_Zee_bbar0p1Up");      
 	weight*=1/1.1;
       }
       else{
-	FillHists("ZbRegion_Zee_b_bbar0p1Up");
+	FillHists("ZbRegion_Zee_bbar0p1Up");
       }
 
 
