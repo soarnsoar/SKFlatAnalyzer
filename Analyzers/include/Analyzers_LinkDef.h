@@ -29,7 +29,10 @@
 #pragma link C++ class BBbar_Analyzer+;
 #pragma link C++ class ForTMVA_BBbarAnalyzer+;
 #pragma link C++ class ForTMVA_BBbarAnalyzer_pjetrest0p7_3+;
-#pragma link C++ class ForTMVA_BBbarAnalyzer_lepV1;
+#pragma link C++ class ForTMVA_BBbarAnalyzer_lepV1+;
+#pragma link C++ class ForNewJetCharge+;
+#pragma link C++ class ForLepJetChargeReliability+;
+
 
 
 
