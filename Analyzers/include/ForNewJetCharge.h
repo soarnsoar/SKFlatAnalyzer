@@ -1,40 +1,16 @@
-#ifndef BBbarRecoTMVA_h
-#define BBbarRecoTMVA_h
+#ifndef ForNewJetCharge_h
+#define ForNewJetCharge_h
 
 #include "AnalyzerCore.h"
-#include "TMVA/PyMethodBase.h"
-#include "TMVA/Tools.h"
-#include "TMVA/Reader.h"
-#include "TMVA/MethodCuts.h"
-
 #include <set>
-class BBbarRecoTMVA : public AnalyzerCore {
+class ForNewJetCharge : public AnalyzerCore {
 
 public:
-  Event ev;
-  void initTMVAmodel_odd_pos();
-  void initTMVAmodel_even_pos();
-  void initTMVAmodel_odd_neg();
-  void initTMVAmodel_even_neg();
-  TMVA::Reader* myreader_odd_pos;
-  TMVA::Reader* myreader_even_pos;
-  TMVA::Reader* myreader_odd_neg;
-  TMVA::Reader* myreader_even_neg;
 
-  TGraph* tgr_odd_pos;
-  TGraph* tgr_even_pos;
-  TGraph* tgr_odd_neg;
-  TGraph* tgr_even_neg;
-
-  double CalcDNN();
-  double DNNscore;
-  double MET;
   void initializeAnalyzer();
-  bool ZmmReco();
-  bool ZeeReco();
-  bool Tag1bjet();
+
   void executeEventFromParameter(AnalyzerParameter param);
-  void FillHists(TString cutname);
+  void executeExoticEvent();
   bool Tag_gbToZb();
   void Tag_B_Hadron();
   void Loop_genBMatchedRecoJet();
@@ -50,10 +26,8 @@ public:
   void FillHistElectron(TString cutname);
   int Rank1n2Leptons(std::vector<int> &v_blep_idx, std::vector<double> &v_blep_value);
   int CheckIsBhadAndNb(int pid);
-  int myevent;
-  int isEvenEvent;
-  double btag_cut;
-  JetTagging::Parameters jtp;
+ 
+
   struct MuonCut{
     double P_JetRest_min;
     double P_JetRest_max;
@@ -105,15 +79,11 @@ public:
   unsigned int electronsize;
   vector<Jet> AllJets;
   unsigned int jetsize;
-  vector<Jet> tightjets;
-  unsigned int tightjetsize;
 
   double weight_Prefire;
   double weight;
-  
   //
   TString ProcessName;
-  TString IncomingPartonTag;
   TString EventTag;
   TString EventTagJetParton;
   std::vector<Gen> GENs;
@@ -145,10 +115,8 @@ public:
     double x_b;
     double x_g;
     double Q2;
-    
+
     double i_lepn, i_lepp;
-    int nincoming_b;
-    int nincoming_bbar;
   };
   LHEinfo myLHE;
   //container for GEN info
@@ -159,19 +127,11 @@ public:
     int Bhad_pid;
     bool HasBhadron;
     TLorentzVector vBhad;
-
   };
   GENinfo myGEN;
   //container for RECO info
   struct RECOinfo{
-    bool passMuonTrigger;
-    bool passElectronTrigger;
-    bool goodZmm;
-    bool goodZee;
-    bool passMuonTriggerAndZmm;
-    bool passElectronTriggerAndZee;
 
-    double mZ;
     int ij_B;
     bool HasBmatchedRecoJet;
     TLorentzVector vBmatchedJet;
@@ -208,98 +168,72 @@ public:
   int i_belectron;
 
   //jet
-  Float_t dRToLHE,dRToBhad,ptratioToLHE,ptratioToBhad,charge_using_lep;
+  double dRToLHE,dRToBhad,ptratioToLHE,ptratioToBhad,charge_using_lep;
 
   //For Categorize
-  TString ZllChannel;
-  TString bLeptonChannel;
-  
-  BBbarRecoTMVA();
-  ~BBbarRecoTMVA();
+  TString Cat_b_bbar[10];
+  TString Cat_Z_To_mm_ee[10];
+  TString Cat_lepton_charge[10];
+  TString Cat_1jet20[10];
+  TString Cat_pTatJetRF2[10];
+  unsigned int Cat_b_bbar_size;
+  unsigned int Cat_Z_To_mm_ee_size;
+  unsigned int Cat_lepton_charge_size;
+  unsigned int Cat_1jet20_size;
+  unsigned int Cat_pTatJetRF2_size;
+  ForNewJetCharge();
+  ~ForNewJetCharge();
 
 
   //---For Tree
   bool doFillTree;
-  int i_bmuon1, i_bmuon2;
   void InitTreeValues();
-  void SetTreeValuesMuon(int i_bmuon1,int i_bmuon2,int nbmuon);
-  void SetTreeValuesElectron(int i_electron1,int i_electron2,int nbelectron);
+  void SetTreeValuesMuon(vector<int> vmuonidx);
+  void SetTreeValuesElectron(vector<int> velectronidx);
   //-----Variables to Store for Machine Learning------//
-  Float_t bjet_charge;
-  Float_t bjet_pt;
-  Float_t bjet_eta;
-  Float_t bjet_phi;
-  Float_t bjet_DeepJet;
-  Float_t bjet_DeepJet_CvsL;
-  Float_t bjet_DeepJet_CvsB;
-  Float_t bjet_chargedHadronEnergyFraction;
-  Float_t bjet_neutralHadronEnergyFraction;
-  Float_t bjet_neutralEmEnergyFraction;
-  Float_t bjet_chargedEmEnergyFraction;
-  Float_t bjet_muonEnergyFraction;
-  //leading bmuon
-  Float_t bmuon1_pt;
-  Float_t bmuon1_eta;
-  Float_t bmuon1_phi;
-  Float_t bmuon1_ptwrtbjet;
-  Float_t bmuon1_p_jetrestf;
-  Float_t bmuon1_dR_l_j;
-  Float_t bmuon1_nsip3d;
-  Float_t bmuon1_reltrkiso;
-  Float_t bmuon1_reliso;
-  Int_t bmuon1_charge;
-  Float_t bmuon1_charge_float;
-  //subleading bmuon
-  Float_t bmuon2_pt;
-  Float_t bmuon2_eta;
-  Float_t bmuon2_phi;
-  Float_t bmuon2_ptwrtbjet;
-  Float_t bmuon2_p_jetrestf;
-  Float_t bmuon2_dR_l_j;
-  Float_t bmuon2_nsip3d;
-  Float_t bmuon2_reltrkiso;
-  Float_t bmuon2_reliso;
-  Int_t bmuon2_charge;
-  Float_t bmuon2_charge_float;
-  Int_t n_bmuon;
-  Float_t n_bmuon_float;
-  
-  //leading belectron
-  Float_t belectron1_pt;
-  Float_t belectron1_eta;
-  Float_t belectron1_phi;
-  Float_t belectron1_ptwrtbjet;
-  Float_t belectron1_p_jetrestf;
-  Float_t belectron1_dR_l_j;
-  Float_t belectron1_nsip3d;
-  Float_t belectron1_reltrkiso;
-  Float_t belectron1_elecalclusteriso;
-  Int_t belectron1_IsGsfCtfScPixChargeConsistent;
-  Float_t belectron1_IsGsfCtfScPixChargeConsistent_float;
-  Float_t belectron1_reliso;
-  Int_t belectron1_charge;
-  Float_t belectron1_charge_float;
-  //subleading belectron
-  Float_t belectron2_pt;
-  Float_t belectron2_eta;
-  Float_t belectron2_phi;
-  Float_t belectron2_ptwrtbjet;
-  Float_t belectron2_p_jetrestf;
-  Float_t belectron2_dR_l_j;
-  Float_t belectron2_nsip3d;
-  Float_t belectron2_reltrkiso;
-  Float_t belectron2_elecalclusteriso;
-  Int_t belectron2_IsGsfCtfScPixChargeConsistent;
-  Float_t belectron2_IsGsfCtfScPixChargeConsistent_float;
-  Float_t belectron2_reliso;
-  Int_t belectron2_charge;
-  Float_t belectron2_charge_float;
-  Int_t n_belectron;
-  Float_t n_belectron_float;
-  //truth
-  Int_t bjetPartonFlavourCharge;
+  double bjet_charge;
+  double bjet_pt;
+  double bjet_eta;
+  double bjet_phi;
+  double bjet_DeepJet;
+  double bjet_DeepJet_CvsL;
+  double bjet_DeepJet_CvsB;
+  double bjet_chargedHadronEnergyFraction;
+  double bjet_neutralHadronEnergyFraction;
+  double bjet_neutralEmEnergyFraction;
+  double bjet_chargedEmEnergyFraction;
+  double bjet_muonEnergyFraction;
 
-  double DNN_odd_pos,DNN_even_pos,DNN_odd_neg,DNN_even_neg,DNN_b,DNN_s;
+  vector<double> bmuon_pt;
+  vector<double> bmuon_eta;
+  vector<double> bmuon_phi;
+  vector<double> bmuon_ptwrtbjet;
+  vector<double> bmuon_p_jetrestf;
+  vector<double> bmuon_dR_l_j;
+  vector<double> bmuon_nsip3d;
+  vector<double> bmuon_reltrkiso;
+  vector<double> bmuon_reliso;
+  vector<int> bmuon_charge;
+  int n_bmuon;
+  
+
+  vector<double> belectron_pt;
+  vector<double> belectron_eta;
+  vector<double> belectron_phi;
+  vector<double> belectron_ptwrtbjet;
+  vector<double> belectron_p_jetrestf;
+  vector<double> belectron_dR_l_j;
+  vector<double> belectron_nsip3d;
+  vector<double> belectron_reltrkiso;
+  vector<double> belectron_elecalclusteriso;
+  vector<int> belectron_IsGsfCtfScPixChargeConsistent;
+  vector<double> belectron_reliso;
+  vector<int> belectron_charge;
+  int n_belectron;
+  //truth
+  int bjetPartonFlavourCharge;
+
+
 };
 
 

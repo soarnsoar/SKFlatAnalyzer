@@ -1,7 +1,7 @@
-#include "ForTMVA_BBbarAnalyzer.h"
+#include "ForLepJetChargeReliability.h"
 
 
-ForTMVA_BBbarAnalyzer::ForTMVA_BBbarAnalyzer(){//FYI : bottomness = -nb
+ForLepJetChargeReliability::ForLepJetChargeReliability(){//FYI : bottomness = -nb
 
   //Set Hadron PID vector with nb=+1
   BhadronPIDs={
@@ -99,10 +99,12 @@ ForTMVA_BBbarAnalyzer::ForTMVA_BBbarAnalyzer(){//FYI : bottomness = -nb
   ElectronCut_apply=ElectronCut_v1p0;
 
   //---tree init---//
-  jhchoi_newtree=new TTree("Tree_neg","Tree_neg");
-  jhchoi_newtree2=new TTree("Tree_pos","Tree_pos");
+  jhchoi_newtree=new TTree("Tree_LepChargeMatch_Group1","Tree_LepChargeMatch_Group1");
+  jhchoi_newtree2=new TTree("Tree_LepChargeUnmatch_Group1","Tree_LepChargeUnmatch_Group1");
+  jhchoi_newtree3=new TTree("Tree_LepChargeMatch_Group2","Tree_LepChargeMatch_Group2");
+  jhchoi_newtree4=new TTree("Tree_LepChargeUnmatch_Group2","Tree_LepChargeUnmatch_Group2");
 
-  //tree#1 bevt
+  //tree#1 
   jhchoi_newtree->Branch("bjet_charge",&bjet_charge);
   jhchoi_newtree->Branch("bjet_pt",&bjet_pt);
   jhchoi_newtree->Branch("bjet_eta",&bjet_eta);
@@ -116,64 +118,41 @@ ForTMVA_BBbarAnalyzer::ForTMVA_BBbarAnalyzer(){//FYI : bottomness = -nb
   jhchoi_newtree->Branch("bjet_chargedEmEnergyFraction",&bjet_chargedEmEnergyFraction);
   jhchoi_newtree->Branch("bjet_muonEnergyFraction",&bjet_muonEnergyFraction);
   
-  jhchoi_newtree->Branch("bmuon1_pt",&bmuon1_pt);
-  jhchoi_newtree->Branch("bmuon1_eta",&bmuon1_eta);
-  jhchoi_newtree->Branch("bmuon1_phi",&bmuon1_phi);
-  jhchoi_newtree->Branch("bmuon1_ptwrtbjet",&bmuon1_ptwrtbjet);
-  jhchoi_newtree->Branch("bmuon1_p_jetrestf",&bmuon1_p_jetrestf);
-  jhchoi_newtree->Branch("bmuon1_dR_l_j",&bmuon1_dR_l_j);
-  jhchoi_newtree->Branch("bmuon1_nsip3d",&bmuon1_nsip3d);
-  jhchoi_newtree->Branch("bmuon1_reltrkiso",&bmuon1_reltrkiso);
-  jhchoi_newtree->Branch("bmuon1_reliso",&bmuon1_reliso);
-  jhchoi_newtree->Branch("bmuon1_charge",&bmuon1_charge);
-  jhchoi_newtree->Branch("bmuon2_pt",&bmuon2_pt);
-  jhchoi_newtree->Branch("bmuon2_eta",&bmuon2_eta);
-  jhchoi_newtree->Branch("bmuon2_phi",&bmuon2_phi);
-  jhchoi_newtree->Branch("bmuon2_ptwrtbjet",&bmuon2_ptwrtbjet);
-  jhchoi_newtree->Branch("bmuon2_p_jetrestf",&bmuon2_p_jetrestf);
-  jhchoi_newtree->Branch("bmuon2_dR_l_j",&bmuon2_dR_l_j);
-  jhchoi_newtree->Branch("bmuon2_nsip3d",&bmuon2_nsip3d);
-  jhchoi_newtree->Branch("bmuon2_reltrkiso",&bmuon2_reltrkiso);
-  jhchoi_newtree->Branch("bmuon2_reliso",&bmuon2_reliso);
-  jhchoi_newtree->Branch("bmuon2_charge",&bmuon2_charge);
+  jhchoi_newtree->Branch("bmuon_pt",&bmuon_pt);
+  jhchoi_newtree->Branch("bmuon_eta",&bmuon_eta);
+  jhchoi_newtree->Branch("bmuon_phi",&bmuon_phi);
+  jhchoi_newtree->Branch("bmuon_ptwrtbjet",&bmuon_ptwrtbjet);
+  jhchoi_newtree->Branch("bmuon_p_jetrestf",&bmuon_p_jetrestf);
+  jhchoi_newtree->Branch("bmuon_dR_l_j",&bmuon_dR_l_j);
+  jhchoi_newtree->Branch("bmuon_nsip3d",&bmuon_nsip3d);
+  jhchoi_newtree->Branch("bmuon_reltrkiso",&bmuon_reltrkiso);
+  jhchoi_newtree->Branch("bmuon_reliso",&bmuon_reliso);
+  jhchoi_newtree->Branch("bmuon_charge",&bmuon_charge);
   jhchoi_newtree->Branch("n_bmuon",&n_bmuon);
-  //  belectron1_elecalclusteriso=-10.;
-  //belectron1_IsGsfCtfScPixChargeConsistent=-10.;
+  //  belectron_elecalclusteriso=-10.;
+  //belectron_IsGsfCtfScPixChargeConsistent=-10.;
 
-  jhchoi_newtree->Branch("belectron1_pt",&belectron1_pt);
-  jhchoi_newtree->Branch("belectron1_eta",&belectron1_eta);
-  jhchoi_newtree->Branch("belectron1_phi",&belectron1_phi);
-  jhchoi_newtree->Branch("belectron1_ptwrtbjet",&belectron1_ptwrtbjet);
-  jhchoi_newtree->Branch("belectron1_p_jetrestf",&belectron1_p_jetrestf);
-  jhchoi_newtree->Branch("belectron1_dR_l_j",&belectron1_dR_l_j);
-  jhchoi_newtree->Branch("belectron1_nsip3d",&belectron1_nsip3d);
-  jhchoi_newtree->Branch("belectron1_reltrkiso",&belectron1_reltrkiso);
-  jhchoi_newtree->Branch("belectron1_reliso",&belectron1_reliso);
-  jhchoi_newtree->Branch("belectron1_charge",&belectron1_charge);
-  jhchoi_newtree->Branch("belectron1_elecalclusteriso",&belectron1_elecalclusteriso);
-  jhchoi_newtree->Branch("belectron1_IsGsfCtfScPixChargeConsistent",&belectron1_IsGsfCtfScPixChargeConsistent);
-
-  jhchoi_newtree->Branch("belectron2_pt",&belectron2_pt);
-  jhchoi_newtree->Branch("belectron2_eta",&belectron2_eta);
-  jhchoi_newtree->Branch("belectron2_phi",&belectron2_phi);
-  jhchoi_newtree->Branch("belectron2_ptwrtbjet",&belectron2_ptwrtbjet);
-  jhchoi_newtree->Branch("belectron2_p_jetrestf",&belectron2_p_jetrestf);
-  jhchoi_newtree->Branch("belectron2_dR_l_j",&belectron2_dR_l_j);
-  jhchoi_newtree->Branch("belectron2_nsip3d",&belectron2_nsip3d);
-  jhchoi_newtree->Branch("belectron2_reltrkiso",&belectron2_reltrkiso);
-  jhchoi_newtree->Branch("belectron2_reliso",&belectron2_reliso);
-  jhchoi_newtree->Branch("belectron2_charge",&belectron2_charge);
-  jhchoi_newtree->Branch("belectron2_elecalclusteriso",&belectron2_elecalclusteriso);
-  jhchoi_newtree->Branch("belectron2_IsGsfCtfScPixChargeConsistent",&belectron2_IsGsfCtfScPixChargeConsistent);
+  jhchoi_newtree->Branch("belectron_pt",&belectron_pt);
+  jhchoi_newtree->Branch("belectron_eta",&belectron_eta);
+  jhchoi_newtree->Branch("belectron_phi",&belectron_phi);
+  jhchoi_newtree->Branch("belectron_ptwrtbjet",&belectron_ptwrtbjet);
+  jhchoi_newtree->Branch("belectron_p_jetrestf",&belectron_p_jetrestf);
+  jhchoi_newtree->Branch("belectron_dR_l_j",&belectron_dR_l_j);
+  jhchoi_newtree->Branch("belectron_nsip3d",&belectron_nsip3d);
+  jhchoi_newtree->Branch("belectron_reltrkiso",&belectron_reltrkiso);
+  jhchoi_newtree->Branch("belectron_reliso",&belectron_reliso);
+  jhchoi_newtree->Branch("belectron_charge",&belectron_charge);
+  jhchoi_newtree->Branch("belectron_elecalclusteriso",&belectron_elecalclusteriso);
+  jhchoi_newtree->Branch("belectron_IsGsfCtfScPixChargeConsistent",&belectron_IsGsfCtfScPixChargeConsistent);
 
   jhchoi_newtree->Branch("n_belectron",&n_belectron);
 
-  //  belectron1_elecalclusteriso=-10.;
-  //belectron1_IsGsfCtfScPixChargeConsistent=-10.;
+  //  belectron_elecalclusteriso=-10.;
+  //belectron_IsGsfCtfScPixChargeConsistent=-10.;
   jhchoi_newtree->Branch("bjetPartonFlavourCharge",&bjetPartonFlavourCharge);
   jhchoi_newtree->Branch("weight",&weight);
 
-  //tree#2(bbar)
+  //tree#2
   jhchoi_newtree2->Branch("bjet_charge",&bjet_charge);
   jhchoi_newtree2->Branch("bjet_pt",&bjet_pt);
   jhchoi_newtree2->Branch("bjet_eta",&bjet_eta);
@@ -187,64 +166,129 @@ ForTMVA_BBbarAnalyzer::ForTMVA_BBbarAnalyzer(){//FYI : bottomness = -nb
   jhchoi_newtree2->Branch("bjet_chargedEmEnergyFraction",&bjet_chargedEmEnergyFraction);
   jhchoi_newtree2->Branch("bjet_muonEnergyFraction",&bjet_muonEnergyFraction);
   
-  jhchoi_newtree2->Branch("bmuon1_pt",&bmuon1_pt);
-  jhchoi_newtree2->Branch("bmuon1_eta",&bmuon1_eta);
-  jhchoi_newtree2->Branch("bmuon1_phi",&bmuon1_phi);
-  jhchoi_newtree2->Branch("bmuon1_ptwrtbjet",&bmuon1_ptwrtbjet);
-  jhchoi_newtree2->Branch("bmuon1_p_jetrestf",&bmuon1_p_jetrestf);
-  jhchoi_newtree2->Branch("bmuon1_dR_l_j",&bmuon1_dR_l_j);
-  jhchoi_newtree2->Branch("bmuon1_nsip3d",&bmuon1_nsip3d);
-  jhchoi_newtree2->Branch("bmuon1_reltrkiso",&bmuon1_reltrkiso);
-  jhchoi_newtree2->Branch("bmuon1_reliso",&bmuon1_reliso);
-  jhchoi_newtree2->Branch("bmuon1_charge",&bmuon1_charge);
-  jhchoi_newtree2->Branch("bmuon2_pt",&bmuon2_pt);
-  jhchoi_newtree2->Branch("bmuon2_eta",&bmuon2_eta);
-  jhchoi_newtree2->Branch("bmuon2_phi",&bmuon2_phi);
-  jhchoi_newtree2->Branch("bmuon2_ptwrtbjet",&bmuon2_ptwrtbjet);
-  jhchoi_newtree2->Branch("bmuon2_p_jetrestf",&bmuon2_p_jetrestf);
-  jhchoi_newtree2->Branch("bmuon2_dR_l_j",&bmuon2_dR_l_j);
-  jhchoi_newtree2->Branch("bmuon2_nsip3d",&bmuon2_nsip3d);
-  jhchoi_newtree2->Branch("bmuon2_reltrkiso",&bmuon2_reltrkiso);
-  jhchoi_newtree2->Branch("bmuon2_reliso",&bmuon2_reliso);
-  jhchoi_newtree2->Branch("bmuon2_charge",&bmuon2_charge);
+  jhchoi_newtree2->Branch("bmuon_pt",&bmuon_pt);
+  jhchoi_newtree2->Branch("bmuon_eta",&bmuon_eta);
+  jhchoi_newtree2->Branch("bmuon_phi",&bmuon_phi);
+  jhchoi_newtree2->Branch("bmuon_ptwrtbjet",&bmuon_ptwrtbjet);
+  jhchoi_newtree2->Branch("bmuon_p_jetrestf",&bmuon_p_jetrestf);
+  jhchoi_newtree2->Branch("bmuon_dR_l_j",&bmuon_dR_l_j);
+  jhchoi_newtree2->Branch("bmuon_nsip3d",&bmuon_nsip3d);
+  jhchoi_newtree2->Branch("bmuon_reltrkiso",&bmuon_reltrkiso);
+  jhchoi_newtree2->Branch("bmuon_reliso",&bmuon_reliso);
+  jhchoi_newtree2->Branch("bmuon_charge",&bmuon_charge);
   jhchoi_newtree2->Branch("n_bmuon",&n_bmuon);
 
-  jhchoi_newtree2->Branch("belectron1_pt",&belectron1_pt);
-  jhchoi_newtree2->Branch("belectron1_eta",&belectron1_eta);
-  jhchoi_newtree2->Branch("belectron1_phi",&belectron1_phi);
-  jhchoi_newtree2->Branch("belectron1_ptwrtbjet",&belectron1_ptwrtbjet);
-  jhchoi_newtree2->Branch("belectron1_p_jetrestf",&belectron1_p_jetrestf);
-  jhchoi_newtree2->Branch("belectron1_dR_l_j",&belectron1_dR_l_j);
-  jhchoi_newtree2->Branch("belectron1_nsip3d",&belectron1_nsip3d);
-  jhchoi_newtree2->Branch("belectron1_reltrkiso",&belectron1_reltrkiso);
-  jhchoi_newtree2->Branch("belectron1_reliso",&belectron1_reliso);
-  jhchoi_newtree2->Branch("belectron1_charge",&belectron1_charge);
-  jhchoi_newtree2->Branch("belectron1_elecalclusteriso",&belectron1_elecalclusteriso);
-  jhchoi_newtree2->Branch("belectron1_IsGsfCtfScPixChargeConsistent",&belectron1_IsGsfCtfScPixChargeConsistent);
-
-
-
-  jhchoi_newtree2->Branch("belectron2_pt",&belectron2_pt);
-  jhchoi_newtree2->Branch("belectron2_eta",&belectron2_eta);
-  jhchoi_newtree2->Branch("belectron2_phi",&belectron2_phi);
-  jhchoi_newtree2->Branch("belectron2_ptwrtbjet",&belectron2_ptwrtbjet);
-  jhchoi_newtree2->Branch("belectron2_p_jetrestf",&belectron2_p_jetrestf);
-  jhchoi_newtree2->Branch("belectron2_dR_l_j",&belectron2_dR_l_j);
-  jhchoi_newtree2->Branch("belectron2_nsip3d",&belectron2_nsip3d);
-  jhchoi_newtree2->Branch("belectron2_reltrkiso",&belectron2_reltrkiso);
-  jhchoi_newtree2->Branch("belectron2_reliso",&belectron2_reliso);
-  jhchoi_newtree2->Branch("belectron2_charge",&belectron2_charge);
-  jhchoi_newtree2->Branch("belectron2_elecalclusteriso",&belectron2_elecalclusteriso);
-  jhchoi_newtree2->Branch("belectron2_IsGsfCtfScPixChargeConsistent",&belectron2_IsGsfCtfScPixChargeConsistent);
-
+  jhchoi_newtree2->Branch("belectron_pt",&belectron_pt);
+  jhchoi_newtree2->Branch("belectron_eta",&belectron_eta);
+  jhchoi_newtree2->Branch("belectron_phi",&belectron_phi);
+  jhchoi_newtree2->Branch("belectron_ptwrtbjet",&belectron_ptwrtbjet);
+  jhchoi_newtree2->Branch("belectron_p_jetrestf",&belectron_p_jetrestf);
+  jhchoi_newtree2->Branch("belectron_dR_l_j",&belectron_dR_l_j);
+  jhchoi_newtree2->Branch("belectron_nsip3d",&belectron_nsip3d);
+  jhchoi_newtree2->Branch("belectron_reltrkiso",&belectron_reltrkiso);
+  jhchoi_newtree2->Branch("belectron_reliso",&belectron_reliso);
+  jhchoi_newtree2->Branch("belectron_charge",&belectron_charge);
+  jhchoi_newtree2->Branch("belectron_elecalclusteriso",&belectron_elecalclusteriso);
+  jhchoi_newtree2->Branch("belectron_IsGsfCtfScPixChargeConsistent",&belectron_IsGsfCtfScPixChargeConsistent);
 
   jhchoi_newtree2->Branch("n_belectron",&n_belectron);
 
   jhchoi_newtree2->Branch("bjetPartonFlavourCharge",&bjetPartonFlavourCharge);
   jhchoi_newtree2->Branch("weight",&weight);
+
+
+
+  //tree#3
+  jhchoi_newtree3->Branch("bjet_charge",&bjet_charge);
+  jhchoi_newtree3->Branch("bjet_pt",&bjet_pt);
+  jhchoi_newtree3->Branch("bjet_eta",&bjet_eta);
+  jhchoi_newtree3->Branch("bjet_phi",&bjet_phi);
+  jhchoi_newtree3->Branch("bjet_DeepJet",&bjet_DeepJet);
+  jhchoi_newtree3->Branch("bjet_DeepJet_CvsL",&bjet_DeepJet_CvsL);
+  jhchoi_newtree3->Branch("bjet_DeepJet_CvsB",&bjet_DeepJet_CvsB);
+  jhchoi_newtree3->Branch("bjet_chargedHadronEnergyFraction",&bjet_chargedHadronEnergyFraction);
+  jhchoi_newtree3->Branch("bjet_neutralHadronEnergyFraction",&bjet_neutralHadronEnergyFraction);
+  jhchoi_newtree3->Branch("bjet_neutralEmEnergyFraction",&bjet_neutralEmEnergyFraction);
+  jhchoi_newtree3->Branch("bjet_chargedEmEnergyFraction",&bjet_chargedEmEnergyFraction);
+  jhchoi_newtree3->Branch("bjet_muonEnergyFraction",&bjet_muonEnergyFraction);
+  
+  jhchoi_newtree3->Branch("bmuon_pt",&bmuon_pt);
+  jhchoi_newtree3->Branch("bmuon_eta",&bmuon_eta);
+  jhchoi_newtree3->Branch("bmuon_phi",&bmuon_phi);
+  jhchoi_newtree3->Branch("bmuon_ptwrtbjet",&bmuon_ptwrtbjet);
+  jhchoi_newtree3->Branch("bmuon_p_jetrestf",&bmuon_p_jetrestf);
+  jhchoi_newtree3->Branch("bmuon_dR_l_j",&bmuon_dR_l_j);
+  jhchoi_newtree3->Branch("bmuon_nsip3d",&bmuon_nsip3d);
+  jhchoi_newtree3->Branch("bmuon_reltrkiso",&bmuon_reltrkiso);
+  jhchoi_newtree3->Branch("bmuon_reliso",&bmuon_reliso);
+  jhchoi_newtree3->Branch("bmuon_charge",&bmuon_charge);
+  jhchoi_newtree3->Branch("n_bmuon",&n_bmuon);
+
+  jhchoi_newtree3->Branch("belectron_pt",&belectron_pt);
+  jhchoi_newtree3->Branch("belectron_eta",&belectron_eta);
+  jhchoi_newtree3->Branch("belectron_phi",&belectron_phi);
+  jhchoi_newtree3->Branch("belectron_ptwrtbjet",&belectron_ptwrtbjet);
+  jhchoi_newtree3->Branch("belectron_p_jetrestf",&belectron_p_jetrestf);
+  jhchoi_newtree3->Branch("belectron_dR_l_j",&belectron_dR_l_j);
+  jhchoi_newtree3->Branch("belectron_nsip3d",&belectron_nsip3d);
+  jhchoi_newtree3->Branch("belectron_reltrkiso",&belectron_reltrkiso);
+  jhchoi_newtree3->Branch("belectron_reliso",&belectron_reliso);
+  jhchoi_newtree3->Branch("belectron_charge",&belectron_charge);
+  jhchoi_newtree3->Branch("belectron_elecalclusteriso",&belectron_elecalclusteriso);
+  jhchoi_newtree3->Branch("belectron_IsGsfCtfScPixChargeConsistent",&belectron_IsGsfCtfScPixChargeConsistent);
+
+  jhchoi_newtree3->Branch("n_belectron",&n_belectron);
+
+  jhchoi_newtree3->Branch("bjetPartonFlavourCharge",&bjetPartonFlavourCharge);
+  jhchoi_newtree3->Branch("weight",&weight);
+
+  //tree#4
+  jhchoi_newtree4->Branch("bjet_charge",&bjet_charge);
+  jhchoi_newtree4->Branch("bjet_pt",&bjet_pt);
+  jhchoi_newtree4->Branch("bjet_eta",&bjet_eta);
+  jhchoi_newtree4->Branch("bjet_phi",&bjet_phi);
+  jhchoi_newtree4->Branch("bjet_DeepJet",&bjet_DeepJet);
+  jhchoi_newtree4->Branch("bjet_DeepJet_CvsL",&bjet_DeepJet_CvsL);
+  jhchoi_newtree4->Branch("bjet_DeepJet_CvsB",&bjet_DeepJet_CvsB);
+  jhchoi_newtree4->Branch("bjet_chargedHadronEnergyFraction",&bjet_chargedHadronEnergyFraction);
+  jhchoi_newtree4->Branch("bjet_neutralHadronEnergyFraction",&bjet_neutralHadronEnergyFraction);
+  jhchoi_newtree4->Branch("bjet_neutralEmEnergyFraction",&bjet_neutralEmEnergyFraction);
+  jhchoi_newtree4->Branch("bjet_chargedEmEnergyFraction",&bjet_chargedEmEnergyFraction);
+  jhchoi_newtree4->Branch("bjet_muonEnergyFraction",&bjet_muonEnergyFraction);
+  
+  jhchoi_newtree4->Branch("bmuon_pt",&bmuon_pt);
+  jhchoi_newtree4->Branch("bmuon_eta",&bmuon_eta);
+  jhchoi_newtree4->Branch("bmuon_phi",&bmuon_phi);
+  jhchoi_newtree4->Branch("bmuon_ptwrtbjet",&bmuon_ptwrtbjet);
+  jhchoi_newtree4->Branch("bmuon_p_jetrestf",&bmuon_p_jetrestf);
+  jhchoi_newtree4->Branch("bmuon_dR_l_j",&bmuon_dR_l_j);
+  jhchoi_newtree4->Branch("bmuon_nsip3d",&bmuon_nsip3d);
+  jhchoi_newtree4->Branch("bmuon_reltrkiso",&bmuon_reltrkiso);
+  jhchoi_newtree4->Branch("bmuon_reliso",&bmuon_reliso);
+  jhchoi_newtree4->Branch("bmuon_charge",&bmuon_charge);
+  jhchoi_newtree4->Branch("n_bmuon",&n_bmuon);
+
+  jhchoi_newtree4->Branch("belectron_pt",&belectron_pt);
+  jhchoi_newtree4->Branch("belectron_eta",&belectron_eta);
+  jhchoi_newtree4->Branch("belectron_phi",&belectron_phi);
+  jhchoi_newtree4->Branch("belectron_ptwrtbjet",&belectron_ptwrtbjet);
+  jhchoi_newtree4->Branch("belectron_p_jetrestf",&belectron_p_jetrestf);
+  jhchoi_newtree4->Branch("belectron_dR_l_j",&belectron_dR_l_j);
+  jhchoi_newtree4->Branch("belectron_nsip3d",&belectron_nsip3d);
+  jhchoi_newtree4->Branch("belectron_reltrkiso",&belectron_reltrkiso);
+  jhchoi_newtree4->Branch("belectron_reliso",&belectron_reliso);
+  jhchoi_newtree4->Branch("belectron_charge",&belectron_charge);
+  jhchoi_newtree4->Branch("belectron_elecalclusteriso",&belectron_elecalclusteriso);
+  jhchoi_newtree4->Branch("belectron_IsGsfCtfScPixChargeConsistent",&belectron_IsGsfCtfScPixChargeConsistent);
+
+  jhchoi_newtree4->Branch("n_belectron",&n_belectron);
+
+  jhchoi_newtree4->Branch("bjetPartonFlavourCharge",&bjetPartonFlavourCharge);
+  jhchoi_newtree4->Branch("weight",&weight);
+
 }
 
-void ForTMVA_BBbarAnalyzer::InitTreeValues(){
+void ForLepJetChargeReliability::InitTreeValues(){
   //-----Variables to Store for Machine Learning------//
   bjet_charge=0.;
   bjet_pt=0.;
@@ -258,56 +302,33 @@ void ForTMVA_BBbarAnalyzer::InitTreeValues(){
   bjet_neutralEmEnergyFraction=0.;
   bjet_chargedEmEnergyFraction=0.;
   bjet_muonEnergyFraction=0.;
-  //leading bmuon
-  bmuon1_pt=0.;
-  bmuon1_eta=0.;
-  bmuon1_phi=0.;
-  bmuon1_ptwrtbjet=0.;
-  bmuon1_p_jetrestf=0.;
-  bmuon1_dR_l_j=0.;
-  bmuon1_nsip3d=0.;
-  bmuon1_reltrkiso=0.;
-  bmuon1_reliso=0.;
-  bmuon1_charge=0.;
-  //subleading bmuon
-  bmuon2_pt=0.;
-  bmuon2_eta=0.;
-  bmuon2_phi=0.;
-  bmuon2_ptwrtbjet=0.;
-  bmuon2_p_jetrestf=0.;
-  bmuon2_dR_l_j=0.;
-  bmuon2_nsip3d=0.;
-  bmuon2_reltrkiso=0.;
-  bmuon2_reliso=0.;
-  bmuon2_charge=0.;
 
+  bmuon_pt=0;
+  bmuon_eta=0;
+  bmuon_phi=0;
+  bmuon_ptwrtbjet=0;
+  bmuon_p_jetrestf=0;
+  bmuon_dR_l_j=0;
+  bmuon_nsip3d=0;
+  bmuon_reltrkiso=0;
+  bmuon_reliso=0;
+  bmuon_charge=0;
   n_bmuon=0;
-  //leading belectron
-  belectron1_pt=0.;
-  belectron1_eta=0.;
-  belectron1_phi=0.;
-  belectron1_ptwrtbjet=0.;
-  belectron1_p_jetrestf=0.;
-  belectron1_dR_l_j=0.;
-  belectron1_nsip3d=0.;
-  belectron1_reltrkiso=0.;
-  belectron1_elecalclusteriso=0.;
-  belectron1_IsGsfCtfScPixChargeConsistent=0;
-  belectron1_reliso=0.;
-  belectron1_charge=0.;
-  //subleading belectron
-  belectron2_pt=0.;
-  belectron2_eta=0.;
-  belectron2_phi=0.;
-  belectron2_ptwrtbjet=0.;
-  belectron2_p_jetrestf=0.;
-  belectron2_dR_l_j=0.;
-  belectron2_nsip3d=0.;
-  belectron2_reltrkiso=0.;
-  belectron2_elecalclusteriso=0.;
-  belectron2_IsGsfCtfScPixChargeConsistent=0;
-  belectron2_reliso=0.;
-  belectron2_charge=0.;
+
+
+  belectron_pt=0;
+  belectron_eta=0;
+  belectron_phi=0;
+  belectron_ptwrtbjet=0;
+  belectron_p_jetrestf=0;
+  belectron_dR_l_j=0;
+  belectron_nsip3d=0;
+  belectron_reltrkiso=0;
+  belectron_elecalclusteriso=0;
+  belectron_IsGsfCtfScPixChargeConsistent=0;
+  belectron_reliso=0;
+  belectron_charge=0;
+
   n_belectron=0;
   //truth
   bjetPartonFlavourCharge=0;
@@ -316,18 +337,18 @@ void ForTMVA_BBbarAnalyzer::InitTreeValues(){
 
 
 
-void ForTMVA_BBbarAnalyzer::initializeAnalyzer(){
+void ForLepJetChargeReliability::initializeAnalyzer(){
 }
 
-ForTMVA_BBbarAnalyzer::~ForTMVA_BBbarAnalyzer(){
+ForLepJetChargeReliability::~ForLepJetChargeReliability(){
 
   //==== Destructor of this Analyzer
 
 }
 
-bool ForTMVA_BBbarAnalyzer::Tag_gbToZb(){
+bool ForLepJetChargeReliability::Tag_gbToZb(){
   LHEs=GetLHEs();
-  ForTMVA_BBbarAnalyzer::myLHE.LHEsize = LHEs.size();  
+  ForLepJetChargeReliability::myLHE.LHEsize = LHEs.size();  
   myLHE.ngluon_incoming = 0;
   myLHE.nb_incoming = 0;
   myLHE.nb_outgoing = 0;
@@ -426,7 +447,7 @@ bool ForTMVA_BBbarAnalyzer::Tag_gbToZb(){
 
 }//[END]Tag_gbToZb()
 
-int ForTMVA_BBbarAnalyzer::CheckIsBhadAndNb(int pid){
+int ForLepJetChargeReliability::CheckIsBhadAndNb(int pid){
   //----if it is B hadron. return 0 if not B hadron
   //----return -1 if nbbar in hadron==1
   //----return +1 if nb in hadron==1
@@ -472,7 +493,7 @@ int ForTMVA_BBbarAnalyzer::CheckIsBhadAndNb(int pid){
   return 0;
 }
 
-void ForTMVA_BBbarAnalyzer::Tag_B_Hadron(){
+void ForLepJetChargeReliability::Tag_B_Hadron(){
   //init
   myGEN.HasBhadron = false;
 
@@ -516,7 +537,7 @@ void ForTMVA_BBbarAnalyzer::Tag_B_Hadron(){
   
 }//[END]Tag_B_Hadron()
 
-void ForTMVA_BBbarAnalyzer::Loop_genBMatchedRecoJet(){
+void ForLepJetChargeReliability::Loop_genBMatchedRecoJet(){
   //init
 
   myRECO.HasBmatchedRecoJet = false;
@@ -565,14 +586,14 @@ void ForTMVA_BBbarAnalyzer::Loop_genBMatchedRecoJet(){
     }
   }//[END] if there's Bhad matched jet
   
-}//[END]ForTMVA_BBbarAnalyzer::Loop_genBMatchedRecoJet()
+}//[END]ForLepJetChargeReliability::Loop_genBMatchedRecoJet()
 
 /////---Histogram Set---/////
 
 
 
 
-void ForTMVA_BBbarAnalyzer::AnalyzeGEN(){
+void ForLepJetChargeReliability::AnalyzeGEN(){
   //[TODO]
   //hadron pid by b or bbar
   //hadron nb(-bottomness) by b or bbar
@@ -590,7 +611,7 @@ void ForTMVA_BBbarAnalyzer::AnalyzeGEN(){
   //myGEN.Bhad_pid
   }
 }
-void ForTMVA_BBbarAnalyzer::AnalyzeLHE(){
+void ForLepJetChargeReliability::AnalyzeLHE(){
   //[TODO]
   //bjorken scale of b , bbar
   //Q scale
@@ -671,7 +692,7 @@ void ForTMVA_BBbarAnalyzer::AnalyzeLHE(){
 
 
 
-bool ForTMVA_BBbarAnalyzer::ZTagCuts(){
+bool ForLepJetChargeReliability::ZTagCuts(){
   //[1]---Z -> ll tag--//
 
   //for mumu channel
@@ -725,8 +746,8 @@ bool ForTMVA_BBbarAnalyzer::ZTagCuts(){
     myRECO.idx_Zelectron2=v_Zlepidx[1];
     v_Z+=AllElectrons[myRECO.idx_Zelectron1];
     v_Z+=AllElectrons[myRECO.idx_Zelectron2];
-    if(v_Z.M()<70.) return 0;
-    if(v_Z.M()>110.) return 0;
+    if(v_Z.M()<60.) return 0;
+    if(v_Z.M()>120.) return 0;
     //cout << "ZTagCuts" <<endl;
     //cout << "myRECO.idx_Zelectron1=" << myRECO.idx_Zelectron1 << endl;
     //cout << "myRECO.idx_Zelectron2=" << myRECO.idx_Zelectron2 << endl;
@@ -744,7 +765,7 @@ bool ForTMVA_BBbarAnalyzer::ZTagCuts(){
 
 
 //Sorting Leptons with P@j restframe , near 1.7
-int ForTMVA_BBbarAnalyzer::Rank1n2Leptons(std::vector<int> &v_blep_idx, std::vector<double> &v_blep_value){
+int ForLepJetChargeReliability::Rank1n2Leptons(std::vector<int> &v_blep_idx, std::vector<double> &v_blep_value){
   double center=1.7;
   unsigned int vsize=v_blep_idx.size();
   vector<double> v_diff;
@@ -783,7 +804,7 @@ int ForTMVA_BBbarAnalyzer::Rank1n2Leptons(std::vector<int> &v_blep_idx, std::vec
 }
 
 
-void ForTMVA_BBbarAnalyzer::FillHistMuon(TString cutname){
+void ForLepJetChargeReliability::FillHistMuon(TString cutname){
   FillHist(cutname+"/muon_P_jetrestf/"+ProcessName, p_jetrestf, weight, 200, 0., 10.);
   FillHist(cutname+"/muon_dRbmatj/"+ProcessName, dR_l_j, weight, 200, 0., 5.);
   FillHist(cutname+"/muon_ip3d/"+ProcessName, ip3d, weight, 100, -10., 10.);
@@ -792,7 +813,7 @@ void ForTMVA_BBbarAnalyzer::FillHistMuon(TString cutname){
   FillHist(cutname+"/muon_logreltrkiso/"+ProcessName, log10(reltrkiso), weight, 100, -5., 2.);
 }
 
-void ForTMVA_BBbarAnalyzer::FillHistMuonCharge(TString cutname){
+void ForLepJetChargeReliability::FillHistMuonCharge(TString cutname){
   FillHist(cutname+"/bmuon_charge/"+ProcessName, AllMuons[i_bmuon].Charge(), weight, 4, -2., 2.);
   FillHist(cutname+"/jet_charge/"+ProcessName, AllJets[myRECO.ij_B].Charge(), weight, 100, -2., 2.);
   FillHist(cutname+"/bmuon_bjet_chargesum/"+ProcessName, AllMuons[i_bmuon].Charge()+AllJets[myRECO.ij_B].Charge(), weight, 100, -3., 3.);
@@ -800,7 +821,7 @@ void ForTMVA_BBbarAnalyzer::FillHistMuonCharge(TString cutname){
 
 }
 
-void ForTMVA_BBbarAnalyzer::RunLeptonCutStudyMuon(){
+void ForLepJetChargeReliability::RunLeptonCutStudyMuon(){
   TString CutStudyEventTag=EventTag;
   CutStudyEventTag="CutStudy__"+CutStudyEventTag;
   TString CutStudyEventTagJetParton=EventTagJetParton;
@@ -829,102 +850,57 @@ void ForTMVA_BBbarAnalyzer::RunLeptonCutStudyMuon(){
     if(dR_l_j<0.4){
       v_tmva_bmuonidx.push_back(i);
       v_tmva_bmuon_p_jetrestf.push_back(p_jetrestf);
-      if ( muon_charge > 0){
-	FillHistMuon(CutStudyEventTag+"_MuonPlus__TMVA");
-	FillHistMuon(CutStudyEventTagJetParton+"_MuonPlus__TMVA");
-      }
-      else{
-	FillHistMuon(CutStudyEventTag+"_MuonMinus__TMVA");
-	FillHistMuon(CutStudyEventTagJetParton+"_MuonMinus__TMVA");
-      }
     }
   }
-  if(v_tmva_bmuonidx.size()>0){
-    i_bmuon=v_tmva_bmuonidx[0];
-    //--check only muon channel!
-    
-    if(v_tmva_bmuonidx.size()==1){
-      SetTreeValuesMuon(i_bmuon,-1,1);
-    }//[END] #muon==1
-    else{
-      int idxIn100=Rank1n2Leptons(v_tmva_bmuonidx,v_tmva_bmuon_p_jetrestf);
-      int i_bmuon1=idxIn100%100;
-      int i_bmuon2=idxIn100/100;
-      SetTreeValuesMuon(i_bmuon1,i_bmuon2,v_tmva_bmuonidx.size());
-    }
+  //if(v_tmva_bmuonidx.size()>0){
+  if(v_tmva_bmuonidx.size()==1){
+    SetTreeValuesMuon(v_tmva_bmuonidx);
   }
   
 }
-void ForTMVA_BBbarAnalyzer::SetTreeValuesMuon(int i_bmuon1,int i_bmuon2,int nbmuon){
+void ForLepJetChargeReliability::SetTreeValuesMuon(vector<int> vmuonidx){
   doFillTree=true;
-  //--p jetrestf
-  TLorentzVector vl(AllMuons[i_bmuon1]);
-  vl.Boost(-AllJets[myRECO.ij_B].BoostVector());
-  p_jetrestf=vl.P();//                                                                                                          
-  dR_l_j=AllJets[myRECO.ij_B].DeltaR(AllMuons[i_bmuon1]);
-  //ip3d=AllMuons[i_bmuon1].IP3D();
-  nsip3d=fabs(AllMuons[i_bmuon1].IP3D()/AllMuons[i_bmuon1].IP3Derr());
-  reliso=AllMuons[i_bmuon1].RelIso();
-  reltrkiso=AllMuons[i_bmuon1].TrkIso()/AllMuons[i_bmuon1].Pt();
-  //pt wrt bjet
-  double ptwrtbjet=AllMuons[i_bmuon1].P()*sin(AllMuons[i_bmuon1].Angle(AllJets[myRECO.ij_B].Vect()));
-
-
-  //bmuon1_pt=min(AllMuons[i_bmuon1].Pt(),50.);
-  bmuon1_pt=AllMuons[i_bmuon1].Pt();
-  bmuon1_eta=AllMuons[i_bmuon1].Eta();
-  bmuon1_phi=AllMuons[i_bmuon1].Phi();
-  bmuon1_ptwrtbjet=ptwrtbjet;
-  bmuon1_p_jetrestf=p_jetrestf;
-  bmuon1_dR_l_j=dR_l_j;
-  //bmuon1_nsip3d=min(nsip3d,5.);
-  bmuon1_nsip3d=nsip3d;
-  //bmuon1_reltrkiso=min(reltrkiso,15.);
-  bmuon1_reltrkiso=reltrkiso;
-  //bmuon1_reliso=min(reliso,15.);
-  bmuon1_reliso=reliso;
-  bmuon1_charge=AllMuons[i_bmuon1].Charge();
-  if(i_bmuon2<0){
-    bmuon2_pt=0.;
-    bmuon2_eta=0.;
-    bmuon2_phi=0.;
-    bmuon2_ptwrtbjet=0.;
-    bmuon2_p_jetrestf=0.;
-    bmuon2_dR_l_j=0.;
-    bmuon2_nsip3d=0.;
-    bmuon2_reltrkiso=0.;
-    bmuon2_reliso=0.;
-    bmuon2_charge=0.;
-  }
-  else{
+  unsigned int nbmuon=vmuonidx.size();
+  for(int i=0; i < nbmuon; i++){
     //--p jetrestf
-    TLorentzVector vl2(AllMuons[i_bmuon2]);
-    vl2.Boost(-AllJets[myRECO.ij_B].BoostVector());
-    p_jetrestf=vl2.P();//
-    dR_l_j=AllJets[myRECO.ij_B].DeltaR(AllMuons[i_bmuon2]);
-    //ip3d=AllMuons[i_bmuon2].IP3D();
-    nsip3d=fabs(AllMuons[i_bmuon2].IP3D()/AllMuons[i_bmuon2].IP3Derr());
-    reliso=AllMuons[i_bmuon2].RelIso();
-    reltrkiso=AllMuons[i_bmuon2].TrkIso()/AllMuons[i_bmuon2].Pt();
+    int i_bmuon=vmuonidx[i];
+    TLorentzVector vl(AllMuons[i_bmuon]);
+    vl.Boost(-AllJets[myRECO.ij_B].BoostVector());
+    p_jetrestf=vl.P();//                                                                                                          
+    dR_l_j=AllJets[myRECO.ij_B].DeltaR(AllMuons[i_bmuon]);
+    //ip3d=AllMuons[i_bmuon].IP3D();
+    nsip3d=fabs(AllMuons[i_bmuon].IP3D()/AllMuons[i_bmuon].IP3Derr());
+    reliso=AllMuons[i_bmuon].RelIso();
+    reltrkiso=AllMuons[i_bmuon].TrkIso()/AllMuons[i_bmuon].Pt();
     //pt wrt bjet
-    ptwrtbjet=AllMuons[i_bmuon2].P()*sin(AllMuons[i_bmuon2].Angle(AllJets[myRECO.ij_B].Vect()));
-   
-
-    //bmuon2_pt=min(AllMuons[i_bmuon2].Pt(),50.);
-    bmuon2_pt=AllMuons[i_bmuon2].Pt();
-    bmuon2_eta=AllMuons[i_bmuon2].Eta();
-    bmuon2_phi=AllMuons[i_bmuon2].Phi();
-    bmuon2_ptwrtbjet=ptwrtbjet;
-    bmuon2_p_jetrestf=p_jetrestf;
-    bmuon2_dR_l_j=dR_l_j;
-    //bmuon2_nsip3d=min(nsip3d,5.);
-    bmuon2_nsip3d=nsip3d;
-    //bmuon2_reltrkiso=min(reltrkiso,15.);
-    bmuon2_reltrkiso=reltrkiso;
-    //bmuon2_reliso=min(reliso,15.);
-    bmuon2_reliso=reliso;
-    bmuon2_charge=AllMuons[i_bmuon2].Charge(); 
-  }
+    double ptwrtbjet=AllMuons[i_bmuon].P()*sin(AllMuons[i_bmuon].Angle(AllJets[myRECO.ij_B].Vect()));
+    
+    
+    bmuon_pt=min(AllMuons[i_bmuon].Pt(),50.);
+    //bmuon_pt.push_back(AllMuons[i_bmuon].Pt());
+    bmuon_eta=AllMuons[i_bmuon].Eta();
+    //bmuon_eta.push_back(AllMuons[i_bmuon].Eta());
+    bmuon_phi=AllMuons[i_bmuon].Phi();
+    //bmuon_phi.push_back(AllMuons[i_bmuon].Phi());
+    //bmuon_ptwrtbjet=ptwrtbjet;
+    bmuon_ptwrtbjet=min(ptwrtbjet,5.);
+    //bmuon_ptwrtbjet.push_back(ptwrtbjet);
+    //bmuon_p_jetrestf=p_jetrestf;
+    bmuon_p_jetrestf=min(p_jetrestf,5.);
+    //bmuon_p_jetrestf.push_back(p_jetrestf);
+    bmuon_dR_l_j=dR_l_j;
+    //bmuon_dR_l_j.push_back(dR_l_j);
+    //bmuon_nsip3d=min(nsip3d,5.);
+    bmuon_nsip3d=min(nsip3d,15.);
+    
+    //bmuon_nsip3d.push_back(nsip3d);
+    bmuon_reltrkiso=min(reltrkiso,15.);
+    //bmuon_reltrkiso.push_back(reltrkiso);
+    bmuon_reliso=min(reliso,15.);
+    //bmuon_reliso.push_back(reliso);
+    bmuon_charge=AllMuons[i_bmuon].Charge();
+    //bmuon_charge.push_back(AllMuons[i_bmuon].Charge());
+  }//for bmuon loop
   n_bmuon=nbmuon;
 
   //jet
@@ -959,7 +935,7 @@ void ForTMVA_BBbarAnalyzer::SetTreeValuesMuon(int i_bmuon1,int i_bmuon2,int nbmu
 
 
 
-void ForTMVA_BBbarAnalyzer::FillHistElectron(TString cutname){
+void ForLepJetChargeReliability::FillHistElectron(TString cutname){
   FillHist(cutname+"/electron_P_jetrestf/"+ProcessName, p_jetrestf, weight, 200, 0., 10.);
   FillHist(cutname+"/electron_dRbmatj/"+ProcessName, dR_l_j, weight, 200, 0., 5.);
   FillHist(cutname+"/electron_ip3d/"+ProcessName, ip3d, weight, 100, -10., 10.);
@@ -970,7 +946,7 @@ void ForTMVA_BBbarAnalyzer::FillHistElectron(TString cutname){
   FillHist(cutname+"/electron_IsGsfCtfScPixChargeConsistent/"+ProcessName, IsGsfCtfScPixChargeConsistent, weight, 4, -1., 3.);//
 }
 
-void ForTMVA_BBbarAnalyzer::FillHistElectronCharge(TString cutname){
+void ForLepJetChargeReliability::FillHistElectronCharge(TString cutname){
   FillHist(cutname+"/belectron_charge/"+ProcessName, AllElectrons[i_belectron].Charge(), weight, 4, -2., 2.);
   FillHist(cutname+"/jet_charge/"+ProcessName, AllJets[myRECO.ij_B].Charge(), weight, 100, -2., 2.);
   FillHist(cutname+"/belectron_bjet_chargesum/"+ProcessName, AllElectrons[i_belectron].Charge()+AllJets[myRECO.ij_B].Charge(), weight, 100, -3., 3.);
@@ -978,7 +954,7 @@ void ForTMVA_BBbarAnalyzer::FillHistElectronCharge(TString cutname){
 
 }
 
-void ForTMVA_BBbarAnalyzer::RunLeptonCutStudyElectron(){
+void ForLepJetChargeReliability::RunLeptonCutStudyElectron(){
   TString CutStudyEventTag=EventTag;
   CutStudyEventTag="CutStudy__"+CutStudyEventTag;
   TString CutStudyEventTagJetParton=EventTagJetParton;
@@ -1011,33 +987,12 @@ void ForTMVA_BBbarAnalyzer::RunLeptonCutStudyElectron(){
     if(dR_l_j<0.4){
       v_tmva_belectronidx.push_back(i);
       v_tmva_belectron_p_jetrestf.push_back(p_jetrestf);
-      if ( electron_charge > 0){
-	FillHistElectron(CutStudyEventTag+"_ElectronPlus__TMVA");
-	FillHistElectron(CutStudyEventTagJetParton+"_ElectronPlus__TMVA");
-      }
-      else{
-	FillHistElectron(CutStudyEventTag+"_ElectronMinus__TMVA");
-	FillHistElectron(CutStudyEventTagJetParton+"_ElectronMinus__TMVA");
-      }
     }
   }
   
-  if(v_tmva_belectronidx.size()>0){
-    i_belectron=v_tmva_belectronidx[0];
-    //--check only electron channel!
-    FillHistElectronCharge("TMVALepton__"+EventTag+"__AtLeast1ElectronInBmatjet");
-    FillHistElectronCharge("TMVALepton__"+EventTagJetParton+"__AtLeast1ElectronInBmatjet");
-    if(v_tmva_belectronidx.size()==1){
-      FillHistElectronCharge("TMVALepton__"+EventTag+"__Only1ElectronInBmatjet");
-      FillHistElectronCharge("TMVALepton__"+EventTagJetParton+"__Only1ElectronInBmatjet");
-      SetTreeValuesElectron(i_belectron,-1,1);
-    }//[END] #electron==1
-    else{
-      int idxIn100=Rank1n2Leptons(v_tmva_belectronidx,v_tmva_belectron_p_jetrestf);
-      int i_belectron1=idxIn100%100;
-      int i_belectron2=idxIn100/100;
-      SetTreeValuesElectron(i_belectron1,i_belectron2,v_tmva_belectronidx.size());
-    }
+  //if(v_tmva_belectronidx.size()>0){
+  if(v_tmva_belectronidx.size()==1){
+    SetTreeValuesElectron(v_tmva_belectronidx);
   }//end of if nocut belectron
   
   
@@ -1045,83 +1000,51 @@ void ForTMVA_BBbarAnalyzer::RunLeptonCutStudyElectron(){
 
 
 
-void ForTMVA_BBbarAnalyzer::SetTreeValuesElectron(int i_belectron1,int i_belectron2,int nbelectron){
+void ForLepJetChargeReliability::SetTreeValuesElectron(vector<int> velectronidx){
   doFillTree=true;
-  //--p jetrestf
-  TLorentzVector vl(AllElectrons[i_belectron1]);
-  vl.Boost(-AllJets[myRECO.ij_B].BoostVector());
-  p_jetrestf=vl.P();//                                                                                                          
-  dR_l_j=AllJets[myRECO.ij_B].DeltaR(AllElectrons[i_belectron1]);
-  //ip3d=AllElectrons[i_belectron1].IP3D();
-  nsip3d=fabs(AllElectrons[i_belectron1].IP3D()/AllElectrons[i_belectron1].IP3Derr());
-  reliso=AllElectrons[i_belectron1].RelIso();
-  reltrkiso=AllElectrons[i_belectron1].TrkIso()/AllElectrons[i_belectron1].Pt();
-  //pt wrt bjet
-  double ptwrtbjet=AllElectrons[i_belectron1].P()*sin(AllElectrons[i_belectron1].Angle(AllJets[myRECO.ij_B].Vect()));
-
-
-  //belectron1_pt=min(AllElectrons[i_belectron1].Pt(),50.);
-  belectron1_pt=AllElectrons[i_belectron1].Pt();
-  belectron1_eta=AllElectrons[i_belectron1].Eta();
-  belectron1_phi=AllElectrons[i_belectron1].Phi();
-  belectron1_ptwrtbjet=ptwrtbjet;
-  belectron1_p_jetrestf=p_jetrestf;
-  belectron1_dR_l_j=dR_l_j;
-  //belectron1_nsip3d=min(nsip3d,5.);
-  belectron1_nsip3d=nsip3d;
-  //belectron1_reltrkiso=min(reltrkiso,15.);
-  belectron1_reltrkiso=reltrkiso;
-  //belectron1_elecalclusteriso=min(AllElectrons[i_belectron1].ecalPFClusterIso()/AllElectrons[i_belectron1].Pt(),10.);
-  belectron1_elecalclusteriso=AllElectrons[i_belectron1].ecalPFClusterIso()/AllElectrons[i_belectron1].Pt();
-  belectron1_IsGsfCtfScPixChargeConsistent=AllElectrons[i_belectron1].IsGsfCtfScPixChargeConsistent();
-  //belectron1_reliso=min(reliso,15.);
-  belectron1_reliso=reliso;
-  belectron1_charge=AllElectrons[i_belectron1].Charge();
-  if(i_belectron2<0){
-    belectron2_pt=0.;
-    belectron2_eta=0.;
-    belectron2_phi=0.;
-    belectron2_ptwrtbjet=0.;
-    belectron2_p_jetrestf=0.;
-    belectron2_dR_l_j=0.;
-    belectron2_nsip3d=0.;
-    belectron2_reltrkiso=0.;
-    belectron2_reliso=0.;
-    belectron2_charge=0.;
-    belectron2_elecalclusteriso=0.;
-    belectron2_IsGsfCtfScPixChargeConsistent=0;
-  }
-  else{
+  unsigned int nbelectron=velectronidx.size();
+  for(int i=0; i < nbelectron; i++){
+    int i_belectron=velectronidx[i];
     //--p jetrestf
-    TLorentzVector vl2(AllElectrons[i_belectron2]);
-    vl2.Boost(-AllJets[myRECO.ij_B].BoostVector());
-    p_jetrestf=vl2.P();//
-    dR_l_j=AllJets[myRECO.ij_B].DeltaR(AllElectrons[i_belectron2]);
-    //ip3d=AllElectrons[i_belectron2].IP3D();
-    nsip3d=fabs(AllElectrons[i_belectron2].IP3D()/AllElectrons[i_belectron2].IP3Derr());
-    reliso=AllElectrons[i_belectron2].RelIso();
-    reltrkiso=AllElectrons[i_belectron2].TrkIso()/AllElectrons[i_belectron2].Pt();
+    TLorentzVector vl(AllElectrons[i_belectron]);
+    vl.Boost(-AllJets[myRECO.ij_B].BoostVector());
+    p_jetrestf=vl.P();//                                                                                                          
+    dR_l_j=AllJets[myRECO.ij_B].DeltaR(AllElectrons[i_belectron]);
+    //ip3d=AllElectrons[i_belectron].IP3D();
+    nsip3d=fabs(AllElectrons[i_belectron].IP3D()/AllElectrons[i_belectron].IP3Derr());
+    reliso=AllElectrons[i_belectron].RelIso();
+    reltrkiso=AllElectrons[i_belectron].TrkIso()/AllElectrons[i_belectron].Pt();
     //pt wrt bjet
-    ptwrtbjet=AllElectrons[i_belectron2].P()*sin(AllElectrons[i_belectron2].Angle(AllJets[myRECO.ij_B].Vect()));
-   
-
-    //belectron2_pt=min(AllElectrons[i_belectron2].Pt(),50.);
-    belectron2_pt=AllElectrons[i_belectron2].Pt();
-    belectron2_eta=AllElectrons[i_belectron2].Eta();
-    belectron2_phi=AllElectrons[i_belectron2].Phi();
-    belectron2_ptwrtbjet=ptwrtbjet;
-    belectron2_p_jetrestf=p_jetrestf;
-    belectron2_dR_l_j=dR_l_j;
-    //belectron2_nsip3d=min(nsip3d,5.);
-    belectron2_nsip3d=nsip3d;
-    //belectron2_reltrkiso=min(reltrkiso,15.);
-    belectron2_reltrkiso=reltrkiso;
-    //belectron2_reliso=min(reliso,15.);
-    belectron2_reliso=reliso;
-    //belectron2_elecalclusteriso=min(AllElectrons[i_belectron2].ecalPFClusterIso()/AllElectrons[i_belectron2].Pt(),10.);
-    belectron2_elecalclusteriso=AllElectrons[i_belectron2].ecalPFClusterIso()/AllElectrons[i_belectron2].Pt();
-    belectron2_IsGsfCtfScPixChargeConsistent=AllElectrons[i_belectron2].IsGsfCtfScPixChargeConsistent();
-    belectron2_charge=AllElectrons[i_belectron2].Charge(); 
+    double ptwrtbjet=AllElectrons[i_belectron].P()*sin(AllElectrons[i_belectron].Angle(AllJets[myRECO.ij_B].Vect()));
+    
+    
+    belectron_pt=min(AllElectrons[i_belectron].Pt(),50.);
+    //belectron_pt.push_back(AllElectrons[i_belectron].Pt());
+    belectron_eta=AllElectrons[i_belectron].Eta();
+    //belectron_eta.push_back(AllElectrons[i_belectron].Eta());
+    belectron_phi=AllElectrons[i_belectron].Phi();
+    //belectron_phi.push_back(AllElectrons[i_belectron].Phi());
+    //belectron_ptwrtbjet=ptwrtbjet;
+    belectron_ptwrtbjet=min(ptwrtbjet,5.);
+    //belectron_ptwrtbjet.push_back(ptwrtbjet);
+    //belectron_p_jetrestf=p_jetrestf;
+    belectron_p_jetrestf=min(p_jetrestf,5.);
+    //belectron_p_jetrestf.push_back(p_jetrestf);
+    belectron_dR_l_j=dR_l_j;
+    //belectron_dR_l_j.push_back(dR_l_j);
+    //belectron_nsip3d=min(nsip3d,5.);
+    belectron_nsip3d=min(nsip3d,15.);
+    //belectron_nsip3d.push_back(nsip3d);
+    belectron_reltrkiso=min(reltrkiso,15.);
+    //belectron_reltrkiso.push_back(reltrkiso);
+    belectron_elecalclusteriso=min(AllElectrons[i_belectron].ecalPFClusterIso()/AllElectrons[i_belectron].Pt(),10.);
+    //belectron_elecalclusteriso.push_back(AllElectrons[i_belectron].ecalPFClusterIso()/AllElectrons[i_belectron].Pt());
+    belectron_IsGsfCtfScPixChargeConsistent=AllElectrons[i_belectron].IsGsfCtfScPixChargeConsistent();
+    //belectron_IsGsfCtfScPixChargeConsistent.push_back(AllElectrons[i_belectron].IsGsfCtfScPixChargeConsistent());
+    belectron_reliso=min(reliso,15.);
+    //belectron_reliso.push_back(reliso);
+    belectron_charge=AllElectrons[i_belectron].Charge();
+    //belectron_charge.push_back(AllElectrons[i_belectron].Charge());
   }
   n_belectron=nbelectron;
   
@@ -1161,7 +1084,7 @@ void ForTMVA_BBbarAnalyzer::SetTreeValuesElectron(int i_belectron1,int i_belectr
 
 
 
-void ForTMVA_BBbarAnalyzer::AnalyzeRECO(){
+void ForLepJetChargeReliability::AnalyzeRECO(){
 
   //call muon/electron
   AllMuons=GetAllMuons();
@@ -1170,7 +1093,7 @@ void ForTMVA_BBbarAnalyzer::AnalyzeRECO(){
   electronsize = AllElectrons.size();
   
   //(0) Apply some basic cuts
-  bool isGoodZ=ForTMVA_BBbarAnalyzer::ZTagCuts();
+  bool isGoodZ=ForLepJetChargeReliability::ZTagCuts();
   if(!isGoodZ) return;
   //->now Z is reconstructed
   //(1) Do Main Analysis
@@ -1205,15 +1128,24 @@ void ForTMVA_BBbarAnalyzer::AnalyzeRECO(){
   }
   
   //(1-2)For B hadron to lepton decay
-  //ForTMVA_BBbarAnalyzer::RunProtoTypeMuon();
-  //ForTMVA_BBbarAnalyzer::RunProtoTypeElectron();
-  ForTMVA_BBbarAnalyzer::RunLeptonCutStudyMuon();
-  ForTMVA_BBbarAnalyzer::RunLeptonCutStudyElectron();
+  //ForLepJetChargeReliability::RunProtoTypeMuon();
+  //ForLepJetChargeReliability::RunProtoTypeElectron();
+  ForLepJetChargeReliability::RunLeptonCutStudyMuon();
+  ForLepJetChargeReliability::RunLeptonCutStudyElectron();
   
 
 }
 
-void ForTMVA_BBbarAnalyzer::executeEvent(){
+void ForLepJetChargeReliability::executeEvent(){
+  //isEvenEvent=((event%2)==0);
+  if((event%4==1)||(event%4==2)){
+    isEventGroup1=true;
+    isEventGroup2=false;
+  }
+  else{
+    isEventGroup1=false;
+    isEventGroup2=true;
+  }
   EventTag="";
   EventTagJetParton="";
   doPrint=false;
@@ -1231,42 +1163,53 @@ void ForTMVA_BBbarAnalyzer::executeEvent(){
   //   b(or bbar)   -----o======     Z
   //
   
-  myLHE.is_gbToZb = ForTMVA_BBbarAnalyzer::Tag_gbToZb(); 
+  myLHE.is_gbToZb = ForLepJetChargeReliability::Tag_gbToZb(); 
   if(!myLHE.is_gbToZb) return;
   if (!allow_tautau){
     if (myLHE.is_tautau) return;
   }
   FillHist("gbToZb/evt_nb_LHE/"+ProcessName,myLHE.evt_nb,weight, 4, -2., 2.);
   //->For LHE info, tag events with one gluon and one b(bbar)quark 
-  // if b event : ForTMVA_BBbarAnalyzer::myLHE.evt_nb=1
-  // if bbar event : ForTMVA_BBbarAnalyzer::myLHE.evt_nb=-1
+  // if b event : ForLepJetChargeReliability::myLHE.evt_nb=1
+  // if bbar event : ForLepJetChargeReliability::myLHE.evt_nb=-1
 
   //(2)---Get the most energetic B-hadron info. in GEN
-  ForTMVA_BBbarAnalyzer::Tag_B_Hadron();
+  ForLepJetChargeReliability::Tag_B_Hadron();
   //->For GEN particles 
   //  -> Tag All B hadron and get the most energetic B-hadron info.
   
   //(3)---Check Jet matching to B-hadron
-  ForTMVA_BBbarAnalyzer::Loop_genBMatchedRecoJet();
+  ForLepJetChargeReliability::Loop_genBMatchedRecoJet();
 
 
   //(4)---Now basic generator level info is set. do analysis//fill histograms
-  ForTMVA_BBbarAnalyzer::AnalyzeLHE();
-  ForTMVA_BBbarAnalyzer::AnalyzeGEN();
+  ForLepJetChargeReliability::AnalyzeLHE();
+  ForLepJetChargeReliability::AnalyzeGEN();
   if(!myRECO.HasBmatchedRecoJet) return; // if there's no bmatjet->return
   if(!(1==myRECO.nBmatJet)) return;
-  ForTMVA_BBbarAnalyzer::AnalyzeRECO();
+  ForLepJetChargeReliability::AnalyzeRECO();
   //NowFillTree
+  doFillTree=true;//inclusive Tree
   if(doFillTree){
     //cout<<"myLHE.evt_nb="<<myLHE.evt_nb<<endl;
     //cout<<"AllJets[myRECO.ij_B].partonFlavour()="<<AllJets[myRECO.ij_B].partonFlavour()<<endl;
     //cout << "bjetPartonFlavourCharge=" << bjetPartonFlavourCharge <<endl;
-    if(bjetPartonFlavourCharge<0){//bevt
-      jhchoi_newtree->Fill();
+    if((bjetPartonFlavourCharge==bmuon_charge) || (bjetPartonFlavourCharge==belectron_charge) || (bjetPartonFlavourCharge*bjet_charge > 0) ){
+      if(isEventGroup1){
+	jhchoi_newtree->Fill();
+      }
+      else if(isEventGroup2){
+	jhchoi_newtree3->Fill();
+      }
     }
-    else if (bjetPartonFlavourCharge>0){//bbar
-
-      jhchoi_newtree2->Fill();
+    //else if (bjetPartonFlavourCharge>0){//bbar
+    if ((bjetPartonFlavourCharge== -bmuon_charge)||(bjetPartonFlavourCharge== -belectron_charge) || (bjetPartonFlavourCharge*bjet_charge < 0)){
+      if(isEventGroup1){
+	jhchoi_newtree2->Fill();
+      }
+      else if(isEventGroup2){
+	jhchoi_newtree4->Fill();
+      }
     }
   }
   
