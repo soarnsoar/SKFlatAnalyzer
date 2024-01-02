@@ -1,21 +1,46 @@
-#include "LepJetChargeReliability_RECO.h"
+#include "LepJetChargeReliability_RECO_NoDNNcut_Tree.h"
 #include <stdlib.h>
 #include <stdio.h>
 
-LepJetChargeReliability_RECO::LepJetChargeReliability_RECO(){//FYI : bottomness = -nb
+LepJetChargeReliability_RECO_NoDNNcut_Tree::LepJetChargeReliability_RECO_NoDNNcut_Tree(){//FYI : bottomness = -nb
   //Set Hadron PID vector with nb=+1
+  SKFLAT_WD=getenv("SKFlat_WD");
+  initTMVAmodel_muon();
+  initTMVAmodel_electron();
+  initTMVAmodel_jet();
   
   DNNcut=0.5;
 
   doDebug=false;
 
+  jhchoi_newtree=new TTree("ForOpt","ForOpt");
+
+  
+  jhchoi_newtree->Branch("bmuon1_charge",&bmuon1_charge);
+  jhchoi_newtree->Branch("bmuon1_DNN",&bmuon1_DNN);
+  jhchoi_newtree->Branch("bjet_charge",&bjet_charge);
+  jhchoi_newtree->Branch("bjet_DNN",&bjet_DNN);
+  jhchoi_newtree->Branch("belectron1_charge",&belectron1_charge);
+  jhchoi_newtree->Branch("belectron1_DNN",&belectron1_DNN);
+
+  jhchoi_newtree->Branch("nb_event",&nb_event);
+  jhchoi_newtree->Branch("weight",&weight);
+  jhchoi_newtree->Branch("weight_PDF",&weight_PDF);
+  jhchoi_newtree->Branch("weight_AlphaS",&weight_AlphaS);
+  jhchoi_newtree->Branch("weight_Scale",&weight_Scale);
+
+  jhchoi_newtree->Branch("genWeight_X1",&genWeight_X1);
+  jhchoi_newtree->Branch("genWeight_X2",&genWeight_X2);
+  jhchoi_newtree->Branch("genWeight_id1",&genWeight_id1);
+  jhchoi_newtree->Branch("genWeight_id2",&genWeight_id2);
+  jhchoi_newtree->Branch("genWeight_Q",&genWeight_Q);
 
 
 
 }
-//data/Run2UltraLegacy_v3/2017/TMVA
-void LepJetChargeReliability_RECO::initTMVAmodel_muon(){
-  TString xmlfile=SKFLAT_WD+"/data/Run2UltraLegacy_v3/2017/TMVA/LepJetChargeReliability/aMCatNLO/muon/TMVAClassification_DNN.weights.xml";
+
+void LepJetChargeReliability_RECO_NoDNNcut_Tree::initTMVAmodel_muon(){
+  TString xmlfile=SKFLAT_WD+"/external/TMVA/LepJetChargeReliability/aMCatNLO/muon/TMVAClassification_DNN.weights.xml";
   cout << "define tmvareader"<< endl;
   myreader_muon=new TMVA::Reader("V");
   cout << "add variables"<< endl;
@@ -41,17 +66,16 @@ void LepJetChargeReliability_RECO::initTMVAmodel_muon(){
   TMVA::PyMethodBase::PyInitialize();
   cout << "bookmva"<< endl;
   myreader_muon->BookMVA("PyKeras::DNN",xmlfile);
-  cout << "[myreader_muon] Eval for Test" << endl;
-  Float_t ret=myreader_muon->EvaluateMVA("PyKeras::DNN");
-  cout << ret << endl;
+  //Float_t ret=myreader->EvaluateMVA("PyKeras::DNN");
+
 
   
 }
 
 
-//data/Run2UltraLegacy_v3/2017/TMVA
-void LepJetChargeReliability_RECO::initTMVAmodel_electron(){
-  TString xmlfile=SKFLAT_WD+"/data/Run2UltraLegacy_v3/2017/TMVA/LepJetChargeReliability/aMCatNLO/electron/TMVAClassification_DNN.weights.xml";
+
+void LepJetChargeReliability_RECO_NoDNNcut_Tree::initTMVAmodel_electron(){
+  TString xmlfile=SKFLAT_WD+"/external/TMVA/LepJetChargeReliability/aMCatNLO/electron/TMVAClassification_DNN.weights.xml";
   cout << "define tmvareader"<< endl;
   myreader_electron=new TMVA::Reader("V");
   cout << "add variables"<< endl;
@@ -78,16 +102,15 @@ void LepJetChargeReliability_RECO::initTMVAmodel_electron(){
   TMVA::PyMethodBase::PyInitialize();
   cout << "bookmva"<< endl;
   myreader_electron->BookMVA("PyKeras::DNN",xmlfile);
-  cout << "[myreader_electron] Eval for Test" << endl;
-  Float_t ret=myreader_electron->EvaluateMVA("PyKeras::DNN");
-  cout << ret << endl;
+  //Float_t ret=myreader->EvaluateMVA("PyKeras::DNN");
+
 
   
 }
 
 
-void LepJetChargeReliability_RECO::initTMVAmodel_jet(){
-  TString xmlfile=SKFLAT_WD+"/data/Run2UltraLegacy_v3/2017/TMVA/LepJetChargeReliability/aMCatNLO/jet/TMVAClassification_DNN.weights.xml";
+void LepJetChargeReliability_RECO_NoDNNcut_Tree::initTMVAmodel_jet(){
+  TString xmlfile=SKFLAT_WD+"/external/TMVA/LepJetChargeReliability/aMCatNLO/jet/TMVAClassification_DNN.weights.xml";
   cout << "define tmvareader"<< endl;
   myreader_jet=new TMVA::Reader("V");
   cout << "add variables"<< endl;
@@ -123,15 +146,14 @@ void LepJetChargeReliability_RECO::initTMVAmodel_jet(){
   TMVA::PyMethodBase::PyInitialize();
   cout << "bookmva"<< endl;
   myreader_jet->BookMVA("PyKeras::DNN",xmlfile);
-  cout << "[myreader_jet] Eval for Test" << endl;
-  Float_t ret=myreader_jet->EvaluateMVA("PyKeras::DNN");
-  cout << ret << endl;
+  //Float_t ret=myreader->EvaluateMVA("PyKeras::DNN");
+
 
   
 }
 
 
-void LepJetChargeReliability_RECO::InitValues(){
+void LepJetChargeReliability_RECO_NoDNNcut_Tree::InitValues(){
   //--global var--//
   bmuon1_idx=-1;  bmuon1_DNN=0;  bmuon1_charge=0;
   belectron1_idx=-1;  belectron1_DNN=0;  belectron1_charge=0;
@@ -188,93 +210,16 @@ void LepJetChargeReliability_RECO::InitValues(){
   belectron_DNNs.clear();
   bjet_DNN=0;
   bjet_charge=0;
-  nb_event=0;
+  nb_event=0.;
     
 }
 
 
 
-void LepJetChargeReliability_RECO::initializeAnalyzer(){
-
-  IsTreeMode = HasFlag("TreeMode");//To store final events in tree
-  IsTrainingMode = HasFlag("TrainingMode"); //Store training variables for DNN
-
-  if(!IsTrainingMode){
-    cout << "[initialize DNN models]" << endl;
-    SKFLAT_WD=getenv("SKFlat_WD");
-    initTMVAmodel_muon();
-    initTMVAmodel_electron();
-    initTMVAmodel_jet();
-  } 
-    
-
-  if(IsTreeMode){
-    cout << "[IsTreeMode]" << endl;
-    jhchoi_newtree=new TTree("ForOpt","ForOpt");
-    jhchoi_newtree->Branch("bmuon1_charge",&bmuon1_charge);
-    jhchoi_newtree->Branch("bmuon1_DNN",&bmuon1_DNN);
-    jhchoi_newtree->Branch("bjet_charge",&bjet_charge);
-    jhchoi_newtree->Branch("bjet_DNN",&bjet_DNN);
-    jhchoi_newtree->Branch("belectron1_charge",&belectron1_charge);
-    jhchoi_newtree->Branch("belectron1_DNN",&belectron1_DNN);
-    
-    jhchoi_newtree->Branch("nb_event",&nb_event);
-    jhchoi_newtree->Branch("weight",&weight);
-    jhchoi_newtree->Branch("weight_PDF",&weight_PDF);
-    jhchoi_newtree->Branch("weight_AlphaS",&weight_AlphaS);
-    jhchoi_newtree->Branch("weight_Scale",&weight_Scale);
-    
-    jhchoi_newtree->Branch("genWeight_X1",&genWeight_X1);
-    jhchoi_newtree->Branch("genWeight_X2",&genWeight_X2);
-    jhchoi_newtree->Branch("genWeight_id1",&genWeight_id1);
-    jhchoi_newtree->Branch("genWeight_id2",&genWeight_id2);
-    jhchoi_newtree->Branch("genWeight_Q",&genWeight_Q);
-  }
-  
-
-  if(IsTrainingMode){
-    cout << "[IsTrainingMode]" << endl;
-    jhchoi_newtree=new TTree("ForDNN","ForDNN");
-    jhchoi_newtree->Branch("bjet_eta",&bjet_eta);
-    jhchoi_newtree->Branch("bmuon_pt",&bmuon_pt);
-    jhchoi_newtree->Branch("belectron_p_jetrestf",&belectron_p_jetrestf);
-    jhchoi_newtree->Branch("bjet_chargedEmEnergyFraction",&bjet_chargedEmEnergyFraction);
-    jhchoi_newtree->Branch("belectron_reltrkiso",&belectron_reltrkiso);
-    jhchoi_newtree->Branch("belectron_pt",&belectron_pt);
-    jhchoi_newtree->Branch("belectron_nsip3d",&belectron_nsip3d);
-    jhchoi_newtree->Branch("bjet_chargedHadronEnergyFraction",&bjet_chargedHadronEnergyFraction);
-    jhchoi_newtree->Branch("belectron_phi",&belectron_phi);
-    jhchoi_newtree->Branch("bmuon_nsip3d",&bmuon_nsip3d);
-    jhchoi_newtree->Branch("belectron_ptwrtbjet",&belectron_ptwrtbjet);
-    jhchoi_newtree->Branch("bjet_phi",&bjet_phi);
-    jhchoi_newtree->Branch("bmuon_p_jetrestf",&bmuon_p_jetrestf);
-    jhchoi_newtree->Branch("belectron_eta",&belectron_eta);
-    jhchoi_newtree->Branch("belectron_dR_l_j",&belectron_dR_l_j);
-    jhchoi_newtree->Branch("bmuon_ptwrtbjet",&bmuon_ptwrtbjet);
-    jhchoi_newtree->Branch("bjet_neutralHadronEnergyFraction",&bjet_neutralHadronEnergyFraction);
-    jhchoi_newtree->Branch("bmuon_phi",&bmuon_phi);
-    jhchoi_newtree->Branch("belectron_IsGsfCtfScPixChargeConsistent",&belectron_IsGsfCtfScPixChargeConsistent);
-    jhchoi_newtree->Branch("bmuon_dR_l_j",&bmuon_dR_l_j);
-    jhchoi_newtree->Branch("bmuon_reltrkiso",&bmuon_reltrkiso);
-    jhchoi_newtree->Branch("bjet_pt",&bjet_pt);
-    jhchoi_newtree->Branch("bjet_muonEnergyFraction",&bjet_muonEnergyFraction);
-    jhchoi_newtree->Branch("bmuon_eta",&bmuon_eta);
-    jhchoi_newtree->Branch("bjet_neutralEmEnergyFraction",&bjet_neutralEmEnergyFraction);
-
-
-    jhchoi_newtree->Branch("event",&event);
-    jhchoi_newtree->Branch("n_bmuon",&n_bmuon);
-    jhchoi_newtree->Branch("n_belectron",n_belectron);
-
-
-
-
-  }
-
-
+void LepJetChargeReliability_RECO_NoDNNcut_Tree::initializeAnalyzer(){
   //==== if you use "--userflags RunSyst" with SKFlat.py, HasFlag("RunSyst") will return "true"
   RunSyst = HasFlag("RunSyst");
-  cout << "[LepJetChargeReliability_RECO::initializeAnalyzer] RunSyst = " << RunSyst << endl;
+  cout << "[LepJetChargeReliability_RECO_NoDNNcut_Tree::initializeAnalyzer] RunSyst = " << RunSyst << endl;
 
   if(IsDATA){
     //ProcessName=DataStream;    
@@ -282,11 +227,11 @@ void LepJetChargeReliability_RECO::initializeAnalyzer(){
   }
   else{
     ProcessName=MCSample;
-    //if(ProcessName.Contains("DY")){
-    //  ProcessName="DY";
-    //}
+    if(ProcessName.Contains("DY")){
+      ProcessName="DY";
+    }
   }
-  cout << "[LepJetChargeReliability_RECO::initializeAnalyzer Setting ProcessName = " << ProcessName << endl;
+  cout << "[LepJetChargeReliability_RECO_NoDNNcut_Tree::initializeAnalyzer Setting ProcessName = " << ProcessName << endl;
 
 
   std::vector<JetTagging::Parameters> jtps;
@@ -309,16 +254,15 @@ void LepJetChargeReliability_RECO::initializeAnalyzer(){
     TriggerSafeCut_electron2 = 15;
   }
 
-
 }
 
-LepJetChargeReliability_RECO::~LepJetChargeReliability_RECO(){
+LepJetChargeReliability_RECO_NoDNNcut_Tree::~LepJetChargeReliability_RECO_NoDNNcut_Tree(){
   //==== Destructor of this Analyzer
 }
 
-bool LepJetChargeReliability_RECO::AnalyzeLHE(){
+bool LepJetChargeReliability_RECO_NoDNNcut_Tree::AnalyzeLHE(){
   LHEs=GetLHEs();
-  LepJetChargeReliability_RECO::myLHE.LHEsize = LHEs.size();  
+  LepJetChargeReliability_RECO_NoDNNcut_Tree::myLHE.LHEsize = LHEs.size();  
   myLHE.ngluon_incoming = 0;
   myLHE.nb_incoming = 0;
   myLHE.nb_outgoing = 0;
@@ -419,11 +363,9 @@ bool LepJetChargeReliability_RECO::AnalyzeLHE(){
   else{
     IncomingPartonTag="others";
   }
-
   if(MCSample.Contains("DY")){
     ProcessName="DY_"+IncomingPartonTag;
   }
-
 
   myLHE.is_tautau= (ntau==2) ? true : false;
   myLHE.is_mumu= (nmu==2) ? true : false;
@@ -438,6 +380,7 @@ bool LepJetChargeReliability_RECO::AnalyzeLHE(){
   //if(1 != myLHE.nparton_outgoing) return false; // skip this. Only 1 b outgoing quark
   //else, it is one of the events we want.
   nb_event=myLHE.evt_nb;
+
   if(ProcessName=="DY"){
     cout << "myLHE.nincoming_b=" << myLHE.nincoming_b << endl;
     cout << "myLHE.nincoming_bbar=" << myLHE.nincoming_bbar << endl;
@@ -450,7 +393,7 @@ bool LepJetChargeReliability_RECO::AnalyzeLHE(){
 
 
 //Sorting Leptons with P@j restframe , near 1.7
-int LepJetChargeReliability_RECO::Rank1n2Leptons(std::vector<int> &v_blep_idx, std::vector<double> &v_blep_value){
+int LepJetChargeReliability_RECO_NoDNNcut_Tree::Rank1n2Leptons(std::vector<int> &v_blep_idx, std::vector<double> &v_blep_value){
   double center=1.7;
   unsigned int vsize=v_blep_idx.size();
   vector<double> v_diff;
@@ -489,7 +432,7 @@ int LepJetChargeReliability_RECO::Rank1n2Leptons(std::vector<int> &v_blep_idx, s
 }
 
 
-void LepJetChargeReliability_RECO::RunBMuon(){
+void LepJetChargeReliability_RECO_NoDNNcut_Tree::RunBMuon(){
   std::vector<int> v_tmva_bmuonidx;
   std::vector<double> v_tmva_bmuon_charge;
   std::vector<double> v_tmva_bmuon_dnn;
@@ -525,14 +468,7 @@ void LepJetChargeReliability_RECO::RunBMuon(){
       bmuon_p_jetrestf=min(p_jetrestf,5.);
       bmuon_reltrkiso=min(reltrkiso,15.);
       bmuon_dR_l_j=dR_l_j;
-      
-      double bmuon_dnn=0.;
-      if(IsTrainingMode){//no dnn score yet
-	bmuon_dnn=i/100.;
-      }
-      else{
-	bmuon_dnn=myreader_muon->EvaluateMVA("PyKeras::DNN");
-      }
+      double bmuon_dnn=myreader_muon->EvaluateMVA("PyKeras::DNN");
       v_tmva_bmuon_dnn.push_back(bmuon_dnn);
       //Charge
       v_tmva_bmuon_charge.push_back(muon_charge);	
@@ -544,7 +480,7 @@ void LepJetChargeReliability_RECO::RunBMuon(){
   unsigned int bmuonsize=v_tmva_bmuonidx.size();
   n_bmuon=bmuonsize;
 
-  //set rank by score
+  //set rank
   std::vector<int> v_tmva_bmuon_rank;
   for(unsigned int i=0; i < bmuonsize; i++){
     //int _muonidx=v_tmva_bmuonidx[i];
@@ -613,7 +549,7 @@ void LepJetChargeReliability_RECO::RunBMuon(){
 
 
 
-void LepJetChargeReliability_RECO::RunBElectron(){
+void LepJetChargeReliability_RECO_NoDNNcut_Tree::RunBElectron(){
   std::vector<int> v_tmva_belectronidx;
   std::vector<double> v_tmva_belectron_charge;
   std::vector<double> v_tmva_belectron_dnn;
@@ -650,14 +586,7 @@ void LepJetChargeReliability_RECO::RunBElectron(){
       belectron_reltrkiso=min(reltrkiso,15.);//
       belectron_dR_l_j=dR_l_j;//
       belectron_IsGsfCtfScPixChargeConsistent=AllElectrons[i].IsGsfCtfScPixChargeConsistent();//
-
-      double belectron_dnn=0.;
-      if(IsTrainingMode){//no dnn score yet
-        belectron_dnn=i/100.;
-      }
-      else{
-	belectron_dnn=myreader_electron->EvaluateMVA("PyKeras::DNN");
-      }
+      double belectron_dnn=myreader_electron->EvaluateMVA("PyKeras::DNN");
       v_tmva_belectron_dnn.push_back(belectron_dnn);
       //Charge
       v_tmva_belectron_charge.push_back(electron_charge);	
@@ -669,7 +598,7 @@ void LepJetChargeReliability_RECO::RunBElectron(){
   unsigned int belectronsize=v_tmva_belectronidx.size();
   n_belectron=belectronsize;
 
-  //set rank by score
+  //set rank
   std::vector<int> v_tmva_belectron_rank;
   for(unsigned int i=0; i < belectronsize; i++){
     //int _electronidx=v_tmva_belectronidx[i];
@@ -736,7 +665,7 @@ void LepJetChargeReliability_RECO::RunBElectron(){
 
 
 
-bool LepJetChargeReliability_RECO::ZmmReco(){
+bool LepJetChargeReliability_RECO_NoDNNcut_Tree::ZmmReco(){
   vector<int> idx_Zmuon;
   vector<Muon> v_Zmuon;
   double this_leptonid_sf=1.;
@@ -779,13 +708,6 @@ bool LepJetChargeReliability_RECO::ZmmReco(){
     this_iso_sf=1.;
     //this_trigger_sf*=mcCorr->MuonTrigger_SF("IsoMu27_POGTight", "HLT_IsoMu27_v", v_Zmuon, 0);
     this_trigger_sf=1.;
-    vector<Lepton*> leps=MakeLeptonPointerVector(v_Zmuon);
-    mu_trigsf=GetDileptonTriggerSF("Mu17Leg1_MediumID_trkIsoLoose","Mu8Leg2_MediumID_trkIsoLoose","DZ_MediumID_trkIsoLoose",leps,0,0);
-    Lepton* _mu1=leps.at(0);
-    Lepton* _mu2=leps.at(1);
-    mu_recosf=fEff->GetEfficiencySF("Muon_RECO",_mu1,0,0) * fEff->GetEfficiencySF("Muon_RECO",_mu2,0,0);
-    mu_idsf=fEff->GetEfficiencySF("Muon_MediumID_trkIsoLoose",_mu1,0,0) * fEff->GetEfficiencySF("Muon_MediumID_trkIsoLoose",_mu2,0,0);
-    mu_trksf=fEff->GetEfficiencySF("Muon_Tracking",_mu1,0,0) * fEff->GetEfficiencySF("Muon_Tracking",_mu2,0,0);
   }
   
   unsigned int SelectedMuonSize=idx_Zmuon.size();
@@ -815,12 +737,13 @@ bool LepJetChargeReliability_RECO::ZmmReco(){
   myRECO.idx_Zmuon1=i_l1;
   myRECO.idx_Zmuon2=i_l2;
   myRECO.goodZmm=true;
+  weight*=this_leptonid_sf*this_trigger_sf;
   return 1;
 
 
 }
 
-bool LepJetChargeReliability_RECO::ZeeReco(){
+bool LepJetChargeReliability_RECO_NoDNNcut_Tree::ZeeReco(){
   vector<int> idx_Zelectron;
   vector<Electron> v_Zelectron;
   double this_leptonid_sf=1.;
@@ -852,13 +775,9 @@ bool LepJetChargeReliability_RECO::ZeeReco(){
     this_leptonreco_sf*=mcCorr->ElectronReco_SF (AllElectrons[i_l1].scEta(), AllElectrons[i_l2].Pt(),0);
     this_leptonid_sf*=mcCorr->ElectronID_SF ("passMediumID",  AllElectrons[i_l1].scEta(), AllElectrons[i_l1].Pt());
     this_leptonid_sf*=mcCorr->ElectronID_SF ("passMediumID",  AllElectrons[i_l2].scEta(), AllElectrons[i_l2].Pt());
+
     
-    vector<Lepton*> leps=MakeLeptonPointerVector(v_Zelectron);
-    Lepton* _el1=leps.at(0);
-    Lepton* _el2=leps.at(1);
-    el_trigsf=GetDileptonTriggerSF("Ele23Leg1_MediumID","Ele12Leg2_MediumID","",leps,0,0);
-    el_recosf=fEff->GetEfficiencySF("Electron_RECO",_el1,0,0) * fEff->GetEfficiencySF("Electron_RECO",_el2,0,0);
-    el_idsf=fEff->GetEfficiencySF("Electron_MediumID",_el1,0,0) * fEff->GetEfficiencySF("Electron_MediumID",_el2,0,0);
+    
   }
 
   myRECO.vZ=AllElectrons[i_l1]+AllElectrons[i_l2];
@@ -867,6 +786,7 @@ bool LepJetChargeReliability_RECO::ZeeReco(){
   
   if(myRECO.mZ < 60) return 0;
   if(myRECO.mZ > 120) return 0;
+  weight*=this_leptonid_sf*this_leptonreco_sf;
   myRECO.idx_Zelectron1=i_l1;
   myRECO.idx_Zelectron2=i_l2;
   myRECO.goodZmm=true;
@@ -879,14 +799,14 @@ bool LepJetChargeReliability_RECO::ZeeReco(){
 }
 
 
-bool LepJetChargeReliability_RECO::Tag1bjet(){
+bool LepJetChargeReliability_RECO_NoDNNcut_Tree::Tag1bjet(){
   //JetTagging::DeepJet,JetTagging::Tight,JetTagging::incl,JetTagging::comb
   //double MCCorrection::GetJetTaggingCutValue(JetTagging::Tagger tagger, JetTagging::WP wp){
   //myRECO.ij_B
   //vector<Jet> tightjets = SelectJets(AllJets, "tightLepVeto", 20., 2.4);
   unsigned int _Nb=0;
   unsigned int _Nb_loose=0;
-  double taged_bjet_score=0.;
+  double _bjet_tagscore;
   tightjets.clear();
   //tightjets.push_back(AllJets[myRECO.ij_B]);
   //jtp=JetTagging::Parameters(JetTagging::DeepJet,JetTagging::Tight,JetTagging::incl,JetTagging::comb);
@@ -911,59 +831,49 @@ bool LepJetChargeReliability_RECO::Tag1bjet(){
     if(fabs(AllJets[i].Eta()) > 2.4) continue;
     if(AllJets[i].DeltaR(l1)<0.4) continue;
     if(AllJets[i].DeltaR(l2)<0.4) continue;
-    if(!AllJets[i].PassID("tightLepVeto")) continue; //old : tight
+    if(!AllJets[i].PassID("tight")) continue;
     _Nb_loose+=1;
     myRECO.ij_B=i;
     if(btag_score>btag_cut) _Nb+=1;
-    taged_bjet_score=btag_score;
+    _bjet_tagscore=btag_score;
     tightjets.push_back(AllJets[i]);//for btagSF
   }
   if(_Nb_loose > 1) return 0;
-  FillCutflow("cutflow/all/"+ProcessName,"Only1LooseBJet",weight);
   FillHist("Only1LooseBJet/cutflow/"+ProcessName,1, weight, 2, 0, 2);  
-  FillHist("Only1LooseBJet/btagscore_nobtagsf/"+ProcessName,taged_bjet_score , weight, 50, 0, 1);  
   if(_Nb!=1) return 0;
-  FillCutflow("cutflow/all/"+ProcessName,"Only1TightBJet",weight);
   FillHist("Only1TightBJet/cutflow/"+ProcessName,1, weight, 2, 0, 2);  
-  FillHist("Only1TightBJet/btagscore_nobtagsf/"+ProcessName,taged_bjet_score, weight, 50, 0, 1);  
+
   
 
   if(!IsDATA){
-    btagsf = mcCorr->GetBTaggingReweight_1a(tightjets, jtp);
-    weight*=btagsf;
-
+    double btagWeight = mcCorr->GetBTaggingReweight_1a(tightjets, jtp);
+    weight*=btagWeight;
   }
-  FillHist("Only1TightBJet/btagscore_withsf/"+ProcessName,taged_bjet_score, weight, 50, 0, 1);  
   return 1;
 }
 
 
-bool LepJetChargeReliability_RECO::ApplyEventKinematicCut(){
+bool LepJetChargeReliability_RECO_NoDNNcut_Tree::ApplyEventKinematicCut(){
   FillHistEventBase("BeforeKinCut");
   //myRECO.vZ;
   //MET
   //(1) MET
-  //if (MET > 75. ) return 0;
-  if (PuppiMET_pt > 75. ) return 0;
+  if (MET > 75. ) return 0;
   FillHistEventBase("After_MET_Cut");
-  FillCutflow("cutflow/all/"+ProcessName,"MET_Cut",weight);
   //(2)dPhi(Z,b)
   dphi_z_b= fabs(AllJets[myRECO.ij_B].DeltaPhi(myRECO.vZ));
   if (dphi_z_b < 1.6 ) return 0;
   FillHistEventBase("After_MET_dPhi_Cut");
-  FillCutflow("cutflow/all/"+ProcessName,"dPhi_Cut",weight);
   pt_z=myRECO.vZ.Pt();
   if (pt_z < 15.) return 0;
-  FillCutflow("cutflow/all/"+ProcessName,"ZpT_Cut",weight);
   FillHistEventBase("After_MET_dPhi_ZpT_Cut");
   pt_zb=(AllJets[myRECO.ij_B]+myRECO.vZ).Pt();
   if (pt_zb > 60.) return 0;
-  FillCutflow("cutflow/all/"+ProcessName,"pT_Zb_Cut",weight);
-  FillHistEventBase("After_MET_dPhi_ZpT_pT_Zb_Cut");
+  FillHistEventBase("After_MET_dPhi_pT_Zb_Cut");
   return 1;
 }
 
-void LepJetChargeReliability_RECO::CategorizeEvent(){
+void LepJetChargeReliability_RECO_NoDNNcut_Tree::CategorizeEvent(){
   if (n_bmuon > 0){
     FillHistBMuon("AtLeast1MuonInJet");
     FillHistBJet("AtLeast1MuonInJet");
@@ -1002,7 +912,7 @@ void LepJetChargeReliability_RECO::CategorizeEvent(){
 
 }
 
-void LepJetChargeReliability_RECO::AnalyzeRECO(){
+void LepJetChargeReliability_RECO_NoDNNcut_Tree::AnalyzeRECO(){
 
 
   
@@ -1034,196 +944,109 @@ void LepJetChargeReliability_RECO::AnalyzeRECO(){
   myRECO.passMuonTriggerAndZmm=myRECO.passMuonTrigger && myRECO.goodZmm;
   myRECO.passElectronTriggerAndZee= myRECO.passElectronTrigger && myRECO.goodZee;
   if((!myRECO.passMuonTriggerAndZmm) && (!myRECO.passElectronTriggerAndZee)) return;
-  
-  FillCutflow("cutflow/all/"+ProcessName,"TriggerAndGoodZ",weight);
   FillHist("TriggerAndGoodZ/cutflow/"+ProcessName,1, weight, 2, 0, 2);  
 
 
   if(myRECO.passMuonTriggerAndZmm){ 
     ZllChannel="Zmm";
-    trigsf=mu_trigsf;
-    lep_recosf=mu_recosf;
-    lep_idsf=mu_idsf;
-    weight=weight*trigsf*lep_recosf*lep_idsf*mu_trksf;
   }
   else if(myRECO.passElectronTriggerAndZee){
     ZllChannel="Zee";
-    trigsf=el_trigsf;
-    lep_recosf=el_recosf;
-    lep_idsf=el_idsf;
-    mu_trksf=1.;
-    weight=weight*trigsf*lep_recosf*lep_idsf*mu_trksf;
   }
   
   FillHist("PassTrigger__and__GoodZ",1, weight, 2, 0, 2);
   FillHist("PassTrigger_and_GoodZ/mZ/"+ProcessName, myRECO.mZ, weight, 200, 60., 120.);
 
-  FillHistEventBase("NoBtag");
 
+  if(!LepJetChargeReliability_RECO_NoDNNcut_Tree::Tag1bjet()) return;
+  //If Z event, Let's store
+  
+  FillHist("Tag1bjet/cutflow/"+ProcessName,1, weight, 2, 0, 2);  
 
+  //FillHist("Pass1bjet",1, weight, 1, 0, 2);
 
+  //Give Event Kinematic cut
+  if(!LepJetChargeReliability_RECO_NoDNNcut_Tree::ApplyEventKinematicCut()) return;
+  FillHist("PassKinCut/cutflow/"+ProcessName,1, weight, 2, 0, 2);  
+  StoreEvent=true;
 
+  LepJetChargeReliability_RECO_NoDNNcut_Tree::SetBJetDNNInput();
+  //->now Z is reconstructed
+  //(1) Do Main Analysis
+  //(1-1) Set EventTag
+  //(1-2)For B hadron to lepton decay
+  //LepJetChargeReliability_RECO_NoDNNcut_Tree::RunProtoTypeMuon();
+  //LepJetChargeReliability_RECO_NoDNNcut_Tree::RunProtoTypeElectron();
+  LepJetChargeReliability_RECO_NoDNNcut_Tree::RunBMuon();
+  //FillHist("PassRunLeptonCutStudyMuon",1, weight, 1, 0, 2);
+  LepJetChargeReliability_RECO_NoDNNcut_Tree::RunBElectron();
+  //FillHist("PassRunLeptonCutStudyElectron",1, weight, 1, 0, 2);
 
-  if(!IsTrainingMode){
-    if(!LepJetChargeReliability_RECO::Tag1bjet()) return;
-    //If Z event, Let's store
-    FillCutflow("cutflow/all/"+ProcessName,"Tag1bjet",weight);
-    FillHist("Tag1bjet/cutflow/"+ProcessName,1, weight, 2, 0, 2);  
-    
-    //FillHist("Pass1bjet",1, weight, 1, 0, 2);
-    
-    //Give Event Kinematic cut
-    if(!LepJetChargeReliability_RECO::ApplyEventKinematicCut()) return;
-    //FillCutflow("cutflow/all/"+ProcessName,"KinCut",weight);
-    FillHist("PassKinCut/cutflow/"+ProcessName,1, weight, 2, 0, 2);  
-    StoreEvent=true;
-    
-    LepJetChargeReliability_RECO::SetBJetDNNInput();
-    //->now Z is reconstructed
-    //(1) Do Main Analysis
-    //(1-1) Set EventTag
-    //(1-2)For B hadron to lepton decay
-    //LepJetChargeReliability_RECO::RunProtoTypeMuon();
-    //LepJetChargeReliability_RECO::RunProtoTypeElectron();
-    LepJetChargeReliability_RECO::RunBMuon();
-    //FillHist("PassRunLeptonCutStudyMuon",1, weight, 1, 0, 2);
-    LepJetChargeReliability_RECO::RunBElectron();
-    //FillHist("PassRunLeptonCutStudyElectron",1, weight, 1, 0, 2);
-    
-    //Calc bjet dnn
-    
-    bjet_DNN=myreader_jet->EvaluateMVA("PyKeras::DNN");
-    
-    CategorizeEvent();
-    
-    //  FillHist("event_start",1, weight, 1, 0, 1);
-    //c.v.p
-    FillHist(evtcat_str+"/BJetWeightedCharge/"+ProcessName,evtcharge,weight,100,-1.,1.);
-    FillHist("FinalSelection/BJetWeightedCharge/"+ProcessName,evtcharge,weight,100,-1.,1.);
-    FillHistEventBase(evtcat_str);
-    FillHistBJet(evtcat_str);  
-    FillHistBJet("FinalSelection");
-    FillHistBMuon("FinalSelection");
-    FillHistBElectron("FinalSelection");
-    if(nPV<10){
-      FillHistEventBase("nPV_under_10");
-      FillHistBJet("nPV_under_10");
-    }
-    if(nPV>50){
-      FillHistEventBase("nPV_over_50");
-      FillHistBJet("nPV_over_50"); 
-    }
-    //10% up DY bbar 
-    if(myLHE.nincoming_bbar==1 && ProcessName.Contains("DY")){
-      FillHist(evtcat_str+"/BJetCharge_1p1_dybbar/"+ProcessName,evtcharge,weight*1.1,100,-1.,1.);
-    }
-    else{
-      FillHist(evtcat_str+"/BJetCharge_1p1_dybbar/"+ProcessName,evtcharge,weight,100,-1.,1.);
-    }
-    
-    //10% up DY bevt 
-    if(myLHE.nincoming_b==1 && ProcessName.Contains("DY")){
-      FillHist(evtcat_str+"/BJetCharge_1p1_dybevt/"+ProcessName,evtcharge,weight*1.1,100,-1.,1.);
-    }
-    else{
-      FillHist(evtcat_str+"/BJetCharge_1p1_dybevt/"+ProcessName,evtcharge,weight,100,-1.,1.);
-    }
-    
-    
+  //Calc bjet dnn
+  
+  bjet_DNN=myreader_jet->EvaluateMVA("PyKeras::DNN");
 
-    if(evtcat_int==0){
-      FillHistBMuon(evtcat_str);
-    }
-    else if(evtcat_int==1){
-      FillHistBElectron(evtcat_str);
-    }
-    
-    if(IsTreeMode) jhchoi_newtree->Fill();
+  CategorizeEvent();
+
+  //  FillHist("event_start",1, weight, 1, 0, 1);
+  //c.v.p
+  FillHist(evtcat_str+"/BJetWeightedCharge/"+ProcessName,evtcharge,weight,100,-1.,1.);
+  FillHist("FinalSelection/BJetWeightedCharge/"+ProcessName,evtcharge,weight,100,-1.,1.);
+  FillHistEventBase(evtcat_str);
+  FillHistBJet(evtcat_str);  
+  FillHistBJet("FinalSelection");
+  FillHistBMuon("FinalSelection");
+  FillHistBElectron("FinalSelection");
+  if(nPV<10){
+    FillHistEventBase("nPV_under_10");
+    FillHistBJet("nPV_under_10");
   }
-  else{//if training mode
-
-    LepJetChargeReliability_RECO::Loop_genBMatchedRecoJet();
-    if(!myRECO.HasBmatchedRecoJet) return; // if there's no bmatjet->return                                                                      
-    if(!(1==myRECO.nBmatJet)) return;
-    LepJetChargeReliability_RECO::RunBMuon();
-    //FillHist("PassRunLeptonCutStudyMuon",1, weight, 1, 0, 2);
-    LepJetChargeReliability_RECO::RunBElectron();
-    jhchoi_newtree->Fill();
-
+  if(nPV>50){
+    FillHistEventBase("nPV_over_50");
+    FillHistBJet("nPV_over_50"); 
   }
+  //10% up DY bbar 
+  if(myLHE.nincoming_bbar==1 && ProcessName.Contains("DY")){
+    FillHist(evtcat_str+"/BJetCharge_1p1_dybbar/"+ProcessName,evtcharge,weight*1.1,100,-1.,1.);
+  }
+  else{
+    FillHist(evtcat_str+"/BJetCharge_1p1_dybbar/"+ProcessName,evtcharge,weight,100,-1.,1.);
+  }
+
+  //10% up DY bevt 
+  if(myLHE.nincoming_b==1 && ProcessName.Contains("DY")){
+    FillHist(evtcat_str+"/BJetCharge_1p1_dybevt/"+ProcessName,evtcharge,weight*1.1,100,-1.,1.);
+  }
+  else{
+    FillHist(evtcat_str+"/BJetCharge_1p1_dybevt/"+ProcessName,evtcharge,weight,100,-1.,1.);
+  }
+
+
+
+  if(evtcat_int==0){
+    FillHistBMuon(evtcat_str);
+  }
+  else if(evtcat_int==1){
+    FillHistBElectron(evtcat_str);
+  }
+  //--For Tree--//
+  jhchoi_newtree->Fill();
 }
 
+void LepJetChargeReliability_RECO_NoDNNcut_Tree::FillHistEventBase(TString cutname){
 
-void LepJetChargeReliability_RECO::Loop_genBMatchedRecoJet(){
-  //init
-  myRECO.HasBmatchedRecoJet = false;
-  myRECO.nBmatJet=0;
-  AllJets = GetAllJets();
-  jetsize=AllJets.size();
-  //double _RECO_bj_pt=-999.;
-  double _RECO_bj_pt=30.;
-  myRECO.ij_B=-1;//Bmatched jet's jet idx
-  double jet_pt=-999., jet_flavor= -100, jet_eta = -99;
-  for( unsigned int ij = 0 ; ij < jetsize; ij++){
-    jet_pt = AllJets[ij].Pt();
-    jet_eta = AllJets[ij].Eta();
-    jet_flavor = AllJets[ij].hadronFlavour();
-
-    if (
-        (jet_flavor==5)  &&
-        (jet_pt > _RECO_bj_pt) &&
-        (fabs(jet_eta) < 2.4)
-	)//if genB matched reco jet with the highest pt ever
-      {
-        myRECO.ij_B=ij;
-        myRECO.nBmatJet+=1;
-        _RECO_bj_pt=jet_pt;
-      }
-  }//[END] for all recojets
-  if(myRECO.ij_B > -1 ){
-    myRECO.HasBmatchedRecoJet=true;
-    myRECO.vBmatchedJet.SetPtEtaPhiM(
-				     AllJets[myRECO.ij_B].Pt(),
-				     AllJets[myRECO.ij_B].Eta(),
-				     AllJets[myRECO.ij_B].Phi(),
-				     AllJets[myRECO.ij_B].M()
-				     );
-    
-  }//[END] if there's Bhad matched jet
-}//[END]ForLepJetChargeReliability::Loop_genBMatchedRecoJet()
-
-
-void LepJetChargeReliability_RECO::FillHistEventBase(TString cutname){
-  if(IsTreeMode) return;
   FillHist(cutname+"/nPV/"+ProcessName,nPV,weight,75,0.,150.);
-  FillHist(cutname+"/pfMET/"+ProcessName,MET,weight,75,0.,150.);
-  FillHist(cutname+"/PuppiMET/"+ProcessName,PuppiMET_pt,weight,75,0.,150.);
+  FillHist(cutname+"/MET/"+ProcessName,MET,weight,75,0.,150.);
   FillHist(cutname+"/dPhi_Z_b/"+ProcessName,dphi_z_b,weight,35,0.,3.15);
   FillHist(cutname+"/pT_Z/"+ProcessName,pt_z,weight,50,0.,100.);
   FillHist(cutname+"/pT_Z_b/"+ProcessName,pt_zb,weight,50,0.,100.);
   FillHist(cutname+"/M_Z/"+ProcessName,myRECO.mZ,weight,30,60.,120.);
 
-  if (ZllChannel!=""){
-    
-    FillHist(cutname+"_"+ZllChannel+"/M_Z_nosf/"+ProcessName,myRECO.mZ,base_weight,30,60.,120.);
-    FillHist(cutname+"_"+ZllChannel+"/M_Z_after_PUW/"+ProcessName,myRECO.mZ,base_weight*puweight,30,60.,120.);
-    FillHist(cutname+"_"+ZllChannel+"/M_Z_after_PREFIREW/"+ProcessName,myRECO.mZ,base_weight*puweight*prefire_weight,30,60.,120.);
-    FillHist(cutname+"_"+ZllChannel+"/M_Z_after_TRIGSF/"+ProcessName,myRECO.mZ,base_weight*puweight*prefire_weight*trigsf,30,60.,120.);
-    FillHist(cutname+"_"+ZllChannel+"/M_Z_after_TRKSF/"+ProcessName,myRECO.mZ,base_weight*puweight*prefire_weight*mu_trksf,30,60.,120.);
-    FillHist(cutname+"_"+ZllChannel+"/M_Z_after_RECOSF/"+ProcessName,myRECO.mZ,base_weight*puweight*prefire_weight*mu_trksf*lep_recosf,30,60.,120.);
-    FillHist(cutname+"_"+ZllChannel+"/M_Z_after_IDSF/"+ProcessName,myRECO.mZ,base_weight*puweight*prefire_weight*mu_trksf*lep_recosf*lep_idsf,30,60.,120.);
-
-    FillHist(cutname+"_"+ZllChannel+"/M_Z_after_BTAGSF/"+ProcessName,myRECO.mZ,base_weight*puweight*prefire_weight*mu_trksf*lep_recosf*lep_idsf*btagsf,30,60.,120.);
-
-
-
-  }
 
 }
 
 
-void LepJetChargeReliability_RECO::FillHistBMuon(TString cutname){
-  if(IsTreeMode) return;
+void LepJetChargeReliability_RECO_NoDNNcut_Tree::FillHistBMuon(TString cutname){
   FillHist(cutname+"/bmuon_dnn/"+ProcessName,bmuon1_DNN,weight,100,0.,1.);
   FillHist(cutname+"/bmuon_charge/"+ProcessName,bmuon1_charge,weight,100,-2.,2.);
   FillHist(cutname+"/bmuon_charge_weighted/"+ProcessName,bmuon1_charge*bmuon1_DNN,weight,100,-2.,2.);
@@ -1239,8 +1062,7 @@ void LepJetChargeReliability_RECO::FillHistBMuon(TString cutname){
 }
 
 
-void LepJetChargeReliability_RECO::FillHistBElectron(TString cutname){
-  if(IsTreeMode) return;
+void LepJetChargeReliability_RECO_NoDNNcut_Tree::FillHistBElectron(TString cutname){
   FillHist(cutname+"/belectron_dnn/"+ProcessName,belectron1_DNN,weight,100,0.,1.);
   FillHist(cutname+"/belectron_charge/"+ProcessName,belectron1_charge,weight,100,-2.,2.);
   FillHist(cutname+"/belectron_charge_weighted/"+ProcessName,belectron1_charge*belectron1_DNN,weight,100,-2.,2.);
@@ -1258,11 +1080,10 @@ void LepJetChargeReliability_RECO::FillHistBElectron(TString cutname){
 
 
 
-void LepJetChargeReliability_RECO::FillHistBJet(TString cutname){
-  if(IsTreeMode) return;
+void LepJetChargeReliability_RECO_NoDNNcut_Tree::FillHistBJet(TString cutname){
+
   FillHist(cutname+"/bjet_charge/"+ProcessName,bjet_charge,weight,100,-1.,1.);
   FillHist(cutname+"/bjet_charge_weighed/"+ProcessName,bjet_charge*bjet_DNN,weight,100,-1.,1.);
-  FillHist(cutname+"/bjet_DNN/"+ProcessName,bjet_DNN,weight,100,-1.,1.);
 
   FillHist(cutname+"/bjet_pt/"+ProcessName,bjet_pt,weight,50,0.,250.);
   FillHist(cutname+"/bjet_eta/"+ProcessName,bjet_eta,weight,60,-3.,3.);
@@ -1278,7 +1099,7 @@ void LepJetChargeReliability_RECO::FillHistBJet(TString cutname){
 
 }
  
-void LepJetChargeReliability_RECO::SetBJetDNNInput(){
+void LepJetChargeReliability_RECO_NoDNNcut_Tree::SetBJetDNNInput(){
   bjet_charge=AllJets[myRECO.ij_B].Charge();
   bjet_pt=min(AllJets[myRECO.ij_B].Pt(),250.);
   bjet_eta=AllJets[myRECO.ij_B].Eta();
@@ -1298,9 +1119,7 @@ void LepJetChargeReliability_RECO::SetBJetDNNInput(){
 
 
 
-void LepJetChargeReliability_RECO::executeEvent(){
-  //jhchoi//
-
+void LepJetChargeReliability_RECO_NoDNNcut_Tree::executeEvent(){
   ev = GetEvent();
   //FillHist("event_start",1, weight, 1, 0, 1);
   isEvenEvent=((event%2)==0);
@@ -1310,8 +1129,7 @@ void LepJetChargeReliability_RECO::executeEvent(){
   ZllChannel="";
   IncomingPartonTag="";
   doPrint=false;
-  weight=1.;//init event weight
-  base_weight=1.;
+  weight = 1.;//init event weight
   myRECO.idx_Zmuon1=-1;
   myRECO.idx_Zmuon2=-1;
   myRECO.idx_Zelectron1=-1;
@@ -1319,38 +1137,13 @@ void LepJetChargeReliability_RECO::executeEvent(){
   myRECO.goodZmm=false;
   myRECO.goodZee=false;
   DNNscore=-999.;
-  dphi_z_b=0.;
-  pt_z=0.;
-  pt_zb=0.;
-  taged_bjet_score=0.;
-  //SF
-  trigsf=1.;
-  mu_trigsf=1.;
-  el_trigsf=1.;
-
-  lep_recosf=1.;
-  mu_recosf=1.;
-  el_recosf=1.;
-
-  lep_idsf=1.;
-  mu_idsf=1.;
-  el_idsf=1.;
-
-  mu_trksf=1.;
-
-  btagsf=1.;
 
   MET = ev.GetMETVector().Pt();
 
-
-  prefire_weight=GetPrefireWeight(0);
-  weight*=prefire_weight;
   //nPV
-  puweight=GetPileUpWeight(nPileUp,0);
-  weight*=puweight;
+  weight*=GetPrefireWeight(0);
+  weight*=GetPileUpWeight(nPileUp,0);
   if(!IsDATA){
-    base_weight*=MCweight();
-    base_weight*=ev.GetTriggerLumi("Full");
     weight *= MCweight();
     weight *= ev.GetTriggerLumi("Full");
   }
@@ -1361,12 +1154,10 @@ void LepJetChargeReliability_RECO::executeEvent(){
   StoreEvent=false;
   
   if(!IsDATA){
-    myLHE.is_gbToZb = LepJetChargeReliability_RECO::AnalyzeLHE();
-    
+    myLHE.is_gbToZb = LepJetChargeReliability_RECO_NoDNNcut_Tree::AnalyzeLHE(); 
   }
-  FillCutflow("cutflow/all/"+ProcessName,"event_start",weight);
   FillHist("event_start/cutflow/"+ProcessName,1, weight, 2, 0, 2);
-  LepJetChargeReliability_RECO::AnalyzeRECO();
+  LepJetChargeReliability_RECO_NoDNNcut_Tree::AnalyzeRECO();
       
   //  FillHist("BasicCut/ZCand_Mass/"+ProcessName, ZCand.M(), weight, 40, 70., 110.);
   
