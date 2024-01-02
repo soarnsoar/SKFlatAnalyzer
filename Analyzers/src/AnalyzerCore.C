@@ -32,8 +32,258 @@ AnalyzerCore::AnalyzerCore(){
 
   
 }
+/*
+void AnalyzerCore::SetupRoccoR(){
+  cout<<"[AnalyzerCore::SetupRoccoR] setting Rocheseter Correction"<<endl;
+  TString erashort=GetEraShort();
 
+  //TString rocpath=datapath+"/"+GetEra()+"/RoccoR/RoccoR"+GetEraShort()+"UL.txt"; //central roccor for amc
+  TString rocpath=TString(getenv("SKFlat_WD"))+"/external/Aepcor/u_"+erashort(2,3)+"UL_1.txt"; //roccor for minnlo
+  if(IsExists(rocpath)) roc=new RoccoR(rocpath.Data());
+  else cout<<"[AnalyzerCore::SetupRoccoR] no "+rocpath<<endl;
+
+  TString rocelepath=TString(getenv("SKFlat_WD"))+"/external/Aepcor/e_"+erashort(2,3)+"UL_1.txt";
+  if(IsExists(rocelepath)){
+    rocele=new Aepcor;
+    rocele->init(rocelepath.Data(),Aepres::CB);
+  }
+  else cout<<"[AnalyzerCore::SetupRoccoR] no "+rocelepath<<endl;
+}
+
+
+std::vector<Electron> AnalyzerCore::ElectronEnergyCorrection(const vector<Electron>& electrons,int set,int member){
+  if(!rocele) return std::vector<Electron>(electrons);
+  std::vector<Electron> out;
+  for(auto electron:electrons){
+    if(set>=0){
+      double rc=1.;
+      //double rcerr=0.;
+      double el_eta=electron.scEta();
+      double el_phi=electron.Phi();
+      if(IsDATA){
+        rc=rocele->kScaleDT(electron.UncorrPt(),el_eta,el_phi,electron.R9(),run,set,member);
+      }else{
+        Gen gen=SMPGetGenMatchedLepton(electron,gens,1);
+        gRandom->SetSeed((run<<15)+(lumi<<10)+(event<<5)+electron.Eta()*100);
+        double u=gRandom->Rndm();
+        if(!gen.IsEmpty()&&fabs(electron.Pt()/gen.Pt()-1.)<0.5){
+          rc=rocele->kSpreadMC(electron.UncorrPt(),el_eta,el_phi,electron.R9(),u,gen.Pt(),set,member);
+        }else{
+          //rc=rocele->kSmearMC(electron.UncorrPt(),el_eta,el_phi,electron.R9(),u,set,member);
+          rc=1.;
+        }
+      }
+      if(TMath::IsNaN(rc)) rc=1.;
+      electron*=rc*electron.UncorrE()/electron.E();
+    }else if(set==-1){ //no energe cor
+      electron*=electron.UncorrE()/electron.E();
+    }else{
+      cout<<"[SMPAnalyzerCore::ElectronEnergyCorrection] wrong set "<<set<<endl;
+      exit(ENODATA);
+    }
+    out.push_back(electron);
+  }
+  std::sort(out.begin(),out.end(),PtComparing);
+  return out;
+}
+
+*/
+bool AnalyzerCore::IsExists(TString filepath){
+  ifstream fcheck(filepath);
+  return fcheck.good();
+}
+
+void AnalyzerCore::FillCutflow(TString histname,TString label,double weight){
+  TH1D* hist=NULL;
+  auto it=maphist_TH1D.find(histname);
+  if(it==maphist_TH1D.end()){
+    hist=new TH1D(histname,"",1,0,1);
+    hist->GetXaxis()->SetBinLabel(1,label);
+    maphist_TH1D[histname]=hist;
+  }else hist=it->second;
+
+  int nbin=hist->GetNbinsX();
+  int ibin=0;
+  for(int i=1;i<=nbin;i++){
+    if(hist->GetXaxis()->GetBinLabel(i)==label){
+      ibin=i;
+    }
+  }
+
+  if(!ibin){
+    hist->SetBins(nbin+1,0,nbin+1);
+    ibin=nbin+1;
+    hist->GetXaxis()->SetBinLabel(ibin,label);
+  }
+  hist->Fill(ibin-0.5,weight);
+}
+
+void AnalyzerCore::SetupEfficiency(){
+  TString configpath=getenv("DATA_DIR")+TString("/")+GetEra()+"/ID/eff.conf";
+  if(IsExists(configpath)){
+    fEff=new EfficiencyTool(configpath);
+  }
+}
+void AnalyzerCore::DeleteEfficiency(){
+  if(fEff) delete fEff;
+}
+
+double AnalyzerCore::GetLeptonTriggerSF(TString triggerSF_key,const vector<Lepton*>& leps,int set,int mem,TString option){
+  if(IsDATA) return 1;
+  if(triggerSF_key=="") return 1;
+  if(triggerSF_key=="Default") return 1;
+
+  double data_eff=1.,sim_eff=1.;
+  for(const auto& lep:leps){
+    data_eff*=1-fEff->GetDataEfficiency(triggerSF_key,lep,set,mem,option);
+    sim_eff*=1-fEff->GetSimEfficiency(triggerSF_key,lep,set,mem,option);
+  }
+  data_eff=1-data_eff;
+  sim_eff=1-sim_eff;
+  if(sim_eff==0) return 1.;
+  else return data_eff/sim_eff;
+}
+
+double AnalyzerCore::GetLeptonTriggerORSF(Event &_event,vector<TString> triggers, vector<TString> trigSFkeys,const vector<Lepton*>& leps,int set,int mem,TString option){
+  if(IsDATA) return 1;
+  if(triggers.size()!=2){
+    cout<<"[AnalyzerCore::LeptonTriggerOR_SF] triggers.size()= "<<triggers.size()<<endl;
+    exit(EXIT_FAILURE);
+  }
+  if(trigSFkeys.size()!=2){
+    cout<<"[AnalyzerCore::LeptonTriggerOR_SF] trigSFkeys.size()= "<<trigSFkeys.size()<<endl;
+    exit(EXIT_FAILURE);
+  }
+
+  double lumi=_event.GetTriggerLumi("Full");
+  double lumi0,lumi1,lumi01;
+  if(DataYear==2017&&trigSFkeys[0].Contains("IsoMu24")&&trigSFkeys[1].Contains("IsoMu27")){
+    lumi0=_event.GetTriggerLumi(triggers[0]); lumi1=_event.GetTriggerLumi(triggers[1]); lumi01=lumi0;
+  }else if(DataYear==2017&&trigSFkeys[0].Contains("Ele27")&&trigSFkeys[1].Contains("Ele32")){
+    lumi0=_event.GetTriggerLumi(triggers[0]); lumi1=_event.GetTriggerLumi(triggers[1]); lumi01=17599.732185;
+  }else if(DataYear==2018&&trigSFkeys[0].Contains("Ele28")&&trigSFkeys[1].Contains("Ele32")){
+    lumi0=_event.GetTriggerLumi(triggers[0]); lumi1=_event.GetTriggerLumi(triggers[1]); lumi01=lumi0;
+  }else{
+    cout<<"[AnalyzerCore::GetLeptonTriggerORSF] not available combination '"<<trigSFkeys[0]<<"'||'"<<trigSFkeys[1]<<"' for "<<DataEra<<endl;
+    exit(EXIT_FAILURE);
+  }
+
+  bool newflag=set<0; //temp                                                                                                                                                                                                                                                                                                                                         
+  if(newflag) set=0; //temp                                                                                                                                                                                                                                                                                                                                          
+  double data_eff0=1.,sim_eff0=1.;
+  double data_eff1=1.,sim_eff1=1.;
+  for(const auto& lep:leps){
+    data_eff0*=1-fEff->GetDataEfficiency(trigSFkeys[0],lep,set,mem,option);
+    sim_eff0*=1-fEff->GetSimEfficiency(trigSFkeys[0],lep,set,mem,option);
+    data_eff1*=1-fEff->GetDataEfficiency(trigSFkeys[1],lep,set,mem,option);
+    sim_eff1*=1-fEff->GetSimEfficiency(trigSFkeys[1],lep,set,mem,option);
+  }
+  data_eff0=1-data_eff0;
+  sim_eff0=1-sim_eff0;
+  data_eff1=1-data_eff1;
+  sim_eff1=1-sim_eff1;
+  double sf=0.;
+  if(_event.PassTrigger(triggers[1])){
+    double this_sf=(lumi1-lumi01)/lumi;
+    if(sim_eff1) this_sf*=data_eff1/sim_eff1;
+    sf+=this_sf;
+  }
+  if(_event.PassTrigger(triggers[0])){
+    double this_sf=(lumi0-lumi01)/lumi;
+    if(sim_eff0) this_sf*=data_eff0/sim_eff0;
+    sf+=this_sf;
+  }
+  //overlap region                                                                                                                                                                                                                                                                                                                                                   
+  if(!newflag){
+    if(lumi0>lumi1){
+      if(_event.PassTrigger(triggers[0])){
+        double this_sf=lumi01/lumi;
+        if(sim_eff0) this_sf*=data_eff0/sim_eff0;
+        sf+=this_sf;
+      }
+    }else{
+      if(_event.PassTrigger(triggers[1])){
+        double this_sf=lumi01/lumi;
+        if(sim_eff1) this_sf*=data_eff1/sim_eff1;
+        sf+=this_sf;
+      }else if(_event.PassTrigger(triggers[0])){
+        double this_sf=lumi01/lumi;
+        if(sim_eff0) this_sf*=data_eff0/sim_eff0;
+        sf+=this_sf;
+      }
+    }
+  }else{
+    if(_event.PassTrigger(triggers[0])){
+      double this_sf=lumi01/2/lumi;
+      if(sim_eff0) this_sf*=data_eff0/sim_eff0;
+      sf+=this_sf;
+    }
+    if(_event.PassTrigger(triggers[1])){
+      double this_sf=lumi01/2/lumi;
+      if(sim_eff1) this_sf*=data_eff1/sim_eff1;
+      sf+=this_sf;
+    }else if(_event.PassTrigger(triggers[0])){
+      double this_sf=lumi01/2/lumi;
+      if(sim_eff0) this_sf*=data_eff0/sim_eff0;
+      sf+=this_sf;
+    }
+  }
+  return sf;
+}
+double AnalyzerCore::GetDileptonTriggerSF(TString triggerSF_key0,TString triggerSF_key1,TString DZSF,const vector<Lepton*>& leps,int set,int mem,TString option){
+  if(IsDATA) return 1;
+  if((triggerSF_key0==""||triggerSF_key0=="Default")&&(triggerSF_key1==""||triggerSF_key1=="Default")) return 1;
+  int nlep=leps.size();
+  if(nlep<2){
+    cout<<"[AnalyzerCore::DileptonTrigger_SF] nlep < 2. return 1."<<endl;
+    return 1.;
+  }
+  double data_noleg1=1.,sim_noleg1=1.;
+  vector<double> data_oneleg1_noleg2(nlep,1.);
+  vector<double> sim_oneleg1_noleg2(nlep,1.);
+  for(int i=0;i<nlep;i++){
+    double data_eff_leg1=fEff->GetDataEfficiency(triggerSF_key0,leps.at(i),set,mem,option);
+    double data_eff_leg2=fEff->GetDataEfficiency(triggerSF_key1,leps.at(i),set,mem,option);
+    double sim_eff_leg1=fEff->GetSimEfficiency(triggerSF_key0,leps.at(i),set,mem,option);
+    double sim_eff_leg2=fEff->GetSimEfficiency(triggerSF_key1,leps.at(i),set,mem,option);
+    if(DZSF!=""){
+      double data_eff_dz=fEff->GetDataEfficiency(DZSF,leps.at(i),0,0,option);
+      double sim_eff_dz=fEff->GetSimEfficiency(DZSF,leps.at(i),0,0,option);
+      data_eff_leg1*=data_eff_dz;
+      data_eff_leg2*=data_eff_dz;
+      sim_eff_leg1*=sim_eff_dz;
+      sim_eff_leg2*=sim_eff_dz;
+    }
+    data_noleg1*=(1-data_eff_leg1);
+    sim_noleg1*=(1-sim_eff_leg1);
+    for(int j=0;j<nlep;j++){
+      if(i==j){
+        data_oneleg1_noleg2[j]*=data_eff_leg1;
+        sim_oneleg1_noleg2[j]*=sim_eff_leg1;
+      }else{
+        data_oneleg1_noleg2[j]*=(1-data_eff_leg2);
+        sim_oneleg1_noleg2[j]*=(1-sim_eff_leg2);
+      }
+    }
+  }
+  double data_eff=1.-data_noleg1;
+  double sim_eff=1.-sim_noleg1;
+  for(int i=0;i<nlep;i++){
+    data_eff-=data_oneleg1_noleg2[i];
+    sim_eff-=sim_oneleg1_noleg2[i];
+  }
+  double sf=1.;
+  if(sim_eff==0) return sf=1.;
+  else sf=data_eff/sim_eff;
+  return sf;
+}
+
+
+////---END jhchoi---///
 AnalyzerCore::~AnalyzerCore(){
+  //jhchoi
+  DeleteEfficiency();
+  //end jhchoi
 
   //=== hist maps
 
@@ -1217,7 +1467,9 @@ bool AnalyzerCore::PassMETFilter(){
 }
 
 void AnalyzerCore::initializeAnalyzerTools(){
-
+  //jhchoi
+  SetupEfficiency();
+  //jhchoi end
   //==== MCCorrection
   mcCorr->SetMCSample(MCSample);
   mcCorr->SetEra(GetEra());

@@ -30,6 +30,13 @@
 #include "GEScaleSyst.h"
 #include "PDFReweight.h"
 
+//#include "RoccoR.h"
+//#include "Aepcor.h"
+//#include "TH4D.h"
+#include "EfficiencyTool.h"
+//#include "RocPFProb.h"
+
+
 #define M_Z 91.1876
 #define M_W 80.379
 
@@ -273,10 +280,25 @@ public:
   virtual void WriteHist();
 
   //jhchoi
+  //RocPFProb* rocpfprob=NULL;
+  //RoccoR* roc=NULL;
+  //Aepcor* rocele=NULL;
+  EfficiencyTool* fEff=NULL;
+  void FillCutflow(TString histname,TString label,double weight);
+  double GetDileptonTriggerSF(TString SFhistkey0,TString SFhistkey1,TString DZSFhistkey,const vector<Lepton*>& leps,int set,int mem,TString option="");
+  double GetLeptonTriggerSF(TString triggerSF_key,const vector<Lepton*>& leps,int set,int mem,TString option);
+  double GetLeptonTriggerORSF(Event &_event,  vector<TString> triggers, vector<TString> trigSFkeys,const vector<Lepton*>& leps,int set,int mem,TString option);
+  std::vector<Electron> ElectronEnergyCorrection(const vector<Electron>& electrons,int set,int member);
+  //void SetupRoccoR();
+  void SetupEfficiency();
+  void DeleteEfficiency();
+  static bool IsExists(TString filepath);
   TTree *jhchoi_newtree;
   TTree *jhchoi_newtree2;
   TTree *jhchoi_newtree3;
   TTree *jhchoi_newtree4;
+
+  //--end jhchoi
   //==== Quick Plotters
   void FillLeptonPlots(std::vector<Lepton *> leps, TString this_region, double weight);
   void FillJetPlots(std::vector<Jet> jets, std::vector<FatJet> fatjets, TString this_region, double weight);

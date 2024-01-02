@@ -113,6 +113,14 @@ BasicTest::~BasicTest(){
 
 void BasicTest::executeEvent(){
 
+  //GetDileptonTriggerSF
+  //double AnalyzerCore::GetDileptonTriggerSF(TString triggerSF_key0,TString triggerSF_key1,TString DZSF,const vector<Lepton*>& leps,int set,int mem,TString option)
+  //MakeLeptonPointerVector()
+  AllMuons = GetAllMuons();
+  if (AllMuons.size()<2) return;
+  vector<Lepton*> leps=MakeLeptonPointerVector(AllMuons);
+  double triggersf=GetDileptonTriggerSF("Mu17Leg1_MediumID_trkIsoLoose","Mu8Leg2_MediumID_trkIsoLoose","DZ_MediumID_trkIsoLoose",leps,0,0);
+  cout << "triggersf=" << triggersf << endl;
   //---LHE info---//
   LHEs=GetLHEs();
   unsigned int LHEsize=LHEs.size();

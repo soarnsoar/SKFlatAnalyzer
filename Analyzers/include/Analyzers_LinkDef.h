@@ -19,19 +19,21 @@
 #pragma link C++ class MeasureJetTaggingEfficiency+;
 #pragma link C++ class SkimTree_Dilepton+;
 
-
+#pragma link C++ class TTsemilep_JetAssign_FlavourMatPlots+;
+#pragma link C++ class TTsemilep_JetAssignScore_TrainingInput+;
+#pragma link C++ class TTsemilep_JetAssignScore+;
 #pragma link C++ class B_In_LHE+;
 #pragma link C++ class B_In_GEN+;
-#pragma link C++ class B_Info_Analyzer_BASIC_v2309+;
 #pragma link C++ class BasicTest+;
 #pragma link C++ class BBbarRecoTMVA+;
 #pragma link C++ class BBbarRecoTMVA_DEBUG+;
 #pragma link C++ class BBbar_Analyzer+;
 #pragma link C++ class ForTMVA_BBbarAnalyzer+;
-#pragma link C++ class ForTMVA_BBbarAnalyzer_pjetrest0p7_3+;
-#pragma link C++ class ForTMVA_BBbarAnalyzer_lepV1+;
-#pragma link C++ class ForNewJetCharge+;
-#pragma link C++ class ForLepJetChargeReliability+;
+#pragma link C++ class ForLepJetChargeReliabilityCoeff+;
+#pragma link C++ class LepJetChargeReliability_RECO+;
+#pragma link C++ class LepJetChargeReliability_RECO_NoDNNcut_Tree+;
+
+
 
 
 
