@@ -3,7 +3,7 @@
 
 BBbar_Analyzer::BBbar_Analyzer(){//FYI : bottomness = -nb
   //TMVA model
-
+  overflow=3;
 
 
   //Set Hadron PID vector with nb=+1
@@ -52,29 +52,6 @@ BBbar_Analyzer::BBbar_Analyzer(){//FYI : bottomness = -nb
   Q2scale_binning = &v_Q2scale_binning[0];
 
 
-
-  //-----Lepton Cut----//
-  MuonCut_v1p0.P_JetRest_min=0.7;
-  MuonCut_v1p0.P_JetRest_max=3;
-  MuonCut_v1p0.dR_l_bj_min=-1;
-  MuonCut_v1p0.dR_l_bj_max=0.4;
-  MuonCut_v1p0.reltrkiso_min=-1;
-  MuonCut_v1p0.reltrkiso_max=2.5;
-  MuonCut_v1p0.nsip3d_min=-1;
-  MuonCut_v1p0.nsip3d_max=3;
-
-  ElectronCut_v1p0.P_JetRest_min=0.7;
-  ElectronCut_v1p0.P_JetRest_max=3;
-  ElectronCut_v1p0.dR_l_bj_min=-1;
-  ElectronCut_v1p0.dR_l_bj_max=0.4;
-  ElectronCut_v1p0.reltrkiso_min=-1;
-  ElectronCut_v1p0.reltrkiso_max=2.5;
-  ElectronCut_v1p0.nsip3d_min=-1;
-  ElectronCut_v1p0.nsip3d_max=3;
-  ElectronCut_v1p0.bool_IsGsfCtfScPixChargeConsistent=true;
-
-  MuonCut_apply=MuonCut_v1p0;
-  ElectronCut_apply=ElectronCut_v1p0;
 }
 
 
@@ -104,55 +81,6 @@ void BBbar_Analyzer::initializeAnalyzer(){
   cout << "[BBbar_Analyzer::initializeAnalyzer Setting ProcessName = " << ProcessName << endl;
 
 
-  //==== (Example) Year-dependent variables
-  //==== I defined "TString IsoMuTriggerName;" and "double TriggerSafePtCut;" in Analyzers/include/BBbar_Analyzer.h 
-  //==== IsoMuTriggerName is a year-dependent variable, and you don't want to do "if(Dataer==~~)" for every event (let's save cpu time).
-  //==== Then, do it here, which only ran once for each macro
-  //==== B-Tagging
-  //==== add taggers and WP that you want to use in analysis
-  std::vector<JetTagging::Parameters> jtps;
-  //==== If you want to use 1a or 2a method,
-  jtps.push_back( JetTagging::Parameters(JetTagging::DeepCSV, JetTagging::Medium, JetTagging::incl, JetTagging::comb) );
-  //==== set
-  mcCorr->SetJetTaggingParameters(jtps);
-
-  //================================
-  //==== Example 2
-  //==== Using new PDF
-  //==== It consumes so much time, so only being actiavted with --userflags RunNewPDF
-  //================================
-
-  RunNewPDF = HasFlag("RunNewPDF");
-  cout << "[BBbar_Analyzer::initializeAnalyzer] RunNewPDF = " << RunNewPDF << endl;
-  if(RunNewPDF && !IsDATA){
-
-    LHAPDFHandler LHAPDFHandler_Prod;
-    LHAPDFHandler_Prod.CentralPDFName = "NNPDF31_nnlo_hessian_pdfas";
-    LHAPDFHandler_Prod.init();
-
-    LHAPDFHandler LHAPDFHandler_New;
-    LHAPDFHandler_New.CentralPDFName = "NNPDF31_nlo_hessian_pdfas";
-    LHAPDFHandler_New.ErrorSetMember_Start = 1; 
-    LHAPDFHandler_New.ErrorSetMember_End = 100; 
-    LHAPDFHandler_New.AlphaSMember_Down = 101; 
-    LHAPDFHandler_New.AlphaSMember_Up = 102; 
-    LHAPDFHandler_New.init();
-
-    pdfReweight->SetProdPDF( LHAPDFHandler_Prod.PDFCentral );
-    pdfReweight->SetNewPDF( LHAPDFHandler_New.PDFCentral );
-    pdfReweight->SetNewPDFErrorSet( LHAPDFHandler_New.PDFErrorSet );
-    pdfReweight->SetNewPDFAlphaS( LHAPDFHandler_New.PDFAlphaSDown, LHAPDFHandler_New.PDFAlphaSUp );
-
-  }
-
-  //================================================
-  //==== Example 3
-  //==== How to estimate xsec errors (PDF & Scale)
-  //==== For example, MET
-  //================================================
-
-  RunXSecSyst = HasFlag("RunXSecSyst");
-  cout << "[BBbar_Analyzer::initializeAnalyzer] RunXSecSyst = " << RunXSecSyst << endl;
 
 }
 
@@ -326,7 +254,6 @@ void BBbar_Analyzer::Tag_B_Hadron(){
     //GEN_px=GENs[i].Px();
     //GEN_py=GENs[i].Py();
     //GEN_pz=GENs[i].Pz();
-
     //GEN_status=GENs[i].Status();
     GEN_id=GENs[i].PID();
     GEN_pt=GENs[i].Pt();
@@ -394,12 +321,7 @@ void BBbar_Analyzer::Loop_genBMatchedRecoJet(){
 				       AllJets[myRECO.ij_B].Phi(),
 				       AllJets[myRECO.ij_B].M()
 				       );
-    if(myRECO.vBmatchedJet.Pt()){
-      BmatJet20Event=true;
-    }
-    else{
-      BmatJet20Event=false;
-    }
+    
   }//[END] if there's Bhad matched jet
   
 }//[END]BBbar_Analyzer::Loop_genBMatchedRecoJet()
@@ -561,8 +483,8 @@ bool BBbar_Analyzer::ZTagCuts(){
     myRECO.idx_Zelectron2=v_Zlepidx[1];
     v_Z+=AllElectrons[myRECO.idx_Zelectron1];
     v_Z+=AllElectrons[myRECO.idx_Zelectron2];
-    if(v_Z.M()<70.) return 0;
-    if(v_Z.M()>110.) return 0;
+    if(v_Z.M()<60.) return 0;
+    if(v_Z.M()>120.) return 0;
     //cout << "ZTagCuts" <<endl;
     //cout << "myRECO.idx_Zelectron1=" << myRECO.idx_Zelectron1 << endl;
     //cout << "myRECO.idx_Zelectron2=" << myRECO.idx_Zelectron2 << endl;
@@ -603,7 +525,7 @@ void BBbar_Analyzer::RunProtoTypeMuon(){
     }
     if(ptwrtbjet <0.6) continue;
     if(AllMuons[i].TrkIso()/AllMuons[i].Pt() <0.05) continue; // original, 0.1
-    if(fabs(AllMuons[i].IP3D())/AllMuons[i].IP3Derr() <2.) continue; // original, 2.5
+    if(fabs(AllMuons[i].IP3D()/AllMuons[i].IP3Derr()) <2.) continue; // original, 2.5
     if(AllJets[myRECO.ij_B].DeltaR(AllMuons[i])>0.4) continue; 
     v_bmuonidx.push_back(i);
   }
@@ -681,12 +603,23 @@ void BBbar_Analyzer::RunProtoTypeElectron(){
 }
 
 void BBbar_Analyzer::FillHistMuon(TString cutname){
-  FillHist(cutname+"/muon_P_jetrestf/"+ProcessName, p_jetrestf, weight, 200, 0., 10.);
-  FillHist(cutname+"/muon_dRbmatj/"+ProcessName, dR_l_j, weight, 200, 0., 5.);
-  FillHist(cutname+"/muon_ip3d/"+ProcessName, ip3d, weight, 100, -10., 10.);
-  FillHist(cutname+"/muon_nsip3d/"+ProcessName, nsip3d, weight, 100, 0., 10.);
-  FillHist(cutname+"/muon_logreliso/"+ProcessName, log10(reliso), weight, 100, -5., 2.);
-  FillHist(cutname+"/muon_logreltrkiso/"+ProcessName, log10(reltrkiso), weight, 100, -5., 2.);
+  FillHistUnderAndOverFlow(cutname+"/muon_P_jetrestf/"+ProcessName, p_jetrestf, weight, 200, 0., 10.);
+  FillHistUnderAndOverFlow(cutname+"/muon_dRbmatj/"+ProcessName, dR_l_j, weight, 200, 0., 5.);
+  FillHistUnderAndOverFlow(cutname+"/muon_ip3d/"+ProcessName, ip3d, weight, 100, -10., 10.);
+  FillHistUnderAndOverFlow(cutname+"/muon_nsip3d/"+ProcessName, nsip3d, weight, 100, 0., 100.);
+  FillHistUnderAndOverFlow(cutname+"/muon_lognsip3d/"+ProcessName, log10(nsip3d), weight,100, -4, 2.);
+  FillHistUnderAndOverFlow(cutname+"/muon_logreliso/"+ProcessName, log10(reliso), weight, 100, -5., 3.);
+  FillHistUnderAndOverFlow(cutname+"/muon_logreltrkiso/"+ProcessName, log10(reltrkiso), weight, 100, -5., 3.);
+  FillHistUnderAndOverFlow(cutname+"/muon_reltrkiso/"+ProcessName, reltrkiso, weight, 100, 0., 1.);
+
+  FillHist(cutname+"/muon_P_jetrestf_noOF/"+ProcessName, p_jetrestf, weight, 200, 0., 10.);
+  FillHist(cutname+"/muon_dRbmatj_noOF/"+ProcessName, dR_l_j, weight, 200, 0., 5.);
+  FillHist(cutname+"/muon_ip3d_noOF/"+ProcessName, ip3d, weight, 100, -10., 10.);
+  FillHist(cutname+"/muon_nsip3d_noOF/"+ProcessName, nsip3d, weight, 100, 0., 100.);
+  FillHist(cutname+"/muon_lognsip3d_noOF/"+ProcessName, log10(nsip3d), weight,100, -4, 2.);
+  FillHist(cutname+"/muon_logreliso_noOF/"+ProcessName, log10(reliso), weight, 100, -5., 3.);
+  FillHist(cutname+"/muon_logreltrkiso_noOF/"+ProcessName, log10(reltrkiso), weight, 100, -5., 3.);
+  FillHist(cutname+"/muon_reltrkiso_noOF/"+ProcessName, reltrkiso, weight, 100, 0., 1.);
 }
 
 void BBbar_Analyzer::FillHistMuonCharge(TString cutname){
@@ -715,7 +648,7 @@ void BBbar_Analyzer::RunLeptonCutStudyMuon(){
     p_jetrestf=vl.P();//
     dR_l_j=AllJets[myRECO.ij_B].DeltaR(AllMuons[i]);//
     ip3d=AllMuons[i].IP3D();
-    nsip3d=AllMuons[i].IP3D()/AllMuons[i].IP3Derr();
+    nsip3d=fabs(AllMuons[i].IP3D()/AllMuons[i].IP3Derr());
     reliso=AllMuons[i].RelIso();
     reltrkiso=AllMuons[i].TrkIso()/AllMuons[i].Pt();
 
@@ -730,7 +663,7 @@ void BBbar_Analyzer::RunLeptonCutStudyMuon(){
       FillHistMuon(CutStudyEventTag+"_MuonMinus");
       FillHistMuon(CutStudyEventTagJetParton+"_MuonMinus");
     }
-    
+    /*
     if(p_jetrestf > 0.7){
       if(p_jetrestf < 3){
 	if ( muon_charge > 0){
@@ -743,7 +676,7 @@ void BBbar_Analyzer::RunLeptonCutStudyMuon(){
 	}
       }
     }
-
+    */
 
     if(dR_l_j<0.4){
       v_nocut_bmuonidx.push_back(i);
@@ -756,42 +689,10 @@ void BBbar_Analyzer::RunLeptonCutStudyMuon(){
 	FillHistMuon(CutStudyEventTagJetParton+"_MuonMinus__dR0p4");
       }
     }
-
-    if(  (dR_l_j< MuonCut_apply.dR_l_bj_max) && (p_jetrestf > MuonCut_apply.P_JetRest_min) && (p_jetrestf < MuonCut_apply.P_JetRest_max) && (nsip3d < MuonCut_apply.nsip3d_max) ){
-      if ( muon_charge > 0){
-	FillHistMuon(CutStudyEventTag+"_MuonPlus__v1p0");
-	FillHistMuon(CutStudyEventTagJetParton+"_MuonPlus__v1p0");
-      }
-      else{
-	FillHistMuon(CutStudyEventTag+"_MuonMinus__v1p0");
-	FillHistMuon(CutStudyEventTagJetParton+"_MuonMinus__v1p0");
-      }
-      v_bmuonidx.push_back(i);
-    }
-  }
- 
-  if(v_bmuonidx.size()>0){
-    i_bmuon=v_bmuonidx[0];
-    //--check only muon channel!
-    FillHistMuonCharge(CutStudyEventTag+"__AtLeast1MuonInBmatjet__v1p0");
-    FillHistMuonCharge(CutStudyEventTagJetParton+"__AtLeast1MuonInBmatjet__v1p0");
-
-    if(v_bmuonidx.size()==1){
-    FillHistMuonCharge(CutStudyEventTag+"__Only1MuonInBmatjet__v1p0");
-    FillHistMuonCharge(CutStudyEventTagJetParton+"__Only1MuonInBmatjet__v1p0");
-    }//[END] #muon==1
-  }//[END] # muon >0
-  if(v_nocut_bmuonidx.size()>0){
-    i_bmuon=v_nocut_bmuonidx[0];
-    //--check only muon channel!
-    FillHistMuonCharge("NoCutOnLepton__"+EventTag+"__AtLeast1MuonInBmatjet");
-    FillHistMuonCharge("NoCutOnLepton__"+EventTagJetParton+"__AtLeast1MuonInBmatjet");
-    if(v_nocut_bmuonidx.size()==1){
-      FillHistMuonCharge("NoCutOnLepton__"+EventTag+"__Only1MuonInBmatjet");
-      FillHistMuonCharge("NoCutOnLepton__"+EventTagJetParton+"__Only1MuonInBmatjet");
-    }//[END] #muon==1
+    
     
   }
+ 
 
 }
 
@@ -801,14 +702,28 @@ void BBbar_Analyzer::RunLeptonCutStudyMuon(){
 
 
 void BBbar_Analyzer::FillHistElectron(TString cutname){
-  FillHist(cutname+"/electron_P_jetrestf/"+ProcessName, p_jetrestf, weight, 200, 0., 10.);
-  FillHist(cutname+"/electron_dRbmatj/"+ProcessName, dR_l_j, weight, 200, 0., 5.);
-  FillHist(cutname+"/electron_ip3d/"+ProcessName, ip3d, weight, 100, -10., 10.);
-  FillHist(cutname+"/electron_nsip3d/"+ProcessName, nsip3d, weight, 100, 0., 10.);
-  FillHist(cutname+"/electron_logreliso/"+ProcessName, log10(reliso), weight, 100, -5., 2.);
-  FillHist(cutname+"/electron_logreltrkiso/"+ProcessName, log10(reltrkiso), weight, 100, -5., 2.);
-  FillHist(cutname+"/electron_logrelecalclusteriso/"+ProcessName, log10(relecalclusteriso), weight, 100, -5., 2.);
-  FillHist(cutname+"/electron_IsGsfCtfScPixChargeConsistent/"+ProcessName, IsGsfCtfScPixChargeConsistent, weight, 4, -1., 3.);//
+  FillHistUnderAndOverFlow(cutname+"/electron_P_jetrestf/"+ProcessName, p_jetrestf, weight, 200, 0., 10.);
+  FillHistUnderAndOverFlow(cutname+"/electron_dRbmatj/"+ProcessName, dR_l_j, weight, 200, 0., 5.);
+  FillHistUnderAndOverFlow(cutname+"/electron_ip3d/"+ProcessName, ip3d, weight, 100, -10., 10.);
+  FillHistUnderAndOverFlow(cutname+"/electron_nsip3d/"+ProcessName, nsip3d, weight, 100, 0., 100.);
+  FillHistUnderAndOverFlow(cutname+"/electron_lognsip3d/"+ProcessName, log10(nsip3d), weight, 100,-4, 2.);
+  FillHistUnderAndOverFlow(cutname+"/electron_logreliso/"+ProcessName, log10(reliso), weight, 100, -5., 3.);
+  FillHistUnderAndOverFlow(cutname+"/electron_logreltrkiso/"+ProcessName, log10(reltrkiso), weight, 100, -5., 3.);
+  FillHistUnderAndOverFlow(cutname+"/electron_reltrkiso/"+ProcessName, reltrkiso, weight, 100, 0., 1.);
+  FillHistUnderAndOverFlow(cutname+"/electron_logrelecalclusteriso/"+ProcessName, log10(relecalclusteriso), weight, 100, -5., 2.);
+  FillHistUnderAndOverFlow(cutname+"/electron_IsGsfCtfScPixChargeConsistent/"+ProcessName, IsGsfCtfScPixChargeConsistent, weight, 4, -1., 3.);//
+
+
+  FillHist(cutname+"/electron_P_jetrestf_noOF/"+ProcessName, p_jetrestf, weight, 200, 0., 10.);
+  FillHist(cutname+"/electron_dRbmatj_noOF/"+ProcessName, dR_l_j, weight, 200, 0., 5.);
+  FillHist(cutname+"/electron_ip3d_noOF/"+ProcessName, ip3d, weight, 100, -10., 10.);
+  FillHist(cutname+"/electron_nsip3d_noOF/"+ProcessName, nsip3d, weight, 100, 0., 100.);
+  FillHist(cutname+"/electron_lognsip3d_noOF/"+ProcessName, log10(nsip3d), weight, 100,-4, 2.);
+  FillHist(cutname+"/electron_logreliso_noOF/"+ProcessName, log10(reliso), weight, 100, -5., 3.);
+  FillHist(cutname+"/electron_logreltrkiso_noOF/"+ProcessName, log10(reltrkiso), weight, 100, -5., 3.);
+  FillHist(cutname+"/electron_reltrkiso_noOF/"+ProcessName, reltrkiso, weight, 100, 0., 1.);
+  FillHist(cutname+"/electron_logrelecalclusteriso_noOF/"+ProcessName, log10(relecalclusteriso), weight, 100, -5., 2.);
+  FillHist(cutname+"/electron_IsGsfCtfScPixChargeConsistent_noOF/"+ProcessName, IsGsfCtfScPixChargeConsistent, weight, 4, -1., 3.);//
 }
 
 void BBbar_Analyzer::FillHistElectronCharge(TString cutname){
@@ -837,7 +752,7 @@ void BBbar_Analyzer::RunLeptonCutStudyElectron(){
     p_jetrestf=vl.P();//
     dR_l_j=AllJets[myRECO.ij_B].DeltaR(AllElectrons[i]);//
     ip3d=AllElectrons[i].IP3D();
-    nsip3d=AllElectrons[i].IP3D()/AllElectrons[i].IP3Derr();
+    nsip3d=fabs(AllElectrons[i].IP3D()/AllElectrons[i].IP3Derr());
     reliso=AllElectrons[i].RelIso();
     reltrkiso=AllElectrons[i].TrkIso()/AllElectrons[i].Pt();
     relecalclusteriso=AllElectrons[i].ecalPFClusterIso()/AllElectrons[i].Pt();
@@ -854,21 +769,6 @@ void BBbar_Analyzer::RunLeptonCutStudyElectron(){
       FillHistElectron(CutStudyEventTag+"_ElectronMinus");
       FillHistElectron(CutStudyEventTagJetParton+"_ElectronMinus");
     }
-    
-    if(p_jetrestf > 0.7){
-      if(p_jetrestf < 3){
-	if ( electron_charge > 0){
-	  FillHistElectron(CutStudyEventTag+"_ElectronPlus__Pjetrest__0p7_3");
-	  FillHistElectron(CutStudyEventTagJetParton+"_ElectronPlus__Pjetrest__0p7_3");
-	}
-	else{
-	  FillHistElectron(CutStudyEventTag+"_ElectronMinus__Pjetrest__0p7_3");
-	  FillHistElectron(CutStudyEventTagJetParton+"_ElectronMinus__Pjetrest__0p7_3");
-	}
-      }
-    }
-
-
     if(dR_l_j<0.4){
       v_nocut_belectronidx.push_back(i);
       if ( electron_charge > 0){
@@ -881,45 +781,10 @@ void BBbar_Analyzer::RunLeptonCutStudyElectron(){
       }
     }
 
-    if(  (dR_l_j<ElectronCut_apply.dR_l_bj_max) && (p_jetrestf > ElectronCut_apply.P_JetRest_min) && (p_jetrestf < ElectronCut_apply.P_JetRest_max) && (reltrkiso < ElectronCut_apply.reltrkiso_max) && (nsip3d < ElectronCut_apply.nsip3d_max) && (IsGsfCtfScPixChargeConsistent==ElectronCut_apply.bool_IsGsfCtfScPixChargeConsistent)){
-      if ( electron_charge > 0){
-	FillHistElectron(CutStudyEventTag+"_ElectronPlus__v1p0");
-	FillHistElectron(CutStudyEventTagJetParton+"_ElectronPlus__v1p0");
-      }
-      else{
-	FillHistElectron(CutStudyEventTag+"_ElectronMinus__v1p0");
-	FillHistElectron(CutStudyEventTagJetParton+"_ElectronMinus__v1p0");
-      }
-      v_belectronidx.push_back(i);
-    }
+
   }
- 
-  if(v_belectronidx.size()>0){
-    i_belectron=v_belectronidx[0];
-    //--check only electron channel!
-    FillHistElectronCharge(CutStudyEventTag+"__AtLeast1ElectronInBmatjet__v1p0");
-    FillHistElectronCharge(CutStudyEventTagJetParton+"__AtLeast1ElectronInBmatjet__v1p0");
-
-    if(v_belectronidx.size()==1){
-    FillHistElectronCharge(CutStudyEventTag+"__Only1ElectronInBmatjet__v1p0");
-    FillHistElectronCharge(CutStudyEventTagJetParton+"__Only1ElectronInBmatjet__v1p0");
-
-
-    }//[END] #electron==1
-
-  }//[END] # electron >0
-  if(v_nocut_belectronidx.size()>0){
-    i_belectron=v_nocut_belectronidx[0];
-    //--check only electron channel!
-    FillHistElectronCharge("NoCutOnLepton__"+EventTag+"__AtLeast1ElectronInBmatjet");
-    FillHistElectronCharge("NoCutOnLepton__"+EventTagJetParton+"__AtLeast1ElectronInBmatjet");
-    if(v_nocut_belectronidx.size()==1){
-      FillHistElectronCharge("NoCutOnLepton__"+EventTag+"__Only1ElectronInBmatjet");
-      FillHistElectronCharge("NoCutOnLepton__"+EventTagJetParton+"__Only1ElectronInBmatjet");
-    }//[END] #electron==1
-    
-  }
-
+  
+  
 }
 
 
@@ -974,8 +839,7 @@ void BBbar_Analyzer::AnalyzeRECO(){
   }
   
   //(1-2)For B hadron to lepton decay
-  BBbar_Analyzer::RunProtoTypeMuon();
-  BBbar_Analyzer::RunProtoTypeElectron();
+
   BBbar_Analyzer::RunLeptonCutStudyMuon();
   BBbar_Analyzer::RunLeptonCutStudyElectron();
  

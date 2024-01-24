@@ -486,90 +486,66 @@ bool TTsemilep_JetAssignScore_TrainingInput::TTbarElReco(){
 
 
 
-
-
-bool TTsemilep_JetAssignScore_TrainingInput::CheckJets(){
-  FillCutflow("cutflow/"+ProcessName,"Without_bMatch",weight);
-  FillHist("Without_bMatch/Event/"+ProcessName,1, weight, 4, -1, 3);
+void TTsemilep_JetAssignScore_TrainingInput::CollectJets(){
+  //cout << "<CollectJets>" << endl;
   double btag_cut = mcCorr->MCCorrection::GetJetTaggingCutValue(JetTagging::DeepJet,JetTagging::Tight);
-  double bveto_cut = mcCorr->MCCorrection::GetJetTaggingCutValue(JetTagging::DeepJet,JetTagging::Loose);
-  //JetTagging::DeepJet,JetTagging::Tight,JetTagging::incl,JetTagging::comb
-  //double MCCorrection::GetJetTaggingCutValue(JetTagging::Tagger tagger, JetTagging::WP wp){
-  //myRECO.ij_B
-  //vector<Jet> tightjets = SelectJets(AllJets, "tightLepVeto", 20., 2.4);
-  unsigned int _Nb=0;
-  unsigned int _Nbbar=0;
+  //double bveto_cut = mcCorr->MCCorrection::GetJetTaggingCutValue(JetTagging::DeepJet,JetTagging::Loose);
+  Nb=0;
+  Nbbar=0;
   tightjets.clear();
   myRECO.idx_bjet=-1;
   myRECO.idx_bbarjet=-1;
-  //tightjets.push_back(AllJets[myRECO.ij_B]);
-  //jtp=JetTagging::Parameters(JetTagging::DeepJet,JetTagging::Tight,JetTagging::incl,JetTagging::comb);
-  //btag_cut = mcCorr->MCCorrection::GetJetTaggingCutValue(JetTagging::DeepJet,JetTagging::Tight);
-  //bveto_cut = mcCorr->MCCorrection::GetJetTaggingCutValue(JetTagging::DeepJet,JetTagging::Loose);
-  TLorentzVector l1;
+  
+  l1.SetPxPyPzE(0,0,0,0);
+  //TLorentzVector l1;
   if(myLHE.IsMuonChannel){
     l1=AllMuons[myRECO.idx_Tmuon];
   }
   else if(myLHE.IsElectronChannel){
     l1=AllElectrons[myRECO.idx_Telectron];
   }
-  //cout << "btag_cut=" << btag_cut << endl;
+  else{
+    return;
+  }
+  //cout << "jetsize=" << jetsize << endl;
+  // -- collect tight jets//
   for(int i = 0 ; i < jetsize; i ++){
-
-
     if(AllJets[i].Pt() < 30.) continue;
     if(fabs(AllJets[i].Eta()) > 2.4) continue;
     if(AllJets[i].DeltaR(l1)<0.4) continue;
     if(!AllJets[i].PassID("tightLepVeto")) continue; //old : tight
-    double btag_score=AllJets[i].GetTaggerResult(JetTagging::DeepJet);
+    double btag_score=AllJets[i].GetTaggerResult(JetTagging::DeepJet);    
     if(AllJets[i].partonFlavour()==5 && btag_score>btag_cut){
-      _Nb+=1;
+      Nb+=1;
       myRECO.idx_bjet=i;
     }
     else if(AllJets[i].partonFlavour()==-5 && btag_score>btag_cut){
-      _Nbbar+=1;
+      Nbbar+=1;
       myRECO.idx_bbarjet=i;
     }
     else if( abs(AllJets[i].partonFlavour()) !=5 && btag_score<btag_cut){
       tightjets.push_back(AllJets[i]);
     }
-  }
-  
-  /*
-  if(!IsDATA){
-    btagsf = mcCorr->GetBTaggingReweight_1a(tightbjets, jtp);
-    weight*=btagsf;
-
-  }
-  */
-
-
-  if(_Nb!=1) return 0;
-  if(_Nbbar!=1) return 0;
-
-
-  //Whad_q1_pid,Whad_q2_pid
-  //Whad_q1_genidx,Whad_q2_genidx
-
+  }//end of jet loop
   tightjetsize=tightjets.size();
-  if (tightjetsize < 2) return 0;
-  FillCutflow("cutflow/"+ProcessName,"light_tightjet_size_over_2",weight);
+  //cout << "tightjetsize=" << tightjetsize << endl;
+}
+
   
-  //cout << "<light jet flavour>" << endl;
-  bool Is_q1match=false;
-  bool Is_q2match=false;
+void TTsemilep_JetAssignScore_TrainingInput::FlavourAndDeltaR_Matching(){
+
+  Is_q1match=false;
+  Is_q2match=false;
   int tightjetidx_q1_match=-1;
   int tightjetidx_q2_match=-1;
 
-  int N_light_quark_jet=0;
-  int N_gluon_jet=0;
+  N_light_quark_jet=0;
+  N_gluon_jet=0;
 
   int N_q1match=0;
   int N_q2match=0;
 
-  //cout << "[Check Flavour of tight jet]" << endl;
-  //cout << "myGEN.Whad_q1_pid=" << myGEN.Whad_q1_pid << endl;
-  //cout << "myGEN.Whad_q2_pid=" << myGEN.Whad_q2_pid << endl;
+
   for(unsigned int i = 0 ; i < tightjetsize ; i ++){
     if(fabs(tightjets[i].partonFlavour()) < 5) N_light_quark_jet+=1;
     if(tightjets[i].partonFlavour() == 21) N_gluon_jet+=1;
@@ -582,9 +558,7 @@ bool TTsemilep_JetAssignScore_TrainingInput::CheckJets(){
     double _dR2=tightjets[i].DeltaR(GENs[myGEN.Whad_q2_genidx]);
     bool _flavourmatch2=(tightjets[i].partonFlavour()==myGEN.Whad_q2_pid);
     if(_flavourmatch2 && (_dR2<0.4)) N_q2match+=1;
-    //cout << i << "th light jets,partonFlavour=" << tightjets[i].partonFlavour() << endl;
-    //cout << i << "th light jets,hadronFlavour=" << tightjets[i].hadronFlavour() << endl;
-    //cout << i << "th light jets,GenHFHadronMatcherFlavour=" << tightjets[i].GenHFHadronMatcherFlavour() << endl;
+
 
     if(!Is_q1match){
       if(_flavourmatch1 && (_dR1<0.4)) {
@@ -602,80 +576,12 @@ bool TTsemilep_JetAssignScore_TrainingInput::CheckJets(){
       if(Is_q2match) continue;
     }
 
-
-  }
+    
+  }//end of tightljetloop
   FillHist("Event_with_b1_b2/N_q1match_10_N_q2match/"+ProcessName,N_q1match+10*N_q2match, weight, 50, 0, 50);
-  //FillHist("Event_with_b1_b2/N_q2match/"+ProcessName,N_q2match, weight, 10, 0, 10);
 
-  bool flavourmatch1=false;
-  bool flavourmatch2=false;
-  tightjetidx_q1_flav_match=-1;
-  tightjetidx_q2_flav_match=-1;
 
-  int N_flavour_match1=0;
-  int N_flavour_match2=0;
-  for(unsigned int i = 0 ; i < tightjetsize ; i ++){
-    //dR1,flavour1 matching
-    bool _flavourmatch1=(tightjets[i].partonFlavour()==myGEN.Whad_q1_pid);
-    bool _flavourmatch2=(tightjets[i].partonFlavour()==myGEN.Whad_q2_pid);
-    if(_flavourmatch1) N_flavour_match1+=1;
-    if(_flavourmatch2) N_flavour_match2+=1;
-    if(!flavourmatch1){
-      if(_flavourmatch1){
-	flavourmatch1=true;
-	tightjetidx_q1_flav_match=i;
-	//cout << "<!!myGEN.Whad_q1_pid matched!!>" <<endl;
-	//cout << "tightjets[i].partonFlavour()=" << tightjets[i].partonFlavour() << endl;
-	continue;
-      }
-    }
-
-    if(!flavourmatch2){
-     
-      if(_flavourmatch2){
-	flavourmatch2=true;
-	tightjetidx_q2_flav_match=i;
-	//cout << "<!!myGEN.Whad_q2_pid matched!!>" <<endl;
-	//cout << "tightjets[i].partonFlavour()=" << tightjets[i].partonFlavour() << endl;
-	continue;
-      }
-    }
-    
-    //cout << i << "th light jets=" << tightjets[i].partonFlavour() << endl;
-  }//---end of for loop
-  FillHist("Event_with_b1_b2/N_flavour_match1_10_N_flavour_match2/"+ProcessName,N_flavour_match1+10*N_flavour_match2, weight, 50, 0, 50);
-  //FillHist("Event_with_b1_b2/N_flavour_match2/"+ProcessName,N_flavour_match2, weight, 10, 0, 10);
-
-  if(tightjetidx_q1_flav_match!=-1 && tightjetidx_q2_flav_match!=-1){//Find all matched tightjet
-    FillCutflow("cutflow/"+ProcessName,"Flavour_Match_Whad_q1q2",weight);
-    TLorentzVector Whad, Thad;
-    Whad=tightjets[tightjetidx_q1_flav_match] + tightjets[tightjetidx_q2_flav_match];
-    if(myLHE.bLep_charge>0){//bHad_charge<0  ---> idx_bjet
-      Thad=Whad+AllJets[myRECO.idx_bjet];
-    }
-    else{
-      Thad=Whad+AllJets[myRECO.idx_bbarjet];
-    }
-
-    FillHist("Event_with_b1_b2/Whad_mass_q1q2_flavour_match/"+ProcessName,Whad.M(), weight, 100, 0, 200);
-    FillHist("Event_with_b1_b2/Thad_mass_q1q2_flavour_match/"+ProcessName,Thad.M(), weight, 100, 0, 300);
-    //myGEN.vWhad.M
-    FillHist("Event_with_b1_b2/Whad_genmass_q1q2_flavour_match/"+ProcessName,myGEN.vWhad.M(), weight, 100, 0, 200);
-    FillHist("Event_with_b1_b2/Thad_genmass_q1q2_flavour_match/"+ProcessName,myGEN.vThad.M(), weight, 100, 0, 300);
-    if((fabs(GENs[myGEN.Whad_q1_genidx].Eta())<2.4 && GENs[myGEN.Whad_q1_genidx].Pt()>30) &&
-       ((fabs(GENs[myGEN.Whad_q2_genidx].Eta())<2.4 && GENs[myGEN.Whad_q2_genidx].Pt()>30))){
-      FillCutflow("cutflow/"+ProcessName,"GEN_eta_ptcut_Flavour_Match_Whad_q1q2",weight);
-      FillHist("Event_with_b1_b2_GEN_eta_2p4_pt30/Whad_mass_q1q2_flavour_match/"+ProcessName,Whad.M(), weight, 100, 0, 200);
-      FillHist("Event_with_b1_b2_GEN_eta_2p4_pt30/Thad_mass_q1q2_flavour_match/"+ProcessName,Thad.M(), weight, 100, 0, 300);
-
-      FillHist("Event_with_b1_b2_GEN_eta_2p4_pt30/Whad_genmass_q1q2_flavour_match/"+ProcessName,myGEN.vWhad.M(), weight, 100, 0, 200);
-      FillHist("Event_with_b1_b2_GEN_eta_2p4_pt30/Thad_genmass_q1q2_flavour_match/"+ProcessName,myGEN.vThad.M(), weight, 100, 0, 300);
-    }
-    
-    
-  }
-
-  if(tightjetidx_q1_match!=-1 && tightjetidx_q2_match!=1){
+  if(tightjetidx_q1_match!=-1 && tightjetidx_q2_match!=-1){
     FillCutflow("cutflow/"+ProcessName,"Flavour_dR_Match_Whad_q1q2",weight);
     TLorentzVector Whad, Thad;
     Whad=tightjets[tightjetidx_q1_match] + tightjets[tightjetidx_q2_match];
@@ -698,12 +604,97 @@ bool TTsemilep_JetAssignScore_TrainingInput::CheckJets(){
       FillHist("Event_with_b1_b2_GEN_eta_2p4_pt30/Whad_genmass_q1q2_flav_dR_match/"+ProcessName,myGEN.vWhad.M(), weight, 100, 0, 200);
       FillHist("Event_with_b1_b2_GEN_eta_2p4_pt30/Thad_genmass_q1q2_flav_dR_match/"+ProcessName,myGEN.vThad.M(), weight, 100, 0, 300);
     }
-    
-    
+      
+  }//if all matched
+
+}
+
+void TTsemilep_JetAssignScore_TrainingInput::FlavourMatchingOnly(){
+  //cout << "<FlavourMatchingOnly>" << endl;
+  flavourmatch1=false;
+  flavourmatch2=false;
+  tightjetidx_q1_flav_match= -1 ;
+  tightjetidx_q2_flav_match= -1 ;
+  //cout << "tightjetidx_q1_flav_match=" << tightjetidx_q1_flav_match << endl;
+  N_flavour_match1=0;
+  N_flavour_match2=0;
+  for(unsigned int i = 0 ; i < tightjetsize ; i ++){
+    //dR1,flavour1 matching
+    bool _flavourmatch1=(tightjets[i].partonFlavour()==myGEN.Whad_q1_pid);
+    bool _flavourmatch2=(tightjets[i].partonFlavour()==myGEN.Whad_q2_pid);
+    if(_flavourmatch1) N_flavour_match1+=1;
+    if(_flavourmatch2) N_flavour_match2+=1;
+    if(!flavourmatch1){
+      if(_flavourmatch1){
+	flavourmatch1=true;
+	tightjetidx_q1_flav_match=i;
+	continue;
+      }
+    }
+
+    if(!flavourmatch2){
+     
+      if(_flavourmatch2){
+	flavourmatch2=true;
+	tightjetidx_q2_flav_match=i;
+	continue;
+      }
+    }
+  }//---end of for loop
+
   
+  if(tightjetidx_q1_flav_match!=-1 && tightjetidx_q2_flav_match!=-1){//Find all matched tightjet
+    FillCutflow("cutflow/"+ProcessName,"Flavour_Match_Whad_q1q2",weight);
+    TLorentzVector Whad, Thad;
+    Whad=tightjets[tightjetidx_q1_flav_match] + tightjets[tightjetidx_q2_flav_match];
+    if(myLHE.bLep_charge>0){//bHad_charge<0  ---> idx_bjet
+      Thad=Whad+AllJets[myRECO.idx_bjet];
+    }
+    else{
+      Thad=Whad+AllJets[myRECO.idx_bbarjet];
+    }
+    
+    FillHist("Event_with_b1_b2/Whad_mass_q1q2_flavour_match/"+ProcessName,Whad.M(), weight, 100, 0, 200);
+    FillHist("Event_with_b1_b2/Thad_mass_q1q2_flavour_match/"+ProcessName,Thad.M(), weight, 100, 0, 300);
+    //myGEN.vWhad.M
+    FillHist("Event_with_b1_b2/Whad_genmass_q1q2_flavour_match/"+ProcessName,myGEN.vWhad.M(), weight, 100, 0, 200);
+    FillHist("Event_with_b1_b2/Thad_genmass_q1q2_flavour_match/"+ProcessName,myGEN.vThad.M(), weight, 100, 0, 300);
+    if((fabs(GENs[myGEN.Whad_q1_genidx].Eta())<2.4 && GENs[myGEN.Whad_q1_genidx].Pt()>30) &&
+       ((fabs(GENs[myGEN.Whad_q2_genidx].Eta())<2.4 && GENs[myGEN.Whad_q2_genidx].Pt()>30))){
+      FillCutflow("cutflow/"+ProcessName,"GEN_eta_ptcut_Flavour_Match_Whad_q1q2",weight);
+      FillHist("Event_with_b1_b2_GEN_eta_2p4_pt30/Whad_mass_q1q2_flavour_match/"+ProcessName,Whad.M(), weight, 100, 0, 200);
+      FillHist("Event_with_b1_b2_GEN_eta_2p4_pt30/Thad_mass_q1q2_flavour_match/"+ProcessName,Thad.M(), weight, 100, 0, 300);
+
+      FillHist("Event_with_b1_b2_GEN_eta_2p4_pt30/Whad_genmass_q1q2_flavour_match/"+ProcessName,myGEN.vWhad.M(), weight, 100, 0, 200);
+      FillHist("Event_with_b1_b2_GEN_eta_2p4_pt30/Thad_genmass_q1q2_flavour_match/"+ProcessName,myGEN.vThad.M(), weight, 100, 0, 300);
+    }
+    
+    
   }
+  
+}
+
+bool TTsemilep_JetAssignScore_TrainingInput::CheckJets(){
+  FillCutflow("cutflow/"+ProcessName,"Without_bMatch",weight);
+  FillHist("Without_bMatch/Event/"+ProcessName,1, weight, 4, -1, 3);
 
 
+  TTsemilep_JetAssignScore_TrainingInput::CollectJets();
+  if(myRECO.idx_bjet < 0 || myRECO.idx_bbarjet < 0 ) {
+    //cout << "No bjets!" << endl;
+    return 0;
+  }
+  if(Nb!=1) return 0;
+  if(Nbbar!=1) return 0;
+  if (tightjetsize < 2) return 0;
+  FillCutflow("cutflow/"+ProcessName,"light_tightjet_size_over_2",weight);
+  //cout << " tightjetsize should over 1 = " << tightjetsize << endl;
+  TTsemilep_JetAssignScore_TrainingInput::FlavourAndDeltaR_Matching();
+  TTsemilep_JetAssignScore_TrainingInput::FlavourMatchingOnly();
+  
+  //cout << "[after flavour jet matching]]tightjetidx_q1_flav_match=" << tightjetidx_q1_flav_match << endl;
+  
+  FillHist("Event_with_b1_b2/N_flavour_match1_10_N_flavour_match2/"+ProcessName,N_flavour_match1+10*N_flavour_match2, weight, 50, 0, 50);
   FillHist("Event_with_b1_b2/Whad_q1_q2_match/"+ProcessName,Is_q1match*Is_q2match, weight, 4, -1, 3);
   FillHist("Event_with_b1_b2/Whad_q1_q2_match_flavour_only/"+ProcessName,flavourmatch1*flavourmatch2, weight, 4, -1, 3);
   FillHist("Event_with_b1_b2/nTightJet/"+ProcessName,tightjetsize, weight, 10, 0, 10);
@@ -712,7 +703,7 @@ bool TTsemilep_JetAssignScore_TrainingInput::CheckJets(){
   if(flavourmatch1*flavourmatch2){
     FillHist("Event_with_b1_b2/nTightJet_if_flavour_matched/"+ProcessName,tightjetsize, weight, 10, 0, 10);
   }
-
+  
   if((fabs(GENs[myGEN.Whad_q1_genidx].Eta())<2.4 && GENs[myGEN.Whad_q1_genidx].Pt()>30) &&
      ((fabs(GENs[myGEN.Whad_q2_genidx].Eta())<2.4 && GENs[myGEN.Whad_q2_genidx].Pt()>30))){
     FillHist("Event_with_b1_b2_GEN_eta_2p4_pt30/Whad_q1_q2_match/"+ProcessName,Is_q1match*Is_q2match, weight, 4, -1, 3);
@@ -720,39 +711,11 @@ bool TTsemilep_JetAssignScore_TrainingInput::CheckJets(){
     FillHist("Event_with_b1_b2_GEN_eta_2p4_pt30/nTightJet/"+ProcessName,tightjetsize, weight, 10, 0, 10);
     FillHist("Event_with_b1_b2_GEN_eta_2p4_pt30/N_light_quark_jet/"+ProcessName,N_light_quark_jet, weight, 10, 0, 10);
     if(flavourmatch1*flavourmatch2) FillHist("Event_with_b1_b2_GEN_eta_2p4_pt30/nTightJet_if_flavour_matched/"+ProcessName,tightjetsize, weight, 10, 0, 10);
-
+    
     FillHist("Event_with_b1_b2_GEN_eta_2p4_pt30/N_gluon_jet/"+ProcessName,N_gluon_jet, weight, 10, 0, 10);
-
-
+    
+    
   }
-
-
-  /*
-  ///---For check ---//
-  cout << "<btagged jet flavour>" << endl;
-  //partonFlavour
-  int  bjet1flavour=AllJets[idx_bjet].partonFlavour();
-  int  bjet2flavour=AllJets[idx_bbarjet].partonFlavour();
-  
-
-
-  nevt+=1;
-  if(bjet1flavour==bjet2flavour){
-    cout  << "!!!SAMEBB" << endl;
-    nevt_samebb = nevt_samebb+1;
-    double _frc=nevt_samebb/nevt;
-    cout << "fraction=" << _frc << endl;
-  }
-  cout << "bjet1flavour=" << bjet1flavour << endl;
-  cout << "bjet2flavour=" << bjet2flavour << endl;
-  
-
-  tightjetsize=tightjets.size();
-  cout << "<light jet flavour>" << endl;
-  for(unsigned int i = 0 ; i < tightjetsize ; i ++){
-    cout << i << "th light jets=" << tightjets[i].partonFlavour() << endl;
-  }
-  */
   return 1;
 }
 
@@ -810,7 +773,7 @@ void TTsemilep_JetAssignScore_TrainingInput::AnalyzeRECO(){
 
   ///--Using btag score--//
   if(!TTsemilep_JetAssignScore_TrainingInput::CheckJets()) return;
-  if(tightjetidx_q1_flav_match!=-1 && tightjetidx_q2_flav_match!=-1)doFillTree=true;
+  //if(tightjetidx_q1_flav_match!=-1 && tightjetidx_q2_flav_match!=-1)doFillTree=true;
   //If Z event, Let's store
   //FillCutflow("cutflow/all/"+ProcessName,"TagBjet",weight);
   FillHist("TagBjet/cutflow/"+ProcessName,1, weight, 2, 0, 2);  
@@ -825,6 +788,7 @@ void TTsemilep_JetAssignScore_TrainingInput::AnalyzeRECO(){
 
 void TTsemilep_JetAssignScore_TrainingInput::FillTreeValues(){
   TLorentzVector _v_Thad,_v_Whad;
+  
   met_pt=PuppiMET_pt,met_phi=PuppiMET_phi;
   if(myRECO.goodTTbarEl&&myLHE.IsElectronChannel) {
     muon_pt=0, muon_phi=0, muon_eta=0;
@@ -837,7 +801,7 @@ void TTsemilep_JetAssignScore_TrainingInput::FillTreeValues(){
     
   }
   //TODO : set muon,electron pt
-
+  
   //----signal_evt---//
   IsSig=1;
   IsBkg=0;
@@ -851,20 +815,27 @@ void TTsemilep_JetAssignScore_TrainingInput::FillTreeValues(){
     idx_blep=myRECO.idx_bjet;
     idx_bhad=myRECO.idx_bbarjet;    
   }
+  
   blep_pt=AllJets[idx_blep].Pt(), blep_eta=AllJets[idx_blep].Eta(), blep_phi=AllJets[idx_blep].Phi(), blep_E=AllJets[idx_blep].E();
   bhad_pt=AllJets[idx_bhad].Pt(), bhad_eta=AllJets[idx_bhad].Eta(), bhad_phi=AllJets[idx_bhad].Phi(), bhad_E=AllJets[idx_bhad].E();
 
+  
 
 
   //q1,q2 from Whad... pT ordered
   if(tightjets[tightjetidx_q1_flav_match].Pt() > tightjets[tightjetidx_q2_flav_match].Pt()  ){
+  
     q1jet_pt=tightjets[tightjetidx_q1_flav_match].Pt(),q1jet_eta=tightjets[tightjetidx_q1_flav_match].Eta(), q1jet_phi=tightjets[tightjetidx_q1_flav_match].Phi(), q1jet_E=tightjets[tightjetidx_q1_flav_match].E();
     q2jet_pt=tightjets[tightjetidx_q2_flav_match].Pt(),q2jet_eta=tightjets[tightjetidx_q2_flav_match].Eta(), q2jet_phi=tightjets[tightjetidx_q2_flav_match].Phi(),q2jet_E=tightjets[tightjetidx_q2_flav_match].E();
+    
   }
   else{
+    
     q1jet_pt=tightjets[tightjetidx_q2_flav_match].Pt(),q1jet_eta=tightjets[tightjetidx_q2_flav_match].Eta(), q1jet_phi=tightjets[tightjetidx_q2_flav_match].Phi(),q1jet_E=tightjets[tightjetidx_q2_flav_match].E();
     q2jet_pt=tightjets[tightjetidx_q1_flav_match].Pt(),q2jet_eta=tightjets[tightjetidx_q1_flav_match].Eta(), q2jet_phi=tightjets[tightjetidx_q1_flav_match].Phi(),q2jet_E=tightjets[tightjetidx_q1_flav_match].E();
+    
   }
+
   _v_Whad=tightjets[tightjetidx_q1_flav_match] + tightjets[tightjetidx_q2_flav_match];
   _v_Thad=tightjets[tightjetidx_q1_flav_match] + tightjets[tightjetidx_q2_flav_match] + AllJets[idx_bhad];
 
@@ -877,11 +848,12 @@ void TTsemilep_JetAssignScore_TrainingInput::FillTreeValues(){
   //---bkg evt wrong light quark assigned---//  
   IsSig=0;
   IsBkg=1;
-
+  
   for(unsigned int i=0; i < tightjetsize; i++ ){
     
     for(unsigned int j=i+1; j < tightjetsize; j++ ){
       //exclude signal events
+      
       if( i==tightjetidx_q1_flav_match && j==tightjetidx_q2_flav_match ) continue;
       if( i==tightjetidx_q2_flav_match && j==tightjetidx_q1_flav_match ) continue;
       if(tightjets[i].Pt() > tightjets[j].Pt()){
@@ -936,9 +908,101 @@ void TTsemilep_JetAssignScore_TrainingInput::FillTreeValues(){
       
     }
   }
+
 }
 
+void TTsemilep_JetAssignScore_TrainingInput::FillTreeValues_NotMatchCase(){
+  ///Anyway...this case is wrong... because some jet from Whad doesn't enter out ROI
+  TLorentzVector _v_Thad,_v_Whad;
+  met_pt=PuppiMET_pt,met_phi=PuppiMET_phi;
+  if(myRECO.goodTTbarEl&&myLHE.IsElectronChannel) {
+    muon_pt=0, muon_phi=0, muon_eta=0;
+    electron_pt=AllElectrons[myRECO.idx_Telectron].Pt(),electron_phi=AllElectrons[myRECO.idx_Telectron].Phi(),electron_eta=AllElectrons[myRECO.idx_Telectron].Eta();
 
+  }
+  if(myRECO.goodTTbarMu&&myLHE.IsMuonChannel){
+    muon_pt=AllMuons[myRECO.idx_Tmuon].Pt(),muon_phi=AllMuons[myRECO.idx_Tmuon].Phi(),muon_eta=AllMuons[myRECO.idx_Tmuon].Eta();
+    electron_pt=0,electron_phi=0,electron_eta=0;
+    
+  }
+  int idx_blep=-1;
+  int idx_bhad=-1;
+  if(myLHE.bLep_charge>0){//bHad_charge<0  ---> idx_bjet
+    idx_blep=myRECO.idx_bbarjet;
+    idx_bhad=myRECO.idx_bjet;
+  }
+  else{// bLep charge <0 -> bhad charge > 0 ->bbarjet
+    idx_blep=myRECO.idx_bjet;
+    idx_bhad=myRECO.idx_bbarjet;
+  }
+  blep_pt=AllJets[idx_blep].Pt(), blep_eta=AllJets[idx_blep].Eta(), blep_phi=AllJets[idx_blep].Phi(), blep_E=AllJets[idx_blep].E();
+  bhad_pt=AllJets[idx_bhad].Pt(), bhad_eta=AllJets[idx_bhad].Eta(), bhad_phi=AllJets[idx_bhad].Phi(), bhad_E=AllJets[idx_bhad].E();
+
+  ////----
+  //---bkg evt wrong light quark assigned---//  
+  IsSig=0;
+  IsBkg=1;
+
+  for(unsigned int i=0; i < tightjetsize; i++ ){
+    
+    for(unsigned int j=i+1; j < tightjetsize; j++ ){
+      //exclude signal events
+      //if( i==tightjetidx_q1_flav_match && j==tightjetidx_q2_flav_match ) continue;
+      //if( i==tightjetidx_q2_flav_match && j==tightjetidx_q1_flav_match ) continue;
+      if(tightjets[i].Pt() > tightjets[j].Pt()){
+	q1jet_pt=tightjets[i].Pt(),q1jet_eta=tightjets[i].Eta(), q1jet_phi=tightjets[i].Phi(), q1jet_E=tightjets[i].E();
+	q2jet_pt=tightjets[j].Pt(),q2jet_eta=tightjets[j].Eta(), q2jet_phi=tightjets[j].Phi(), q2jet_E=tightjets[j].E();
+      }
+      else{
+	q1jet_pt=tightjets[j].Pt(),q1jet_eta=tightjets[j].Eta(), q1jet_phi=tightjets[j].Phi(),q1jet_E=tightjets[j].E();
+	q2jet_pt=tightjets[i].Pt(),q2jet_eta=tightjets[i].Eta(), q2jet_phi=tightjets[i].Phi(),q2jet_E=tightjets[i].E();
+      }
+
+      _v_Whad=tightjets[i] + tightjets[j];
+      _v_Thad=tightjets[i] + tightjets[j] + AllJets[idx_bhad];
+
+      WhadCand_mass=_v_Whad.M();
+      ThadCand_mass=_v_Thad.M();
+
+      if(myRECO.goodTTbarMu&&myLHE.IsMuonChannel) jhchoi_newtree2->Fill();
+      if(myRECO.goodTTbarEl&&myLHE.IsElectronChannel) jhchoi_newtree4->Fill();
+
+    }
+  }
+
+  //--bkg evt all cases with wrong b/b~ assignment(b/b~ switched)
+
+  blep_pt=AllJets[idx_bhad].Pt(), blep_eta=AllJets[idx_bhad].Eta(), blep_phi=AllJets[idx_bhad].Phi(), blep_E=AllJets[idx_bhad].E();
+  bhad_pt=AllJets[idx_blep].Pt(), bhad_eta=AllJets[idx_blep].Eta(), bhad_phi=AllJets[idx_blep].Phi(), bhad_E=AllJets[idx_blep].E();
+
+
+
+
+
+  for(unsigned int i=0; i < tightjetsize; i++ ){
+    for(unsigned int j=i+1; j < tightjetsize; j++ ){
+
+      //if( i==tightjetidx_q1_flav_match && j==tightjetidx_q2_flav_match ) continue;
+      //if( i==tightjetidx_q2_flav_match && j==tightjetidx_q1_flav_match ) continue;
+      if(tightjets[i].Pt() > tightjets[j].Pt()){
+        q1jet_pt=tightjets[i].Pt(),q1jet_eta=tightjets[i].Eta(), q1jet_phi=tightjets[i].Phi(),q1jet_E=tightjets[i].E();
+        q2jet_pt=tightjets[j].Pt(),q2jet_eta=tightjets[j].Eta(), q2jet_phi=tightjets[j].Phi(),q2jet_E=tightjets[j].E();
+      }
+      else{
+        q1jet_pt=tightjets[j].Pt(),q1jet_eta=tightjets[j].Eta(), q1jet_phi=tightjets[j].Phi(), q1jet_E=tightjets[j].E();
+        q2jet_pt=tightjets[i].Pt(),q2jet_eta=tightjets[i].Eta(), q2jet_phi=tightjets[i].Phi(), q2jet_E=tightjets[i].E();
+      }
+      _v_Whad=tightjets[i]+tightjets[j];
+      _v_Thad=tightjets[i]+tightjets[j]+AllJets[idx_blep];
+      WhadCand_mass=_v_Whad.M();
+      ThadCand_mass=_v_Thad.M();
+      if(myRECO.goodTTbarMu&&myLHE.IsMuonChannel) jhchoi_newtree2->Fill();
+      if(myRECO.goodTTbarEl&&myLHE.IsElectronChannel) jhchoi_newtree4->Fill();
+      
+    }
+  }
+
+}
 
 void TTsemilep_JetAssignScore_TrainingInput::executeEvent(){
   if(doReduction){
@@ -990,6 +1054,11 @@ void TTsemilep_JetAssignScore_TrainingInput::executeEvent(){
   //nPV
   puweight=GetPileUpWeight(nPileUp,0);
   weight*=puweight;
+
+  //indices
+  tightjetidx_q1_flav_match=-1, tightjetidx_q2_flav_match=-1;
+  //checkjets
+  Nb=0,Nbbar=0;
   if(!IsDATA){
     base_weight*=MCweight();
     base_weight*=ev.GetTriggerLumi("Full");
@@ -1008,8 +1077,14 @@ void TTsemilep_JetAssignScore_TrainingInput::executeEvent(){
   //FillCutflow("cutflow/all/"+ProcessName,"event_start",weight);
   FillHist("event_start/cutflow/"+ProcessName,1, weight, 2, 0, 2);
   TTsemilep_JetAssignScore_TrainingInput::AnalyzeRECO();
-  if(doFillTree) TTsemilep_JetAssignScore_TrainingInput::FillTreeValues();
-  
+  if(Nb==1 && Nbbar==1 && tightjetsize>1  ){
+    if(tightjetidx_q1_flav_match!=-1 && tightjetidx_q2_flav_match!=-1) {
+      TTsemilep_JetAssignScore_TrainingInput::FillTreeValues();
+    }
+    else{//not matched cases
+      TTsemilep_JetAssignScore_TrainingInput::FillTreeValues_NotMatchCase();
+    }
+  }
   //  FillHist("BasicCut/ZCand_Mass/"+ProcessName, ZCand.M(), weight, 40, 70., 110.);
   
   
