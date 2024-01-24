@@ -58,6 +58,15 @@ public:
   bool TTbarMuReco();
   bool TTbarElReco();
   bool CheckJets();
+  void CollectJets();
+  TLorentzVector l1;
+  unsigned int Nb =0, Nbbar=0;
+  void FlavourAndDeltaR_Matching();
+  bool Is_q1match,Is_q2match;
+  unsigned int N_light_quark_jet,N_gluon_jet;
+  void FlavourMatchingOnly();
+  bool flavourmatch1,flavourmatch2;
+  unsigned int N_flavour_match1,N_flavour_match2;
   void AnalyzeLHE();
   void executeEventFromParameter(AnalyzerParameter param);
   void FillHists(TString cutname);
@@ -172,6 +181,7 @@ public:
   };
   RECOinfo myRECO;
   void FillTreeValues();
+  void FillTreeValues_NotMatchCase();
   void AnalyzeRECO();
   void AnalyzeGEN();
   

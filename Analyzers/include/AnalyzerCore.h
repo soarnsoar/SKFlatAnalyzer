@@ -235,6 +235,7 @@ public:
   TH3D* GetHist3D(TString histname);
 
   void FillHist(TString histname, double value, double weight, int n_bin, double x_min, double x_max);
+  void FillHistUnderAndOverFlow(TString histname, double value, double weight, int n_bin, double x_min, double x_max);
   void FillHist(TString histname, double value, double weight, int n_bin, double *xbins);
   void FillHist(TString histname,
                 double value_x, double value_y,
@@ -297,6 +298,8 @@ public:
   TTree *jhchoi_newtree2;
   TTree *jhchoi_newtree3;
   TTree *jhchoi_newtree4;
+
+  void executeEventWithParam();
 
   //--end jhchoi
   //==== Quick Plotters
