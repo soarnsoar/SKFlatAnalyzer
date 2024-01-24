@@ -7,7 +7,7 @@ class BBbar_Analyzer : public AnalyzerCore {
 
 public:
 
-
+  int overflow;
 
   void initializeAnalyzer();
 
