@@ -4,7 +4,7 @@
 
 TTsemilep_JetAssignScore::TTsemilep_JetAssignScore(){//
   
-  doReduction=true;
+  doReduction=false;
   doDebug=false;
   DNNcut=0.5;
 
@@ -19,8 +19,10 @@ TTsemilep_JetAssignScore::~TTsemilep_JetAssignScore(){
 }
 
 
-void TTsemilep_JetAssignScore::initTMVAmodel_muon(){
-  TString xmlfile=SKFLAT_WD+"/data/Run2UltraLegacy_v3/2017/TMVA/TTsemilepJetAssign/2312/v1/muon/TMVAClassification_DNN.weights.xml";
+void TTsemilep_JetAssignScore::initTMVAmodel_muon(){//TTsemilepJetAssign/2312/v1
+  //TString xmlfile=SKFLAT_WD+"/data/Run2UltraLegacy_v3/2017/TMVA/TTsemilepJetAssign/2312/v1//muon/TMVAClassification_DNN.weights.xml";//using only matched jets exist
+  //TMVA/TTsemilepJetAssign/add_unmatchedjet_event/muon
+  TString xmlfile=SKFLAT_WD+"/data/Run2UltraLegacy_v3/2017/TMVA/TTsemilepJetAssign/add_unmatchedjet_event/muon/TMVAClassification_DNN.weights.xml";//add nonmatchedjet events
   cout << "define tmvareader"<< endl;
   myreader_muon=new TMVA::Reader("V");
   cout << "add variables"<< endl;
@@ -64,7 +66,8 @@ void TTsemilep_JetAssignScore::initTMVAmodel_muon(){
 
 
 void TTsemilep_JetAssignScore::initTMVAmodel_electron(){
-  TString xmlfile=SKFLAT_WD+"/data/Run2UltraLegacy_v3/2017/TMVA/TTsemilepJetAssign/2312/v1/electron/TMVAClassification_DNN.weights.xml";
+  //TString xmlfile=SKFLAT_WD+"/data/Run2UltraLegacy_v3/2017/TMVA/TTsemilepJetAssign/2312/v1/electron/TMVAClassification_DNN.weights.xml";//training with only matchedjet events
+  TString xmlfile=SKFLAT_WD+"/data/Run2UltraLegacy_v3/2017/TMVA/TTsemilepJetAssign/add_unmatchedjet_event/electron/TMVAClassification_DNN.weights.xml";//add nonmatchedjet events
   cout << "define tmvareader"<< endl;
   myreader_electron=new TMVA::Reader("V");
   cout << "add variables"<< endl;
@@ -951,7 +954,7 @@ void TTsemilep_JetAssignScore::executeEvent(){
   //FillCutflow("cutflow/all/"+ProcessName,"event_start",weight);
   FillHist("event_start/cutflow/"+ProcessName,1, weight, 2, 0, 2);
   TTsemilep_JetAssignScore::AnalyzeRECO();
-  if(doFillTree) TTsemilep_JetAssignScore::FillTreeValues();
+
   
   //  FillHist("BasicCut/ZCand_Mass/"+ProcessName, ZCand.M(), weight, 40, 70., 110.);
   

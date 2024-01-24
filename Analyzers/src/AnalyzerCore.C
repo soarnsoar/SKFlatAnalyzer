@@ -2398,8 +2398,35 @@ TH3D* AnalyzerCore::GetHist3D(TString histname){
 }
 
 
-void AnalyzerCore::FillHist(TString histname, double value, double weight, int n_bin, double x_min, double x_max){
+void AnalyzerCore::FillHistUnderAndOverFlow(TString histname, double value, double weight, int n_bin, double x_min, double x_max){
+  //if overflow==0 -> ignore overflow value
+  //if overflow==1 -> fill the firstbin for underflow
+  //if overflow==2 -> fill the lastbin for overflow
+  //if overflow==3 -> mode2 + mode3
+  TH1D *this_hist = GetHist1D(histname);
+  if( !this_hist ){
+    this_hist = new TH1D(histname, "", n_bin, x_min, x_max);
+    this_hist->SetDirectory(NULL);
+    maphist_TH1D[histname] = this_hist;
+  }
+  //jhchoi
+  if(value>=x_max){
+    double _x1=this_hist->GetBinLowEdge(n_bin);//last valid bin's low edge
+    double _dx=this_hist->GetBinWidth(n_bin);//last valid bin's low edge
+    value=_x1+_dx/2;
+  }
+  else if(value<=x_min){
+    double _x1=this_hist->GetBinLowEdge(1);//last valid bin's low edge
+    double _dx=this_hist->GetBinWidth(1);//last valid bin's low edge
+    value=_x1+_dx/2;
+  }
 
+  this_hist->Fill(value, weight);
+
+}
+
+
+void AnalyzerCore::FillHist(TString histname, double value, double weight, int n_bin, double x_min, double x_max){
   TH1D *this_hist = GetHist1D(histname);
   if( !this_hist ){
     this_hist = new TH1D(histname, "", n_bin, x_min, x_max);
@@ -2738,6 +2765,10 @@ void AnalyzerCore::FillJetPlots(std::vector<Jet> jets, std::vector<FatJet> fatje
     FillHist(this_region+"/FatJet_"+this_itoa+"_PuppiTau31_"+this_region, fatjets.at(i).PuppiTau3()/fatjets.at(i).PuppiTau1(), weight, 100, 0., 1.);
     FillHist(this_region+"/FatJet_"+this_itoa+"_PuppiTau32_"+this_region, fatjets.at(i).PuppiTau3()/fatjets.at(i).PuppiTau2(), weight, 100, 0., 1.);
   }
-
+  
 }
+
+
+
+
 

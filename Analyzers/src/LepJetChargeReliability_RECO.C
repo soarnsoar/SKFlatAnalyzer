@@ -454,7 +454,7 @@ int LepJetChargeReliability_RECO::Rank1n2Leptons(std::vector<int> &v_blep_idx, s
   double center=1.7;
   unsigned int vsize=v_blep_idx.size();
   vector<double> v_diff;
-  for(int i = 0 ; i < vsize ; i++){
+  for(unsigned int i = 0 ; i < vsize ; i++){
     v_diff.push_back(fabs(v_blep_value[i]-center));
   }//v loop
   //----idx to return----//
@@ -463,10 +463,10 @@ int LepJetChargeReliability_RECO::Rank1n2Leptons(std::vector<int> &v_blep_idx, s
   //////---/////
 
   //--Comparison--//
-  for(int i = 0 ; i < vsize ; i++){
+  for(unsigned int i = 0 ; i < vsize ; i++){
     double this_diff=v_diff[i];
     int this_rank=0;
-    for(int j = 0 ; j < vsize ; j++){
+    for(unsigned int j = 0 ; j < vsize ; j++){
       if(i==j) continue;
       if(this_diff == v_diff[j]){
 	if(i>j) this_rank+=1;
@@ -493,9 +493,9 @@ void LepJetChargeReliability_RECO::RunBMuon(){
   std::vector<int> v_tmva_bmuonidx;
   std::vector<double> v_tmva_bmuon_charge;
   std::vector<double> v_tmva_bmuon_dnn;
-  for(unsigned int i=0; i < muonsize; i++){
-    if(i==myRECO.idx_Zmuon1) continue;
-    if(i==myRECO.idx_Zmuon2) continue;
+  for(unsigned int i=0; i < muonsize; i++){    
+    if((int)i==myRECO.idx_Zmuon1) continue;
+    if((int)i==myRECO.idx_Zmuon2) continue;
     
     //---Boost muon to jet restframe
     TLorentzVector vl(AllMuons[i]);
@@ -567,7 +567,7 @@ void LepJetChargeReliability_RECO::RunBMuon(){
   }
   bmuon1_idx=-1;
   //set vector wrt rank
-  for(int i=0; i < bmuonsize; i++){//
+  for(unsigned int i=0; i < bmuonsize; i++){//
     unsigned int target_rank=i;
     for(unsigned int j = 0 ; j < bmuonsize; j++){
       unsigned int _this_rank=v_tmva_bmuon_rank[j];
@@ -618,8 +618,8 @@ void LepJetChargeReliability_RECO::RunBElectron(){
   std::vector<double> v_tmva_belectron_charge;
   std::vector<double> v_tmva_belectron_dnn;
   for(unsigned int i=0; i < electronsize; i++){
-    if(i==myRECO.idx_Zelectron1) continue;
-    if(i==myRECO.idx_Zelectron2) continue;
+    if((int)i==myRECO.idx_Zelectron1) continue;
+    if((int)i==myRECO.idx_Zelectron2) continue;
     
     //---Boost electron to jet restframe
     TLorentzVector vl(AllElectrons[i]);
@@ -691,7 +691,7 @@ void LepJetChargeReliability_RECO::RunBElectron(){
   }
   belectron1_idx=-1;
   //set vector wrt rank
-  for(int i=0; i < belectronsize; i++){//
+  for(unsigned int i=0; i < belectronsize; i++){//
     unsigned int target_rank=i;
     for(unsigned int j = 0 ; j < belectronsize; j++){
       unsigned int _this_rank=v_tmva_belectron_rank[j];
@@ -739,22 +739,22 @@ void LepJetChargeReliability_RECO::RunBElectron(){
 bool LepJetChargeReliability_RECO::ZmmReco(){
   vector<int> idx_Zmuon;
   vector<Muon> v_Zmuon;
-  double this_leptonid_sf=1.;
-  double this_trigger_sf=1.;
-  double this_iso_sf=1.;
+  //double this_leptonid_sf=1.;
+  //double this_trigger_sf=1.;
+  //double this_iso_sf=1.;
   
   int i_l1=-1;
   int i_l2=-1;
   //Because roch. corr. need to find leading pt muon again.
   double maxpt=-100.;
-  for(int i = 0 ; i < muonsize; i++ ){
+  for(unsigned int i = 0 ; i < muonsize; i++ ){
     double pt=AllMuons[i].Pt();
     double eta=AllMuons[i].Eta();
     bool passID=AllMuons[i].PassID("POGMedium");
     bool passISO=AllMuons[i].PassSelector(Muon::Selector::TkIsoLoose);
     //double reliso=AllMuons[i].RelIso();
     if(fabs(eta) > 2.4) continue; 
-    if(pt <15.) continue;
+    if(pt <TriggerSafeCut_muon2) continue;
     if (!passID) continue;
     if (!passISO) continue;
     //if(reliso>0.15) continue;//reliso0.15
@@ -774,11 +774,11 @@ bool LepJetChargeReliability_RECO::ZmmReco(){
 
   if(!IsDATA) {
     //this_leptonid_sf*=mcCorr->MuonID_SF("NUM_TightID_DEN_TrackerMuons",  eta, AllMuons[i].MiniAODPt());
-    this_leptonid_sf=1.;
+    //this_leptonid_sf=1.;
     //this_iso_sf = mcCorr->MuonISO_SF("NUM_TightRelIso_DEN_TightIDandIPCut", eta, AllMuons[i].MiniAODPt());
-    this_iso_sf=1.;
+    //this_iso_sf=1.;
     //this_trigger_sf*=mcCorr->MuonTrigger_SF("IsoMu27_POGTight", "HLT_IsoMu27_v", v_Zmuon, 0);
-    this_trigger_sf=1.;
+    //this_trigger_sf=1.;
     vector<Lepton*> leps=MakeLeptonPointerVector(v_Zmuon);
     mu_trigsf=GetDileptonTriggerSF("Mu17Leg1_MediumID_trkIsoLoose","Mu8Leg2_MediumID_trkIsoLoose","DZ_MediumID_trkIsoLoose",leps,0,0);
     Lepton* _mu1=leps.at(0);
@@ -793,7 +793,7 @@ bool LepJetChargeReliability_RECO::ZmmReco(){
   //int i_l2=idx_Zmuon[1];
   //--Find second leading muon
   double second_max_pt=-999;
-  for(int i = 0 ; i <SelectedMuonSize ; i++){
+  for(unsigned int i = 0 ; i <SelectedMuonSize ; i++){
     int idx=idx_Zmuon[i];
     double pt=AllMuons[idx].Pt();
     if(idx==i_l1)continue;//this is leading muon
@@ -823,10 +823,10 @@ bool LepJetChargeReliability_RECO::ZmmReco(){
 bool LepJetChargeReliability_RECO::ZeeReco(){
   vector<int> idx_Zelectron;
   vector<Electron> v_Zelectron;
-  double this_leptonid_sf=1.;
-  double this_leptonreco_sf=1.;
-  double this_trigger_sf=1.;
-  for(int i = 0 ; i < electronsize; i++ ){
+  //double this_leptonid_sf=1.;
+  //double this_leptonreco_sf=1.;
+  //double this_trigger_sf=1.;
+  for(unsigned int i = 0 ; i < electronsize; i++ ){
     double pt=AllElectrons[i].Pt();
     double eta=AllElectrons[i].Eta();
     bool passID=AllElectrons[i].PassID("passMediumID");
@@ -848,10 +848,10 @@ bool LepJetChargeReliability_RECO::ZeeReco(){
   int i_l2=idx_Zelectron[1];
 
   if(!IsDATA) {
-    this_leptonreco_sf*=mcCorr->ElectronReco_SF (AllElectrons[i_l1].scEta(), AllElectrons[i_l1].Pt(),0);
-    this_leptonreco_sf*=mcCorr->ElectronReco_SF (AllElectrons[i_l1].scEta(), AllElectrons[i_l2].Pt(),0);
-    this_leptonid_sf*=mcCorr->ElectronID_SF ("passMediumID",  AllElectrons[i_l1].scEta(), AllElectrons[i_l1].Pt());
-    this_leptonid_sf*=mcCorr->ElectronID_SF ("passMediumID",  AllElectrons[i_l2].scEta(), AllElectrons[i_l2].Pt());
+    //this_leptonreco_sf*=mcCorr->ElectronReco_SF (AllElectrons[i_l1].scEta(), AllElectrons[i_l1].Pt(),0);
+    //this_leptonreco_sf*=mcCorr->ElectronReco_SF (AllElectrons[i_l1].scEta(), AllElectrons[i_l2].Pt(),0);
+    //this_leptonid_sf*=mcCorr->ElectronID_SF ("passMediumID",  AllElectrons[i_l1].scEta(), AllElectrons[i_l1].Pt());
+    //this_leptonid_sf*=mcCorr->ElectronID_SF ("passMediumID",  AllElectrons[i_l2].scEta(), AllElectrons[i_l2].Pt());
     
     vector<Lepton*> leps=MakeLeptonPointerVector(v_Zelectron);
     Lepton* _el1=leps.at(0);
@@ -869,7 +869,7 @@ bool LepJetChargeReliability_RECO::ZeeReco(){
   if(myRECO.mZ > 120) return 0;
   myRECO.idx_Zelectron1=i_l1;
   myRECO.idx_Zelectron2=i_l2;
-  myRECO.goodZmm=true;
+  myRECO.goodZee=true;
   return 1;
 
 
@@ -903,7 +903,7 @@ bool LepJetChargeReliability_RECO::Tag1bjet(){
     l2=AllElectrons[myRECO.idx_Zelectron2];
   }
   //cout << "btag_cut=" << btag_cut << endl;
-  for(int i = 0 ; i < jetsize; i ++){
+  for(unsigned int i = 0 ; i < jetsize; i ++){
     double btag_score=AllJets[i].GetTaggerResult(JetTagging::DeepJet);
     //cout << "btag_score=" << btag_score << endl;
     if(btag_score < bveto_cut) continue;
