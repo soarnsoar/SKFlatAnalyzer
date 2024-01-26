@@ -598,15 +598,15 @@ void ForTMVA_BBbarAnalyzer::AnalyzeLHE(){
   //(1)Check Index of incoming parton
 
   int status=-999, pid=-999;
-  double pz=-999,E=-999;
+  //double pz=-999,E=-999;
   //cout << "genWeight_X1=" << genWeight_X1 << endl;
   //cout << "genWeight_X2=" << genWeight_X2 << endl;
   //cout << setw(4) << "i" << setw(4) << "pz" << setw(4) << "E" << setw(4) << endl; 
   for(unsigned int i = 0; i < myLHE.LHEsize ; i++){
     status=LHEs[i].Status();
     pid=LHEs[i].ID();
-    pz=LHEs[i].Pz();
-    E=LHEs[i].E();
+    //pz=LHEs[i].Pz();
+    //E=LHEs[i].E();
 
     if(status==-1){
       myLHE.incoming_parton_pid.push_back(pid);
@@ -748,7 +748,7 @@ int ForTMVA_BBbarAnalyzer::Rank1n2Leptons(std::vector<int> &v_blep_idx, std::vec
   double center=1.7;
   unsigned int vsize=v_blep_idx.size();
   vector<double> v_diff;
-  for(int i = 0 ; i < vsize ; i++){
+  for(unsigned int i = 0 ; i < vsize ; i++){
     v_diff.push_back(fabs(v_blep_value[i]-center));
   }//v loop
   //----idx to return----//
@@ -757,10 +757,10 @@ int ForTMVA_BBbarAnalyzer::Rank1n2Leptons(std::vector<int> &v_blep_idx, std::vec
   //////---/////
 
   //--Comparison--//
-  for(int i = 0 ; i < vsize ; i++){
+  for(unsigned int i = 0 ; i < vsize ; i++){
     double this_diff=v_diff[i];
     int this_rank=0;
-    for(int j = 0 ; j < vsize ; j++){
+    for(unsigned int j = 0 ; j < vsize ; j++){
       if(i==j) continue;
       if(this_diff == v_diff[j]){
 	if(i>j) this_rank+=1;
@@ -809,8 +809,8 @@ void ForTMVA_BBbarAnalyzer::RunLeptonCutStudyMuon(){
   std::vector<int> v_tmva_bmuonidx;
   std::vector<double> v_tmva_bmuon_p_jetrestf;
   for(unsigned int i=0; i < muonsize; i++){
-    if(i==myRECO.idx_Zmuon1) continue;
-    if(i==myRECO.idx_Zmuon2) continue;
+    if((int)i==myRECO.idx_Zmuon1) continue;
+    if((int)i==myRECO.idx_Zmuon2) continue;
     
     //---Boost muon to jet restframe
     TLorentzVector vl(AllMuons[i]);
@@ -988,8 +988,8 @@ void ForTMVA_BBbarAnalyzer::RunLeptonCutStudyElectron(){
   std::vector<double> v_tmva_belectron_p_jetrestf;
 
   for(unsigned int i=0; i < electronsize; i++){
-    if(i==myRECO.idx_Zelectron1) continue;
-    if(i==myRECO.idx_Zelectron2) continue;
+    if((int)i==myRECO.idx_Zelectron1) continue;
+    if((int)i==myRECO.idx_Zelectron2) continue;
     
     //---Boost electron to jet restframe
     TLorentzVector vl(AllElectrons[i]);

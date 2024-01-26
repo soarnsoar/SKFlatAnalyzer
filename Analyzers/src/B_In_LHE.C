@@ -119,20 +119,20 @@ void B_In_LHE::executeEvent(){
   //---LHE info---//
   LHEs=GetLHEs();
   unsigned int LHEsize=LHEs.size();
-  double LHE_px,LHE_py,LHE_pz,LHE_E,LHE_status,LHE_id,LHE_index, LHE_pt,LHE_eta, LHE_phi;
-
+  double LHE_px,LHE_py,LHE_pz,LHE_E,LHE_status,LHE_id, LHE_pt,LHE_eta, LHE_phi;
+  //int LHE_id, LHE_status;
   bool doStore = false;
   unsigned int nb_LHE=0;
   for(unsigned int i =0; i < LHEsize ; i++){
-    //LHE_px=LHEs.at(i).Px();
-    //LHE_py=LHEs.at(i).Py();
-    //LHE_pz=LHEs.at(i).Pz();
-    //LHE_E=LHEs.at(i).E();
+    LHE_px=LHEs.at(i).Px();
+    LHE_py=LHEs.at(i).Py();
+    LHE_pz=LHEs.at(i).Pz();
+    LHE_E=LHEs.at(i).E();
     LHE_status=LHEs.at(i).Status();
     LHE_id=LHEs.at(i).ID();
     //LHE_index=LHEs.at(i).Index();
-    //LHE_eta=LHEs.at(i).Eta();
-    //LHE_phi=LHEs.at(i).Phi();
+    LHE_eta=LHEs.at(i).Eta();
+    LHE_phi=LHEs.at(i).Phi();
     if ( (LHE_status == -1) && (abs(LHE_id) == 5)  ){
       //doPrint=true;
       nb_LHE=nb_LHE+1;
@@ -157,16 +157,16 @@ void B_In_LHE::executeEvent(){
     // count incoming parton
     unsigned int i_incoming=0;
     for(unsigned int i =0; i < LHEsize ; i++){
-      LHE_px=LHEs.at(i).Px();
-      LHE_py=LHEs.at(i).Py();
-      LHE_pz=LHEs.at(i).Pz();
-      LHE_E=LHEs.at(i).E();
+      //LHE_px=LHEs.at(i).Px();
+      //LHE_py=LHEs.at(i).Py();
+      //LHE_pz=LHEs.at(i).Pz();
+      //LHE_E=LHEs.at(i).E();
       LHE_status=LHEs.at(i).Status();
       LHE_id=LHEs.at(i).ID();
-      LHE_index=LHEs.at(i).Index();
+      //LHE_index=LHEs.at(i).Index();
       LHE_pt=LHEs.at(i).Pt();
       LHE_eta=LHEs.at(i).Eta();
-      LHE_phi=LHEs.at(i).Phi();
+      //LHE_phi=LHEs.at(i).Phi();
 
       if (LHE_status==-1){//##--incoming parton
 	if (LHE_id==5){
@@ -479,7 +479,7 @@ void B_In_LHE::executeEventFromParameter(AnalyzerParameter param){
 
   //==== method 1a)
   //==== multiply "btagWeight" to the event weight
-  double btagWeight = mcCorr->GetBTaggingReweight_1a(jets, jtp_DeepCSV_Medium);
+  //double btagWeight = mcCorr->GetBTaggingReweight_1a(jets, jtp_DeepCSV_Medium);
 
   //==== method 2a)
   for(unsigned int ij = 0 ; ij < jets.size(); ij++){

@@ -398,7 +398,7 @@ void BasicTest::executeEventFromParameter(AnalyzerParameter param){
 
   //==== method 1a)
   //==== multiply "btagWeight" to the event weight
-  double btagWeight = mcCorr->GetBTaggingReweight_1a(jets, jtp_DeepCSV_Medium);
+  //double btagWeight = mcCorr->GetBTaggingReweight_1a(jets, jtp_DeepCSV_Medium);
 
   //==== method 2a)
   for(unsigned int ij = 0 ; ij < jets.size(); ij++){

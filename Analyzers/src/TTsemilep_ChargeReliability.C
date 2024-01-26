@@ -7,14 +7,14 @@ TTsemilep_ChargeReliability::TTsemilep_ChargeReliability(){//
   doDebug=false;
   DNNcut=0.5;
   doDrawDNNinputs=false;
-
+  //SetSystematics();
 
 }
+
 TTsemilep_ChargeReliability::~TTsemilep_ChargeReliability(){
 
   //==== Destructor of this Analyzer
-  cout << "nevt=" << nevt << endl;
-  cout << "nevt_samebb=" << nevt_samebb << endl;
+
 }
 
 
@@ -256,9 +256,19 @@ void TTsemilep_ChargeReliability::InitValues(){
 
 
 void TTsemilep_ChargeReliability::initializeAnalyzer(){
-  
+  //--Systematics--//
+  RunSyst = HasFlag("RunSyst");
+  SetSystematicOption(nominal);
+  if(RunSyst){
+    //--WeightBase--//
+    syslist_w.push_back(nominal);
+    syslist_w.push_back(MuonReco);
+    //--Value Variation--//
+    syslist_v.push_back(MuonScaleUp);
+    syslist_v.push_back(MuonScaleDown);
 
-  nevt=0., nevt_samebb=0.;
+  }
+
   cout << "[initialize DNN models]" << endl;
   SKFLAT_WD=getenv("SKFlat_WD");
   initJetAssignModel_muon();
@@ -269,18 +279,12 @@ void TTsemilep_ChargeReliability::initializeAnalyzer(){
   initChargeReliabilityModel_jet();
 
   if(IsDATA){
-    //ProcessName=DataStream;    
     ProcessName="Data";
   }
   else{
     ProcessName=MCSample;
-    //if(ProcessName.Contains("DY")){
-    //  ProcessName="DY";
-    //}
   }
   cout << "[TTsemilep_ChargeReliability::initializeAnalyzer Setting ProcessName = " << ProcessName << endl;
-
-
 
   std::vector<JetTagging::Parameters> jtps;
   //==== If you want to use 1a or 2a method,
@@ -379,51 +383,10 @@ void TTsemilep_ChargeReliability::AnalyzeGEN(){
       nlightquark_mother_not_status21+=1;
       idx_lightquark.push_back(i);
     }
-    /*
-    if (isHardProcess && (status!=21)){
-      if(pid==5){
-	idx_bquark=i;
-      }
-      else if(pid==-5){
-	idx_bbarquark=i;
-      }
-    }
-    */
   }
   //-----quarks pid from W->qq'----// 
   myGEN.Whad_q1_pid=GENs[idx_lightquark[0]].PID();
   myGEN.Whad_q2_pid=GENs[idx_lightquark[1]].PID();
-
-  //----to check gen level info----//
-  //--skip>>>
-  /*
-  myGEN.vWhad.SetPxPyPzE(0,0,0,0);
-  myGEN.vThad.SetPxPyPzE(0,0,0,0);
-  for(unsigned int i = 0 ; i < idx_lightquark.size(); i++){
-    myGEN.vWhad+=GENs[idx_lightquark[i]];
-    myGEN.vThad+=GENs[idx_lightquark[i]];
-  }
-  if(myLHE.bLep_charge>0){//b from THad_charge<0 -> bquark
-    myGEN.vThad+=GENs[idx_bquark];
-  }
-  else{
-    myGEN.vThad+=GENs[idx_bbarquark];
-  }
-
-  FillHist("Whad_quark_pid_GEN/all/"+ProcessName,myGEN.Whad_q1_pid, weight, 32, -7, 25);
-  FillHist("Whad_quark_pid_GEN/all/"+ProcessName,myGEN.Whad_q2_pid, weight, 32, -7, 25);
-  myGEN.Whad_q1_genidx=idx_lightquark[0];
-  myGEN.Whad_q2_genidx=idx_lightquark[1];
-  double mWhad_gen=myGEN.vWhad.M();
-  double mThad_gen=myGEN.vThad.M();
-  FillHist("M_Whad_GEN/all/"+ProcessName,mWhad_gen, weight, 150, 0, 150);
-  FillHist("M_Thad_GEN/all/"+ProcessName,mThad_gen, weight, 300, 0, 300);
-  FillHist("N_lightquark_GEN/all/"+ProcessName,nlightquark_mother_not_status21, weight, 10, 0, 10);
-
-  //Check exception//
-  if(nlightquark_mother_not_status21==2) return;
-  FillHist("N_lightquark_GEN/nLightQuarkNotISR__not_2/"+ProcessName,nlightquark_mother_not_status21, weight, 10, 0, 10);
-  */
 }
 
 
@@ -1543,13 +1506,12 @@ void TTsemilep_ChargeReliability::Check_bElectronScore(){
 }
 void TTsemilep_ChargeReliability::AnalyzeRECO(){
   //call muon/electron
-  vector<Muon> AllMuons_raw=GetAllMuons();
-  AllMuons=ScaleMuons(AllMuons_raw,0);//roch. corr.
-  muonsize = AllMuons.size();
-  AllElectrons=GetAllElectrons();
-  electronsize = AllElectrons.size();
-  AllJets = GetAllJets();
-  jetsize=AllJets.size();
+  
+
+  AllMuons=ScaleMuons(AllMuons_raw,_var_muonscale);//roch. corr.
+  AllElectrons=ScaleElectrons(AllElectrons_raw,_var_electronscale);
+  AllJets = ScaleJets(AllJets_raw,_var_jes);
+  
 
   //(0) Apply some basic cuts
   myRECO.passMuonTrigger=ev.PassTrigger(MuonTriggerNames);
@@ -1608,16 +1570,33 @@ void TTsemilep_ChargeReliability::AnalyzeRECO(){
 
 
 
-void TTsemilep_ChargeReliability::executeEvent(){
+void TTsemilep_ChargeReliability::executeEvent(){//this function is only for 
+  //----GetAll Muons/Electrons/Jets
+  GetAllObjects();
 
+  if(!RunSyst){
+    LHEs=GetLHEs();
+    if(ProcessName.Contains("TTLJ"))TTsemilep_ChargeReliability::AnalyzeLHE();
+    //if (myLHE.IsTauChannel) return; // not caring tau channel
+    if(ProcessName.Contains("TTLJ"))TTsemilep_ChargeReliability::AnalyzeGEN();
+    //FillCutflow("cutflow/all/"+ProcessName,"event_start",weight);
+    executeEventWithCurrentSet();
+  } 
+  else{
+    //--Systematics
+    //--before go to reco level, set up options
+    
+    //--Run WeightBase First
+
+    executeEventWithCurrentSet();
+    syslist_w.clear();//then clear
+  }
+
+
+}
+void TTsemilep_ChargeReliability::executeEventWithCurrentSet(){
   //jhchoi//
-
   ev = GetEvent();
-  //FillHist("event_start",1, weight, 1, 0, 1);
-  //isEvenEvent=((event%2)==0);
-  //---initialize--//
-  //EventTag="";
-  //EventTagJetParton="";
   ChannelLep="";
   IncomingPartonTag="";
   doPrint=false;
@@ -1625,11 +1604,9 @@ void TTsemilep_ChargeReliability::executeEvent(){
   base_weight=1.;
   myRECO.idx_Tmuon=-1;
   myRECO.idx_Telectron=-1;
-
   myRECO.goodTTbarMu=false;
   myRECO.goodTTbarEl=false;
   DNNscore=-999.;
-  
   taged_bjet_score=0.;
   //SF
   trigsf=1.;
@@ -1668,12 +1645,6 @@ void TTsemilep_ChargeReliability::executeEvent(){
   InitValues();
   doFillTree=false;
 
-  LHEs=GetLHEs();
-  if(ProcessName.Contains("TTLJ"))TTsemilep_ChargeReliability::AnalyzeLHE();
-  //if (myLHE.IsTauChannel) return; // not caring tau channel
-  if(ProcessName.Contains("TTLJ"))TTsemilep_ChargeReliability::AnalyzeGEN();
-  //FillCutflow("cutflow/all/"+ProcessName,"event_start",weight);
-  
   TTsemilep_ChargeReliability::AnalyzeRECO();
   
   
