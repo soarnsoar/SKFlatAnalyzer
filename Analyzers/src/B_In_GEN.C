@@ -120,25 +120,26 @@ void B_In_GEN::executeEvent(){
   //GetGens
   GENs=GetGens();
   unsigned int GENsize=GENs.size();
-  double GEN_px,GEN_py,GEN_pz,GEN_E,GEN_status,GEN_id,GEN_index, GEN_pt,GEN_eta, GEN_phi, GEN_mother, GEN_isLastCopy, GEN_Virtuality;
+  //double GEN_px,GEN_py,GEN_pz;
+  double GEN_E,GEN_id, GEN_pt,GEN_eta, GEN_phi;
 
-  unsigned int nb_GEN=0;
+  //unsigned int nb_GEN=0;
   if(doPrint) cout << "========[Start]====" << endl;
 
   LHEs=GetLHEs();
   unsigned int LHEsize=LHEs.size();
   
-  double LHE_px,LHE_py,LHE_pz,LHE_E,LHE_status,LHE_id,LHE_index, LHE_pt,LHE_eta, LHE_phi;
+  double LHE_E,LHE_status,LHE_id, LHE_pt,LHE_eta, LHE_phi;
   
 
   bool doStore = false;
-  bool isExotic = false;
+  //bool isExotic = false;
   unsigned int nb_LHE=0;
   //-----To Store----//
-  double LHE_b_pt, LHE_b_eta,LHE_b_phi, LHE_b_E, LHE_b_pid;
+  double LHE_b_pt=-99, LHE_b_eta=-99,LHE_b_phi=-99, LHE_b_E=0;//, LHE_b_pid;
   double GEN_b_pt=-999, GEN_b_eta=-999,GEN_b_phi=-999, GEN_b_E=-999;
-  double GEN_B_pt=-999, GEN_B_eta=-999,GEN_B_phi=-999, GEN_B_E=-999, GEN_B_pid=-999;
-  double RECO_bj_pt=-999, RECO_bj_eta=-999,RECO_bj_phi=-999, RECO_bj_E=-999,RECO_bj_m=-999, RECO_bj_pid=-999;
+  double GEN_B_pt=-999, GEN_B_eta=-999,GEN_B_phi=-999, GEN_B_E=-999;
+  double RECO_bj_pt=-999, RECO_bj_eta=-999,RECO_bj_phi=-999, RECO_bj_E=-999;
   //---[END]To Store---//
   TLorentzVector vb;
   if(doPrint) cout << "LHE_index" << setw(15) << "LHE_id" << setw(15) << "LHE_status" << setw(15) << "LHE_pt" << setw(15) << "LHE_eta" << setw(15) << "LHE_phi" << endl;
@@ -163,31 +164,31 @@ void B_In_GEN::executeEvent(){
       LHE_b_eta = LHE_eta;
       LHE_b_phi = LHE_phi;
       LHE_b_E = LHE_E;
-      LHE_b_pid = LHE_id;
+      //LHE_b_pid = LHE_id;
       nb_LHE=nb_LHE+1;
     }
   }
-  double _dR=10000;
+  //double _dR=10000;
   if(!doStore) return;
 
   vb.SetPtEtaPhiE(LHE_b_pt,LHE_b_eta,LHE_b_phi,LHE_b_E);
   if(doPrint) cout << "[Print near LHE outgoing b quarkd R<0.4 " << endl;
-  double _dRcut=0.8;
+  //double _dRcut=0.8;
   std::vector<int> bquark_index;
-  unsigned int nstatus1=0;
+  //unsigned int nstatus1=0;
   if(doPrint) cout << "GEN_index" << setw(15) << "GEN_id" << setw(15) << "GEN_status" << setw(15) << "GEN_mother" << setw(15) << "GEN_isLastCopy" << setw(15) << "GEN_Virtuality" << setw(15)<< "GEN_pt" << setw(15) << "GEN_eta" << setw(15) << "GEN_phi" << endl;
   for(unsigned int i =0; i < GENsize ; i++){
-    _dR=10000;
-    GEN_index=GENs.at(i).Index();
-    GEN_px=GENs.at(i).Px();
-    GEN_py=GENs.at(i).Py();
-    GEN_pz=GENs.at(i).Pz();
+    //_dR=10000;
+    //GEN_index=GENs.at(i).Index();
+    //GEN_px=GENs.at(i).Px();
+    //GEN_py=GENs.at(i).Py();
+    //GEN_pz=GENs.at(i).Pz();
     GEN_E=GENs.at(i).E();
-    GEN_status=GENs.at(i).Status();
+    //GEN_status=GENs.at(i).Status();
     GEN_id=GENs.at(i).PID();
-    GEN_mother=GENs.at(i).MotherIndex();
-    GEN_isLastCopy=GENs.at(i).isLastCopy();
-    GEN_Virtuality = GEN_E*GEN_E - GEN_px*GEN_px - GEN_py*GEN_py - GEN_pz*GEN_pz; 
+    //GEN_mother=GENs.at(i).MotherIndex();
+    //GEN_isLastCopy=GENs.at(i).isLastCopy();
+    //GEN_Virtuality = GEN_E*GEN_E - GEN_px*GEN_px - GEN_py*GEN_py - GEN_pz*GEN_pz; 
     //GEN_index=GENs.at(i).Index();
     GEN_eta=GENs.at(i).Eta();
     GEN_phi=GENs.at(i).Phi();
@@ -196,14 +197,14 @@ void B_In_GEN::executeEvent(){
     //  //doPrint=true;
     //  nb_GEN=nb_GEN+1;
     //}
-    _dR = GENs.at(i).DeltaR(vb);
+    //_dR = GENs.at(i).DeltaR(vb);
 
-    if(GEN_id==LHE_b_pid){
-      GEN_b_pt=GEN_pt;
-      GEN_b_eta=GEN_eta;
-      GEN_b_phi=GEN_phi;
-      GEN_b_E=GEN_E;
-    }
+    //if(GEN_id==LHE_b_pid){
+    //  GEN_b_pt=GEN_pt;
+    //  GEN_b_eta=GEN_eta;
+    //  GEN_b_phi=GEN_phi;
+    //  GEN_b_E=GEN_E;
+    //}
     if(
        (GEN_id>500)
        &&
@@ -237,7 +238,7 @@ void B_In_GEN::executeEvent(){
 	RECO_bj_pt=jet_pt;
 	RECO_bj_eta=jet_eta;
 	RECO_bj_phi=jet_phi;
-      RECO_bj_m=jet_m;
+	//RECO_bj_m=jet_m;
       RECO_bj_E=jet_E;
       }
   }
@@ -265,11 +266,11 @@ void B_In_GEN::executeEvent(){
   //set v_genB
   TLorentzVector v_genB;
   v_genB.SetPtEtaPhiE(GEN_B_pt,GEN_B_eta,GEN_B_phi,GEN_B_E);
-  double dR_GEN_b_GEN_B=-1;
+  //double dR_GEN_b_GEN_B=-1;
   double dR_GEN_B=-1;
   if (GEN_B_pt>0){
     dR_GEN_B = vb.DeltaR(v_genB);
-    dR_GEN_b_GEN_B = v_genb.DeltaR(v_genB);
+    //dR_GEN_b_GEN_B = v_genb.DeltaR(v_genB);
   }
   FillHist("Nocut/dR_GEN_B/"+ProcessName, dR_GEN_B, weight, 100, -1., 3.); //nbin,xmin,xmax
   FillHist("Nocut/GEN_B_pt/"+ProcessName, GEN_B_pt, weight, 300, 0., 300.); //nbin,xmin,xmax
@@ -282,12 +283,12 @@ void B_In_GEN::executeEvent(){
   TLorentzVector v_recobj;
   v_recobj.SetPtEtaPhiE(RECO_bj_pt,RECO_bj_eta,RECO_bj_phi,RECO_bj_E);
   double dR_RECO_bj=-1;
-  double dR_RECO_bj_GEN_b=-1;
-  double dR_RECO_bj_GEN_B=-1;
+  //double dR_RECO_bj_GEN_b=-1;
+  //double dR_RECO_bj_GEN_B=-1;
   if (RECO_bj_pt>0){
     dR_RECO_bj=vb.DeltaR(v_recobj);
-    dR_RECO_bj_GEN_b=v_genb.DeltaR(v_recobj);
-    dR_RECO_bj_GEN_B=v_genB.DeltaR(v_recobj);
+    //dR_RECO_bj_GEN_b=v_genb.DeltaR(v_recobj);
+    //dR_RECO_bj_GEN_B=v_genB.DeltaR(v_recobj);
   }
 
 
@@ -485,7 +486,7 @@ void B_In_GEN::executeEventFromParameter(AnalyzerParameter param){
 
   //==== method 1a)
   //==== multiply "btagWeight" to the event weight
-  double btagWeight = mcCorr->GetBTaggingReweight_1a(jets, jtp_DeepCSV_Medium);
+  //double btagWeight = mcCorr->GetBTaggingReweight_1a(jets, jtp_DeepCSV_Medium);
 
   //==== method 2a)
   for(unsigned int ij = 0 ; ij < jets.size(); ij++){

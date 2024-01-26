@@ -621,7 +621,7 @@ int BBbarRecoTMVA_DEBUG::Rank1n2Leptons(std::vector<int> &v_blep_idx, std::vecto
   double center=1.7;
   unsigned int vsize=v_blep_idx.size();
   vector<double> v_diff;
-  for(int i = 0 ; i < vsize ; i++){
+  for(unsigned int i = 0 ; i < vsize ; i++){
     v_diff.push_back(fabs(v_blep_value[i]-center));
   }//v loop
   //----idx to return----//
@@ -630,10 +630,10 @@ int BBbarRecoTMVA_DEBUG::Rank1n2Leptons(std::vector<int> &v_blep_idx, std::vecto
   //////---/////
 
   //--Comparison--//
-  for(int i = 0 ; i < vsize ; i++){
+  for(unsigned int i = 0 ; i < vsize ; i++){
     double this_diff=v_diff[i];
     int this_rank=0;
-    for(int j = 0 ; j < vsize ; j++){
+    for(unsigned int j = 0 ; j < vsize ; j++){
       if(i==j) continue;
       if(this_diff == v_diff[j]){
 	if(i>j) this_rank+=1;
@@ -680,8 +680,8 @@ void BBbarRecoTMVA_DEBUG::RunLeptonCutStudyMuon(){
   std::vector<int> v_tmva_bmuonidx;
   std::vector<double> v_tmva_bmuon_p_jetrestf;
   for(unsigned int i=0; i < muonsize; i++){
-    if(i==myRECO.idx_Zmuon1) continue;
-    if(i==myRECO.idx_Zmuon2) continue;
+    if((int)i==myRECO.idx_Zmuon1) continue;
+    if((int)i==myRECO.idx_Zmuon2) continue;
     
     //---Boost muon to jet restframe
     TLorentzVector vl(AllMuons[i]);
@@ -694,7 +694,7 @@ void BBbarRecoTMVA_DEBUG::RunLeptonCutStudyMuon(){
     reliso=AllMuons[i].RelIso();
     reltrkiso=AllMuons[i].TrkIso()/AllMuons[i].Pt();
 
-    int muon_charge=AllMuons[i].Charge();
+    //int muon_charge=AllMuons[i].Charge();
 
 
     if((dR_l_j<0.4) && (p_jetrestf>0.7) && (p_jetrestf<3)){
@@ -863,11 +863,11 @@ void BBbarRecoTMVA_DEBUG::RunLeptonCutStudyElectron(){
     print("cbal");
   }
   cout << "electronsize->" << electronsize << endl;
-  for(int i=0; i < electronsize; i++){
+  for(unsigned int i=0; i < electronsize; i++){
     print("jot cbal");
     cout << "i->" << i <<endl;
-    if(i==myRECO.idx_Zelectron1) continue;
-    if(i==myRECO.idx_Zelectron2) continue;
+    if((int)i==myRECO.idx_Zelectron1) continue;
+    if((int)i==myRECO.idx_Zelectron2) continue;
     print("define vl to electron i ");
     //---Boost electron to jet restframe
     TLorentzVector vl(AllElectrons[i]);
@@ -891,7 +891,7 @@ void BBbarRecoTMVA_DEBUG::RunLeptonCutStudyElectron(){
     print("charge consistency");
     IsGsfCtfScPixChargeConsistent=AllElectrons[i].IsGsfCtfScPixChargeConsistent();
 
-    int electron_charge=AllElectrons[i].Charge();
+    //int electron_charge=AllElectrons[i].Charge();
     print("if dR,pjrf cut");
     if((dR_l_j<0.4) && (p_jetrestf>0.7) && (p_jetrestf<3) && (IsGsfCtfScPixChargeConsistent)){
       print("true dR,pjrf cut");
@@ -1049,7 +1049,7 @@ void BBbarRecoTMVA_DEBUG::SetTreeValuesElectron(int i_belectron1,int i_belectron
 bool BBbarRecoTMVA_DEBUG::ZmmReco(){
   print("ZmmReco");
   vector<int> idx_Zmuon;
-  for(int i = 0 ; i < muonsize; i++ ){
+  for(unsigned int i = 0 ; i < muonsize; i++ ){
     double pt=AllMuons[i].Pt();
     double eta=AllMuons[i].Eta();
     bool passID=AllMuons[i].PassID("POGTight");
@@ -1081,7 +1081,7 @@ bool BBbarRecoTMVA_DEBUG::ZmmReco(){
 bool BBbarRecoTMVA_DEBUG::ZeeReco(){
   print("ZeeReco");
   vector<int> idx_Zelectron;
-  for(int i = 0 ; i < electronsize; i++ ){
+  for(unsigned int i = 0 ; i < electronsize; i++ ){
     double pt=AllElectrons[i].Pt();
     double eta=AllElectrons[i].Eta();
     bool passID=AllElectrons[i].PassID("passMediumID");
@@ -1124,7 +1124,7 @@ bool BBbarRecoTMVA_DEBUG::Tag1bjet(){
   //tightjets.push_back(AllJets[myRECO.ij_B]);
   double btag_cut = mcCorr->MCCorrection::GetJetTaggingCutValue(JetTagging::DeepJet,JetTagging::Tight);
   //cout << "btag_cut=" << btag_cut << endl;
-  for(int i = 0 ; i < jetsize; i ++){
+  for(unsigned int i = 0 ; i < jetsize; i ++){
     double btag_score=AllJets[i].GetTaggerResult(JetTagging::DeepJet);
     //cout << "btag_score=" << btag_score << endl;
     if(btag_score < btag_cut) continue;

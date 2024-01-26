@@ -255,16 +255,16 @@ void TTsemilep_JetAssign_FlavourMatPlots::AnalyzeLHE(){
   //cout << "LHEsize=" << LHEsize << endl;
   
   int status=-999, pid=-999;
-  double pz=-999,E=-999, charge=-999;
+  //double pz=-999,E=-999, charge=-999;
   //cout << "i" << setw(15) << "pid" << setw(15) << "status"  << endl;
   int n_light_quark=0;
   //--Check Lepton--//
   for(int i = 0; i < LHEsize; i++) {
     status=LHEs[i].Status();
     pid=LHEs[i].ID();
-    pz=LHEs[i].Pz();
-    E=LHEs[i].E();
-    charge=LHEs[i].Charge();
+    //pz=LHEs[i].Pz();
+    //E=LHEs[i].E();
+    //charge=LHEs[i].Charge();
     //cout << i << setw(15) << pid << setw(15) << status << endl;
     if(status==1){
       if(pid == 11){
@@ -300,9 +300,9 @@ void TTsemilep_JetAssign_FlavourMatPlots::AnalyzeLHE(){
   for(int i = 0; i < LHEsize; i++) {
     status=LHEs[i].Status();
     pid=LHEs[i].ID();
-    pz=LHEs[i].Pz();
-    E=LHEs[i].E();
-    charge=LHEs[i].Charge();
+    //pz=LHEs[i].Pz();
+    //E=LHEs[i].E();
+    //charge=LHEs[i].Charge();
     //cout << i << setw(15) << pid << setw(15) << status << endl;
   }
 }
@@ -386,15 +386,15 @@ bool TTsemilep_JetAssign_FlavourMatPlots::TTbarMuReco(){
   //Tag only 1 muon 
   vector<int> idx_Tmuon;
   vector<Muon> v_Tmuon;
-  double this_leptonid_sf=1.;
-  double this_trigger_sf=1.;
-  double this_iso_sf=1.;
+  //double this_leptonid_sf=1.;
+  //double this_trigger_sf=1.;
+  //double this_iso_sf=1.;
 
-  int i_l1=-1;
+  //int i_l1=-1;
 
   //Because roch. corr. need to find leading pt muon again.
   double maxpt=-100.;
-  for(int i = 0 ; i < muonsize; i++ ){
+  for(unsigned int i = 0 ; i < muonsize; i++ ){
     double pt=AllMuons[i].Pt();
     double eta=AllMuons[i].Eta();
     bool passID=AllMuons[i].PassID("POGLoose");
@@ -407,7 +407,7 @@ bool TTsemilep_JetAssign_FlavourMatPlots::TTbarMuReco(){
     //if(reliso>0.15) continue;//reliso0.15
     if (pt > maxpt) {
       maxpt=pt;
-      i_l1=i;
+      //i_l1=i;
     }
 
     idx_Tmuon.push_back(i);
@@ -420,9 +420,9 @@ bool TTsemilep_JetAssign_FlavourMatPlots::TTbarMuReco(){
   if (!AllMuons[idx_Tmuon[0]].PassID("POGMedium")) return 0 ;
   if (maxpt < 20.) return 0;
   if(!IsDATA) {
-    this_leptonid_sf=1.;
-    this_iso_sf=1.;
-    this_trigger_sf=1.;
+    //this_leptonid_sf=1.;
+    //this_iso_sf=1.;
+    //this_trigger_sf=1.;
     vector<Lepton*> leps=MakeLeptonPointerVector(v_Tmuon);
     
     //mu_trigsf=GetLeptonTriggerORSF(ev, MuonTriggerNames, MuonTriggerSFKeys, leps,0,0,"");
@@ -444,14 +444,14 @@ bool TTsemilep_JetAssign_FlavourMatPlots::TTbarElReco(){
   //Tag only 1 electron 
   vector<int> idx_Telectron;
   vector<Electron> v_Telectron;
-  double this_leptonid_sf=1.;
-  double this_trigger_sf=1.;
-  double this_iso_sf=1.;
+  //double this_leptonid_sf=1.;
+  //double this_trigger_sf=1.;
+  //double this_iso_sf=1.;
 
 
   //Because roch. corr. need to find leading pt electron again.
 
-  for(int i = 0 ; i < electronsize; i++ ){
+  for(unsigned int i = 0 ; i < electronsize; i++ ){
     double pt=AllElectrons[i].Pt();
     double eta=AllElectrons[i].Eta();
     bool passID=AllElectrons[i].PassID("passLooseID");
@@ -492,7 +492,7 @@ bool TTsemilep_JetAssign_FlavourMatPlots::CheckJets(){
   FillCutflow("cutflow/"+ProcessName,"Without_bMatch",weight);
   FillHist("Without_bMatch/Event/"+ProcessName,1, weight, 4, -1, 3);
   double btag_cut = mcCorr->MCCorrection::GetJetTaggingCutValue(JetTagging::DeepJet,JetTagging::Tight);
-  double bveto_cut = mcCorr->MCCorrection::GetJetTaggingCutValue(JetTagging::DeepJet,JetTagging::Loose);
+  //double bveto_cut = mcCorr->MCCorrection::GetJetTaggingCutValue(JetTagging::DeepJet,JetTagging::Loose);
   //JetTagging::DeepJet,JetTagging::Tight,JetTagging::incl,JetTagging::comb
   //double MCCorrection::GetJetTaggingCutValue(JetTagging::Tagger tagger, JetTagging::WP wp){
   //myRECO.ij_B
@@ -514,7 +514,7 @@ bool TTsemilep_JetAssign_FlavourMatPlots::CheckJets(){
     l1=AllElectrons[myRECO.idx_Telectron];
   }
   //cout << "btag_cut=" << btag_cut << endl;
-  for(int i = 0 ; i < jetsize; i ++){
+  for(unsigned int i = 0 ; i < jetsize; i ++){
 
 
     if(AllJets[i].Pt() < 30.) continue;
@@ -705,21 +705,21 @@ bool TTsemilep_JetAssign_FlavourMatPlots::CheckJets(){
 
 
   FillHist("Event_with_b1_b2/Whad_q1_q2_match/"+ProcessName,Is_q1match*Is_q2match, weight, 4, -1, 3);
-  FillHist("Event_with_b1_b2/Whad_q1_q2_match_flavour_only/"+ProcessName,flavourmatch1*flavourmatch2, weight, 4, -1, 3);
+  FillHist("Event_with_b1_b2/Whad_q1_q2_match_flavour_only/"+ProcessName,flavourmatch1&&flavourmatch2, weight, 4, -1, 3);
   FillHist("Event_with_b1_b2/nTightJet/"+ProcessName,tightjetsize, weight, 10, 0, 10);
   FillHist("Event_with_b1_b2/N_light_quark_jet/"+ProcessName,N_light_quark_jet, weight, 10, 0, 10);
   FillHist("Event_with_b1_b2/N_gluon_jet/"+ProcessName,N_gluon_jet, weight, 10, 0, 10);
-  if(flavourmatch1*flavourmatch2){
+  if(flavourmatch1&&flavourmatch2){
     FillHist("Event_with_b1_b2/nTightJet_if_flavour_matched/"+ProcessName,tightjetsize, weight, 10, 0, 10);
   }
 
   if((fabs(GENs[myGEN.Whad_q1_genidx].Eta())<2.4 && GENs[myGEN.Whad_q1_genidx].Pt()>30) &&
      ((fabs(GENs[myGEN.Whad_q2_genidx].Eta())<2.4 && GENs[myGEN.Whad_q2_genidx].Pt()>30))){
     FillHist("Event_with_b1_b2_GEN_eta_2p4_pt30/Whad_q1_q2_match/"+ProcessName,Is_q1match*Is_q2match, weight, 4, -1, 3);
-    FillHist("Event_with_b1_b2_GEN_eta_2p4_pt30/Whad_q1_q2_match_flavour_only/"+ProcessName,flavourmatch1*flavourmatch2, weight, 4, -1, 3);
+    FillHist("Event_with_b1_b2_GEN_eta_2p4_pt30/Whad_q1_q2_match_flavour_only/"+ProcessName,flavourmatch1&&flavourmatch2, weight, 4, -1, 3);
     FillHist("Event_with_b1_b2_GEN_eta_2p4_pt30/nTightJet/"+ProcessName,tightjetsize, weight, 10, 0, 10);
     FillHist("Event_with_b1_b2_GEN_eta_2p4_pt30/N_light_quark_jet/"+ProcessName,N_light_quark_jet, weight, 10, 0, 10);
-    if(flavourmatch1*flavourmatch2) FillHist("Event_with_b1_b2_GEN_eta_2p4_pt30/nTightJet_if_flavour_matched/"+ProcessName,tightjetsize, weight, 10, 0, 10);
+    if(flavourmatch1&&flavourmatch2) FillHist("Event_with_b1_b2_GEN_eta_2p4_pt30/nTightJet_if_flavour_matched/"+ProcessName,tightjetsize, weight, 10, 0, 10);
 
     FillHist("Event_with_b1_b2_GEN_eta_2p4_pt30/N_gluon_jet/"+ProcessName,N_gluon_jet, weight, 10, 0, 10);
 
@@ -882,8 +882,8 @@ void TTsemilep_JetAssign_FlavourMatPlots::FillTreeValues(){
     
     for(unsigned int j=i+1; j < tightjetsize; j++ ){
       //exclude signal events
-      if( i==tightjetidx_q1_flav_match && j==tightjetidx_q2_flav_match ) continue;
-      if( i==tightjetidx_q2_flav_match && j==tightjetidx_q1_flav_match ) continue;
+      if( (int)i==tightjetidx_q1_flav_match && (int)j==tightjetidx_q2_flav_match ) continue;
+      if( (int)i==tightjetidx_q2_flav_match && (int)j==tightjetidx_q1_flav_match ) continue;
       if(tightjets[i].Pt() > tightjets[j].Pt()){
 	q1jet_pt=tightjets[i].Pt(),q1jet_eta=tightjets[i].Eta(), q1jet_phi=tightjets[i].Phi(), q1jet_E=tightjets[i].E();
 	q2jet_pt=tightjets[j].Pt(),q2jet_eta=tightjets[j].Eta(), q2jet_phi=tightjets[j].Phi(), q2jet_E=tightjets[j].E();

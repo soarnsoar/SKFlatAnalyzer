@@ -66,8 +66,9 @@ bool HZZ_test::AnalyzeLHE(){
   myLHE.LHEsize=LHEs.size();
   //cout << "LHE" << endl;
   //(1)Check Index of incoming parton
-  int status=-999, pid=-999;
-  double pz=-999,E=-999;
+  //int status=-999;
+  int pid=-999;
+  //double pz=-999,E=-999;
 
   int N_mu=0;
   int N_e=0;
@@ -84,10 +85,10 @@ bool HZZ_test::AnalyzeLHE(){
   Zmu.SetPxPyPzE(0,0,0,0);
   Ze.SetPxPyPzE(0,0,0,0);
   for(unsigned int i = 0; i < myLHE.LHEsize ; i++){
-    status=LHEs[i].Status();
+    //status=LHEs[i].Status();
     pid=LHEs[i].ID();
-    pz=LHEs[i].Pz();
-    E=LHEs[i].E();
+    //pz=LHEs[i].Pz();
+    //E=LHEs[i].E();
     if(abs(pid)==11) Ze +=LHEs[i];
     if(abs(pid)==13) Zmu+=LHEs[i];
     
@@ -105,16 +106,16 @@ bool HZZ_test::ZZmmmmReco(){
   vector<Muon> v_ZZmuon_plus;
   vector<int> idx_ZZmuon_minus;
   vector<Muon> v_ZZmuon_minus;
-  double this_leptonid_sf=1.;
-  double this_trigger_sf=1.;
-  double this_iso_sf=1.;
-  int i_l1=-1;
+  //double this_leptonid_sf=1.;
+  //double this_trigger_sf=1.;
+  //double this_iso_sf=1.;
+  //int i_l1=-1;
 
-  unsigned int N_plus=0;
-  unsigned int N_minus=0;
+  //unsigned int N_plus=0;
+  //unsigned int N_minus=0;
   //Because roch. corr. need to find leading pt muon again.
   double maxpt=-100.;
-  for(int i = 0 ; i < muonsize; i++ ){
+  for(unsigned int i = 0 ; i < muonsize; i++ ){
     double pt=AllMuons[i].Pt();
     double eta=AllMuons[i].Eta();
     int charge=AllMuons[i].Charge();
@@ -128,7 +129,7 @@ bool HZZ_test::ZZmmmmReco(){
     if (pt < 5.)continue;
     if (pt > maxpt){
       maxpt=pt;
-      i_l1=i;
+      //i_l1=i;
     }
     v_ZZmuon.push_back((AllMuons[i]));
     if(charge > 0){
@@ -140,7 +141,7 @@ bool HZZ_test::ZZmmmmReco(){
       v_ZZmuon_minus.push_back(AllMuons[i]);
     }
   }//end of muon loop
-  unsigned int v_ZZmuonsize=v_ZZmuon.size();
+  //unsigned int v_ZZmuonsize=v_ZZmuon.size();
   //if(v_ZZmuonsize<4) return 0;
   //TLorentzVector ZZ4l;
   //for(int i =0 ; i < 4 ; i++){
@@ -249,15 +250,13 @@ bool HZZ_test::ZZmmeeReco(){
   vector<Electron> v_ZZelectron_minus;
 
 
-  double this_leptonid_sf=1.;
-  double this_trigger_sf=1.;
-  double this_iso_sf=1.;
-  int i_l1=-1;
+  
+  //int i_l1=-1;
 
 
   //Because roch. corr. need to find leading pt muon again.
   double maxpt=-100.;
-  for(int i = 0 ; i < muonsize; i++ ){
+  for(unsigned int i = 0 ; i < muonsize; i++ ){
     double pt=AllMuons[i].Pt();
     double eta=AllMuons[i].Eta();
     int charge=AllMuons[i].Charge();
@@ -271,7 +270,7 @@ bool HZZ_test::ZZmmeeReco(){
     if (pt < 5.)continue;
     if (pt > maxpt){
       maxpt=pt;
-      i_l1=i;
+      //i_l1=i;
     }
     v_ZZmuon.push_back((AllMuons[i]));
     if(charge > 0){
@@ -283,7 +282,7 @@ bool HZZ_test::ZZmmeeReco(){
       v_ZZmuon_minus.push_back(AllMuons[i]);
     }
   }//end of muon loop
-  for(int i = 0 ; i < electronsize; i++ ){
+  for(unsigned int i = 0 ; i < electronsize; i++ ){
     double pt=AllElectrons[i].Pt();
     double eta=AllElectrons[i].Eta();
     bool passID=AllElectrons[i].PassID("passMediumID");
@@ -367,10 +366,8 @@ bool HZZ_test::ZZeeeeReco(){
   vector<int> idx_ZZelectron_minus;
   vector<Electron> v_ZZelectron_minus;
 
-  double this_leptonid_sf=1.;
-  double this_leptonreco_sf=1.;
-  double this_trigger_sf=1.;
-  for(int i = 0 ; i < electronsize; i++ ){
+  
+  for(unsigned int i = 0 ; i < electronsize; i++ ){
     double pt=AllElectrons[i].Pt();
     double eta=AllElectrons[i].Eta();
     bool passID=AllElectrons[i].PassID("passMediumID");

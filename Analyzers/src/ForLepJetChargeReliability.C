@@ -619,15 +619,15 @@ void ForLepJetChargeReliability::AnalyzeLHE(){
   //(1)Check Index of incoming parton
 
   int status=-999, pid=-999;
-  double pz=-999,E=-999;
+  //double pz=-999,E=-999;
   //cout << "genWeight_X1=" << genWeight_X1 << endl;
   //cout << "genWeight_X2=" << genWeight_X2 << endl;
   //cout << setw(4) << "i" << setw(4) << "pz" << setw(4) << "E" << setw(4) << endl; 
   for(unsigned int i = 0; i < myLHE.LHEsize ; i++){
     status=LHEs[i].Status();
     pid=LHEs[i].ID();
-    pz=LHEs[i].Pz();
-    E=LHEs[i].E();
+    //pz=LHEs[i].Pz();
+    //E=LHEs[i].E();
 
     if(status==-1){
       myLHE.incoming_parton_pid.push_back(pid);
@@ -769,7 +769,7 @@ int ForLepJetChargeReliability::Rank1n2Leptons(std::vector<int> &v_blep_idx, std
   double center=1.7;
   unsigned int vsize=v_blep_idx.size();
   vector<double> v_diff;
-  for(int i = 0 ; i < vsize ; i++){
+  for(unsigned int i = 0 ; i < vsize ; i++){
     v_diff.push_back(fabs(v_blep_value[i]-center));
   }//v loop
   //----idx to return----//
@@ -778,10 +778,10 @@ int ForLepJetChargeReliability::Rank1n2Leptons(std::vector<int> &v_blep_idx, std
   //////---/////
 
   //--Comparison--//
-  for(int i = 0 ; i < vsize ; i++){
+  for(unsigned int i = 0 ; i < vsize ; i++){
     double this_diff=v_diff[i];
     int this_rank=0;
-    for(int j = 0 ; j < vsize ; j++){
+    for(unsigned int j = 0 ; j < vsize ; j++){
       if(i==j) continue;
       if(this_diff == v_diff[j]){
 	if(i>j) this_rank+=1;
@@ -830,8 +830,8 @@ void ForLepJetChargeReliability::RunLeptonCutStudyMuon(){
   std::vector<int> v_tmva_bmuonidx;
   std::vector<double> v_tmva_bmuon_p_jetrestf;
   for(unsigned int i=0; i < muonsize; i++){
-    if(i==myRECO.idx_Zmuon1) continue;
-    if(i==myRECO.idx_Zmuon2) continue;
+    if((int)i==myRECO.idx_Zmuon1) continue;
+    if((int)i==myRECO.idx_Zmuon2) continue;
     
     //---Boost muon to jet restframe
     TLorentzVector vl(AllMuons[i]);
@@ -844,7 +844,7 @@ void ForLepJetChargeReliability::RunLeptonCutStudyMuon(){
     reliso=AllMuons[i].RelIso();
     reltrkiso=AllMuons[i].TrkIso()/AllMuons[i].Pt();
 
-    int muon_charge=AllMuons[i].Charge();
+    //int muon_charge=AllMuons[i].Charge();
 
 
     if(dR_l_j<0.4){
@@ -861,7 +861,7 @@ void ForLepJetChargeReliability::RunLeptonCutStudyMuon(){
 void ForLepJetChargeReliability::SetTreeValuesMuon(vector<int> vmuonidx){
   doFillTree=true;
   unsigned int nbmuon=vmuonidx.size();
-  for(int i=0; i < nbmuon; i++){
+  for(unsigned int i=0; i < nbmuon; i++){
     //--p jetrestf
     int i_bmuon=vmuonidx[i];
     TLorentzVector vl(AllMuons[i_bmuon]);
@@ -964,8 +964,8 @@ void ForLepJetChargeReliability::RunLeptonCutStudyElectron(){
   std::vector<double> v_tmva_belectron_p_jetrestf;
 
   for(unsigned int i=0; i < electronsize; i++){
-    if(i==myRECO.idx_Zelectron1) continue;
-    if(i==myRECO.idx_Zelectron2) continue;
+    if((int)i==myRECO.idx_Zelectron1) continue;
+    if((int)i==myRECO.idx_Zelectron2) continue;
     
     //---Boost electron to jet restframe
     TLorentzVector vl(AllElectrons[i]);
@@ -980,7 +980,7 @@ void ForLepJetChargeReliability::RunLeptonCutStudyElectron(){
     relecalclusteriso=AllElectrons[i].ecalPFClusterIso()/AllElectrons[i].Pt();
     IsGsfCtfScPixChargeConsistent=AllElectrons[i].IsGsfCtfScPixChargeConsistent();
 
-    int electron_charge=AllElectrons[i].Charge();
+    //int electron_charge=AllElectrons[i].Charge();
 
 
 
@@ -1003,7 +1003,7 @@ void ForLepJetChargeReliability::RunLeptonCutStudyElectron(){
 void ForLepJetChargeReliability::SetTreeValuesElectron(vector<int> velectronidx){
   doFillTree=true;
   unsigned int nbelectron=velectronidx.size();
-  for(int i=0; i < nbelectron; i++){
+  for(unsigned int i=0; i < nbelectron; i++){
     int i_belectron=velectronidx[i];
     //--p jetrestf
     TLorentzVector vl(AllElectrons[i_belectron]);

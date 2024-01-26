@@ -357,15 +357,15 @@ void BBbar_Analyzer::AnalyzeLHE(){
   //(1)Check Index of incoming parton
 
   int status=-999, pid=-999;
-  double pz=-999,E=-999;
+  //double pz=-999,E=-999;
   //cout << "genWeight_X1=" << genWeight_X1 << endl;
   //cout << "genWeight_X2=" << genWeight_X2 << endl;
   //cout << setw(4) << "i" << setw(4) << "pz" << setw(4) << "E" << setw(4) << endl; 
   for(unsigned int i = 0; i < myLHE.LHEsize ; i++){
     status=LHEs[i].Status();
     pid=LHEs[i].ID();
-    pz=LHEs[i].Pz();
-    E=LHEs[i].E();
+    //pz=LHEs[i].Pz();
+    //E=LHEs[i].E();
 
     if(status==-1){
       myLHE.incoming_parton_pid.push_back(pid);
@@ -509,8 +509,8 @@ void BBbar_Analyzer::RunProtoTypeMuon(){
   
   std::vector<int> v_bmuonidx;
   for(unsigned int i=0; i < muonsize; i++){
-    if(i==myRECO.idx_Zmuon1) continue;
-    if(i==myRECO.idx_Zmuon2) continue;
+    if((int)i==myRECO.idx_Zmuon1) continue;
+    if((int)i==myRECO.idx_Zmuon2) continue;
     FillHist(ProtoTypeEventTag+"_Muon/NotZmuonCut/"+ProcessName, 0, weight, 2, -1., 1.);
     FillHist(ProtoTypeEventTagJetParton+"_Muon/NotZmuonCut/"+ProcessName, 0, weight, 2, -1., 1.);
     double ptwrtbjet=AllMuons[i].P()*sin(AllMuons[i].Angle(AllJets[myRECO.ij_B].Vect()));
@@ -558,8 +558,8 @@ void BBbar_Analyzer::RunProtoTypeElectron(){
   
   std::vector<int> v_belectronidx;
   for(unsigned int i=0; i < electronsize; i++){
-    if(i==myRECO.idx_Zelectron1) continue;
-    if(i==myRECO.idx_Zelectron2) continue;
+    if((int)i==myRECO.idx_Zelectron1) continue;
+    if((int)i==myRECO.idx_Zelectron2) continue;
     FillHist(ProtoTypeEventTag+"_Electron/NotZelectronCut/"+ProcessName, 0, weight, 2, -1., 1.);
     FillHist(ProtoTypeEventTagJetParton+"_Electron/NotZelectronCut/"+ProcessName, 0, weight, 2, -1., 1.);
     double ptwrtbjet=AllElectrons[i].P()*sin(AllElectrons[i].Angle(AllJets[myRECO.ij_B].Vect()));
@@ -638,8 +638,8 @@ void BBbar_Analyzer::RunLeptonCutStudyMuon(){
   std::vector<int> v_bmuonidx;
   std::vector<int> v_nocut_bmuonidx;
   for(unsigned int i=0; i < muonsize; i++){
-    if(i==myRECO.idx_Zmuon1) continue;
-    if(i==myRECO.idx_Zmuon2) continue;
+    if((int)i==myRECO.idx_Zmuon1) continue;
+    if((int)i==myRECO.idx_Zmuon2) continue;
     
     //---Boost muon to jet restframe
     TLorentzVector vl(AllMuons[i]);
@@ -742,8 +742,8 @@ void BBbar_Analyzer::RunLeptonCutStudyElectron(){
   std::vector<int> v_belectronidx;
   std::vector<int> v_nocut_belectronidx;
   for(unsigned int i=0; i < electronsize; i++){
-    if(i==myRECO.idx_Zelectron1) continue;
-    if(i==myRECO.idx_Zelectron2) continue;
+    if((int)i==myRECO.idx_Zelectron1) continue;
+    if((int)i==myRECO.idx_Zelectron2) continue;
     
     //---Boost electron to jet restframe
     TLorentzVector vl(AllElectrons[i]);

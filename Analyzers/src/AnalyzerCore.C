@@ -1,5 +1,5 @@
 #include "AnalyzerCore.h"
-
+#include "SystematicDef.h"
 AnalyzerCore::AnalyzerCore(){
 
   outfile = NULL;
@@ -527,6 +527,8 @@ void AnalyzerCore::SetupJECUncertainty(TString source , TString JetType){
   return;
   
 }
+
+
 
 std::vector<Muon> AnalyzerCore::GetAllMuons(){
 
@@ -1469,6 +1471,7 @@ bool AnalyzerCore::PassMETFilter(){
 void AnalyzerCore::initializeAnalyzerTools(){
   //jhchoi
   SetupEfficiency();
+  SetupSystematicDef();
   //jhchoi end
   //==== MCCorrection
   mcCorr->SetMCSample(MCSample);
@@ -2702,8 +2705,97 @@ void AnalyzerCore::WriteHist(){
 
 
 }
+//----jhchoi---- Systematics---//
+
+void AnalyzerCore::SetSystematicOption(SystematicOption *myoption){
+  _var_muonscale=myoption->_var_muonscale;
+  _var_electronscale=myoption->_var_electronscale;
+  _var_jes=myoption->_var_jes;
+  _var_jer=myoption->_var_jer;
+  _EffKeyToVar=myoption->_EffKeyToVar;
+  _JESsource=myoption->_JESsource;
+  _var_prefire=myoption->_var_prefire;
+  _var_pdf=myoption->_var_pdf;
+  _var_muRmuF=myoption->_var_muRmuF;
+  _var_ps=myoption->_var_ps;
+  _var_pu=myoption->_var_pu;
+  _var_btag_h=myoption->_var_btag_h;
+  _var_btag_l=myoption->_var_btag_l;
+  _sys_suffix=myoption->suffix;
+}
 
 
+std::vector<Muon> AnalyzerCore::ScaleMuons_G(const std::vector<Muon>& muons){
+  return AnalyzerCore::ScaleMuons(muons,_var_muonscale);
+}
+std::vector<Electron> AnalyzerCore::ScaleElectrons_G(const std::vector<Electron>& electrons){
+  return AnalyzerCore::ScaleElectrons(electrons,_var_electronscale);
+}
+std::vector<Jet> AnalyzerCore::ScaleJets_G(const std::vector<Jet>& jets){
+  return AnalyzerCore::ScaleJets(jets,_var_jes);
+}
+std::vector<Jet> AnalyzerCore::ScaleJetsIndividualSource_G(const std::vector<Jet>& jets){
+  return AnalyzerCore::ScaleJetsIndividualSource(jets,_var_jes,_JESsource);
+}
+std::vector<Jet> AnalyzerCore::SmearJets_G(const std::vector<Jet>& jets){
+  return AnalyzerCore::SmearJets(jets,_var_jer);
+}
+
+
+
+void AnalyzerCore::ReserveFillHist(TString histname, double value, double weight, int n_bin, double x_min, double x_max){
+  ArgFillHist _this_Args={histname,value,weight,n_bin,x_min,x_max};
+  vReserveHist.push_back(_this_Args);
+}
+void AnalyzerCore::ReserveFillCutflow(TString histname,TString label,double weight){
+  ArgFillCutflow _this_Args={histname,label,weight};
+  vReserveCutflow.push_back(_this_Args);
+}
+void AnalyzerCore::ClearReserveHist(){
+  vReserveHist.clear();
+}
+void AnalyzerCore::ClearReserveCutflow(){
+  vReserveCutflow.clear();
+}
+void AnalyzerCore::FillHistVar(TString histname, double value, double weight, int n_bin, double x_min, double x_max){
+
+  for(const auto& this_sys : syslist_w){
+    SetSystematicOption(this_sys);
+    //--EffTool case--//
+    if(this_sys->UseEffTool){
+      unsigned int _setsize=(this_sys->EffContainer).size();
+      for(unsigned int iset = 0; iset < _setsize; iset++){
+	vector<double>this_set=this_sys->EffContainer[iset];
+	unsigned int _memsize=this_set.size();
+	for(unsigned int imem = 0; imem < _memsize; imem++){
+	  TString this_suffix=_sys_suffix+"__"+std::to_string(iset)+"__"+std::to_string(imem);
+	  FillHist(histname+"/"+this_suffix,value,weight,n_bin,x_min,x_max);
+	}
+      }
+    }// [END]if this_sys use EffTool..
+    //--not using EffTool--//
+    else{
+      
+    }
+  }
+
+
+}
+void AnalyzerCore::executeEventWithCurrentSet(){
+
+}
+void AnalyzerCore::SetupSystematicDef(){
+  fSysDef=new SystematicDef();
+}
+void AnalyzerCore::GetAllObjects(){
+  AllMuons_raw=GetAllMuons();
+  muonsize=AllMuons_raw.size();
+  AllElectrons_raw=GetAllElectrons();
+  electronsize=AllElectrons_raw.size();
+  AllJets_raw=GetAllJets();
+  jetsize=AllJets.size();
+}
+//---end jhchoi sys
 void AnalyzerCore::FillLeptonPlots(std::vector<Lepton *> leps, TString this_region, double weight){
 
   for(unsigned int i=0; i<leps.size(); i++){
