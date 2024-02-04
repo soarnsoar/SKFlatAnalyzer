@@ -895,7 +895,11 @@ try:
                 print "submit hadd"
                 #os.chdir("output")
                 #ExportShellCondorSetup_snu.py -c "cd $PWD&&hadd -j 10 -f combine.root *.root" -d "WORKDIR_HADD" -n "hadd" -m 10 -r "10000" -s
-                os.system("ExportShellCondorSetup_tamsa.py -c \"cd "+base_rundir+"&&hadd -j 10 -f "+outputname+".root output/*.root&&mv "+outputname+".root "+FinalOutputPath+"\" -d WORKDIR_HADD -n hadd_"+outputname+" -m 10 -r \"10000\" -s")
+                _nhadd=10
+                if nFiles>100:
+                  _nhadd=NJobs/10
+                _req_memory=1000*_nhadd
+                os.system("ExportShellCondorSetup_tamsa.py -c \"cd "+base_rundir+"&&hadd -j "+str(_nhadd)+" -f "+outputname+".root output/*.root&&mv "+outputname+".root "+FinalOutputPath+"\" -d WORKDIR_HADD -n hadd_"+outputname+" -m "+str(_nhadd)+" -r \""+str(_req_memory)+"\" -s")
                 #os.system("submit_hadd.sh")
                 #os.system('hadd -f '+outputname+'.root output/*.root >> JobStatus.log')
                 #os.system('rm output/*.root')
