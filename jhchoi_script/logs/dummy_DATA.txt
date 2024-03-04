@@ -1,0 +1,22 @@
+Submitting job(s)..................................................
+50 job(s) submitted to cluster 1828822.
+Submitting job(s)..................................................
+50 job(s) submitted to cluster 1828823.
+Submitting job(s)..................................................
+50 job(s) submitted to cluster 1828824.
+Submitting job(s)..................................................
+50 job(s) submitted to cluster 1828825.
+Submitting job(s)..................................................
+50 job(s) submitted to cluster 1828826.
+##################################################
+Submission Finished
+- JobID = 566027
+- Analyzer = BasicTest
+- Skim = 
+- InputSamples = ['SingleMuon:B', 'SingleMuon:C', 'SingleMuon:D', 'SingleMuon:E', 'SingleMuon:F']
+- NJobs = 50
+- Era = 2017
+- UserFlags = []
+- RunDir = /data6/Users/jhchoi/SKFlatRunlog//2023_09_06_115838__566027__BasicTest__Era2017__TAMSA1/SingleMuon_periodF/
+- output will be send to : /data6/Users/jhchoi/SKFlatOutput//Run2UltraLegacy_v3/BasicTest/2017//DATA/
+##################################################

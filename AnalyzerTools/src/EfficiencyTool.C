@@ -524,6 +524,24 @@ double EfficiencyTool::GetEfficiencySF(TString key,const Lepton* lep,int set,int
   }
   return GetEfficiencySF(key,eta,pt,charge,set,mem,option);
 }
+
+void EfficiencyTool::PrintStructure(TString key) const{
+  const Efficiency* eff=Get(key);
+  if(!eff){
+    cout<<"[EfficiencyTool::GetStructure] no key "<<key<<endl;
+    exit(ENODATA);
+  }
+  int nset=eff->fDataPlus.size();
+  cout << "[PrintStructure]key=" << key << endl;
+  for(int i=0;i<nset;i++){
+    //out.push_back(vector<double>(eff->fDataPlus.at(i).size(),1.));
+    //fDataPlus = vector<vector<TH2*> >
+    int nmem=eff->fDataPlus.at(i).size();
+    for(int j=0;j<nmem;j++){
+      cout << i << ". =>" << eff->fDataPlus.at(i).at(j)->GetTitle() << endl;
+    }
+  }
+}
 vector<vector<double>> EfficiencyTool::GetStructure(TString key) const{
   vector<vector<double>> out;
   if(key==""||key=="Default") return out;

@@ -1,5 +1,5 @@
 #include "AnalyzerCore.h"
-#include "SystematicDef.h"
+
 AnalyzerCore::AnalyzerCore(){
 
   outfile = NULL;
@@ -228,6 +228,7 @@ double AnalyzerCore::GetLeptonTriggerORSF(Event &_event,vector<TString> triggers
       sf+=this_sf;
     }
   }
+
   return sf;
 }
 double AnalyzerCore::GetDileptonTriggerSF(TString triggerSF_key0,TString triggerSF_key1,TString DZSF,const vector<Lepton*>& leps,int set,int mem,TString option){
@@ -1471,7 +1472,7 @@ bool AnalyzerCore::PassMETFilter(){
 void AnalyzerCore::initializeAnalyzerTools(){
   //jhchoi
   SetupEfficiency();
-  SetupSystematicDef();
+  
   //jhchoi end
   //==== MCCorrection
   mcCorr->SetMCSample(MCSample);
@@ -1495,6 +1496,9 @@ void AnalyzerCore::initializeAnalyzerTools(){
   cfEst->SetEra(GetEra());
   cfEst->ReadHistograms();
 
+
+  //jhchoi//
+  InitSystematics();
 }
 
 double AnalyzerCore::MCweight(bool usesign, bool norm_1invpb) const {
@@ -2707,39 +2711,8 @@ void AnalyzerCore::WriteHist(){
 }
 //----jhchoi---- Systematics---//
 
-void AnalyzerCore::SetSystematicOption(SystematicOption *myoption){
-  _var_muonscale=myoption->_var_muonscale;
-  _var_electronscale=myoption->_var_electronscale;
-  _var_jes=myoption->_var_jes;
-  _var_jer=myoption->_var_jer;
-  _EffKeyToVar=myoption->_EffKeyToVar;
-  _JESsource=myoption->_JESsource;
-  _var_prefire=myoption->_var_prefire;
-  _var_pdf=myoption->_var_pdf;
-  _var_muRmuF=myoption->_var_muRmuF;
-  _var_ps=myoption->_var_ps;
-  _var_pu=myoption->_var_pu;
-  _var_btag_h=myoption->_var_btag_h;
-  _var_btag_l=myoption->_var_btag_l;
-  _sys_suffix=myoption->suffix;
-}
 
 
-std::vector<Muon> AnalyzerCore::ScaleMuons_G(const std::vector<Muon>& muons){
-  return AnalyzerCore::ScaleMuons(muons,_var_muonscale);
-}
-std::vector<Electron> AnalyzerCore::ScaleElectrons_G(const std::vector<Electron>& electrons){
-  return AnalyzerCore::ScaleElectrons(electrons,_var_electronscale);
-}
-std::vector<Jet> AnalyzerCore::ScaleJets_G(const std::vector<Jet>& jets){
-  return AnalyzerCore::ScaleJets(jets,_var_jes);
-}
-std::vector<Jet> AnalyzerCore::ScaleJetsIndividualSource_G(const std::vector<Jet>& jets){
-  return AnalyzerCore::ScaleJetsIndividualSource(jets,_var_jes,_JESsource);
-}
-std::vector<Jet> AnalyzerCore::SmearJets_G(const std::vector<Jet>& jets){
-  return AnalyzerCore::SmearJets(jets,_var_jer);
-}
 
 
 
@@ -2757,44 +2730,215 @@ void AnalyzerCore::ClearReserveHist(){
 void AnalyzerCore::ClearReserveCutflow(){
   vReserveCutflow.clear();
 }
-void AnalyzerCore::FillHistVar(TString histname, double value, double weight, int n_bin, double x_min, double x_max){
 
-  for(const auto& this_sys : syslist_w){
-    SetSystematicOption(this_sys);
-    //--EffTool case--//
-    if(this_sys->UseEffTool){
-      unsigned int _setsize=(this_sys->EffContainer).size();
-      for(unsigned int iset = 0; iset < _setsize; iset++){
-	vector<double>this_set=this_sys->EffContainer[iset];
-	unsigned int _memsize=this_set.size();
-	for(unsigned int imem = 0; imem < _memsize; imem++){
-	  TString this_suffix=_sys_suffix+"__"+std::to_string(iset)+"__"+std::to_string(imem);
-	  FillHist(histname+"/"+this_suffix,value,weight,n_bin,x_min,x_max);
-	}
-      }
-    }// [END]if this_sys use EffTool..
-    //--not using EffTool--//
-    else{
-      
-    }
-  }
-
-
-}
 void AnalyzerCore::executeEventWithCurrentSet(){
 
 }
-void AnalyzerCore::SetupSystematicDef(){
-  fSysDef=new SystematicDef();
+void AnalyzerCore::SetRunWeightBase(bool doRun){
+  _run_weightbase=doRun;
 }
-void AnalyzerCore::GetAllObjects(){
-  AllMuons_raw=GetAllMuons();
-  muonsize=AllMuons_raw.size();
-  AllElectrons_raw=GetAllElectrons();
-  electronsize=AllElectrons_raw.size();
-  AllJets_raw=GetAllJets();
-  jetsize=AllJets.size();
+void AnalyzerCore::InitSysVar(){
+  _var_muonscale=0;
+  _var_electronscale=0;
+  _var_jes=0;
+  _var_jer=0;
+  _JESsource="Total";
 }
+//void AnalyzerCore::GetAllObjects(){
+//}
+void AnalyzerCore::FillReservedHist(){
+  //unsigned int vReserveHistsize=vReserveHist.size();
+  
+  for(const auto& _args : vReserveHist){
+    //TString histname, double value, double weight, int n_bin, double x_min, double x_max
+    TString _histname = _args.histname;
+    double _value     = _args.value;
+    double _weight    = _args.weight; 
+    double _n_bin     = _args.n_bin;
+    double _x_min     = _args.x_min;
+    double _x_max     = _args.x_max;
+    if(_run_weightbase){
+      //--Fill Nominal--//
+      FillHist(_histname+"/nominal/0",
+	       _value,
+	       _weight,
+	       _n_bin,_x_min,_x_max);
+      if(IsDATA) continue;
+      //---syslist_w---//
+      for(const auto& _sys : SysToRun_w){//_sys : [name] / [vector value]
+	//name = _sys.first
+	//value = _sys.second
+	//TString _histname_sys=_histname+"/"+_sys->first;
+	//cout << _histname << endl;
+	//cout << _sys.first << endl;
+	//cout << _histname_sys << endl;
+	unsigned int _syssize=syslist_w[_sys].size();
+	for(unsigned int isys=0; isys<_syssize;isys++){
+	  FillHist(_histname+"/"+_sys+"/"+to_string(isys),
+		   _value,
+		   _weight*syslist_w[_sys][isys],
+		   _n_bin,_x_min,_x_max);
+	}//[end] all variations of current sys
+      }//[end]for sys
+      //---syslist_efftool---//
+      for(const auto& _sys : SysToRun_efftool){//_sys : [name] / [vector value]
+	//name = _sys.first
+	//value = _sys.second
+	//TString _histname_sys=_histname+"/"+_sys->first;
+	//cout << _histname << endl;
+	//cout << _sys.first << endl;
+	//cout << _histname_sys << endl;
+	unsigned int setsize=syslist_efftool[_sys].size();
+	for(unsigned int iset=0; iset<setsize;iset++){
+	  unsigned int memsize=syslist_efftool[_sys][iset].size();
+	  for(unsigned int imem=0; imem<memsize;imem++){
+	    FillHist(_histname+"/"+_sys+"/"+to_string(iset)+"__"+to_string(imem),
+		     _value,
+		     _weight*syslist_efftool[_sys][iset][imem],
+		     _n_bin,_x_min,_x_max);
+	  }//[end] imem
+	}//[end] iset
+      }//[end]for syslist_efftool
+    }//[end] weightbase
+    else{
+      //---Value variation---//
+      FillHist(_histname+"/"+syssuffix+"/"+sysdir,
+	       _value,
+	       _weight,
+	       _n_bin,_x_min,_x_max);
+      
+    }//[end] not weightbase
+  }//[end] for v reservedhist
+
+
+
+  vReserveHist.clear();
+  //Then, initialize syslist_w and syslist_efftool
+  if(_run_weightbase){
+
+    for(const auto& _sys : SysToRun_w){//_sys : [name] / [vector value]                                                                                       
+      syslist_w[_sys].clear();
+    }//[end] for systorun_w
+    for(const auto& _sys : SysToRun_efftool){
+      unsigned int setsize=syslist_efftool[_sys].size();
+      for(unsigned int iset=0; iset<setsize;iset++){
+	unsigned int memsize=syslist_efftool[_sys][iset].size();
+	for(unsigned int imem=0; imem<memsize;imem++){
+	  syslist_efftool[_sys][iset][imem]=1.;
+	}
+      }
+    }//[end] for systorun_efftool
+  }//[end]_run_weightbase
+}
+
+
+void AnalyzerCore::InitSystematics(){
+  //----basic weight base---//
+  syslist_w["prefire"]={};
+  syslist_w["pu"]={};
+  syslist_w["pdf"]={};
+  syslist_w["scale"]={};
+  syslist_w["ps"]={};
+  syslist_w["btaglfcorr"]={};
+  syslist_w["btaghfcorr"]={};
+  syslist_w["btaglfuncorr"]={};
+  syslist_w["btaghfuncorr"]={};
+  //----efftool----//
+  syslist_efftool["muonreco"]=fEff->GetStructure("Muon_RECO");
+  fEff->PrintStructure("Muon_RECO");
+  syslist_efftool["muontrk"]=fEff->GetStructure("Muon_Tracking");
+  fEff->PrintStructure("Muon_Tracking");
+  syslist_efftool["muonid"]=fEff->GetStructure(MuonID);
+  fEff->PrintStructure(MuonID);
+  cout << "MuonTriggerSFKeys[0]=" << MuonTriggerSFKeys[0] << endl;
+  syslist_efftool["muontrigger"]=fEff->GetStructure(MuonTriggerSFKeys[0]);
+  fEff->PrintStructure(MuonTriggerSFKeys[0]);
+
+  syslist_efftool["electronreco"]=fEff->GetStructure("Electron_RECO");
+  fEff->PrintStructure("Electron_RECO");
+  syslist_efftool["electronid"]=fEff->GetStructure(ElectronID);
+  fEff->PrintStructure(ElectronID);
+  syslist_efftool["electrontrigger"]=fEff->GetStructure(ElectronTriggerSFKeys[0]);
+  fEff->PrintStructure(ElectronTriggerSFKeys[0]);
+  ApplySysToRun();
+}
+
+void AnalyzerCore::ApplySysToRun(){
+  //--syslist_w--//                                                                                                                                         
+  for(auto _ittotal = syslist_w.begin(); _ittotal != syslist_w.end();){
+    auto _it = std::find(SysToRun_w.begin(), SysToRun_w.end(), _ittotal->first);// iterator pointer to check whether _ittotal in SysToRun_w.                      
+    if(_it == SysToRun_w.end()){//Not in SysToRun_w                                                                                                             
+      _ittotal = syslist_w.erase(_ittotal);//remove                                                                                                         
+    }
+    else{
+      ++_ittotal;
+    }
+    
+  }
+  //--syslist_efftool--//                                                                                                                                   
+  for(auto _ittotal = syslist_efftool.begin(); _ittotal != syslist_efftool.end();){
+    auto _it = std::find(SysToRun_efftool.begin(), SysToRun_efftool.end(), _ittotal->first);// iterator pointer to check whether _ittotal in SysToRun_efftool.                      
+    if(_it == SysToRun_efftool.end()){//Not in SysToRun_efftool                                                                                                             
+      _ittotal = syslist_efftool.erase(_ittotal);//remove                                                                                                   
+    }
+    else{
+      ++_ittotal;
+    }
+  }
+  
+}
+
+void AnalyzerCore::SetAllVar_syslist_efftool_muontrigger(double nominal ,const vector<Lepton*>& leps){
+  unsigned int setsize=syslist_efftool["muontrigger"].size();
+  for(unsigned int iset = 0 ; iset < setsize; iset++){
+    unsigned int memsize=syslist_efftool["muontrigger"][iset].size();
+    for(unsigned int imem =0; imem < memsize; imem++){
+
+      if(nominal!=0){
+	double _this_sf=GetLeptonTriggerORSF(ev, MuonTriggerNames, MuonTriggerSFKeys, leps,iset,imem,"");
+	syslist_efftool["muontrigger"][iset][imem]=_this_sf/nominal;
+      }
+      else{
+	syslist_efftool["muontrigger"][iset][imem]=0.;
+      }
+    }
+  }
+}
+
+
+void AnalyzerCore::SetAllVar_syslist_efftool_electrontrigger(double nominal ,const vector<Lepton*>& leps){
+  unsigned int setsize=syslist_efftool["electrontrigger"].size();
+  for(unsigned int iset = 0 ; iset < setsize; iset++){
+    unsigned int memsize=syslist_efftool["electrontrigger"][iset].size();
+    for(unsigned int imem =0; imem < memsize; imem++){
+      if(nominal!=0){
+	double _this_sf=GetLeptonTriggerORSF(ev, ElectronTriggerNames, ElectronTriggerSFKeys, leps,iset,imem,"");
+	syslist_efftool["electrontrigger"][iset][imem]=_this_sf/nominal;
+      }
+      else{
+	syslist_efftool["electrontrigger"][iset][imem]=0.;
+      }
+      
+    }
+  }
+}
+
+void AnalyzerCore::SetAllVar_syslist_efftool(double nominal, const Lepton* lep,string key_syslist, TString key_efftool){
+  unsigned int setsize=syslist_efftool[key_syslist].size();
+  for(unsigned int iset = 0 ; iset < setsize; iset++){
+    unsigned int memsize=syslist_efftool[key_syslist][iset].size();
+    for(unsigned int imem =0; imem < memsize; imem++){
+      if(nominal!=0){
+	syslist_efftool[key_syslist][iset][imem]=fEff->GetEfficiencySF(key_efftool,lep,iset,imem)/nominal;
+      }
+      else{
+	syslist_efftool[key_syslist][iset][imem]=0.;
+      }
+    }
+  }
+
+}
+
 //---end jhchoi sys
 void AnalyzerCore::FillLeptonPlots(std::vector<Lepton *> leps, TString this_region, double weight){
 

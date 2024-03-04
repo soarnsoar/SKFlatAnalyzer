@@ -4,7 +4,7 @@
 
 TTsemilep_JetAssignScore_TrainingInput::TTsemilep_JetAssignScore_TrainingInput(){//
   
-  doReduction=true;
+  //doReduction=false;
   doDebug=false;
   DNNcut=0.5;
 
@@ -55,7 +55,7 @@ void TTsemilep_JetAssignScore_TrainingInput::initializeAnalyzer(){
   cout << "[initialize DNN models]" << endl;
   SKFLAT_WD=getenv("SKFlat_WD");
 
-
+  doReduction = HasFlag("doReduction");
   
 
   jhchoi_newtree=new TTree("ForMuon_Sig","ForMuon_Sig");
@@ -241,6 +241,18 @@ void TTsemilep_JetAssignScore_TrainingInput::initializeAnalyzer(){
   jtp_loose=JetTagging::Parameters(JetTagging::DeepJet,JetTagging::Loose,JetTagging::incl,JetTagging::comb);
 
 
+  if(DataYear==2017){
+    MuonTriggerNames = {"HLT_IsoMu24_v","HLT_IsoMu27_v"};
+    MuonTriggerSFKeys={"IsoMu24_MediumID_trkIsoLoose","IsoMu27_MediumID_trkIsoLoose"};
+    ElectronTriggerNames = {"HLT_Ele27_WPTight_Gsf_v","HLT_Ele32_WPTight_Gsf_v"};
+    ElectronTriggerSFKeys = {"Ele27_MediumID","Ele32_MediumID"};
+    TriggerSafeCut_muon = 30.;
+    TriggerSafeCut_electron = 35.;
+
+    MuonID="Muon_MediumID_trkIsoLoose";
+    ElectronID="Electron_MediumID";
+
+  }
   
 }
 void TTsemilep_JetAssignScore_TrainingInput::AnalyzeLHE(){

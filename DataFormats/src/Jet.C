@@ -123,3 +123,19 @@ double Jet::GetTaggerResult(JetTagging::Tagger tg) const {
   }
 }
 
+
+double Jet::GetChargedHadronEnergyFraction() const {
+  return j_chargedHadronEnergyFraction;
+}
+double Jet::GetNeutralHadronEnergyFraction() const {
+  return j_neutralHadronEnergyFraction;
+}
+double Jet::GetNeutralEmEnergyFraction() const {
+  return j_neutralEmEnergyFraction;
+}
+double Jet::GetChargedEmEnergyFraction() const {
+  return j_chargedEmEnergyFraction;
+}
+double Jet::GetMuonEnergyFraction() const {
+  return j_muonEnergyFraction;
+}

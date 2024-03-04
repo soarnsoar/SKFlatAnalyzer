@@ -104,12 +104,6 @@ public:
   double TriggerSafePtCut;
 
   vector<TString> MuonIDs, MuonIDSFKeys;
-  vector<Muon> AllMuons;
-  unsigned int muonsize;
-  vector<Electron> AllElectrons;
-  unsigned int electronsize;
-  vector<Jet> AllJets;
-  unsigned int jetsize;
   vector<Jet> tightjets;
   unsigned int tightjetsize;
 

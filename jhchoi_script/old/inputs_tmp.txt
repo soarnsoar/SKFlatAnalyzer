@@ -1,0 +1,11 @@
+#InputSampleList
+DYJets10to50_MG
+DYJets
+TTLJ_powheg
+TTLL_powheg
+WJets_amcatnlo
+SingleMuon_B
+SingleMuon_C
+SingleMuon_D
+SingleMuon_E
+SingleMuon_F

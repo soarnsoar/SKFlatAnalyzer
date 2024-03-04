@@ -1,0 +1,18 @@
+Submitting job(s)............................................................................................................................................................................................................................................................................................................
+300 job(s) submitted to cluster 2215286.
+condor_submit WORKDIR_HADD/run.jds > WORKDIR_HADD/run.jid
+##################################################
+Submission Finished
+- JobID = 679933
+- Analyzer = TTsemilep_JetAssignScore_TrainingInput
+- Skim = 
+- InputSamples = ['TTLJ_powheg']
+- NJobs = 300
+- Era = 2017
+- UserFlags = []
+- RunDir = /data6/Users/jhchoi/SKFlatRunlog//2024_02_06_143609__679933__TTsemilep_JetAssignScore_TrainingInput__Era2017__TAMSA1/TTLJ_powheg/
+- output will be send to : /data6/Users/jhchoi/SKFlatOutput//Run2UltraLegacy_v3/TTsemilep_JetAssignScore_TrainingInput/2017/
+##################################################
+submit hadd
+<AFTER hadd fin. please rm remainings..>
+rm /data6/Users/jhchoi/SKFlatRunlog//2024_02_06_143609__679933__TTsemilep_JetAssignScore_TrainingInput__Era2017__TAMSA1/TTLJ_powheg//output/*.root

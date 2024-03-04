@@ -1,3 +1,5 @@
+
+///TODO : Add MET variation because i use met for jet assign dnn 
 #include "TTsemilep_ChargeReliability.h"
 #include <stdlib.h>
 #include <stdio.h>
@@ -135,7 +137,8 @@ void TTsemilep_ChargeReliability::initChargeReliabilityModel_jet(){
 
 void TTsemilep_ChargeReliability::initJetAssignModel_muon(){//TTsemilepJetAssign/2312/v1
   //TString xmlfile=SKFLAT_WD+"/data/Run2UltraLegacy_v3/2017/TMVA/TTsemilepJetAssign/2312/v1/muon/TMVAClassification_DNN.weights.xml";//training only using events with matched jets 
-  TString xmlfile=SKFLAT_WD+"/data/Run2UltraLegacy_v3/2017/TMVA/TTsemilepJetAssign/add_unmatchedjet_event/muon/TMVAClassification_DNN.weights.xml";//add nonmatchedjet events
+  //TString xmlfile=SKFLAT_WD+"/data/Run2UltraLegacy_v3/2017/TMVA/TTsemilepJetAssign/add_unmatchedjet_event/muon/TMVAClassification_DNN.weights.xml";//add nonmatchedjet events
+  TString xmlfile=SKFLAT_WD+"/data/Run2UltraLegacy_v3/2017/TMVA/TTsemilepJetAssign/FullLearning/muon/TMVAClassification_DNN.weights.xml";//add nonmatchedjet events
 
   cout << "define tmvareader"<< endl;
   myreader_JetAssign_muon=new TMVA::Reader("V");
@@ -181,7 +184,8 @@ void TTsemilep_ChargeReliability::initJetAssignModel_muon(){//TTsemilepJetAssign
 
 void TTsemilep_ChargeReliability::initJetAssignModel_electron(){//TTsemilepJetAssign/2312/v1
   //TString xmlfile=SKFLAT_WD+"/data/Run2UltraLegacy_v3/2017/TMVA/TTsemilepJetAssign/2312/v1/electron/TMVAClassification_DNN.weights.xml";//training only using events with matched jets
-  TString xmlfile=SKFLAT_WD+"/data/Run2UltraLegacy_v3/2017/TMVA/TTsemilepJetAssign/add_unmatchedjet_event/electron/TMVAClassification_DNN.weights.xml";//add nonmatchedjet events
+  //TString xmlfile=SKFLAT_WD+"/data/Run2UltraLegacy_v3/2017/TMVA/TTsemilepJetAssign/add_unmatchedjet_event/electron/TMVAClassification_DNN.weights.xml";//add nonmatchedjet events
+  TString xmlfile=SKFLAT_WD+"/data/Run2UltraLegacy_v3/2017/TMVA/TTsemilepJetAssign/FullLearning/electron/TMVAClassification_DNN.weights.xml";//add nonmatchedjet events
   cout << "define tmvareader"<< endl;
   myreader_JetAssign_electron=new TMVA::Reader("V");
   cout << "add variables"<< endl;
@@ -258,22 +262,59 @@ void TTsemilep_ChargeReliability::InitValues(){
 void TTsemilep_ChargeReliability::initializeAnalyzer(){
   //--Systematics--//
   RunSyst = HasFlag("RunSyst");
-  SetSystematicOption(nominal);
+  if(IsDATA) RunSyst=false;
+
+  SkipRunSoftMuon = !HasFlag("RunSoftMuon");
+  SkipRunSoftElectron = !HasFlag("RunSoftElectron");
+  SkipRunJet = !HasFlag("RunJet");
+  
+  SkipRunHadronBJetSide = !HasFlag("RunHadronSide");
+  SkipRunLeptonBJetSide = !HasFlag("RunLeptonSide");
+  
+  SkipMeasureReliab = !HasFlag("RunReliab");
+  SkipMeasureChAcc = !HasFlag("RunChAcc");
+  
+  //--Systematics to Run--//
   if(RunSyst){
-    //--WeightBase--//
-    syslist_w.push_back(nominal);
-    syslist_w.push_back(MuonReco);
-    //--Value Variation--//
-    syslist_v.push_back(MuonScaleUp);
-    syslist_v.push_back(MuonScaleDown);
+    SysToRun_w={
+      "prefire",
+      "pu",
+      "pdf",
+      "scale",
+      "ps",
+      "btaglfcorr",
+      "btaglfuncorr",
+      "btaghfcorr",
+      "btaghfuncorr"
+    };
+    SysToRun_efftool={
+      "muonreco",
+      "muonid",
+      "muontrk",
+      "muontrigger",
+      
+      "electronreco",
+      "electronid",
+      "electrontrigger",
+    };
 
   }
+  else{
+    SysToRun_w={};
+    SysToRun_efftool={};
 
+  }
+  if(IsDATA){
+    SysToRun_w={};
+    SysToRun_efftool={};
+  }
+  
+  
   cout << "[initialize DNN models]" << endl;
   SKFLAT_WD=getenv("SKFlat_WD");
   initJetAssignModel_muon();
   initJetAssignModel_electron();
-
+  
   initChargeReliabilityModel_muon();
   initChargeReliabilityModel_electron();
   initChargeReliabilityModel_jet();
@@ -302,9 +343,11 @@ void TTsemilep_ChargeReliability::initializeAnalyzer(){
     MuonTriggerSFKeys={"IsoMu24_MediumID_trkIsoLoose","IsoMu27_MediumID_trkIsoLoose"};
     ElectronTriggerNames = {"HLT_Ele27_WPTight_Gsf_v","HLT_Ele32_WPTight_Gsf_v"};
     ElectronTriggerSFKeys = {"Ele27_MediumID","Ele32_MediumID"};
-    
     TriggerSafeCut_muon = 30.;
     TriggerSafeCut_electron = 35.;
+
+    MuonID="Muon_MediumID_trkIsoLoose";
+    ElectronID="Electron_MediumID";
     
   }
 
@@ -421,8 +464,15 @@ bool TTsemilep_ChargeReliability::TTbarMuReco(){
     mu_trigsf=GetLeptonTriggerORSF(ev, MuonTriggerNames, MuonTriggerSFKeys, leps,0,0,"");
     Lepton* _mu1=leps.at(0);
     mu_recosf=fEff->GetEfficiencySF("Muon_RECO",_mu1,0,0);
-    mu_idsf=fEff->GetEfficiencySF("Muon_MediumID_trkIsoLoose",_mu1,0,0);
+    mu_idsf=fEff->GetEfficiencySF(MuonID,_mu1,0,0);
     mu_trksf=fEff->GetEfficiencySF("Muon_Tracking",_mu1,0,0);
+
+    if(RunSyst && _run_weightbase ){
+      if(syslist_efftool.count("muontrigger")) SetAllVar_syslist_efftool_muontrigger(mu_trigsf ,leps);
+      if(syslist_efftool.count("muonreco")) SetAllVar_syslist_efftool(mu_recosf, _mu1, "muonreco", "Muon_RECO");
+      if(syslist_efftool.count("muonid")) SetAllVar_syslist_efftool(mu_idsf, _mu1, "muonid", MuonID);
+      if(syslist_efftool.count("muontrk")) SetAllVar_syslist_efftool(mu_trksf, _mu1, "muontrk", "Muon_Tracking");
+    }
   }
   myRECO.idx_Tmuon=idx_Tmuon[0];
   return 1;
@@ -450,7 +500,13 @@ bool TTsemilep_ChargeReliability::TTbarElReco(){
     Lepton* _el1=leps.at(0);
     el_trigsf=GetLeptonTriggerORSF(ev,ElectronTriggerNames, ElectronTriggerSFKeys, leps,0,0,"");
     el_recosf=fEff->GetEfficiencySF("Electron_RECO",_el1,0,0);
-    el_idsf=fEff->GetEfficiencySF("Electron_MediumID",_el1,0,0) ;
+    el_idsf=fEff->GetEfficiencySF(ElectronID,_el1,0,0);
+
+    if(RunSyst && _run_weightbase){
+      if(syslist_efftool.count("electrontrigger")) SetAllVar_syslist_efftool_electrontrigger(el_trigsf ,leps);
+      if(syslist_efftool.count("electronreco")) SetAllVar_syslist_efftool(el_recosf, _el1, "electronreco", "Electron_RECO");
+      if(syslist_efftool.count("electronid")) SetAllVar_syslist_efftool(el_idsf, _el1, "electronid", ElectronID);
+    }
   }
   myRECO.idx_Telectron=idx_Telectron[0];
   return 1;
@@ -498,14 +554,38 @@ bool TTsemilep_ChargeReliability::CheckJets(){
     //https://twiki.cern.ch/twiki/bin/view/CMS/BTagSFMethods
     btagsf = mcCorr->GetBTaggingReweight_1a(alltightjets, jtp);
     weight*=btagsf;
+    if(RunSyst && _run_weightbase){
+      if(btagsf!=0){
+	syslist_w["btaglfcorr"].push_back( mcCorr->GetBTaggingReweight_1a(alltightjets, jtp, "SystUpLTagCorr")/btagsf);
+	syslist_w["btaglfcorr"].push_back( mcCorr->GetBTaggingReweight_1a(alltightjets, jtp, "SystDownLTagCorr")/btagsf);
+	syslist_w["btaglfuncorr"].push_back( mcCorr->GetBTaggingReweight_1a(alltightjets, jtp, "SystUpLTagUnCorr")/btagsf);
+	syslist_w["btaglfuncorr"].push_back( mcCorr->GetBTaggingReweight_1a(alltightjets, jtp, "SystDownLTagUnCorr")/btagsf);
+	
+	syslist_w["btaghfcorr"].push_back( mcCorr->GetBTaggingReweight_1a(alltightjets, jtp, "SystUpHTagCorr")/btagsf);
+	syslist_w["btaghfcorr"].push_back( mcCorr->GetBTaggingReweight_1a(alltightjets, jtp, "SystDownHTagCorr")/btagsf);
+	syslist_w["btaghfuncorr"].push_back( mcCorr->GetBTaggingReweight_1a(alltightjets, jtp, "SystUpHTagUnCorr")/btagsf);
+	syslist_w["btaghfuncorr"].push_back( mcCorr->GetBTaggingReweight_1a(alltightjets, jtp, "SystDownHTagUnCorr")/btagsf);
+      }
+      else{
+	syslist_w["btaglfcorr"].push_back(0);
+	syslist_w["btaglfcorr"].push_back(0);
+	syslist_w["btaglfuncorr"].push_back(0);
+	syslist_w["btaglfuncorr"].push_back(0);
+	
+	syslist_w["btaghfcorr"].push_back(0);
+	syslist_w["btaghfcorr"].push_back(0);
+	syslist_w["btaghfuncorr"].push_back(0);
+	syslist_w["btaghfuncorr"].push_back(0);
+      }
+    }
   }
-  FillHist("AfterJetLoop/Nb/"+ProcessName,_Nb, weight, 10, 0, 10);
+  ReserveFillHist("AfterJetLoop/Nb/"+ProcessName,_Nb, weight, 10, 0, 10);
   if(_Nb!=2) return 0;
-  FillCutflow("cutflow/all/"+ProcessName,"exactly_2_bjets",weight);
+  //ReserveFillCutflow("cutflow/all/"+ProcessName,"exactly_2_bjets",weight);
 
   tightjetsize=tightjets.size();
   if (tightjetsize < 2) return 0;
-  FillCutflow("cutflow/all/"+ProcessName,"light_tightjet_size_over_2",weight);
+  //ReserveFillCutflow("cutflow/all/"+ProcessName,"light_tightjet_size_over_2",weight);
   
   //----Set input values of lep and met(NON-JET OBJS)---//
   met_pt=PuppiMET_pt,met_phi=PuppiMET_phi;
@@ -682,10 +762,7 @@ void TTsemilep_ChargeReliability::AddProcessTagTTLJ(){
 }
 
 void TTsemilep_ChargeReliability::Check_bJet_Charge(){
-  //---bHadJet
-  TTsemilep_ChargeReliability::Set_bJet(true);//set target bjet to bHad and eval relibilities
-  //----bLepJet
-  TTsemilep_ChargeReliability::Set_bJet(false);//set target bjet to bLep and eval relibilities
+
   //--Now bHad, Lepton in bHad, bLep, Leptons in bLep are set!!!
   //What histograms to Draw....??
   //what to measure => 
@@ -750,351 +827,219 @@ void TTsemilep_ChargeReliability::Check_bJet_Charge(){
   //                                  [tag-lepton charge <0]----->[Meausred bElectronCharge>0]
   //                                                        ----->[Meausred bElectronCharge<0]
 
+  //--Set Some Booleans and values--//
+  TString _bjettype="";
+  bool _bmuon_Exist=false;
+  int _bmuon_in_b_charge=0;
+  bool _belectron_Exist=false;
+  int _belectron_in_b_charge=0;
+  bool _passJetDNN=false;
+  double _bJetCharge=0;
+  if(_Is_bHad){
+    _bjettype="bHad";
+    _bmuon_Exist=bmuon_in_bHad.IsExist;
+    _bmuon_in_b_charge=bmuon_in_bHad.charge;
 
+    _belectron_Exist=belectron_in_bHad.IsExist;
+    _belectron_in_b_charge=belectron_in_bHad.charge;
 
+    _passJetDNN=bHadJet.dnn > DNNcut;
+    _bJetCharge=bHadJet.JetCharge;
+  }else{
+    _bjettype="bLep";    
+    _bmuon_Exist=bmuon_in_bLep.IsExist;
+    _bmuon_in_b_charge=bmuon_in_bLep.charge;
+
+    _belectron_Exist=belectron_in_bLep.IsExist;
+    _belectron_in_b_charge=belectron_in_bLep.charge;
+
+    _passJetDNN=bLepJet.dnn > DNNcut;
+    _bJetCharge=bLepJet.JetCharge;
+  }
+  //--[end] set some --//
   vector<TString> v_prefix;
   v_prefix.push_back("TTbarLep");
-  v_prefix.push_back(ChannelLep);
-
-  for(unsigned int i = 0; i < 2; i++){
+  //v_prefix.push_back(ChannelLep);
+  
+  for(unsigned int i = 0; i < v_prefix.size(); i++){
+    
     TString prefix=v_prefix[i];
     TString suffix="";
-
-    //----bHadJetSide----//
-    _Is_bHad=true;
+    
     AddProcessTagTTLJ();
     suffix="";
-    FillHist_bJet(prefix+suffix);
-    //-----bMuon_in_bHad
+    if(!SkipMeasureReliab) FillHist_bJet(prefix+suffix);
+    //-----bMuon_in_b
     suffix="";
-    if(bmuon_in_bHad.IsExist){
-      suffix="__bMuonInbHadPass";
-      FillHist_bmuon_in_bHad(prefix+suffix);
+    if(!SkipRunSoftMuon){
+      if(_bmuon_Exist){
+	suffix= "__bMuonIn"+_bjettype+"Pass";
+	FillHist_bmuon_in_b(prefix+suffix);
+	FillHist_bJet(prefix+suffix);
+	if(!SkipMeasureChAcc){
+	  if(myRECO.TagLeptonCharge > 0){
+	    suffix= "__bMuonIn"+_bjettype+"Pass__TagLepPlus";
+	    FillHist_bmuon_in_b(prefix+suffix);
+	    FillHist_bJet(prefix+suffix);
+	    if(_bmuon_in_b_charge>0){
+	      suffix="__bMuonIn"+_bjettype+"Pass__TagLepPlus__MeasuredPlus";
+	      FillHist_bmuon_in_b(prefix+suffix);
+	      FillHist_bJet(prefix+suffix);
+	    }
+	    else{
+	      suffix="__bMuonIn"+_bjettype+"Pass__TagLepPlus__MeasuredMinus";
+	      FillHist_bmuon_in_b(prefix+suffix);
+	      FillHist_bJet(prefix+suffix);
+	    }
+	  }//[END]if TagLepPlus
+	  else{// --if TagLepMinus
+	    suffix="__bMuonIn"+_bjettype+"Pass__TagLepMinus";
+	    FillHist_bmuon_in_b(prefix+suffix);
+	    FillHist_bJet(prefix+suffix);
+	    if(_bmuon_in_b_charge>0){
+	      suffix="__bMuonIn"+_bjettype+"Pass__TagLepMinus__MeasuredPlus";
+	      FillHist_bmuon_in_b(prefix+suffix);
+	      FillHist_bJet(prefix+suffix);
+	    }
+	    else{
+	      suffix="__bMuonIn"+_bjettype+"Pass__TagLepMinus__MeasuredMinus";
+	      FillHist_bmuon_in_b(prefix+suffix);
+	      FillHist_bJet(prefix+suffix);
+	    }//[END]if Meausred Minus 
+	  }//[End TagLepMinus]
+	}//[END] !SkipMeasureChAcc
+      }//[END]bmuon_in_b Exists
+      else if(!SkipMeasureReliab){
+	suffix= "__bMuonIn"+_bjettype+"Fail";
+	FillHist_bJet(prefix+suffix);
+      }
+    }//[END]if not SkipRunSoftMuon
+    if(_bmuon_Exist) continue;
+    //-----bElectron_in_b
+    if(!SkipRunSoftElectron){
+      if(_belectron_Exist){
+	suffix="__bElectronIn"+_bjettype+"Pass";
+	FillHist_belectron_in_b(prefix+suffix);
+	FillHist_bJet(prefix+suffix);
+	if(!SkipMeasureChAcc){
+	  if(myRECO.TagLeptonCharge > 0){
+	    suffix="__bElectronIn"+_bjettype+"Pass__TagLepPlus";
+	    FillHist_belectron_in_b(prefix+suffix);
+	    FillHist_bJet(prefix+suffix);
+	    if(_belectron_in_b_charge>0){
+	      suffix="__bElectronIn"+_bjettype+"Pass__TagLepPlus__MeasuredPlus";
+	      FillHist_belectron_in_b(prefix+suffix);
+	      FillHist_bJet(prefix+suffix);
+	    }
+	    else{
+	      suffix="__bElectronIn"+_bjettype+"Pass__TagLepPlus__MeasuredMinus";
+	      FillHist_belectron_in_b(prefix+suffix);
+	      FillHist_bJet(prefix+suffix);
+	    }
+	  }//[END]if TagLepPlus
+	  else{// --if TagLepMinus
+	    suffix="__bElectronIn"+_bjettype+"Pass__TagLepMinus";
+	    FillHist_belectron_in_b(prefix+suffix);
+	    FillHist_bJet(prefix+suffix);
+	    if(_belectron_in_b_charge>0){
+	      suffix="__bElectronIn"+_bjettype+"Pass__TagLepMinus__MeasuredPlus";
+	      FillHist_belectron_in_b(prefix+suffix);
+	      FillHist_bJet(prefix+suffix);
+	    }
+	    else{
+	      suffix="__bElectronIn"+_bjettype+"Pass__TagLepMinus__MeasuredMinus";
+	      FillHist_belectron_in_b(prefix+suffix);
+	      FillHist_bJet(prefix+suffix);
+	    }//[END]if Meausred Minus 
+	  }//[End TagLepMinus]
+	}//[END]SkipMeasureChAcc
+      }//[END]belectron_in_b Exists
+      else if(!SkipMeasureReliab){
+	suffix="__bElectronIn"+_bjettype+"Fail";
+	FillHist_bJet(prefix+suffix);
+      }
+    }//[END] if not SkipRunSoftElectron && not bmuon exist
+    if(SkipRunJet) continue;
+    if(_belectron_Exist) continue;
+    if(_passJetDNN){
+      suffix="__"+_bjettype+"Pass";
       FillHist_bJet(prefix+suffix);
-      if(myRECO.TagLeptonCharge > 0){
-	suffix="__bMuonInbHadPass__TagLepPlus";
-	FillHist_bmuon_in_bHad(prefix+suffix);
-	FillHist_bJet(prefix+suffix);
-	if(bmuon_in_bHad.charge>0){
-	  suffix="__bMuonInbHadPass__TagLepPlus__MeasuredPlus";
-	  FillHist_bmuon_in_bHad(prefix+suffix);
+      if(!SkipMeasureChAcc){
+	if(myRECO.TagLeptonCharge>0){
+	  suffix="__"+_bjettype+"Pass__TagLepPlus";
 	  FillHist_bJet(prefix+suffix);
-	}
-	else{
-	  suffix="__bMuonInbHadPass__TagLepPlus__MeasuredMinus";
-	  FillHist_bmuon_in_bHad(prefix+suffix);
+	  if(_bJetCharge>0){
+	    suffix="__"+_bjettype+"Pass__TagLepPlus__MeasurePlus";
+	    FillHist_bJet(prefix+suffix);
+	  }//[END]_bJetCharge>0
+	  else if(_bJetCharge<0){
+	    suffix="__"+_bjettype+"Pass__TagLepPlus__MeasureMinus";
+	    FillHist_bJet(prefix+suffix);
+	  }//[END]_bJetCharge<0
+	  else{
+	    suffix="__"+_bjettype+"Pass__TagLepPlus__MeasureZero";
+	    FillHist_bJet(prefix+suffix);
+	  }
+	}//[END] TagLeptonCharge>0
+	else{// --TagLeptonCharge<0
+	  suffix="__"+_bjettype+"Pass__TagLepMinus";
 	  FillHist_bJet(prefix+suffix);
-	}
-      }//[END]if TagLepPlus
-      else{// --if TagLepMinus
-	suffix="__bMuonInbHadPass__TagLepMinus";
-        FillHist_bmuon_in_bHad(prefix+suffix);
-        FillHist_bJet(prefix+suffix);
-	if(bmuon_in_bHad.charge>0){
-          suffix="__bMuonInbHadPass__TagLepMinus__MeasuredPlus";
-          FillHist_bmuon_in_bHad(prefix+suffix);
-          FillHist_bJet(prefix+suffix);
-	}
-	else{
-	  suffix="__bMuonInbHadPass__TagLepMinus__MeasuredMinus";
-          FillHist_bmuon_in_bHad(prefix+suffix);
-          FillHist_bJet(prefix+suffix);
-	}//[END]if Meausred Minus 
-      }//[End TagLepMinus]
-    }//[END]bmuon_in_bHad Exists
-
-
-    
-    //-----bElectron_in_bHad
-    else if(belectron_in_bHad.IsExist){
-      suffix="__bElectronInbHadPass";
-      FillHist_belectron_in_bHad(prefix+suffix);
-      FillHist_bJet(prefix+suffix);
-      if(myRECO.TagLeptonCharge > 0){
-	suffix="__bElectronInbHadPass__TagLepPlus";
-	FillHist_belectron_in_bHad(prefix+suffix);
-	FillHist_bJet(prefix+suffix);
-	if(belectron_in_bHad.charge>0){
-	  suffix="__bElectronInbHadPass__TagLepPlus__MeasuredPlus";
-	  FillHist_belectron_in_bHad(prefix+suffix);
-	  FillHist_bJet(prefix+suffix);
-	}
-	else{
-	  suffix="__bElectronInbHadPass__TagLepPlus__MeasuredMinus";
-	  FillHist_belectron_in_bHad(prefix+suffix);
-	  FillHist_bJet(prefix+suffix);
-	}
-      }//[END]if TagLepPlus
-      else{// --if TagLepMinus
-	suffix="__bElectronInbHadPass__TagLepMinus";
-        FillHist_belectron_in_bHad(prefix+suffix);
-        FillHist_bJet(prefix+suffix);
-	if(belectron_in_bHad.charge>0){
-          suffix="__bElectronInbHadPass__TagLepMinus__MeasuredPlus";
-          FillHist_belectron_in_bHad(prefix+suffix);
-          FillHist_bJet(prefix+suffix);
-	}
-	else{
-	  suffix="__bElectronInbHadPass__TagLepMinus__MeasuredMinus";
-          FillHist_belectron_in_bHad(prefix+suffix);
-          FillHist_bJet(prefix+suffix);
-	}//[END]if Meausred Minus 
-      }//[End TagLepMinus]
-    }//[END]belectron_in_bHad Exists
-
-    else if(bHadJet.dnn > DNNcut){
-      suffix="__bHadPass";
-      FillHist_bJet(prefix+suffix);
-      if(myRECO.TagLeptonCharge>0){
-	suffix="__bHadPass__TagLepPlus";
-	FillHist_bJet(prefix+suffix);
-	if(bHadJet.JetCharge>0){
-	  suffix="__bHadPass__TagLepPlus__MeasurePlus";
-	  FillHist_bJet(prefix+suffix);
-	}//[END]bHadJet.JetCharge>0
-	else if(bHadJet.JetCharge<0){
-	  suffix="__bHadPass__TagLepPlus__MeasureMinus";
-	  FillHist_bJet(prefix+suffix);
-	}//[END]bHadJet.JetCharge<0
-	else{
-	  suffix="__bHadPass__TagLepPlus__MeasureZero";
-	  FillHist_bJet(prefix+suffix);
-	}
-      }//[END] TagLeptonCharge>0
-      else{// --TagLeptonCharge<0
-	suffix="__bHadPass__TagLepMinus";
-	FillHist_bJet(prefix+suffix);
-	if(bHadJet.JetCharge>0){
-	  suffix="__bHadPass__TagLepMinus__MeasurePlus";
-	  FillHist_bJet(prefix+suffix);
-	}//[END]bHadJet.JetCharge>0
-	else if(bHadJet.JetCharge<0){
-	  suffix="__bHadPass__TagLepMinus__MeasureMinus";
-	  FillHist_bJet(prefix+suffix);
-	}//[END]bHadJet.JetCharge<0
-	else{
-	  suffix="__bHadPass__TagLepMinus__MeasureZero";
-	  FillHist_bJet(prefix+suffix);
-	}
-      }//[END] TagLeptonCharge<0
-
-    }//[END] good bHadJet
+	  if(_bJetCharge>0){
+	    suffix="__"+_bjettype+"Pass__TagLepMinus__MeasurePlus";
+	    FillHist_bJet(prefix+suffix);
+	  }//[END]bJet.JetCharge>0
+	  else if(_bJetCharge<0){
+	    suffix="__"+_bjettype+"Pass__TagLepMinus__MeasureMinus";
+	    FillHist_bJet(prefix+suffix);
+	  }//[END]bJet.JetCharge<0
+	  else{
+	    suffix="__"+_bjettype+"Pass__TagLepMinus__MeasureZero";
+	    FillHist_bJet(prefix+suffix);
+	  }
+	}//[END] TagLeptonCharge<0
+      }//[END]!SkipMeasureChAcc
+    }// good bJet
     else{
-      suffix="__bHadFail";
+      suffix="__"+_bjettype+"Fail";
       FillHist_bJet(prefix+suffix);
-      if(myRECO.TagLeptonCharge>0){
-	suffix="__bHadFail__TagLepPlus";
-	FillHist_bJet(prefix+suffix);
-	if(bHadJet.JetCharge>0){
-	  suffix="__bHadFail__TagLepPlus__MeasurePlus";
+      if(!SkipMeasureChAcc){
+	if(myRECO.TagLeptonCharge>0){
+	  suffix="__"+_bjettype+"Fail__TagLepPlus";
 	  FillHist_bJet(prefix+suffix);
-	}//[END]bHadJet.JetCharge>0
-	else if(bHadJet.JetCharge<0){//---bHadJetCharge<0
-	  suffix="__bHadFail__TagLepPlus__MeasureMinus";
+	  if(_bJetCharge>0){
+	    suffix="__"+_bjettype+"Fail__TagLepPlus__MeasurePlus";
+	    FillHist_bJet(prefix+suffix);
+	  }//[END]bJet.JetCharge>0
+	  else if(_bJetCharge<0){//---bJetCharge<0
+	    suffix="__"+_bjettype+"Fail__TagLepPlus__MeasureMinus";
+	    FillHist_bJet(prefix+suffix);
+	  }//[END]bJet.JetCharge<0
+	  else{
+	    suffix="__"+_bjettype+"Fail__TagLepPlus__MeasureZero";
+	    FillHist_bJet(prefix+suffix);
+	  }
+	}//[END] TagLeptonCharge>0
+	else{//--TagLeptonCharge<0
+	  suffix="__"+_bjettype+"Fail__TagLepMinus";
 	  FillHist_bJet(prefix+suffix);
-	}//[END]bHadJet.JetCharge<0
-	else{
-	  suffix="__bHadFail__TagLepPlus__MeasureZero";
-	  FillHist_bJet(prefix+suffix);
-	}
-      }//[END] TagLeptonCharge>0
-      else{//--TagLeptonCharge<0
-	suffix="__bHadFail__TagLepMinus";
-	FillHist_bJet(prefix+suffix);
-	if(bHadJet.JetCharge>0){
-	  suffix="__bHadFail__TagLepMinus__MeasurePlus";
-	  FillHist_bJet(prefix+suffix);
-	}//[END]bHadJet.JetCharge>0
-	else if(bHadJet.JetCharge<0){
-	  suffix="__bHadFail__TagLepMinus__MeasureMinus";
-	  FillHist_bJet(prefix+suffix);
-	}//[END]bHadJet.JetCharge<0
-	else{
-	  suffix="__bHadFail__TagLepMinus__MeasureZero";
-	  FillHist_bJet(prefix+suffix);
-	}
-      }//[END] TagLeptonCharge<0
-    }//[END] bad bHadJet
-    
-
-
-    //-----Copy hHad lines.....and replace bHad to bLep----//
-
-    //----bLepJet----//
-    _Is_bHad=false;
-    AddProcessTagTTLJ();
-    suffix="";
-    FillHist_bJet(prefix+suffix);
-    //-----bMuon_in_bLep
-    suffix="";
-    if(bmuon_in_bLep.IsExist){
-      suffix="__bMuonInbLepPass";
-      FillHist_bmuon_in_bLep(prefix+suffix);
-      FillHist_bJet(prefix+suffix);
-      if(myRECO.TagLeptonCharge > 0){
-	suffix="__bMuonInbLepPass__TagLepPlus";
-	FillHist_bmuon_in_bLep(prefix+suffix);
-	FillHist_bJet(prefix+suffix);
-	if(bmuon_in_bLep.charge>0){
-	  suffix="__bMuonInbLepPass__TagLepPlus__MeasuredPlus";
-	  FillHist_bmuon_in_bLep(prefix+suffix);
-	  FillHist_bJet(prefix+suffix);
-	}
-	else{
-	  suffix="__bMuonInbLepPass__TagLepPlus__MeasuredMinus";
-	  FillHist_bmuon_in_bLep(prefix+suffix);
-	  FillHist_bJet(prefix+suffix);
-	}
-      }//[END]if TagLepPlus
-      else{// --if TagLepMinus
-	suffix="__bMuonInbLepPass__TagLepMinus";
-        FillHist_bmuon_in_bLep(prefix+suffix);
-        FillHist_bJet(prefix+suffix);
-	if(bmuon_in_bLep.charge>0){
-          suffix="__bMuonInbLepPass__TagLepMinus__MeasuredPlus";
-          FillHist_bmuon_in_bLep(prefix+suffix);
-          FillHist_bJet(prefix+suffix);
-	}
-	else{
-	  suffix="__bMuonInbLepPass__TagLepMinus__MeasuredMinus";
-          FillHist_bmuon_in_bLep(prefix+suffix);
-          FillHist_bJet(prefix+suffix);
-	}//[END]if Meausred Minus 
-      }//[End TagLepMinus]
-    }//[END]bmuon_in_bLep Exists
-
-
-    
-    //-----bElectron_in_bLep
-    else if(belectron_in_bLep.IsExist){
-      suffix="__bElectronInbLepPass";
-      FillHist_belectron_in_bLep(prefix+suffix);
-      FillHist_bJet(prefix+suffix);
-      if(myRECO.TagLeptonCharge > 0){
-	suffix="__bElectronInbLepPass__TagLepPlus";
-	FillHist_belectron_in_bLep(prefix+suffix);
-	FillHist_bJet(prefix+suffix);
-	if(belectron_in_bLep.charge>0){
-	  suffix="__bElectronInbLepPass__TagLepPlus__MeasuredPlus";
-	  FillHist_belectron_in_bLep(prefix+suffix);
-	  FillHist_bJet(prefix+suffix);
-	}
-	else{
-	  suffix="__bElectronInbLepPass__TagLepPlus__MeasuredMinus";
-	  FillHist_belectron_in_bLep(prefix+suffix);
-	  FillHist_bJet(prefix+suffix);
-	}
-      }//[END]if TagLepPlus
-      else{// --if TagLepMinus
-	suffix="__bElectronInbLepPass__TagLepMinus";
-        FillHist_belectron_in_bLep(prefix+suffix);
-        FillHist_bJet(prefix+suffix);
-	if(belectron_in_bLep.charge>0){
-          suffix="__bElectronInbLepPass__TagLepMinus__MeasuredPlus";
-          FillHist_belectron_in_bLep(prefix+suffix);
-          FillHist_bJet(prefix+suffix);
-	}
-	else{
-	  suffix="__bElectronInbLepPass__TagLepMinus__MeasuredMinus";
-          FillHist_belectron_in_bLep(prefix+suffix);
-          FillHist_bJet(prefix+suffix);
-	}//[END]if Meausred Minus 
-      }//[End TagLepMinus]
-    }//[END]belectron_in_bLep Exists
-
-    else if(bLepJet.dnn > DNNcut){
-      suffix="__bLepPass";
-      FillHist_bJet(prefix+suffix);
-      if(myRECO.TagLeptonCharge>0){
-	suffix="__bLepPass__TagLepPlus";
-	FillHist_bJet(prefix+suffix);
-	if(bLepJet.JetCharge>0){
-	  suffix="__bLepPass__TagLepPlus__MeasurePlus";
-	  FillHist_bJet(prefix+suffix);
-	}//[END]bLepJet.JetCharge>0
-	else if(bLepJet.JetCharge<0){
-	  suffix="__bLepPass__TagLepPlus__MeasureMinus";
-	  FillHist_bJet(prefix+suffix);
-	}//[END]bLepJet.JetCharge<0
-	else{
-	  suffix="__bLepPass__TagLepPlus__MeasureZero";
-	  FillHist_bJet(prefix+suffix);
-	}
-      }//[END] TagLeptonCharge>0
-      else{// --TagLeptonCharge<0
-	suffix="__bLepPass__TagLepMinus";
-	FillHist_bJet(prefix+suffix);
-	if(bLepJet.JetCharge>0){
-	  suffix="__bLepPass__TagLepMinus__MeasurePlus";
-	  FillHist_bJet(prefix+suffix);
-	}//[END]bLepJet.JetCharge>0
-	else if(bLepJet.JetCharge<0){
-	  suffix="__bLepPass__TagLepMinus__MeasureMinus";
-	  FillHist_bJet(prefix+suffix);
-	}//[END]bLepJet.JetCharge<0
-	else{
-	  suffix="__bLepPass__TagLepMinus__MeasureZero";
-	  FillHist_bJet(prefix+suffix);
-	}
-      }//[END] TagLeptonCharge<0
-
-    }//[END] good bLepJet
-    else{
-      suffix="__bLepFail";
-      FillHist_bJet(prefix+suffix);
-      if(myRECO.TagLeptonCharge>0){
-	suffix="__bLepFail__TagLepPlus";
-	FillHist_bJet(prefix+suffix);
-	if(bLepJet.JetCharge>0){
-	  suffix="__bLepFail__TagLepPlus__MeasurePlus";
-	  FillHist_bJet(prefix+suffix);
-	}//[END]bLepJet.JetCharge>0
-	else if(bLepJet.JetCharge<0){//---bLepJetCharge<0
-	  suffix="__bLepFail__TagLepPlus__MeasureMinus";
-	  FillHist_bJet(prefix+suffix);
-	}//[END]bLepJet.JetCharge<0
-	else{
-	  suffix="__bLepFail__TagLepPlus__MeasureZero";
-	  FillHist_bJet(prefix+suffix);
-	}
-      }//[END] TagLeptonCharge>0
-      else{//--TagLeptonCharge<0
-	suffix="__bLepFail__TagLepMinus";
-	FillHist_bJet(prefix+suffix);
-	if(bLepJet.JetCharge>0){
-	  suffix="__bLepFail__TagLepMinus__MeasurePlus";
-	  FillHist_bJet(prefix+suffix);
-	}//[END]bLepJet.JetCharge>0
-	else if(bLepJet.JetCharge<0){
-	  suffix="__bLepFail__TagLepMinus__MeasureMinus";
-	  FillHist_bJet(prefix+suffix);
-	}//[END]bLepJet.JetCharge<0
-	else{
-	  suffix="__bLepFail__TagLepMinus__MeasureZero";
-	  FillHist_bJet(prefix+suffix);
-	}
-      }//[END] TagLeptonCharge<0
-    }//[END] bad bLepJet
-
-
-    
-  }//[END]Category on Prompt Lep
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+	  if(_bJetCharge>0){
+	    suffix="__"+_bjettype+"Fail__TagLepMinus__MeasurePlus";
+	    FillHist_bJet(prefix+suffix);
+	  }//[END]bJet.JetCharge>0
+	  else if(_bJetCharge<0){
+	    suffix="__"+_bjettype+"Fail__TagLepMinus__MeasureMinus";
+	    FillHist_bJet(prefix+suffix);
+	  }//[END]bJet.JetCharge<0
+	  else{
+	    suffix="__"+_bjettype+"Fail__TagLepMinus__MeasureZero";
+	    FillHist_bJet(prefix+suffix);
+	  }
+	}//[END] TagLeptonCharge<0
+      }//[END]!SkipMeasureChAcc
+    }//[END] bad bJet
+  } //[END] for prefix
 }
+  
 TLorentzVector TTsemilep_ChargeReliability::GetTransverseVector(TLorentzVector v){
   //cout << "GetTransverseVector" << endl;
   double px=v.Px();
@@ -1119,141 +1064,187 @@ TLorentzVector TTsemilep_ChargeReliability::GetTransverseVector(double pt, doubl
 }
 
 void TTsemilep_ChargeReliability::FillHist_bJet(TString cutname){
+  if(_Is_bHad){
   FillHist_bHadJet(cutname);
-  FillHist_bLepJet(cutname);
-  FillHist_LeptonicTopSide(cutname);
   FillHist_HadronicTopSide(cutname);
+  }
+  else{
+    FillHist_bLepJet(cutname);
+    FillHist_LeptonicTopSide(cutname);
+  }
   
 }
 
 
 void TTsemilep_ChargeReliability::FillHist_LeptonicTopSide(TString cutname){
+  
 
+  ReserveFillHist(cutname+"/MT_LeptonicTop/"+ProcessName,myRECO.vt_lep_top.M(), weight, 125, 0, 500);
 
-  if(myRECO.passMuonTriggerAndTTbarMu){
-    //myRECO.idx_Tmuon
-    FillHist(cutname+"/lepton_pt/"+ProcessName,AllMuons[myRECO.idx_Tmuon].Pt(), weight, 100, 0, 100.);
-    FillHist(cutname+"/lepton_eta/"+ProcessName,AllMuons[myRECO.idx_Tmuon].Eta(), weight, 100, -3, 3.);
-    FillHist(cutname+"/lepton_phi/"+ProcessName,AllMuons[myRECO.idx_Tmuon].Phi(), weight, 100, -4, 4.);
-
+  
+  if(!RunSyst){   
+    ReserveFillHist(cutname+"/MT_LeptonicW/"+ProcessName,myRECO.vt_lep_W.M(), weight, 50, 0, 200);
+    if(myRECO.passMuonTriggerAndTTbarMu){
+      //myRECO.idx_Tmuon
+      ReserveFillHist(cutname+"/lepton_pt/"+ProcessName,AllMuons[myRECO.idx_Tmuon].Pt(), weight, 100, 0, 100.);
+      ReserveFillHist(cutname+"/lepton_eta/"+ProcessName,AllMuons[myRECO.idx_Tmuon].Eta(), weight, 100, -3, 3.);
+      ReserveFillHist(cutname+"/lepton_phi/"+ProcessName,AllMuons[myRECO.idx_Tmuon].Phi(), weight, 100, -4, 4.);
+      
+    }
+    else{
+      ReserveFillHist(cutname+"/lepton_pt/"+ProcessName,AllElectrons[myRECO.idx_Telectron].Pt(), weight, 100, 0, 100.);
+      ReserveFillHist(cutname+"/lepton_eta/"+ProcessName,AllElectrons[myRECO.idx_Telectron].Eta(), weight, 50, -3, 3.);
+      ReserveFillHist(cutname+"/lepton_phi/"+ProcessName,AllElectrons[myRECO.idx_Telectron].Phi(), weight, 50, -4, 4.);
+      
+    }
+    
+    ReserveFillHist(cutname+"/met_pt/"+ProcessName,met_pt, weight, 50, 0, 200.);
+    ReserveFillHist(cutname+"/met_phi/"+ProcessName,met_phi, weight, 100, -4, 4.);
+    
   }
-  else{
-    FillHist(cutname+"/lepton_pt/"+ProcessName,AllElectrons[myRECO.idx_Telectron].Pt(), weight, 100, 0, 100.);
-    FillHist(cutname+"/lepton_eta/"+ProcessName,AllElectrons[myRECO.idx_Telectron].Eta(), weight, 50, -3, 3.);
-    FillHist(cutname+"/lepton_phi/"+ProcessName,AllElectrons[myRECO.idx_Telectron].Phi(), weight, 50, -4, 4.);
 
-  }
 
-  FillHist(cutname+"/met_pt/"+ProcessName,met_pt, weight, 50, 0, 200.);
-  FillHist(cutname+"/met_phi/"+ProcessName,met_phi, weight, 100, -4, 4.);
 
-  FillHist(cutname+"/MT_LeptonicTop/"+ProcessName,myRECO.vt_lep_top.M(), weight, 50, 0, 400);
-  FillHist(cutname+"/MT_LeptonicW/"+ProcessName,myRECO.vt_lep_W.M(), weight, 50, 0, 200);
-
-  FillHist(cutname+"/bLep_pt/"+ProcessName,tightbjets[myRECO.tightbjet_idx_bLep].Pt(), weight, 50, 0, 200);
-  FillHist(cutname+"/bLep_eta/"+ProcessName,tightbjets[myRECO.tightbjet_idx_bLep].Eta(), weight, 50, -3, 3);
 
 
 }
 void TTsemilep_ChargeReliability::FillHist_HadronicTopSide(TString cutname){
-  FillHist(cutname+"/Whad_M/"+ProcessName,(tightjets[myRECO.tightjet_idx_q1]+tightjets[myRECO.tightjet_idx_q2]).M(), weight, 50, 0, 200.);
-  FillHist(cutname+"/Thad_M/"+ProcessName,(tightbjets[myRECO.tightbjet_idx_bHad]+tightjets[myRECO.tightjet_idx_q1]+tightjets[myRECO.tightjet_idx_q2]).M(), weight, 100, 0, 350.);
+  ReserveFillHist(cutname+"/Thad_M/"+ProcessName,(tightbjets[myRECO.tightbjet_idx_bHad]+tightjets[myRECO.tightjet_idx_q1]+tightjets[myRECO.tightjet_idx_q2]).M(), weight, 200, 0, 800.);
+
+  if(!RunSyst){
+    ReserveFillHist(cutname+"/Whad_M/"+ProcessName,(tightjets[myRECO.tightjet_idx_q1]+tightjets[myRECO.tightjet_idx_q2]).M(), weight, 50, 0, 200.);
+  }
   
 }
 void TTsemilep_ChargeReliability::FillHist_bHadJet(TString cutname){
-  FillHist(cutname+"/bHad_dnn/"+ProcessName,bHadJet.dnn, weight, 50, 0, 1);
-  FillHist(cutname+"/bHad_pt/"+ProcessName,bHadJet.pt, weight, 50, 0, 200);
-  FillHist(cutname+"/bHad_eta/"+ProcessName,bHadJet.eta, weight, 50, -3, 3);
-  FillHist(cutname+"/bHad_charge/"+ProcessName,bHadJet.JetCharge, weight, 50, -1, 1);
-  if(doDrawDNNinputs){
-    FillHist(cutname+"/bHad_phi/"+ProcessName,bHadJet.phi, weight, 50, -3, 3);
-    FillHist(cutname+"/bHad_chargedHadronEnergyFraction/"+ProcessName,bHadJet.chargedHadronEnergyFraction, weight, 50, 0, 1);
-    FillHist(cutname+"/bHad_neutralHadronEnergyFraction/"+ProcessName,bHadJet.neutralHadronEnergyFraction,weight, 50, 0, 1);
-    FillHist(cutname+"/bHad_neutralEmEnergyFraction/"+ProcessName,bHadJet.neutralEmEnergyFraction, weight, 50, 0, 1);
-    FillHist(cutname+"/bHad_chargedEmEnergyFraction/"+ProcessName,bHadJet.chargedEmEnergyFraction, weight, 50, 0, 1);
-    FillHist(cutname+"/bHad_muonEnergyFraction/"+ProcessName,bHadJet.muonEnergyFraction, weight, 50, 0, 1);
+  
+
+  ReserveFillHist(cutname+"/bHad_pt/"+ProcessName,bHadJet.pt, weight, 50, 0, 200);
+  ReserveFillHist(cutname+"/bHad_eta/"+ProcessName,bHadJet.eta, weight, 50, -3, 3);
+  
+  if(!RunSyst){
+    ReserveFillHist(cutname+"/bHad_dnn/"+ProcessName,bHadJet.dnn, weight, 50, 0, 1);
+    ReserveFillHist(cutname+"/bHad_charge/"+ProcessName,bHadJet.JetCharge, weight, 50, -1, 1);
+    if(doDrawDNNinputs){
+      ReserveFillHist(cutname+"/bHad_phi/"+ProcessName,bHadJet.phi, weight, 50, -3, 3);
+      ReserveFillHist(cutname+"/bHad_chargedHadronEnergyFraction/"+ProcessName,bHadJet.chargedHadronEnergyFraction, weight, 50, 0, 1);
+      ReserveFillHist(cutname+"/bHad_neutralHadronEnergyFraction/"+ProcessName,bHadJet.neutralHadronEnergyFraction,weight, 50, 0, 1);
+      ReserveFillHist(cutname+"/bHad_neutralEmEnergyFraction/"+ProcessName,bHadJet.neutralEmEnergyFraction, weight, 50, 0, 1);
+      ReserveFillHist(cutname+"/bHad_chargedEmEnergyFraction/"+ProcessName,bHadJet.chargedEmEnergyFraction, weight, 50, 0, 1);
+      ReserveFillHist(cutname+"/bHad_muonEnergyFraction/"+ProcessName,bHadJet.muonEnergyFraction, weight, 50, 0, 1);
+    }
   }
 }
 
 void TTsemilep_ChargeReliability::FillHist_bLepJet(TString cutname){
-  FillHist(cutname+"/bLep_dnn/"+ProcessName,bLepJet.dnn, weight, 50, 0, 1);
-  FillHist(cutname+"/bLep_pt/"+ProcessName,bLepJet.pt, weight, 50, 0, 200);
-  FillHist(cutname+"/bLep_eta/"+ProcessName,bLepJet.eta, weight, 50, -3, 3);
-  FillHist(cutname+"/bLep_charge/"+ProcessName,bLepJet.JetCharge, weight, 50, -1, 1);
-  if(doDrawDNNinputs){
-    FillHist(cutname+"/bLep_phi/"+ProcessName,bLepJet.phi, weight, 50, -3, 3);
-    FillHist(cutname+"/bLep_chargedHadronEnergyFraction/"+ProcessName,bLepJet.chargedHadronEnergyFraction, weight, 50, 0, 1);
-    FillHist(cutname+"/bLep_neutralHadronEnergyFraction/"+ProcessName,bLepJet.neutralHadronEnergyFraction,weight, 50, 0, 1);
-    FillHist(cutname+"/bLep_neutralEmEnergyFraction/"+ProcessName,bLepJet.neutralEmEnergyFraction, weight, 50, 0, 1);
-    FillHist(cutname+"/bLep_chargedEmEnergyFraction/"+ProcessName,bLepJet.chargedEmEnergyFraction, weight, 50, 0, 1);
-    FillHist(cutname+"/bLep_muonEnergyFraction/"+ProcessName,bLepJet.muonEnergyFraction, weight, 50, 0, 1);
+
+
+  ReserveFillHist(cutname+"/bLep_pt/"+ProcessName,bLepJet.pt, weight, 50, 0, 200);
+  ReserveFillHist(cutname+"/bLep_eta/"+ProcessName,bLepJet.eta, weight, 50, -3, 3);
+  if(!RunSyst){
+    ReserveFillHist(cutname+"/bLep_dnn/"+ProcessName,bLepJet.dnn, weight, 50, 0, 1);
+    ReserveFillHist(cutname+"/bLep_charge/"+ProcessName,bLepJet.JetCharge, weight, 50, -1, 1);
+    if(doDrawDNNinputs){
+      ReserveFillHist(cutname+"/bLep_phi/"+ProcessName,bLepJet.phi, weight, 50, -3, 3);
+      ReserveFillHist(cutname+"/bLep_chargedHadronEnergyFraction/"+ProcessName,bLepJet.chargedHadronEnergyFraction, weight, 50, 0, 1);
+      ReserveFillHist(cutname+"/bLep_neutralHadronEnergyFraction/"+ProcessName,bLepJet.neutralHadronEnergyFraction,weight, 50, 0, 1);
+      ReserveFillHist(cutname+"/bLep_neutralEmEnergyFraction/"+ProcessName,bLepJet.neutralEmEnergyFraction, weight, 50, 0, 1);
+      ReserveFillHist(cutname+"/bLep_chargedEmEnergyFraction/"+ProcessName,bLepJet.chargedEmEnergyFraction, weight, 50, 0, 1);
+      ReserveFillHist(cutname+"/bLep_muonEnergyFraction/"+ProcessName,bLepJet.muonEnergyFraction, weight, 50, 0, 1);
+    }
   }
 }
 
-
+void TTsemilep_ChargeReliability::FillHist_bmuon_in_b(TString cutname){
+  if(_Is_bHad){
+    FillHist_bmuon_in_bHad(cutname);
+  }
+  else{
+    FillHist_bmuon_in_bLep(cutname);
+  }
+}
 void TTsemilep_ChargeReliability::FillHist_bmuon_in_bHad(TString cutname){
-  FillHist(cutname+"/bmuon_in_bHad_dnn/"+ProcessName,bmuon_in_bHad.dnn,weight,50,0.,1.);
-  FillHist(cutname+"/bmuon_in_bHad_pt/"+ProcessName,bmuon_in_bHad.pt,weight,50,0.,50.);
-  FillHist(cutname+"/bmuon_in_bHad_eta/"+ProcessName,bmuon_in_bHad.eta,weight,40,-4.,4.);  
-  FillHist(cutname+"/bmuon_in_bHad_charge/"+ProcessName,bmuon_in_bHad.charge,weight,50,-2.,2.);
-  if(doDrawDNNinputs){
-    FillHist(cutname+"/bmuon_in_bHad_phi/"+ProcessName,bmuon_in_bHad.phi,weight,40,-4.,4.);
-    FillHist(cutname+"/bmuon_in_bHad_charge_weighted/"+ProcessName,bmuon_in_bHad.charge*bmuon_in_bHad.dnn,weight,50,-2.,2.);
-    FillHist(cutname+"/bmuon_in_bHad_nsip3d/"+ProcessName,bmuon_in_bHad.nsip3d,weight,15,0.,15.);
-    FillHist(cutname+"/bmuon_in_bHad_ptwrtbjet/"+ProcessName,bmuon_in_bHad.ptwrtbjet,weight,20,0.,5.);
-    FillHist(cutname+"/bmuon_in_bHad_p_jetrestf/"+ProcessName,bmuon_in_bHad.p_jetrestf,weight,20,0.,5.);
-    FillHist(cutname+"/bmuon_in_bHad_reltrkiso/"+ProcessName,bmuon_in_bHad.reltrkiso,weight,30,0.,15.);
-    FillHist(cutname+"/bmuon_in_bHad_dR_l_j/"+ProcessName,bmuon_in_bHad.dR_l_j,weight,40,0.,0.4);
+
+  ReserveFillHist(cutname+"/bmuon_in_bHad_pt/"+ProcessName,bmuon_in_bHad.pt,weight,50,0.,50.);
+  ReserveFillHist(cutname+"/bmuon_in_bHad_eta/"+ProcessName,bmuon_in_bHad.eta,weight,40,-4.,4.);
+  if(!RunSyst){
+    ReserveFillHist(cutname+"/bmuon_in_bHad_dnn/"+ProcessName,bmuon_in_bHad.dnn,weight,50,0.,1.);
+    ReserveFillHist(cutname+"/bmuon_in_bHad_charge/"+ProcessName,bmuon_in_bHad.charge,weight,50,-2.,2.);
+    if(doDrawDNNinputs){
+      ReserveFillHist(cutname+"/bmuon_in_bHad_phi/"+ProcessName,bmuon_in_bHad.phi,weight,40,-4.,4.);
+      ReserveFillHist(cutname+"/bmuon_in_bHad_charge_weighted/"+ProcessName,bmuon_in_bHad.charge*bmuon_in_bHad.dnn,weight,50,-2.,2.);
+      ReserveFillHist(cutname+"/bmuon_in_bHad_nsip3d/"+ProcessName,bmuon_in_bHad.nsip3d,weight,15,0.,15.);
+      ReserveFillHist(cutname+"/bmuon_in_bHad_ptwrtbjet/"+ProcessName,bmuon_in_bHad.ptwrtbjet,weight,20,0.,5.);
+      ReserveFillHist(cutname+"/bmuon_in_bHad_p_jetrestf/"+ProcessName,bmuon_in_bHad.p_jetrestf,weight,20,0.,5.);
+      ReserveFillHist(cutname+"/bmuon_in_bHad_reltrkiso/"+ProcessName,bmuon_in_bHad.reltrkiso,weight,30,0.,15.);
+      ReserveFillHist(cutname+"/bmuon_in_bHad_dR_l_j/"+ProcessName,bmuon_in_bHad.dR_l_j,weight,40,0.,0.4);
+    }
   }
 }
 void TTsemilep_ChargeReliability::FillHist_bmuon_in_bLep(TString cutname){
-  FillHist(cutname+"/bmuon_in_bLep_dnn/"+ProcessName,bmuon_in_bLep.dnn,weight,50,0.,1.);
-  FillHist(cutname+"/bmuon_in_bLep_pt/"+ProcessName,bmuon_in_bLep.pt,weight,50,0.,50.);
-  FillHist(cutname+"/bmuon_in_bLep_eta/"+ProcessName,bmuon_in_bLep.eta,weight,40,-4.,4.);
-  FillHist(cutname+"/bmuon_in_bLep_charge/"+ProcessName,bmuon_in_bLep.charge,weight,50,-2.,2.);
-  if(doDrawDNNinputs){
-    FillHist(cutname+"/bmuon_in_bLep_phi/"+ProcessName,bmuon_in_bLep.phi,weight,40,-4.,4.);
-    FillHist(cutname+"/bmuon_in_bLep_charge_weighted/"+ProcessName,bmuon_in_bLep.charge*bmuon_in_bLep.dnn,weight,50,-2.,2.);
-    FillHist(cutname+"/bmuon_in_bLep_nsip3d/"+ProcessName,bmuon_in_bLep.nsip3d,weight,15,0.,15.);
-    FillHist(cutname+"/bmuon_in_bLep_ptwrtbjet/"+ProcessName,bmuon_in_bLep.ptwrtbjet,weight,20,0.,5.);
-    FillHist(cutname+"/bmuon_in_bLep_p_jetrestf/"+ProcessName,bmuon_in_bLep.p_jetrestf,weight,20,0.,5.);
-    FillHist(cutname+"/bmuon_in_bLep_reltrkiso/"+ProcessName,bmuon_in_bLep.reltrkiso,weight,30,0.,15.);
-    FillHist(cutname+"/bmuon_in_bLep_dR_l_j/"+ProcessName,bmuon_in_bLep.dR_l_j,weight,40,0.,0.4);
+
+
+  ReserveFillHist(cutname+"/bmuon_in_bLep_pt/"+ProcessName,bmuon_in_bLep.pt,weight,50,0.,50.);
+  ReserveFillHist(cutname+"/bmuon_in_bLep_eta/"+ProcessName,bmuon_in_bLep.eta,weight,40,-4.,4.);
+  if(!RunSyst){
+    ReserveFillHist(cutname+"/bmuon_in_bLep_dnn/"+ProcessName,bmuon_in_bLep.dnn,weight,50,0.,1.);
+    ReserveFillHist(cutname+"/bmuon_in_bLep_charge/"+ProcessName,bmuon_in_bLep.charge,weight,50,-2.,2.);
+    if(doDrawDNNinputs){
+      ReserveFillHist(cutname+"/bmuon_in_bLep_phi/"+ProcessName,bmuon_in_bLep.phi,weight,40,-4.,4.);
+      ReserveFillHist(cutname+"/bmuon_in_bLep_charge_weighted/"+ProcessName,bmuon_in_bLep.charge*bmuon_in_bLep.dnn,weight,50,-2.,2.);
+      ReserveFillHist(cutname+"/bmuon_in_bLep_nsip3d/"+ProcessName,bmuon_in_bLep.nsip3d,weight,15,0.,15.);
+      ReserveFillHist(cutname+"/bmuon_in_bLep_ptwrtbjet/"+ProcessName,bmuon_in_bLep.ptwrtbjet,weight,20,0.,5.);
+      ReserveFillHist(cutname+"/bmuon_in_bLep_p_jetrestf/"+ProcessName,bmuon_in_bLep.p_jetrestf,weight,20,0.,5.);
+      ReserveFillHist(cutname+"/bmuon_in_bLep_reltrkiso/"+ProcessName,bmuon_in_bLep.reltrkiso,weight,30,0.,15.);
+      ReserveFillHist(cutname+"/bmuon_in_bLep_dR_l_j/"+ProcessName,bmuon_in_bLep.dR_l_j,weight,40,0.,0.4);
+    }
+  }
+}
+void TTsemilep_ChargeReliability::FillHist_belectron_in_b(TString cutname){
+  if(_Is_bHad){
+    FillHist_belectron_in_bHad(cutname);
+  }
+  else{
+    FillHist_belectron_in_bLep(cutname);
   }
 }
 void TTsemilep_ChargeReliability::FillHist_belectron_in_bHad(TString cutname){
-  FillHist(cutname+"/belectron_in_bHad_dnn/"+ProcessName,belectron_in_bHad.dnn,weight,50,0.,1.);
-  FillHist(cutname+"/belectron_in_bHad_pt/"+ProcessName,belectron_in_bHad.pt,weight,50,0.,50.);  
-  FillHist(cutname+"/belectron_in_bHad_eta/"+ProcessName,belectron_in_bHad.eta,weight,40,-4.,4.);
-  FillHist(cutname+"/belectron_in_bHad_charge/"+ProcessName,belectron_in_bHad.charge,weight,50,-2.,2.);
-  if(doDrawDNNinputs){
-    FillHist(cutname+"/belectron_in_bHad_phi/"+ProcessName,belectron_in_bHad.phi,weight,40,-4.,4.);
-    FillHist(cutname+"/belectron_in_bHad_charge_weighted/"+ProcessName,belectron_in_bHad.charge*belectron_in_bHad.dnn,weight,50,-2.,2.);
-    FillHist(cutname+"/belectron_in_bHad_nsip3d/"+ProcessName,belectron_in_bHad.nsip3d,weight,15,0.,15.);
-    FillHist(cutname+"/belectron_in_bHad_ptwrtbjet/"+ProcessName,belectron_in_bHad.ptwrtbjet,weight,20,0.,5.);
-    FillHist(cutname+"/belectron_in_bHad_p_jetrestf/"+ProcessName,belectron_in_bHad.p_jetrestf,weight,20,0.,5.);
-    FillHist(cutname+"/belectron_in_bHad_reltrkiso/"+ProcessName,belectron_in_bHad.reltrkiso,weight,30,0.,15.);
-    FillHist(cutname+"/belectron_in_bHad_dR_l_j/"+ProcessName,belectron_in_bHad.dR_l_j,weight,40,0.,0.4);
-    FillHist(cutname+"/belectron_in_bHad_IsGsfCtfScPixChargeConsistent/"+ProcessName,belectron_in_bHad.IsGsfCtfScPixChargeConsistent,weight,2,0.,2.);
+  
+  ReserveFillHist(cutname+"/belectron_in_bHad_pt/"+ProcessName,belectron_in_bHad.pt,weight,50,0.,50.);  
+  ReserveFillHist(cutname+"/belectron_in_bHad_eta/"+ProcessName,belectron_in_bHad.eta,weight,40,-4.,4.);
+  if(!RunSyst){
+    ReserveFillHist(cutname+"/belectron_in_bHad_dnn/"+ProcessName,belectron_in_bHad.dnn,weight,50,0.,1.);
+    ReserveFillHist(cutname+"/belectron_in_bHad_charge/"+ProcessName,belectron_in_bHad.charge,weight,50,-2.,2.);
+    if(doDrawDNNinputs){
+      ReserveFillHist(cutname+"/belectron_in_bHad_phi/"+ProcessName,belectron_in_bHad.phi,weight,40,-4.,4.);
+      ReserveFillHist(cutname+"/belectron_in_bHad_charge_weighted/"+ProcessName,belectron_in_bHad.charge*belectron_in_bHad.dnn,weight,50,-2.,2.);
+      ReserveFillHist(cutname+"/belectron_in_bHad_nsip3d/"+ProcessName,belectron_in_bHad.nsip3d,weight,15,0.,15.);
+      ReserveFillHist(cutname+"/belectron_in_bHad_ptwrtbjet/"+ProcessName,belectron_in_bHad.ptwrtbjet,weight,20,0.,5.);
+      ReserveFillHist(cutname+"/belectron_in_bHad_p_jetrestf/"+ProcessName,belectron_in_bHad.p_jetrestf,weight,20,0.,5.);
+      ReserveFillHist(cutname+"/belectron_in_bHad_reltrkiso/"+ProcessName,belectron_in_bHad.reltrkiso,weight,30,0.,15.);
+      ReserveFillHist(cutname+"/belectron_in_bHad_dR_l_j/"+ProcessName,belectron_in_bHad.dR_l_j,weight,40,0.,0.4);
+      ReserveFillHist(cutname+"/belectron_in_bHad_IsGsfCtfScPixChargeConsistent/"+ProcessName,belectron_in_bHad.IsGsfCtfScPixChargeConsistent,weight,2,0.,2.);
+    }
   }
 }
 void TTsemilep_ChargeReliability::FillHist_belectron_in_bLep(TString cutname){
-  FillHist(cutname+"/belectron_in_bLep_dnn/"+ProcessName,belectron_in_bLep.dnn,weight,50,0.,1.);
-  FillHist(cutname+"/belectron_in_bLep_pt/"+ProcessName,belectron_in_bLep.pt,weight,50,0.,50.);
-  FillHist(cutname+"/belectron_in_bLep_eta/"+ProcessName,belectron_in_bLep.eta,weight,40,-4.,4.);
-  FillHist(cutname+"/belectron_in_bLep_charge/"+ProcessName,belectron_in_bLep.charge,weight,50,-2.,2.);
-  if(doDrawDNNinputs){
-    FillHist(cutname+"/belectron_in_bLep_phi/"+ProcessName,belectron_in_bLep.phi,weight,40,-4.,4.);
-    FillHist(cutname+"/belectron_in_bLep_charge_weighted/"+ProcessName,belectron_in_bLep.charge*belectron_in_bLep.dnn,weight,50,-2.,2.);
-    FillHist(cutname+"/belectron_in_bLep_nsip3d/"+ProcessName,belectron_in_bLep.nsip3d,weight,15,0.,15.);
-    FillHist(cutname+"/belectron_in_bLep_ptwrtbjet/"+ProcessName,belectron_in_bLep.ptwrtbjet,weight,20,0.,5.);
-    FillHist(cutname+"/belectron_in_bLep_p_jetrestf/"+ProcessName,belectron_in_bLep.p_jetrestf,weight,20,0.,5.);
-    FillHist(cutname+"/belectron_in_bLep_reltrkiso/"+ProcessName,belectron_in_bLep.reltrkiso,weight,30,0.,15.);
-    FillHist(cutname+"/belectron_in_bLep_dR_l_j/"+ProcessName,belectron_in_bLep.dR_l_j,weight,40,0.,0.4);
-    FillHist(cutname+"/belectron_in_bLep_IsGsfCtfScPixChargeConsistent/"+ProcessName,belectron_in_bLep.IsGsfCtfScPixChargeConsistent,weight,2,0.,2.);
+  ReserveFillHist(cutname+"/belectron_in_bLep_pt/"+ProcessName,belectron_in_bLep.pt,weight,50,0.,50.);
+  ReserveFillHist(cutname+"/belectron_in_bLep_eta/"+ProcessName,belectron_in_bLep.eta,weight,40,-4.,4.);
+  if(!RunSyst){
+    ReserveFillHist(cutname+"/belectron_in_bLep_dnn/"+ProcessName,belectron_in_bLep.dnn,weight,50,0.,1.);
+    ReserveFillHist(cutname+"/belectron_in_bLep_charge/"+ProcessName,belectron_in_bLep.charge,weight,50,-2.,2.);
+    if(doDrawDNNinputs){
+      ReserveFillHist(cutname+"/belectron_in_bLep_phi/"+ProcessName,belectron_in_bLep.phi,weight,40,-4.,4.);
+      ReserveFillHist(cutname+"/belectron_in_bLep_charge_weighted/"+ProcessName,belectron_in_bLep.charge*belectron_in_bLep.dnn,weight,50,-2.,2.);
+      ReserveFillHist(cutname+"/belectron_in_bLep_nsip3d/"+ProcessName,belectron_in_bLep.nsip3d,weight,15,0.,15.);
+      ReserveFillHist(cutname+"/belectron_in_bLep_ptwrtbjet/"+ProcessName,belectron_in_bLep.ptwrtbjet,weight,20,0.,5.);
+      ReserveFillHist(cutname+"/belectron_in_bLep_p_jetrestf/"+ProcessName,belectron_in_bLep.p_jetrestf,weight,20,0.,5.);
+      ReserveFillHist(cutname+"/belectron_in_bLep_reltrkiso/"+ProcessName,belectron_in_bLep.reltrkiso,weight,30,0.,15.);
+      ReserveFillHist(cutname+"/belectron_in_bLep_dR_l_j/"+ProcessName,belectron_in_bLep.dR_l_j,weight,40,0.,0.4);
+      ReserveFillHist(cutname+"/belectron_in_bLep_IsGsfCtfScPixChargeConsistent/"+ProcessName,belectron_in_bLep.IsGsfCtfScPixChargeConsistent,weight,2,0.,2.);
+    }
   }
 }
-
 void TTsemilep_ChargeReliability::Set_bJet(bool Is_bHad){
   _Is_bHad=Is_bHad;//_Is_bHad : class member variable
   if(_Is_bHad){
@@ -1510,9 +1501,17 @@ void TTsemilep_ChargeReliability::AnalyzeRECO(){
 
   AllMuons=ScaleMuons(AllMuons_raw,_var_muonscale);//roch. corr.
   AllElectrons=ScaleElectrons(AllElectrons_raw,_var_electronscale);
-  AllJets = ScaleJets(AllJets_raw,_var_jes);
-  
-
+  // cout << "_JESsource->" << _JESsource << endl;
+  //AllJets = ScaleJetsIndividualSource(AllJets_raw,_var_jes,_JESsource);
+  if(_var_jes){
+    AllJets = ScaleJets(AllJets_raw,_var_jes);
+  }
+  else if(_var_jer){
+    AllJets = SmearJets(AllJets_raw,_var_jer);
+  }
+  else{
+    AllJets = ScaleJets(AllJets_raw,_var_jes);
+  }
   //(0) Apply some basic cuts
   myRECO.passMuonTrigger=ev.PassTrigger(MuonTriggerNames);
   myRECO.passElectronTrigger=ev.PassTrigger(ElectronTriggerNames);
@@ -1526,12 +1525,12 @@ void TTsemilep_ChargeReliability::AnalyzeRECO(){
   myRECO.goodTTbarMu=TTbarMuReco();
   myRECO.goodTTbarEl=TTbarElReco();
 
-  FillCutflow("cutflow/all/"+ProcessName,"BeforeTrigger",weight);
+  //FillCutflow("cutflow/all/"+ProcessName,"BeforeTrigger",weight);
   myRECO.passMuonTriggerAndTTbarMu=myRECO.passMuonTrigger && myRECO.goodTTbarMu;
   myRECO.passElectronTriggerAndTTbarEl= myRECO.passElectronTrigger && myRECO.goodTTbarEl;
   if((!myRECO.passMuonTriggerAndTTbarMu) && (!myRECO.passElectronTriggerAndTTbarEl)) return;
   //if( (!(myRECO.goodTTbarMu&&myLHE.IsMuonChannel)) && (!(myRECO.goodTTbarEl&&myLHE.IsElectronChannel)) ) return;
-  FillCutflow("cutflow/all/"+ProcessName,"AfterTriggerAnd1TightLep",weight);
+  //FillCutflow("cutflow/all/"+ProcessName,"AfterTriggerAnd1TightLep",weight);
 
   if(myRECO.passMuonTriggerAndTTbarMu){ 
     ChannelLep="TTbarMu";
@@ -1549,6 +1548,7 @@ void TTsemilep_ChargeReliability::AnalyzeRECO(){
     mu_trksf=1.;
     weight=weight*trigsf*lep_recosf*lep_idsf*mu_trksf;
     myRECO.TagLeptonCharge=AllElectrons[myRECO.idx_Telectron].Charge();
+
   }
   
 
@@ -1557,39 +1557,118 @@ void TTsemilep_ChargeReliability::AnalyzeRECO(){
 
   ///--Check Jets--///
   if(!TTsemilep_ChargeReliability::CheckJets()) return;
-  FillCutflow("cutflow/all/"+ProcessName,"After2b_and_Atleast2Jets",weight);
+  //FillCutflow("cutflow/all/"+ProcessName,"After2b_and_Atleast2Jets",weight);
   //Now we have b jet from hadronic decay of top..
-  TTsemilep_ChargeReliability::Check_bJet_Charge();
-
-  
+  //--bHad
+  if(!SkipRunHadronBJetSide){
+    TTsemilep_ChargeReliability::Set_bJet(true);//set target bjet to bHad and eval relibilities
+    TTsemilep_ChargeReliability::Check_bJet_Charge();
+  }
+  //--bLep
+  if(!SkipRunLeptonBJetSide){
+    TTsemilep_ChargeReliability::Set_bJet(false);//set target bjet to bLep and eval relibilities
+    TTsemilep_ChargeReliability::Check_bJet_Charge();
+  }
 }
 
 
 
 
 
+void TTsemilep_ChargeReliability::GetAllObject(){
+  AllMuons_raw=GetAllMuons();
+  muonsize=AllMuons_raw.size();
+  AllElectrons_raw=GetAllElectrons();
+  electronsize=AllElectrons_raw.size();
+  AllJets_raw=GetAllJets();
+  jetsize=AllJets_raw.size();
+  //cout << "jetsize=" << jetsize << endl;
 
+}
 
 void TTsemilep_ChargeReliability::executeEvent(){//this function is only for 
   //----GetAll Muons/Electrons/Jets
-  GetAllObjects();
-
-  if(!RunSyst){
-    LHEs=GetLHEs();
-    if(ProcessName.Contains("TTLJ"))TTsemilep_ChargeReliability::AnalyzeLHE();
-    //if (myLHE.IsTauChannel) return; // not caring tau channel
-    if(ProcessName.Contains("TTLJ"))TTsemilep_ChargeReliability::AnalyzeGEN();
-    //FillCutflow("cutflow/all/"+ProcessName,"event_start",weight);
+  GetAllObject();
+  InitSysVar();
+  SetRunWeightBase(true);
+  if(!RunSyst){//OR IsData
+    if(!IsDATA){
+      LHEs=GetLHEs();
+      if(ProcessName.Contains("TTLJ"))TTsemilep_ChargeReliability::AnalyzeLHE();
+      //if (myLHE.IsTauChannel) return; // not caring tau channel
+      if(ProcessName.Contains("TTLJ"))TTsemilep_ChargeReliability::AnalyzeGEN();
+      //FillCutflow("cutflow/all/"+ProcessName,"event_start",weight);
+    }
     executeEventWithCurrentSet();
   } 
-  else{
+  else{//---
     //--Systematics
-    //--before go to reco level, set up options
-    
-    //--Run WeightBase First
-
+    InitSysVar();
+    SetRunWeightBase(true);
     executeEventWithCurrentSet();
-    syslist_w.clear();//then clear
+
+    //--Scales
+    SetRunWeightBase(false);
+    //---muonscale--//
+    InitSysVar();
+    _var_muonscale=+1;
+    syssuffix="muonscale";
+    sysdir="Up";
+    executeEventWithCurrentSet();
+
+    InitSysVar();
+    _var_muonscale=-1;
+    syssuffix="muonscale";
+    sysdir="Down";
+    executeEventWithCurrentSet();
+
+
+    //--electronscale--//
+
+    InitSysVar();
+    _var_electronscale=+1;
+    syssuffix="electronscale";
+    sysdir="Up";
+    executeEventWithCurrentSet();
+
+    InitSysVar();
+    _var_electronscale=-1;
+    syssuffix="electronscale";
+    sysdir="Down";
+    executeEventWithCurrentSet();
+
+
+   //--jes--//
+
+
+    InitSysVar();
+    _var_jes=+1;
+    _JESsource="Total";
+    syssuffix="jesTotal";
+    sysdir="Up";
+    executeEventWithCurrentSet();
+
+    InitSysVar();
+    _var_jes=-1;
+    _JESsource="Total";
+    syssuffix="jesTotal";
+    sysdir="Down";
+    executeEventWithCurrentSet();
+
+    //--jer--//
+    InitSysVar();
+    _var_jer=+1;
+    syssuffix="jer";
+    sysdir="Up";
+    executeEventWithCurrentSet();
+
+    InitSysVar();
+    _var_jer=-1;
+    syssuffix="jer";
+    sysdir="Down";
+    executeEventWithCurrentSet();
+
+
   }
 
 
@@ -1628,26 +1707,58 @@ void TTsemilep_ChargeReliability::executeEventWithCurrentSet(){
   MET = ev.GetMETVector().Pt();
 
 
-  prefire_weight=GetPrefireWeight(0);
-  weight*=prefire_weight;
-  //nPV
-  puweight=GetPileUpWeight(nPileUp,0);
-  weight*=puweight;
+
+
+  
+  
   if(!IsDATA){
+    prefire_weight=L1PrefireReweight_Central;
+    weight*=prefire_weight;
+    //nPV
+    puweight=GetPileUpWeight(nPileUp,0);
+    weight*=puweight;
+
     base_weight*=MCweight();
     base_weight*=ev.GetTriggerLumi("Full");
     weight *= MCweight();
     weight *= ev.GetTriggerLumi("Full");
+    if(RunSyst && _run_weightbase){
+      if(syslist_w.count("prefire")) {
+	if(L1PrefireReweight_Central==0.){ 
+	  syslist_w["prefire"].push_back(0.);
+	  syslist_w["prefire"].push_back(0.);
+	}
+	else{
+	  syslist_w["prefire"].push_back(L1PrefireReweight_Up/L1PrefireReweight_Central);//direct read prefire weight
+	  syslist_w["prefire"].push_back(L1PrefireReweight_Down/L1PrefireReweight_Central);
+	}
+      }
+      if(syslist_w.count("pu")) {
+	if(puweight==0.){
+	  syslist_w["pu"].push_back(0.);
+	  syslist_w["pu"].push_back(0.);
+	}
+	else{
+	  syslist_w["pu"].push_back(GetPileUpWeight(nPileUp,1)/puweight);
+	  syslist_w["pu"].push_back(GetPileUpWeight(nPileUp,-1)/puweight);;
+	}
+      }
+      if(syslist_w.count("ps")) {
+	for(const auto& _pssyst : *weight_PSSyst){ //PS systematics
+	  syslist_w["ps"].push_back(_pssyst);
+	}
+      }
+    }
   }
   //initialize//
   myLHE.incoming_parton_pid.clear();
   _tightbjet_idx=-1;
   InitValues();
-  doFillTree=false;
+  //doFillTree=false;
 
   TTsemilep_ChargeReliability::AnalyzeRECO();
   
-  
+  FillReservedHist();
   //  FillHist("BasicCut/ZCand_Mass/"+ProcessName, ZCand.M(), weight, 40, 70., 110.);
   
   

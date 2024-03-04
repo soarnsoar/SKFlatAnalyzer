@@ -1,0 +1,18 @@
+Submitting job(s)......................................................................................................................................................
+150 job(s) submitted to cluster 2192799.
+condor_submit WORKDIR_HADD/run.jds > WORKDIR_HADD/run.jid
+##################################################
+Submission Finished
+- JobID = 995185
+- Analyzer = BBbar_Analyzer
+- Skim = 
+- InputSamples = ['DYJetsToEE_MiNNLO']
+- NJobs = 150
+- Era = 2017
+- UserFlags = []
+- RunDir = /data6/Users/jhchoi/SKFlatRunlog//2024_01_08_020514__995185__BBbar_Analyzer__Era2017__TAMSA1/DYJetsToEE_MiNNLO/
+- output will be send to : /data6/Users/jhchoi/SKFlatOutput//Run2UltraLegacy_v3/BBbar_Analyzer/2017/
+##################################################
+submit hadd
+<AFTER hadd fin. please rm remainings..>
+rm /data6/Users/jhchoi/SKFlatRunlog//2024_01_08_020514__995185__BBbar_Analyzer__Era2017__TAMSA1/DYJetsToEE_MiNNLO//output/*.root

@@ -1,0 +1,18 @@
+Submitting job(s)......................................................................................................................................................
+150 job(s) submitted to cluster 2194463.
+condor_submit WORKDIR_HADD/run.jds > WORKDIR_HADD/run.jid
+##################################################
+Submission Finished
+- JobID = 863387
+- Analyzer = HZZ_test
+- Skim = 
+- InputSamples = ['ZGToLLG']
+- NJobs = 150
+- Era = 2016preVFP
+- UserFlags = []
+- RunDir = /data6/Users/jhchoi/SKFlatRunlog//2024_01_10_062243__863387__HZZ_test__Era2016preVFP__TAMSA1/ZGToLLG/
+- output will be send to : /data6/Users/jhchoi/SKFlatOutput//Run2UltraLegacy_v3/HZZ_test/2016preVFP/
+##################################################
+submit hadd
+<AFTER hadd fin. please rm remainings..>
+rm /data6/Users/jhchoi/SKFlatRunlog//2024_01_10_062243__863387__HZZ_test__Era2016preVFP__TAMSA1/ZGToLLG//output/*.root

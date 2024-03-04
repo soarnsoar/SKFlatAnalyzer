@@ -1,0 +1,6 @@
+#InputSampleList
+DYJets10to50_MG
+DYJets
+TTLJ_powheg
+TTLL_powheg
+WJets_amcatnlo

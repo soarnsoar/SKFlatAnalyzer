@@ -1,0 +1,48 @@
+Submitting job(s)..................................................
+50 job(s) submitted to cluster 2178516.
+Submitting job(s)..................................................
+50 job(s) submitted to cluster 2178521.
+Submitting job(s)..................................................
+50 job(s) submitted to cluster 2178525.
+Submitting job(s)..................................................
+50 job(s) submitted to cluster 2178528.
+Submitting job(s).................
+17 job(s) submitted to cluster 2178532.
+Submitting job(s)..................................................
+50 job(s) submitted to cluster 2178535.
+condor_submit WORKDIR_HADD/run.jds > WORKDIR_HADD/run.jid
+condor_submit WORKDIR_HADD/run.jds > WORKDIR_HADD/run.jid
+condor_submit WORKDIR_HADD/run.jds > WORKDIR_HADD/run.jid
+condor_submit WORKDIR_HADD/run.jds > WORKDIR_HADD/run.jid
+condor_submit WORKDIR_HADD/run.jds > WORKDIR_HADD/run.jid
+condor_submit WORKDIR_HADD/run.jds > WORKDIR_HADD/run.jid
+##################################################
+Submission Finished
+- JobID = 955696
+- Analyzer = LepJetChargeReliability_RECO
+- Skim = SkimTree_Dilepton
+- InputSamples = ['SingleTop_tch_antitop_Incl', 'SingleTop_tch_top_Incl', 'SingleTop_sch_Lep', 'WZ_pythia', 'ZZ_pythia', 'WW_pythia']
+- NJobs = 50
+- Era = 2017
+- UserFlags = []
+- RunDir = /data6/Users/jhchoi/SKFlatRunlog//2023_12_14_164855__955696__LepJetChargeReliability_RECO__Era2017__SkimTree_Dilepton__TAMSA1/WW_pythia/
+- output will be send to : /data6/Users/jhchoi/SKFlatOutput//Run2UltraLegacy_v3/LepJetChargeReliability_RECO/2017/
+##################################################
+submit hadd
+<AFTER hadd fin. please rm remainings..>
+rm /data6/Users/jhchoi/SKFlatRunlog//2023_12_14_164855__955696__LepJetChargeReliability_RECO__Era2017__SkimTree_Dilepton__TAMSA1/SingleTop_tch_antitop_Incl//output/*.root
+submit hadd
+<AFTER hadd fin. please rm remainings..>
+rm /data6/Users/jhchoi/SKFlatRunlog//2023_12_14_164855__955696__LepJetChargeReliability_RECO__Era2017__SkimTree_Dilepton__TAMSA1/SingleTop_tch_top_Incl//output/*.root
+submit hadd
+<AFTER hadd fin. please rm remainings..>
+rm /data6/Users/jhchoi/SKFlatRunlog//2023_12_14_164855__955696__LepJetChargeReliability_RECO__Era2017__SkimTree_Dilepton__TAMSA1/SingleTop_sch_Lep//output/*.root
+submit hadd
+<AFTER hadd fin. please rm remainings..>
+rm /data6/Users/jhchoi/SKFlatRunlog//2023_12_14_164855__955696__LepJetChargeReliability_RECO__Era2017__SkimTree_Dilepton__TAMSA1/WZ_pythia//output/*.root
+submit hadd
+<AFTER hadd fin. please rm remainings..>
+rm /data6/Users/jhchoi/SKFlatRunlog//2023_12_14_164855__955696__LepJetChargeReliability_RECO__Era2017__SkimTree_Dilepton__TAMSA1/ZZ_pythia//output/*.root
+submit hadd
+<AFTER hadd fin. please rm remainings..>
+rm /data6/Users/jhchoi/SKFlatRunlog//2023_12_14_164855__955696__LepJetChargeReliability_RECO__Era2017__SkimTree_Dilepton__TAMSA1/WW_pythia//output/*.root

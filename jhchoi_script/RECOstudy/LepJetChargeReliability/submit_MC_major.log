@@ -1,0 +1,48 @@
+Submitting job(s)............................................................................................................................................................................................................................................................................................................
+300 job(s) submitted to cluster 2178518.
+Submitting job(s)............................................................................................................................................................................................................................................................................................................
+300 job(s) submitted to cluster 2178524.
+Submitting job(s)...........................................................................................................................................................................................................................
+219 job(s) submitted to cluster 2178529.
+Submitting job(s)............................................................................................................................................................................................................................................................................................................
+300 job(s) submitted to cluster 2178534.
+Submitting job(s)............................................................................................................................................................................................................................................................................................................
+300 job(s) submitted to cluster 2178536.
+Submitting job(s)............................................................................................................................................................................................................................................................................................................
+300 job(s) submitted to cluster 2178537.
+condor_submit WORKDIR_HADD/run.jds > WORKDIR_HADD/run.jid
+condor_submit WORKDIR_HADD/run.jds > WORKDIR_HADD/run.jid
+condor_submit WORKDIR_HADD/run.jds > WORKDIR_HADD/run.jid
+condor_submit WORKDIR_HADD/run.jds > WORKDIR_HADD/run.jid
+condor_submit WORKDIR_HADD/run.jds > WORKDIR_HADD/run.jid
+condor_submit WORKDIR_HADD/run.jds > WORKDIR_HADD/run.jid
+##################################################
+Submission Finished
+- JobID = 903323
+- Analyzer = LepJetChargeReliability_RECO
+- Skim = SkimTree_Dilepton
+- InputSamples = ['DYJetsToEE_MiNNLO', 'DYJetsToMuMu_MiNNLO', 'DYJetsToTauTau_MiNNLO', 'TTLJ_powheg', 'TTLL_powheg', 'WJets_MG']
+- NJobs = 300
+- Era = 2017
+- UserFlags = []
+- RunDir = /data6/Users/jhchoi/SKFlatRunlog//2023_12_14_164855__903323__LepJetChargeReliability_RECO__Era2017__SkimTree_Dilepton__TAMSA1/WJets_MG/
+- output will be send to : /data6/Users/jhchoi/SKFlatOutput//Run2UltraLegacy_v3/LepJetChargeReliability_RECO/2017/
+##################################################
+submit hadd
+<AFTER hadd fin. please rm remainings..>
+rm /data6/Users/jhchoi/SKFlatRunlog//2023_12_14_164855__903323__LepJetChargeReliability_RECO__Era2017__SkimTree_Dilepton__TAMSA1/DYJetsToEE_MiNNLO//output/*.root
+submit hadd
+<AFTER hadd fin. please rm remainings..>
+rm /data6/Users/jhchoi/SKFlatRunlog//2023_12_14_164855__903323__LepJetChargeReliability_RECO__Era2017__SkimTree_Dilepton__TAMSA1/DYJetsToMuMu_MiNNLO//output/*.root
+submit hadd
+<AFTER hadd fin. please rm remainings..>
+rm /data6/Users/jhchoi/SKFlatRunlog//2023_12_14_164855__903323__LepJetChargeReliability_RECO__Era2017__SkimTree_Dilepton__TAMSA1/DYJetsToTauTau_MiNNLO//output/*.root
+submit hadd
+<AFTER hadd fin. please rm remainings..>
+rm /data6/Users/jhchoi/SKFlatRunlog//2023_12_14_164855__903323__LepJetChargeReliability_RECO__Era2017__SkimTree_Dilepton__TAMSA1/TTLJ_powheg//output/*.root
+submit hadd
+<AFTER hadd fin. please rm remainings..>
+rm /data6/Users/jhchoi/SKFlatRunlog//2023_12_14_164855__903323__LepJetChargeReliability_RECO__Era2017__SkimTree_Dilepton__TAMSA1/TTLL_powheg//output/*.root
+submit hadd
+<AFTER hadd fin. please rm remainings..>
+rm /data6/Users/jhchoi/SKFlatRunlog//2023_12_14_164855__903323__LepJetChargeReliability_RECO__Era2017__SkimTree_Dilepton__TAMSA1/WJets_MG//output/*.root

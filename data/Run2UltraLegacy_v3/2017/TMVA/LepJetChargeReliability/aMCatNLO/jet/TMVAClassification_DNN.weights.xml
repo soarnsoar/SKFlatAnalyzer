@@ -19,7 +19,7 @@
     <Option name="CreateMVAPdfs" modified="No">False</Option>
     <Option name="IgnoreNegWeightsInTraining" modified="Yes">True</Option>
     <Option name="FilenameModel" modified="Yes">model.h5</Option>
-    <Option name="FilenameTrainedModel" modified="No">/data6/Users/jhchoi/SKFlatAnalyzers/test/SKFlatAnalyzer/external/TMVA/LepJetChargeReliability/aMCatNLO/jet/TrainedModel_DNN.h5</Option>
+    <Option name="FilenameTrainedModel" modified="No">/data6/Users/jhchoi/SKFlatAnalyzers/test/SKFlatAnalyzer/data/Run2UltraLegacy_v3/2017/TMVA/LepJetChargeReliability/aMCatNLO/jet/TrainedModel_DNN.h5</Option>
     <Option name="BatchSize" modified="Yes">500</Option>
     <Option name="NumEpochs" modified="Yes">5000</Option>
     <Option name="Verbose" modified="Yes">2</Option>

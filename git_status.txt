@@ -1,0 +1,391 @@
+On branch Run2ULv3
+Changes not staged for commit:
+  (use "git add/rm <file>..." to update what will be committed)
+  (use "git checkout -- <file>..." to discard changes in working directory)
+
+	modified:   AnalyzerTools/include/AnalyzerTools_LinkDef.h
+	modified:   AnalyzerTools/include/EfficiencyTool.h
+	deleted:    AnalyzerTools/include/SystematicOption.h
+	modified:   AnalyzerTools/src/EfficiencyTool.C
+	deleted:    AnalyzerTools/src/SystematicOption.C
+	modified:   Analyzers/include/AnalyzerCore.h
+	modified:   Analyzers/include/BBbarRecoTMVA.h
+	modified:   Analyzers/include/BBbarRecoTMVA_DEBUG.h
+	modified:   Analyzers/include/BBbar_Analyzer.h
+	modified:   Analyzers/include/BBosillation.h
+	modified:   Analyzers/include/B_In_GEN.h
+	modified:   Analyzers/include/B_In_LHE.h
+	deleted:    Analyzers/include/B_Info_Analyzer.h
+	deleted:    Analyzers/include/B_Info_Analyzer_BASIC_v2309.h
+	modified:   Analyzers/include/BasicTest.h
+	modified:   Analyzers/include/ExampleRun.h
+	modified:   Analyzers/include/ForLepJetChargeReliability.h
+	modified:   Analyzers/include/ForLepJetChargeReliabilityCoeff.h
+	deleted:    Analyzers/include/ForNewJetCharge.h
+	modified:   Analyzers/include/ForTMVA_BBbarAnalyzer.h
+	deleted:    Analyzers/include/ForTMVA_BBbarAnalyzer_lepV1.h
+	deleted:    Analyzers/include/ForTMVA_BBbarAnalyzer_pjetrest0p7_3.h
+	modified:   Analyzers/include/HZZ_test.h
+	modified:   Analyzers/include/LepJetChargeReliability_RECO.h
+	modified:   Analyzers/include/LepJetChargeReliability_RECO_NoDNNcut_Tree.h
+	modified:   Analyzers/include/SysTemplate.h
+	modified:   Analyzers/include/TTsemilep_ChargeReliability.h
+	modified:   Analyzers/include/TTsemilep_JetAssignScore.h
+	modified:   Analyzers/include/TTsemilep_JetAssignScore_TrainingInput.h
+	modified:   Analyzers/include/TTsemilep_JetAssign_FlavourMatPlots.h
+	modified:   Analyzers/include/TTsemilep_LeptonChargeAccuracy.h
+	modified:   Analyzers/src/AnalyzerCore.C
+	deleted:    Analyzers/src/B_Info_Analyzer.C
+	deleted:    Analyzers/src/B_Info_Analyzer_BASIC_v2309.C
+	deleted:    Analyzers/src/ForNewJetCharge.C
+	deleted:    Analyzers/src/ForTMVA_BBbarAnalyzer_lepV1.C
+	deleted:    Analyzers/src/ForTMVA_BBbarAnalyzer_pjetrest0p7_3.C
+	modified:   Analyzers/src/SysTemplate.C
+	modified:   Analyzers/src/TTsemilep_ChargeReliability.C
+	modified:   Analyzers/src/TTsemilep_JetAssignScore.C
+	modified:   Analyzers/src/TTsemilep_JetAssignScore_TrainingInput.C
+	modified:   DataFormats/include/Jet.h
+	modified:   DataFormats/src/Jet.C
+	deleted:    backup/BBbarRecoTMVA_TEST.C
+	deleted:    backup/ForTMVA_BBbarAnalyzer_pjetrest0p7_3_res1Train.h
+	modified:   data/Run2UltraLegacy_v3/2017/TMVA/LepJetChargeReliability/aMCatNLO/electron/TMVAClassification_DNN.weights.xml
+	modified:   data/Run2UltraLegacy_v3/2017/TMVA/LepJetChargeReliability/aMCatNLO/jet/TMVAClassification_DNN.weights.xml
+	modified:   data/Run2UltraLegacy_v3/2017/TMVA/LepJetChargeReliability/aMCatNLO/muon/TMVAClassification_DNN.weights.xml
+	deleted:    jhchoi_script/RECOstudy/batch_submit.sh
+	deleted:    jhchoi_script/test_submitDATA.sh
+	deleted:    jhchoi_script/test_submitlistMC.sh
+	modified:   setup.sh
+
+Untracked files:
+  (use "git add <file>..." to include in what will be committed)
+
+	#make.log#
+	AnalyzerTools/src/#MCCorrection.C#
+	Analyzers/include/#AnalyzerCore.h#
+	Analyzers/include/backup/
+	Analyzers/src/#ForTMVA_BBbarAnalyzer.C#
+	Analyzers/src/#TTsemilep_Btag.C#
+	Analyzers/src/backup/
+	DataFormats/src/#Event.C#
+	DataFormats/src/#Gen.C#
+	DataFormats/src/.#Gen.C
+	DataFormats/src/backup/
+	QCDb100To200_LHE_ID.pdf
+	SKFlatTools/
+	alt_keras/
+	backup/analyzers/
+	data/Run2UltraLegacy_v3/2017/ID/Electron/2017_Ele12Leg2_MediumID_Minus_v12.root
+	data/Run2UltraLegacy_v3/2017/ID/Electron/2017_Ele12Leg2_MediumID_Minus_v13.root
+	data/Run2UltraLegacy_v3/2017/ID/Electron/2017_Ele12Leg2_MediumID_Minus_v17.root
+	data/Run2UltraLegacy_v3/2017/ID/Electron/2017_Ele12Leg2_MediumID_Minus_v4.root
+	data/Run2UltraLegacy_v3/2017/ID/Electron/2017_Ele12Leg2_MediumID_Minus_v7.root
+	data/Run2UltraLegacy_v3/2017/ID/Electron/2017_Ele12Leg2_MediumID_Minus_v8.root
+	data/Run2UltraLegacy_v3/2017/ID/Electron/2017_Ele12Leg2_MediumID_Minus_v9.root
+	data/Run2UltraLegacy_v3/2017/ID/Electron/2017_Ele12Leg2_MediumID_Plus_v12.root
+	data/Run2UltraLegacy_v3/2017/ID/Electron/2017_Ele12Leg2_MediumID_Plus_v13.root
+	data/Run2UltraLegacy_v3/2017/ID/Electron/2017_Ele12Leg2_MediumID_Plus_v17.root
+	data/Run2UltraLegacy_v3/2017/ID/Electron/2017_Ele12Leg2_MediumID_Plus_v4.root
+	data/Run2UltraLegacy_v3/2017/ID/Electron/2017_Ele12Leg2_MediumID_Plus_v7.root
+	data/Run2UltraLegacy_v3/2017/ID/Electron/2017_Ele12Leg2_MediumID_Plus_v8.root
+	data/Run2UltraLegacy_v3/2017/ID/Electron/2017_Ele12Leg2_MediumID_Plus_v9.root
+	data/Run2UltraLegacy_v3/2017/ID/Electron/2017_Ele12Leg2_MediumID_v12.root
+	data/Run2UltraLegacy_v3/2017/ID/Electron/2017_Ele12Leg2_MediumID_v13.root
+	data/Run2UltraLegacy_v3/2017/ID/Electron/2017_Ele12Leg2_MediumID_v16.root
+	data/Run2UltraLegacy_v3/2017/ID/Electron/2017_Ele12Leg2_MediumID_v8.root
+	data/Run2UltraLegacy_v3/2017/ID/Electron/2017_Ele12Leg2_MediumID_v9.root
+	data/Run2UltraLegacy_v3/2017/ID/Electron/2017_Ele23Leg1_MediumID_Minus_v12.root
+	data/Run2UltraLegacy_v3/2017/ID/Electron/2017_Ele23Leg1_MediumID_Minus_v13.root
+	data/Run2UltraLegacy_v3/2017/ID/Electron/2017_Ele23Leg1_MediumID_Minus_v17.root
+	data/Run2UltraLegacy_v3/2017/ID/Electron/2017_Ele23Leg1_MediumID_Minus_v4.root
+	data/Run2UltraLegacy_v3/2017/ID/Electron/2017_Ele23Leg1_MediumID_Minus_v7.root
+	data/Run2UltraLegacy_v3/2017/ID/Electron/2017_Ele23Leg1_MediumID_Minus_v8.root
+	data/Run2UltraLegacy_v3/2017/ID/Electron/2017_Ele23Leg1_MediumID_Minus_v9.root
+	data/Run2UltraLegacy_v3/2017/ID/Electron/2017_Ele23Leg1_MediumID_Plus_v12.root
+	data/Run2UltraLegacy_v3/2017/ID/Electron/2017_Ele23Leg1_MediumID_Plus_v13.root
+	data/Run2UltraLegacy_v3/2017/ID/Electron/2017_Ele23Leg1_MediumID_Plus_v17.root
+	data/Run2UltraLegacy_v3/2017/ID/Electron/2017_Ele23Leg1_MediumID_Plus_v4.root
+	data/Run2UltraLegacy_v3/2017/ID/Electron/2017_Ele23Leg1_MediumID_Plus_v7.root
+	data/Run2UltraLegacy_v3/2017/ID/Electron/2017_Ele23Leg1_MediumID_Plus_v8.root
+	data/Run2UltraLegacy_v3/2017/ID/Electron/2017_Ele23Leg1_MediumID_Plus_v9.root
+	data/Run2UltraLegacy_v3/2017/ID/Electron/2017_Ele23Leg1_MediumID_v12.root
+	data/Run2UltraLegacy_v3/2017/ID/Electron/2017_Ele23Leg1_MediumID_v13.root
+	data/Run2UltraLegacy_v3/2017/ID/Electron/2017_Ele23Leg1_MediumID_v16.root
+	data/Run2UltraLegacy_v3/2017/ID/Electron/2017_Ele23Leg1_MediumID_v8.root
+	data/Run2UltraLegacy_v3/2017/ID/Electron/2017_Ele23Leg1_MediumID_v9.root
+	data/Run2UltraLegacy_v3/2017/ID/Electron/2017_Ele27Or_MediumID_Minus_v4.root
+	data/Run2UltraLegacy_v3/2017/ID/Electron/2017_Ele27Or_MediumID_Plus_v4.root
+	data/Run2UltraLegacy_v3/2017/ID/Electron/2017_Ele27Or_TightID_SelQ_Minus_v4.root
+	data/Run2UltraLegacy_v3/2017/ID/Electron/2017_Ele27Or_TightID_SelQ_Plus_v4.root
+	data/Run2UltraLegacy_v3/2017/ID/Electron/2017_Ele27_MediumID_Minus_v12.root
+	data/Run2UltraLegacy_v3/2017/ID/Electron/2017_Ele27_MediumID_Minus_v13.root
+	data/Run2UltraLegacy_v3/2017/ID/Electron/2017_Ele27_MediumID_Minus_v17.root
+	data/Run2UltraLegacy_v3/2017/ID/Electron/2017_Ele27_MediumID_Minus_v4.root
+	data/Run2UltraLegacy_v3/2017/ID/Electron/2017_Ele27_MediumID_Minus_v7.root
+	data/Run2UltraLegacy_v3/2017/ID/Electron/2017_Ele27_MediumID_Minus_v8.root
+	data/Run2UltraLegacy_v3/2017/ID/Electron/2017_Ele27_MediumID_Minus_v9.root
+	data/Run2UltraLegacy_v3/2017/ID/Electron/2017_Ele27_MediumID_Plus_v12.root
+	data/Run2UltraLegacy_v3/2017/ID/Electron/2017_Ele27_MediumID_Plus_v13.root
+	data/Run2UltraLegacy_v3/2017/ID/Electron/2017_Ele27_MediumID_Plus_v17.root
+	data/Run2UltraLegacy_v3/2017/ID/Electron/2017_Ele27_MediumID_Plus_v4.root
+	data/Run2UltraLegacy_v3/2017/ID/Electron/2017_Ele27_MediumID_Plus_v7.root
+	data/Run2UltraLegacy_v3/2017/ID/Electron/2017_Ele27_MediumID_Plus_v8.root
+	data/Run2UltraLegacy_v3/2017/ID/Electron/2017_Ele27_MediumID_Plus_v9.root
+	data/Run2UltraLegacy_v3/2017/ID/Electron/2017_Ele27_MediumID_v12.root
+	data/Run2UltraLegacy_v3/2017/ID/Electron/2017_Ele27_MediumID_v13.root
+	data/Run2UltraLegacy_v3/2017/ID/Electron/2017_Ele27_MediumID_v16.root
+	data/Run2UltraLegacy_v3/2017/ID/Electron/2017_Ele27_MediumID_v8.root
+	data/Run2UltraLegacy_v3/2017/ID/Electron/2017_Ele27_MediumID_v9.root
+	data/Run2UltraLegacy_v3/2017/ID/Electron/2017_Ele27_SelQ_MediumID_Minus_v12.root
+	data/Run2UltraLegacy_v3/2017/ID/Electron/2017_Ele27_SelQ_MediumID_Minus_v13.root
+	data/Run2UltraLegacy_v3/2017/ID/Electron/2017_Ele27_SelQ_MediumID_Minus_v17.root
+	data/Run2UltraLegacy_v3/2017/ID/Electron/2017_Ele27_SelQ_MediumID_Minus_v7.root
+	data/Run2UltraLegacy_v3/2017/ID/Electron/2017_Ele27_SelQ_MediumID_Minus_v8.root
+	data/Run2UltraLegacy_v3/2017/ID/Electron/2017_Ele27_SelQ_MediumID_Minus_v9.root
+	data/Run2UltraLegacy_v3/2017/ID/Electron/2017_Ele27_SelQ_MediumID_Plus_v12.root
+	data/Run2UltraLegacy_v3/2017/ID/Electron/2017_Ele27_SelQ_MediumID_Plus_v13.root
+	data/Run2UltraLegacy_v3/2017/ID/Electron/2017_Ele27_SelQ_MediumID_Plus_v17.root
+	data/Run2UltraLegacy_v3/2017/ID/Electron/2017_Ele27_SelQ_MediumID_Plus_v7.root
+	data/Run2UltraLegacy_v3/2017/ID/Electron/2017_Ele27_SelQ_MediumID_Plus_v8.root
+	data/Run2UltraLegacy_v3/2017/ID/Electron/2017_Ele27_SelQ_MediumID_Plus_v9.root
+	data/Run2UltraLegacy_v3/2017/ID/Electron/2017_Ele27_SelQ_MediumID_v12.root
+	data/Run2UltraLegacy_v3/2017/ID/Electron/2017_Ele27_SelQ_MediumID_v13.root
+	data/Run2UltraLegacy_v3/2017/ID/Electron/2017_Ele27_SelQ_MediumID_v8.root
+	data/Run2UltraLegacy_v3/2017/ID/Electron/2017_Ele27_SelQ_MediumID_v9.root
+	data/Run2UltraLegacy_v3/2017/ID/Electron/2017_Ele27_TightID_SelQ_Minus_v4.root
+	data/Run2UltraLegacy_v3/2017/ID/Electron/2017_Ele27_TightID_SelQ_Plus_v4.root
+	data/Run2UltraLegacy_v3/2017/ID/Electron/2017_Ele32DoubleEG_MediumID_Minus_v12.root
+	data/Run2UltraLegacy_v3/2017/ID/Electron/2017_Ele32DoubleEG_MediumID_Minus_v13.root
+	data/Run2UltraLegacy_v3/2017/ID/Electron/2017_Ele32DoubleEG_MediumID_Minus_v4.root
+	data/Run2UltraLegacy_v3/2017/ID/Electron/2017_Ele32DoubleEG_MediumID_Minus_v7.root
+	data/Run2UltraLegacy_v3/2017/ID/Electron/2017_Ele32DoubleEG_MediumID_Plus_v12.root
+	data/Run2UltraLegacy_v3/2017/ID/Electron/2017_Ele32DoubleEG_MediumID_Plus_v13.root
+	data/Run2UltraLegacy_v3/2017/ID/Electron/2017_Ele32DoubleEG_MediumID_Plus_v4.root
+	data/Run2UltraLegacy_v3/2017/ID/Electron/2017_Ele32DoubleEG_MediumID_Plus_v7.root
+	data/Run2UltraLegacy_v3/2017/ID/Electron/2017_Ele32DoubleEG_MediumID_v12.root
+	data/Run2UltraLegacy_v3/2017/ID/Electron/2017_Ele32DoubleEG_MediumID_v13.root
+	data/Run2UltraLegacy_v3/2017/ID/Electron/2017_Ele32DoubleEG_MediumID_v16.root
+	data/Run2UltraLegacy_v3/2017/ID/Electron/2017_Ele32DoubleEG_SelQ_MediumID_Minus_v12.root
+	data/Run2UltraLegacy_v3/2017/ID/Electron/2017_Ele32DoubleEG_SelQ_MediumID_Minus_v13.root
+	data/Run2UltraLegacy_v3/2017/ID/Electron/2017_Ele32DoubleEG_SelQ_MediumID_Minus_v7.root
+	data/Run2UltraLegacy_v3/2017/ID/Electron/2017_Ele32DoubleEG_SelQ_MediumID_Plus_v12.root
+	data/Run2UltraLegacy_v3/2017/ID/Electron/2017_Ele32DoubleEG_SelQ_MediumID_Plus_v13.root
+	data/Run2UltraLegacy_v3/2017/ID/Electron/2017_Ele32DoubleEG_SelQ_MediumID_Plus_v7.root
+	data/Run2UltraLegacy_v3/2017/ID/Electron/2017_Ele32DoubleEG_SelQ_MediumID_v12.root
+	data/Run2UltraLegacy_v3/2017/ID/Electron/2017_Ele32DoubleEG_SelQ_MediumID_v13.root
+	data/Run2UltraLegacy_v3/2017/ID/Electron/2017_Ele32DoubleEG_TightID_SelQ_Minus_v4.root
+	data/Run2UltraLegacy_v3/2017/ID/Electron/2017_Ele32DoubleEG_TightID_SelQ_Plus_v4.root
+	data/Run2UltraLegacy_v3/2017/ID/Electron/2017_Ele32_MediumID_Minus_v12.root
+	data/Run2UltraLegacy_v3/2017/ID/Electron/2017_Ele32_MediumID_Minus_v13.root
+	data/Run2UltraLegacy_v3/2017/ID/Electron/2017_Ele32_MediumID_Minus_v17.root
+	data/Run2UltraLegacy_v3/2017/ID/Electron/2017_Ele32_MediumID_Minus_v4.root
+	data/Run2UltraLegacy_v3/2017/ID/Electron/2017_Ele32_MediumID_Minus_v7.root
+	data/Run2UltraLegacy_v3/2017/ID/Electron/2017_Ele32_MediumID_Minus_v8.root
+	data/Run2UltraLegacy_v3/2017/ID/Electron/2017_Ele32_MediumID_Minus_v9.root
+	data/Run2UltraLegacy_v3/2017/ID/Electron/2017_Ele32_MediumID_Plus_v12.root
+	data/Run2UltraLegacy_v3/2017/ID/Electron/2017_Ele32_MediumID_Plus_v13.root
+	data/Run2UltraLegacy_v3/2017/ID/Electron/2017_Ele32_MediumID_Plus_v17.root
+	data/Run2UltraLegacy_v3/2017/ID/Electron/2017_Ele32_MediumID_Plus_v4.root
+	data/Run2UltraLegacy_v3/2017/ID/Electron/2017_Ele32_MediumID_Plus_v7.root
+	data/Run2UltraLegacy_v3/2017/ID/Electron/2017_Ele32_MediumID_Plus_v8.root
+	data/Run2UltraLegacy_v3/2017/ID/Electron/2017_Ele32_MediumID_Plus_v9.root
+	data/Run2UltraLegacy_v3/2017/ID/Electron/2017_Ele32_MediumID_v12.root
+	data/Run2UltraLegacy_v3/2017/ID/Electron/2017_Ele32_MediumID_v13.root
+	data/Run2UltraLegacy_v3/2017/ID/Electron/2017_Ele32_MediumID_v16.root
+	data/Run2UltraLegacy_v3/2017/ID/Electron/2017_Ele32_MediumID_v8.root
+	data/Run2UltraLegacy_v3/2017/ID/Electron/2017_Ele32_MediumID_v9.root
+	data/Run2UltraLegacy_v3/2017/ID/Electron/2017_Ele32_SelQ_MediumID_Minus_v12.root
+	data/Run2UltraLegacy_v3/2017/ID/Electron/2017_Ele32_SelQ_MediumID_Minus_v13.root
+	data/Run2UltraLegacy_v3/2017/ID/Electron/2017_Ele32_SelQ_MediumID_Minus_v17.root
+	data/Run2UltraLegacy_v3/2017/ID/Electron/2017_Ele32_SelQ_MediumID_Minus_v7.root
+	data/Run2UltraLegacy_v3/2017/ID/Electron/2017_Ele32_SelQ_MediumID_Minus_v8.root
+	data/Run2UltraLegacy_v3/2017/ID/Electron/2017_Ele32_SelQ_MediumID_Minus_v9.root
+	data/Run2UltraLegacy_v3/2017/ID/Electron/2017_Ele32_SelQ_MediumID_Plus_v12.root
+	data/Run2UltraLegacy_v3/2017/ID/Electron/2017_Ele32_SelQ_MediumID_Plus_v13.root
+	data/Run2UltraLegacy_v3/2017/ID/Electron/2017_Ele32_SelQ_MediumID_Plus_v17.root
+	data/Run2UltraLegacy_v3/2017/ID/Electron/2017_Ele32_SelQ_MediumID_Plus_v7.root
+	data/Run2UltraLegacy_v3/2017/ID/Electron/2017_Ele32_SelQ_MediumID_Plus_v8.root
+	data/Run2UltraLegacy_v3/2017/ID/Electron/2017_Ele32_SelQ_MediumID_Plus_v9.root
+	data/Run2UltraLegacy_v3/2017/ID/Electron/2017_Ele32_SelQ_MediumID_v12.root
+	data/Run2UltraLegacy_v3/2017/ID/Electron/2017_Ele32_SelQ_MediumID_v13.root
+	data/Run2UltraLegacy_v3/2017/ID/Electron/2017_Ele32_SelQ_MediumID_v8.root
+	data/Run2UltraLegacy_v3/2017/ID/Electron/2017_Ele32_SelQ_MediumID_v9.root
+	data/Run2UltraLegacy_v3/2017/ID/Electron/2017_Ele32_TightID_SelQ_Minus_v4.root
+	data/Run2UltraLegacy_v3/2017/ID/Electron/2017_Ele32_TightID_SelQ_Plus_v4.root
+	data/Run2UltraLegacy_v3/2017/ID/Electron/2017_MediumID_Minus_v12.root
+	data/Run2UltraLegacy_v3/2017/ID/Electron/2017_MediumID_Minus_v13.root
+	data/Run2UltraLegacy_v3/2017/ID/Electron/2017_MediumID_Minus_v13_2.root
+	data/Run2UltraLegacy_v3/2017/ID/Electron/2017_MediumID_Minus_v15.root
+	data/Run2UltraLegacy_v3/2017/ID/Electron/2017_MediumID_Minus_v4.root
+	data/Run2UltraLegacy_v3/2017/ID/Electron/2017_MediumID_Minus_v7.root
+	data/Run2UltraLegacy_v3/2017/ID/Electron/2017_MediumID_Minus_v8.root
+	data/Run2UltraLegacy_v3/2017/ID/Electron/2017_MediumID_Minus_v9.root
+	data/Run2UltraLegacy_v3/2017/ID/Electron/2017_MediumID_Plus_v12.root
+	data/Run2UltraLegacy_v3/2017/ID/Electron/2017_MediumID_Plus_v13.root
+	data/Run2UltraLegacy_v3/2017/ID/Electron/2017_MediumID_Plus_v13_2.root
+	data/Run2UltraLegacy_v3/2017/ID/Electron/2017_MediumID_Plus_v15.root
+	data/Run2UltraLegacy_v3/2017/ID/Electron/2017_MediumID_Plus_v4.root
+	data/Run2UltraLegacy_v3/2017/ID/Electron/2017_MediumID_Plus_v7.root
+	data/Run2UltraLegacy_v3/2017/ID/Electron/2017_MediumID_Plus_v8.root
+	data/Run2UltraLegacy_v3/2017/ID/Electron/2017_MediumID_Plus_v9.root
+	data/Run2UltraLegacy_v3/2017/ID/Electron/2017_MediumID_v12.root
+	data/Run2UltraLegacy_v3/2017/ID/Electron/2017_MediumID_v13.root
+	data/Run2UltraLegacy_v3/2017/ID/Electron/2017_MediumID_v13_2.root
+	data/Run2UltraLegacy_v3/2017/ID/Electron/2017_MediumID_v15.root
+	data/Run2UltraLegacy_v3/2017/ID/Electron/2017_MediumID_v15_residual.root
+	data/Run2UltraLegacy_v3/2017/ID/Electron/2017_MediumID_v16.root
+	data/Run2UltraLegacy_v3/2017/ID/Electron/2017_MediumID_v17.root
+	data/Run2UltraLegacy_v3/2017/ID/Electron/2017_MediumID_v17_residual.root
+	data/Run2UltraLegacy_v3/2017/ID/Electron/2017_MediumID_v8.root
+	data/Run2UltraLegacy_v3/2017/ID/Electron/2017_MediumID_v9.root
+	data/Run2UltraLegacy_v3/2017/ID/Electron/2017_RECO_v13_2.root
+	data/Run2UltraLegacy_v3/2017/ID/Electron/2017_RECO_v14.root
+	data/Run2UltraLegacy_v3/2017/ID/Electron/2017_RECO_v15.root
+	data/Run2UltraLegacy_v3/2017/ID/Electron/2017_RECO_v16.root
+	data/Run2UltraLegacy_v3/2017/ID/Electron/2017_RECO_v17.root
+	data/Run2UltraLegacy_v3/2017/ID/Electron/2017_SelQ_MediumID_Minus_v12.root
+	data/Run2UltraLegacy_v3/2017/ID/Electron/2017_SelQ_MediumID_Minus_v13.root
+	data/Run2UltraLegacy_v3/2017/ID/Electron/2017_SelQ_MediumID_Minus_v7.root
+	data/Run2UltraLegacy_v3/2017/ID/Electron/2017_SelQ_MediumID_Minus_v8.root
+	data/Run2UltraLegacy_v3/2017/ID/Electron/2017_SelQ_MediumID_Minus_v9.root
+	data/Run2UltraLegacy_v3/2017/ID/Electron/2017_SelQ_MediumID_Plus_v12.root
+	data/Run2UltraLegacy_v3/2017/ID/Electron/2017_SelQ_MediumID_Plus_v13.root
+	data/Run2UltraLegacy_v3/2017/ID/Electron/2017_SelQ_MediumID_Plus_v7.root
+	data/Run2UltraLegacy_v3/2017/ID/Electron/2017_SelQ_MediumID_Plus_v8.root
+	data/Run2UltraLegacy_v3/2017/ID/Electron/2017_SelQ_MediumID_Plus_v9.root
+	data/Run2UltraLegacy_v3/2017/ID/Electron/2017_SelQ_MediumID_v12.root
+	data/Run2UltraLegacy_v3/2017/ID/Electron/2017_SelQ_MediumID_v13.root
+	data/Run2UltraLegacy_v3/2017/ID/Electron/2017_SelQ_MediumID_v17.root
+	data/Run2UltraLegacy_v3/2017/ID/Electron/2017_SelQ_MediumID_v8.root
+	data/Run2UltraLegacy_v3/2017/ID/Electron/2017_SelQ_MediumID_v9.root
+	data/Run2UltraLegacy_v3/2017/ID/Electron/2017_TightID_SelQ_Minus_v4.root
+	data/Run2UltraLegacy_v3/2017/ID/Electron/2017_TightID_SelQ_Plus_v4.root
+	data/Run2UltraLegacy_v3/2017/ID/Electron/Ele12Leg2_MediumID_Minus_v3_4.root
+	data/Run2UltraLegacy_v3/2017/ID/Electron/Ele12Leg2_MediumID_Plus_v3_4.root
+	data/Run2UltraLegacy_v3/2017/ID/Electron/Ele23Leg1_MediumID_Minus_v3_2.root
+	data/Run2UltraLegacy_v3/2017/ID/Electron/Ele23Leg1_MediumID_Minus_v3_4.root
+	data/Run2UltraLegacy_v3/2017/ID/Electron/Ele23Leg1_MediumID_Plus_v3_2.root
+	data/Run2UltraLegacy_v3/2017/ID/Electron/Ele23Leg1_MediumID_Plus_v3_4.root
+	data/Run2UltraLegacy_v3/2017/ID/Electron/Ele27Or_MediumID_Minus_v3_4.root
+	data/Run2UltraLegacy_v3/2017/ID/Electron/Ele27Or_MediumID_Plus_v3_4.root
+	data/Run2UltraLegacy_v3/2017/ID/Electron/Ele27Or_TightID_SelQ_Minus_v3_4.root
+	data/Run2UltraLegacy_v3/2017/ID/Electron/Ele27Or_TightID_SelQ_Plus_v3_4.root
+	data/Run2UltraLegacy_v3/2017/ID/Electron/Ele27_MediumID_Minus_v3_4.root
+	data/Run2UltraLegacy_v3/2017/ID/Electron/Ele27_MediumID_Plus_v3_4.root
+	data/Run2UltraLegacy_v3/2017/ID/Electron/Ele27_TightID_SelQ_Minus_v3_4.root
+	data/Run2UltraLegacy_v3/2017/ID/Electron/Ele27_TightID_SelQ_Plus_v3_4.root
+	data/Run2UltraLegacy_v3/2017/ID/Electron/Ele32_MediumID_Minus_v3_4.root
+	data/Run2UltraLegacy_v3/2017/ID/Electron/Ele32_MediumID_Plus_v3_4.root
+	data/Run2UltraLegacy_v3/2017/ID/Electron/Ele32_TightID_SelQ_Minus_v3_4.root
+	data/Run2UltraLegacy_v3/2017/ID/Electron/Ele32_TightID_SelQ_Plus_v3_4.root
+	data/Run2UltraLegacy_v3/2017/ID/Electron/MediumID_Minus_v3_4.root
+	data/Run2UltraLegacy_v3/2017/ID/Electron/MediumID_Plus_v3_4.root
+	data/Run2UltraLegacy_v3/2017/ID/Electron/TightID_SelQ_Minus_v3_4.root
+	data/Run2UltraLegacy_v3/2017/ID/Electron/TightID_SelQ_Plus_v3_4.root
+	data/Run2UltraLegacy_v3/2017/ID/Electron/ee2017_DZ.root
+	data/Run2UltraLegacy_v3/2017/ID/Electron/old/
+	data/Run2UltraLegacy_v3/2017/ID/Muon/2017_GlobalMuon_v17.root
+	data/Run2UltraLegacy_v3/2017/ID/Muon/2017_IsoMu24_MediumID_LooseTrkIso_Minus_v17.root
+	data/Run2UltraLegacy_v3/2017/ID/Muon/2017_IsoMu24_MediumID_LooseTrkIso_Plus_v17.root
+	data/Run2UltraLegacy_v3/2017/ID/Muon/2017_IsoMu27_MediumID_LooseTrkIso_Minus_v17.root
+	data/Run2UltraLegacy_v3/2017/ID/Muon/2017_IsoMu27_MediumID_LooseTrkIso_Plus_v17.root
+	data/Run2UltraLegacy_v3/2017/ID/Muon/2017_MediumID_LooseTrkIso_v17.root
+	data/Run2UltraLegacy_v3/2017/ID/Muon/2017_MediumID_LooseTrkIso_v17_residual.root
+	data/Run2UltraLegacy_v3/2017/ID/Muon/2017_Mu17Leg1_MediumID_LooseTrkIso_Minus_v17.root
+	data/Run2UltraLegacy_v3/2017/ID/Muon/2017_Mu17Leg1_MediumID_LooseTrkIso_Plus_v17.root
+	data/Run2UltraLegacy_v3/2017/ID/Muon/2017_Mu8Leg2_MediumID_LooseTrkIso_Minus_v17.root
+	data/Run2UltraLegacy_v3/2017/ID/Muon/2017_Mu8Leg2_MediumID_LooseTrkIso_Plus_v17.root
+	data/Run2UltraLegacy_v3/2017/ID/Muon/2017_TrackerMuon_v17.root
+	data/Run2UltraLegacy_v3/2017/ID/Muon/DZ.root
+	data/Run2UltraLegacy_v3/2017/ID/Muon/GlobalMuon_Inclusive_v13.root
+	data/Run2UltraLegacy_v3/2017/ID/Muon/GlobalMuon_Inclusive_v16.root
+	data/Run2UltraLegacy_v3/2017/ID/Muon/IsoMu24_MediumID_LooseTrkIso_Inclusive_v11.root
+	data/Run2UltraLegacy_v3/2017/ID/Muon/IsoMu24_MediumID_LooseTrkIso_Minus_v11.root
+	data/Run2UltraLegacy_v3/2017/ID/Muon/IsoMu24_MediumID_LooseTrkIso_Minus_v13.root
+	data/Run2UltraLegacy_v3/2017/ID/Muon/IsoMu24_MediumID_LooseTrkIso_Minus_v16.root
+	data/Run2UltraLegacy_v3/2017/ID/Muon/IsoMu24_MediumID_LooseTrkIso_Plus_v11.root
+	data/Run2UltraLegacy_v3/2017/ID/Muon/IsoMu24_MediumID_LooseTrkIso_Plus_v13.root
+	data/Run2UltraLegacy_v3/2017/ID/Muon/IsoMu24_MediumID_LooseTrkIso_Plus_v16.root
+	data/Run2UltraLegacy_v3/2017/ID/Muon/IsoMu27_MediumID_LooseTrkIso_Inclusive_v11.root
+	data/Run2UltraLegacy_v3/2017/ID/Muon/IsoMu27_MediumID_LooseTrkIso_Minus_v11.root
+	data/Run2UltraLegacy_v3/2017/ID/Muon/IsoMu27_MediumID_LooseTrkIso_Minus_v13.root
+	data/Run2UltraLegacy_v3/2017/ID/Muon/IsoMu27_MediumID_LooseTrkIso_Minus_v16.root
+	data/Run2UltraLegacy_v3/2017/ID/Muon/IsoMu27_MediumID_LooseTrkIso_Plus_v11.root
+	data/Run2UltraLegacy_v3/2017/ID/Muon/IsoMu27_MediumID_LooseTrkIso_Plus_v13.root
+	data/Run2UltraLegacy_v3/2017/ID/Muon/IsoMu27_MediumID_LooseTrkIso_Plus_v16.root
+	data/Run2UltraLegacy_v3/2017/ID/Muon/MediumID_LooseTrkIso_Inclusive_v11.root
+	data/Run2UltraLegacy_v3/2017/ID/Muon/MediumID_LooseTrkIso_Inclusive_v13.root
+	data/Run2UltraLegacy_v3/2017/ID/Muon/MediumID_LooseTrkIso_Inclusive_v14.root
+	data/Run2UltraLegacy_v3/2017/ID/Muon/MediumID_LooseTrkIso_Inclusive_v14_residual.root
+	data/Run2UltraLegacy_v3/2017/ID/Muon/MediumID_LooseTrkIso_Inclusive_v16.root
+	data/Run2UltraLegacy_v3/2017/ID/Muon/MediumID_LooseTrkIso_Inclusive_v16_residual.root
+	data/Run2UltraLegacy_v3/2017/ID/Muon/MediumID_LooseTrkIso_Minus_v11.root
+	data/Run2UltraLegacy_v3/2017/ID/Muon/MediumID_LooseTrkIso_Plus_v11.root
+	data/Run2UltraLegacy_v3/2017/ID/Muon/Mu17Leg1_MediumID_LooseTrkIso_Inclusive_v11.root
+	data/Run2UltraLegacy_v3/2017/ID/Muon/Mu17Leg1_MediumID_LooseTrkIso_Minus_v11.root
+	data/Run2UltraLegacy_v3/2017/ID/Muon/Mu17Leg1_MediumID_LooseTrkIso_Minus_v13.root
+	data/Run2UltraLegacy_v3/2017/ID/Muon/Mu17Leg1_MediumID_LooseTrkIso_Minus_v16.root
+	data/Run2UltraLegacy_v3/2017/ID/Muon/Mu17Leg1_MediumID_LooseTrkIso_Plus_v11.root
+	data/Run2UltraLegacy_v3/2017/ID/Muon/Mu17Leg1_MediumID_LooseTrkIso_Plus_v13.root
+	data/Run2UltraLegacy_v3/2017/ID/Muon/Mu17Leg1_MediumID_LooseTrkIso_Plus_v16.root
+	data/Run2UltraLegacy_v3/2017/ID/Muon/Mu8Leg2_MediumID_LooseTrkIso_Inclusive_v11.root
+	data/Run2UltraLegacy_v3/2017/ID/Muon/Mu8Leg2_MediumID_LooseTrkIso_Minus_v11.root
+	data/Run2UltraLegacy_v3/2017/ID/Muon/Mu8Leg2_MediumID_LooseTrkIso_Minus_v13.root
+	data/Run2UltraLegacy_v3/2017/ID/Muon/Mu8Leg2_MediumID_LooseTrkIso_Minus_v16.root
+	data/Run2UltraLegacy_v3/2017/ID/Muon/Mu8Leg2_MediumID_LooseTrkIso_Plus_v11.root
+	data/Run2UltraLegacy_v3/2017/ID/Muon/Mu8Leg2_MediumID_LooseTrkIso_Plus_v13.root
+	data/Run2UltraLegacy_v3/2017/ID/Muon/Mu8Leg2_MediumID_LooseTrkIso_Plus_v16.root
+	data/Run2UltraLegacy_v3/2017/ID/Muon/StandAloneMuon_Inclusive_v13.root
+	data/Run2UltraLegacy_v3/2017/ID/Muon/TrackerMuon_Inclusive_v14.root
+	data/Run2UltraLegacy_v3/2017/ID/Muon/TrackerMuon_Inclusive_v15.root
+	data/Run2UltraLegacy_v3/2017/ID/Muon/TrackerMuon_Inclusive_v16.root
+	data/Run2UltraLegacy_v3/2017/ID/Muon/old/
+	data/Run2UltraLegacy_v3/2017/ID/eff.conf
+	data/Run2UltraLegacy_v3/2017/Sample/#SampleSummary_MC.txt#
+	data/Run2UltraLegacy_v3/2017/TMVA/LepJetChargeReliability/ForGroup1/
+	data/Run2UltraLegacy_v3/2017/TMVA/LepJetChargeReliability/ForGroup2/
+	data/Run2UltraLegacy_v3/2017/TMVA/TTsemilepJetAssign/
+	external/TMVA/
+	git_status.txt
+	jhchoi_script/GENstudy/batch_submit.log
+	jhchoi_script/LHEstudy/
+	jhchoi_script/RECOstudy/BBoscillation/
+	jhchoi_script/RECOstudy/HZZ_test/
+	jhchoi_script/RECOstudy/LepJetChargeReliability/
+	jhchoi_script/RECOstudy/NewCharge/
+	jhchoi_script/RECOstudy/Systest/
+	jhchoi_script/RECOstudy/TMVA/
+	jhchoi_script/RECOstudy/TTsemilep/
+	jhchoi_script/RECOstudy/Zmumu_belectron_Zee_bmuon/
+	jhchoi_script/RECOstudy/batch_submit_all.sh
+	jhchoi_script/RECOstudy/batch_submit_debug.sh
+	jhchoi_script/RECOstudy/inputlist.txt
+	jhchoi_script/RECOstudy/inputlist_debug.txt
+	jhchoi_script/RECOstudy/inputlist_major.txt
+	jhchoi_script/RECOstudy/inputlist_minor.txt
+	jhchoi_script/RECOstudy/nosubtest.sh
+	jhchoi_script/RECOstudy/oldscript/
+	jhchoi_script/RECOstudy/submit_Electron.log
+	jhchoi_script/RECOstudy/submit_MC_major.log
+	jhchoi_script/RECOstudy/submit_MC_minor.log
+	jhchoi_script/RECOstudy/submit_Muon.log
+	jhchoi_script/RECOstudy/test_DY_TTLL.log
+	jhchoi_script/inputs_16MC.txt
+	jhchoi_script/inputs_18MC.txt
+	jhchoi_script/logs/
+	jhchoi_script/nosubtest.sh
+	jhchoi_script/old/
+	jhchoi_script/test/
+	jhchoi_script/test_submit.sh
+	jhchoi_script/test_submitDATA16a.sh
+	jhchoi_script/test_submitDATA16b.sh
+	jhchoi_script/test_submitDATA17.sh
+	jhchoi_script/test_submitDATA18.sh
+	jhchoi_script/test_submitlistMC16a.sh
+	jhchoi_script/test_submitlistMC16b.sh
+	jhchoi_script/test_submitlistMC17.sh
+	jhchoi_script/test_submitlistMC18.sh
+	keras_my/
+	make.log
+	submit_log/
+
+no changes added to commit (use "git add" and/or "git commit -a")

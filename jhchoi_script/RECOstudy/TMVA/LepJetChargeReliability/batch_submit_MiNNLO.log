@@ -1,0 +1,24 @@
+Submitting job(s)............................................................................................................................................................................................................................................................................................................
+300 job(s) submitted to cluster 2003776.
+Submitting job(s)............................................................................................................................................................................................................................................................................................................
+300 job(s) submitted to cluster 2003777.
+condor_submit WORKDIR_HADD/run.jds > WORKDIR_HADD/run.jid
+condor_submit WORKDIR_HADD/run.jds > WORKDIR_HADD/run.jid
+##################################################
+Submission Finished
+- JobID = 631385
+- Analyzer = ForLepJetChargeReliability
+- Skim = 
+- InputSamples = ['DYJetsToEE_MiNNLO', 'DYJetsToMuMu_MiNNLO']
+- NJobs = 300
+- Era = 2017
+- UserFlags = []
+- RunDir = /data6/Users/jhchoi/SKFlatRunlog//2023_11_23_203105__631385__ForLepJetChargeReliability__Era2017__TAMSA1/DYJetsToMuMu_MiNNLO/
+- output will be send to : /data6/Users/jhchoi/SKFlatOutput//Run2UltraLegacy_v3/ForLepJetChargeReliability/2017/
+##################################################
+submit hadd
+<AFTER hadd fin. please rm remainings..>
+rm /data6/Users/jhchoi/SKFlatRunlog//2023_11_23_203105__631385__ForLepJetChargeReliability__Era2017__TAMSA1/DYJetsToMuMu_MiNNLO//output/*.root
+submit hadd
+<AFTER hadd fin. please rm remainings..>
+rm /data6/Users/jhchoi/SKFlatRunlog//2023_11_23_203105__631385__ForLepJetChargeReliability__Era2017__TAMSA1/DYJetsToEE_MiNNLO//output/*.root

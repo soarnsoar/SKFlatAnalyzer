@@ -1,0 +1,42 @@
+Submitting job(s)..................................................
+50 job(s) submitted to cluster 2178538.
+Submitting job(s)..................................................
+50 job(s) submitted to cluster 2178542.
+Submitting job(s)..................................................
+50 job(s) submitted to cluster 2178545.
+Submitting job(s)..................................................
+50 job(s) submitted to cluster 2178549.
+Submitting job(s)..................................................
+50 job(s) submitted to cluster 2178553.
+condor_submit WORKDIR_HADD/run.jds > WORKDIR_HADD/run.jid
+condor_submit WORKDIR_HADD/run.jds > WORKDIR_HADD/run.jid
+condor_submit WORKDIR_HADD/run.jds > WORKDIR_HADD/run.jid
+condor_submit WORKDIR_HADD/run.jds > WORKDIR_HADD/run.jid
+condor_submit WORKDIR_HADD/run.jds > WORKDIR_HADD/run.jid
+##################################################
+Submission Finished
+- JobID = 149163
+- Analyzer = LepJetChargeReliability_RECO
+- Skim = SkimTree_Dilepton
+- InputSamples = ['DoubleMuon:B', 'DoubleMuon:C', 'DoubleMuon:D', 'DoubleMuon:E', 'DoubleMuon:F']
+- NJobs = 50
+- Era = 2017
+- UserFlags = ['TreeMode']
+- RunDir = /data6/Users/jhchoi/SKFlatRunlog//2023_12_14_164906__149163__LepJetChargeReliability_RECO__Era2017__SkimTree_Dilepton__TreeMode__TAMSA1/DoubleMuon_periodF/
+- output will be send to : /data6/Users/jhchoi/SKFlatOutput//Run2UltraLegacy_v3/LepJetChargeReliability_RECO/2017/TreeMode__/DATA/
+##################################################
+submit hadd
+<AFTER hadd fin. please rm remainings..>
+rm /data6/Users/jhchoi/SKFlatRunlog//2023_12_14_164906__149163__LepJetChargeReliability_RECO__Era2017__SkimTree_Dilepton__TreeMode__TAMSA1/DoubleMuon_periodB//output/*.root
+submit hadd
+<AFTER hadd fin. please rm remainings..>
+rm /data6/Users/jhchoi/SKFlatRunlog//2023_12_14_164906__149163__LepJetChargeReliability_RECO__Era2017__SkimTree_Dilepton__TreeMode__TAMSA1/DoubleMuon_periodC//output/*.root
+submit hadd
+<AFTER hadd fin. please rm remainings..>
+rm /data6/Users/jhchoi/SKFlatRunlog//2023_12_14_164906__149163__LepJetChargeReliability_RECO__Era2017__SkimTree_Dilepton__TreeMode__TAMSA1/DoubleMuon_periodD//output/*.root
+submit hadd
+<AFTER hadd fin. please rm remainings..>
+rm /data6/Users/jhchoi/SKFlatRunlog//2023_12_14_164906__149163__LepJetChargeReliability_RECO__Era2017__SkimTree_Dilepton__TreeMode__TAMSA1/DoubleMuon_periodE//output/*.root
+submit hadd
+<AFTER hadd fin. please rm remainings..>
+rm /data6/Users/jhchoi/SKFlatRunlog//2023_12_14_164906__149163__LepJetChargeReliability_RECO__Era2017__SkimTree_Dilepton__TreeMode__TAMSA1/DoubleMuon_periodF//output/*.root

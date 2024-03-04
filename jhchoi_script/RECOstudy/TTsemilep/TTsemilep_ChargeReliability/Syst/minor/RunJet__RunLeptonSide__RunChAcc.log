@@ -1,0 +1,30 @@
+Submitting job(s)....................................................................................................
+100 job(s) submitted to cluster 2219466.
+Submitting job(s)....................................................................................................
+100 job(s) submitted to cluster 2219467.
+Submitting job(s)....................................................................................................
+100 job(s) submitted to cluster 2219468.
+condor_submit WORKDIR_HADD/run.jds > WORKDIR_HADD/run.jid
+condor_submit WORKDIR_HADD/run.jds > WORKDIR_HADD/run.jid
+condor_submit WORKDIR_HADD/run.jds > WORKDIR_HADD/run.jid
+##################################################
+Submission Finished
+- JobID = 73337
+- Analyzer = TTsemilep_ChargeReliability
+- Skim = 
+- InputSamples = ['SingleTop_tch_antitop_Incl', 'SingleTop_tch_top_Incl', 'SingleTop_sch_Lep']
+- NJobs = 100
+- Era = 2017
+- UserFlags = ['RunSyst', 'RunJet', 'RunLeptonSide', 'RunChAcc']
+- RunDir = /data6/Users/jhchoi/SKFlatRunlog//2024_02_18_085832__73337__TTsemilep_ChargeReliability__Era2017__RunSyst__RunJet__RunLeptonSide__RunChAcc__TAMSA1/SingleTop_sch_Lep/
+- output will be send to : /data6/Users/jhchoi/SKFlatOutput//Run2UltraLegacy_v3/TTsemilep_ChargeReliability/2017/RunSyst__RunJet__RunLeptonSide__RunChAcc__
+##################################################
+submit hadd
+<AFTER hadd fin. please rm remainings..>
+rm /data6/Users/jhchoi/SKFlatRunlog//2024_02_18_085832__73337__TTsemilep_ChargeReliability__Era2017__RunSyst__RunJet__RunLeptonSide__RunChAcc__TAMSA1/SingleTop_tch_antitop_Incl//output/*.root
+submit hadd
+<AFTER hadd fin. please rm remainings..>
+rm /data6/Users/jhchoi/SKFlatRunlog//2024_02_18_085832__73337__TTsemilep_ChargeReliability__Era2017__RunSyst__RunJet__RunLeptonSide__RunChAcc__TAMSA1/SingleTop_sch_Lep//output/*.root
+submit hadd
+<AFTER hadd fin. please rm remainings..>
+rm /data6/Users/jhchoi/SKFlatRunlog//2024_02_18_085832__73337__TTsemilep_ChargeReliability__Era2017__RunSyst__RunJet__RunLeptonSide__RunChAcc__TAMSA1/SingleTop_tch_top_Incl//output/*.root

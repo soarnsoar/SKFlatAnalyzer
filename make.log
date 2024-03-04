@@ -1,0 +1,720 @@
+(cd DataFormats; make)
+make[1]: Entering directory '/data6/Users/jhchoi/SKFlatAnalyzers/test/SKFlatAnalyzer/DataFormats'
+make[1]: Leaving directory '/data6/Users/jhchoi/SKFlatAnalyzers/test/SKFlatAnalyzer/DataFormats'
+(mvexist.sh DataFormats/src/DataFormats_Dict_rdict.pcm lib/)
+(mvexist.sh DataFormats/libDataFormats.rootmap lib/)
+(cd AnalyzerTools; make)
+make[1]: Entering directory '/data6/Users/jhchoi/SKFlatAnalyzers/test/SKFlatAnalyzer/AnalyzerTools'
+make[1]: Leaving directory '/data6/Users/jhchoi/SKFlatAnalyzers/test/SKFlatAnalyzer/AnalyzerTools'
+(mvexist.sh AnalyzerTools/src/AnalyzerTools_Dict_rdict.pcm lib/)
+(mvexist.sh AnalyzerTools/libAnalyzerTools.rootmap lib/)
+(cd external/GEScaleSyst; make)
+make[1]: Entering directory '/data6/Users/jhchoi/SKFlatAnalyzers/test/SKFlatAnalyzer/external/GEScaleSyst'
+make[1]: Leaving directory '/data6/Users/jhchoi/SKFlatAnalyzers/test/SKFlatAnalyzer/external/GEScaleSyst'
+(mvexist.sh external/GEScaleSyst/GEScaleSyst_Dict_rdict.pcm lib/)
+(mvexist.sh external/GEScaleSyst/libGEScaleSyst.rootmap lib/)
+(cd Analyzers; make)
+make[1]: Entering directory '/data6/Users/jhchoi/SKFlatAnalyzers/test/SKFlatAnalyzer/Analyzers'
+Compiling src/BBbar_Analyzer.C
+src/BBbar_Analyzer.C: In member function 'void BBbar_Analyzer::AnalyzeLHE()':
+src/BBbar_Analyzer.C:360:10: warning: variable 'pz' set but not used [-Wunused-but-set-variable]
+   double pz=-999,E=-999;
+          ^~
+src/BBbar_Analyzer.C:360:18: warning: variable 'E' set but not used [-Wunused-but-set-variable]
+   double pz=-999,E=-999;
+                  ^
+src/BBbar_Analyzer.C: In member function 'void BBbar_Analyzer::RunProtoTypeMuon()':
+src/BBbar_Analyzer.C:512:9: warning: comparison of integer expressions of different signedness: 'unsigned int' and 'int' [-Wsign-compare]
+     if(i==myRECO.idx_Zmuon1) continue;
+        ~^~~~~~~~~~~~~~~~~~~
+src/BBbar_Analyzer.C:513:9: warning: comparison of integer expressions of different signedness: 'unsigned int' and 'int' [-Wsign-compare]
+     if(i==myRECO.idx_Zmuon2) continue;
+        ~^~~~~~~~~~~~~~~~~~~
+src/BBbar_Analyzer.C: In member function 'void BBbar_Analyzer::RunProtoTypeElectron()':
+src/BBbar_Analyzer.C:561:9: warning: comparison of integer expressions of different signedness: 'unsigned int' and 'int' [-Wsign-compare]
+     if(i==myRECO.idx_Zelectron1) continue;
+        ~^~~~~~~~~~~~~~~~~~~~~~~
+src/BBbar_Analyzer.C:562:9: warning: comparison of integer expressions of different signedness: 'unsigned int' and 'int' [-Wsign-compare]
+     if(i==myRECO.idx_Zelectron2) continue;
+        ~^~~~~~~~~~~~~~~~~~~~~~~
+src/BBbar_Analyzer.C: In member function 'void BBbar_Analyzer::RunLeptonCutStudyMuon()':
+src/BBbar_Analyzer.C:641:9: warning: comparison of integer expressions of different signedness: 'unsigned int' and 'int' [-Wsign-compare]
+     if(i==myRECO.idx_Zmuon1) continue;
+        ~^~~~~~~~~~~~~~~~~~~
+src/BBbar_Analyzer.C:642:9: warning: comparison of integer expressions of different signedness: 'unsigned int' and 'int' [-Wsign-compare]
+     if(i==myRECO.idx_Zmuon2) continue;
+        ~^~~~~~~~~~~~~~~~~~~
+src/BBbar_Analyzer.C: In member function 'void BBbar_Analyzer::RunLeptonCutStudyElectron()':
+src/BBbar_Analyzer.C:745:9: warning: comparison of integer expressions of different signedness: 'unsigned int' and 'int' [-Wsign-compare]
+     if(i==myRECO.idx_Zelectron1) continue;
+        ~^~~~~~~~~~~~~~~~~~~~~~~
+src/BBbar_Analyzer.C:746:9: warning: comparison of integer expressions of different signedness: 'unsigned int' and 'int' [-Wsign-compare]
+     if(i==myRECO.idx_Zelectron2) continue;
+        ~^~~~~~~~~~~~~~~~~~~~~~~
+Compiling src/HZZ_test.C
+src/HZZ_test.C: In member function 'bool HZZ_test::AnalyzeLHE()':
+src/HZZ_test.C:69:7: warning: variable 'status' set but not used [-Wunused-but-set-variable]
+   int status=-999, pid=-999;
+       ^~~~~~
+src/HZZ_test.C:70:10: warning: variable 'pz' set but not used [-Wunused-but-set-variable]
+   double pz=-999,E=-999;
+          ^~
+src/HZZ_test.C:70:18: warning: variable 'E' set but not used [-Wunused-but-set-variable]
+   double pz=-999,E=-999;
+                  ^
+src/HZZ_test.C: In member function 'bool HZZ_test::ZZmmmmReco()':
+src/HZZ_test.C:117:21: warning: comparison of integer expressions of different signedness: 'int' and 'unsigned int' [-Wsign-compare]
+   for(int i = 0 ; i < muonsize; i++ ){
+                   ~~^~~~~~~~~~
+src/HZZ_test.C:108:10: warning: unused variable 'this_leptonid_sf' [-Wunused-variable]
+   double this_leptonid_sf=1.;
+          ^~~~~~~~~~~~~~~~
+src/HZZ_test.C:109:10: warning: unused variable 'this_trigger_sf' [-Wunused-variable]
+   double this_trigger_sf=1.;
+          ^~~~~~~~~~~~~~~
+src/HZZ_test.C:110:10: warning: unused variable 'this_iso_sf' [-Wunused-variable]
+   double this_iso_sf=1.;
+          ^~~~~~~~~~~
+src/HZZ_test.C:111:7: warning: variable 'i_l1' set but not used [-Wunused-but-set-variable]
+   int i_l1=-1;
+       ^~~~
+src/HZZ_test.C:113:16: warning: unused variable 'N_plus' [-Wunused-variable]
+   unsigned int N_plus=0;
+                ^~~~~~
+src/HZZ_test.C:114:16: warning: unused variable 'N_minus' [-Wunused-variable]
+   unsigned int N_minus=0;
+                ^~~~~~~
+src/HZZ_test.C:143:16: warning: unused variable 'v_ZZmuonsize' [-Wunused-variable]
+   unsigned int v_ZZmuonsize=v_ZZmuon.size();
+                ^~~~~~~~~~~~
+src/HZZ_test.C: In member function 'bool HZZ_test::ZZmmeeReco()':
+src/HZZ_test.C:260:21: warning: comparison of integer expressions of different signedness: 'int' and 'unsigned int' [-Wsign-compare]
+   for(int i = 0 ; i < muonsize; i++ ){
+                   ~~^~~~~~~~~~
+src/HZZ_test.C:286:21: warning: comparison of integer expressions of different signedness: 'int' and 'unsigned int' [-Wsign-compare]
+   for(int i = 0 ; i < electronsize; i++ ){
+                   ~~^~~~~~~~~~~~~~
+src/HZZ_test.C:252:10: warning: unused variable 'this_leptonid_sf' [-Wunused-variable]
+   double this_leptonid_sf=1.;
+          ^~~~~~~~~~~~~~~~
+src/HZZ_test.C:253:10: warning: unused variable 'this_trigger_sf' [-Wunused-variable]
+   double this_trigger_sf=1.;
+          ^~~~~~~~~~~~~~~
+src/HZZ_test.C:254:10: warning: unused variable 'this_iso_sf' [-Wunused-variable]
+   double this_iso_sf=1.;
+          ^~~~~~~~~~~
+src/HZZ_test.C:255:7: warning: variable 'i_l1' set but not used [-Wunused-but-set-variable]
+   int i_l1=-1;
+       ^~~~
+src/HZZ_test.C: In member function 'bool HZZ_test::ZZeeeeReco()':
+src/HZZ_test.C:373:21: warning: comparison of integer expressions of different signedness: 'int' and 'unsigned int' [-Wsign-compare]
+   for(int i = 0 ; i < electronsize; i++ ){
+                   ~~^~~~~~~~~~~~~~
+src/HZZ_test.C:370:10: warning: unused variable 'this_leptonid_sf' [-Wunused-variable]
+   double this_leptonid_sf=1.;
+          ^~~~~~~~~~~~~~~~
+src/HZZ_test.C:371:10: warning: unused variable 'this_leptonreco_sf' [-Wunused-variable]
+   double this_leptonreco_sf=1.;
+          ^~~~~~~~~~~~~~~~~~
+src/HZZ_test.C:372:10: warning: unused variable 'this_trigger_sf' [-Wunused-variable]
+   double this_trigger_sf=1.;
+          ^~~~~~~~~~~~~~~
+Compiling src/SkimTree_HNMultiLep.C
+Compiling src/BBbarRecoTMVA_DEBUG.C
+src/BBbarRecoTMVA_DEBUG.C: In member function 'int BBbarRecoTMVA_DEBUG::Rank1n2Leptons(std::vector<int>&, std::vector<double>&)':
+src/BBbarRecoTMVA_DEBUG.C:624:21: warning: comparison of integer expressions of different signedness: 'int' and 'unsigned int' [-Wsign-compare]
+   for(int i = 0 ; i < vsize ; i++){
+                   ~~^~~~~~~
+src/BBbarRecoTMVA_DEBUG.C:633:21: warning: comparison of integer expressions of different signedness: 'int' and 'unsigned int' [-Wsign-compare]
+   for(int i = 0 ; i < vsize ; i++){
+                   ~~^~~~~~~
+src/BBbarRecoTMVA_DEBUG.C:636:23: warning: comparison of integer expressions of different signedness: 'int' and 'unsigned int' [-Wsign-compare]
+     for(int j = 0 ; j < vsize ; j++){
+                     ~~^~~~~~~
+src/BBbarRecoTMVA_DEBUG.C: In member function 'void BBbarRecoTMVA_DEBUG::RunLeptonCutStudyMuon()':
+src/BBbarRecoTMVA_DEBUG.C:683:9: warning: comparison of integer expressions of different signedness: 'unsigned int' and 'int' [-Wsign-compare]
+     if(i==myRECO.idx_Zmuon1) continue;
+        ~^~~~~~~~~~~~~~~~~~~
+src/BBbarRecoTMVA_DEBUG.C:684:9: warning: comparison of integer expressions of different signedness: 'unsigned int' and 'int' [-Wsign-compare]
+     if(i==myRECO.idx_Zmuon2) continue;
+        ~^~~~~~~~~~~~~~~~~~~
+src/BBbarRecoTMVA_DEBUG.C:697:9: warning: unused variable 'muon_charge' [-Wunused-variable]
+     int muon_charge=AllMuons[i].Charge();
+         ^~~~~~~~~~~
+src/BBbarRecoTMVA_DEBUG.C: In member function 'void BBbarRecoTMVA_DEBUG::RunLeptonCutStudyElectron()':
+src/BBbarRecoTMVA_DEBUG.C:866:18: warning: comparison of integer expressions of different signedness: 'int' and 'unsigned int' [-Wsign-compare]
+   for(int i=0; i < electronsize; i++){
+                ~~^~~~~~~~~~~~~~
+src/BBbarRecoTMVA_DEBUG.C:894:9: warning: unused variable 'electron_charge' [-Wunused-variable]
+     int electron_charge=AllElectrons[i].Charge();
+         ^~~~~~~~~~~~~~~
+src/BBbarRecoTMVA_DEBUG.C: In member function 'bool BBbarRecoTMVA_DEBUG::ZmmReco()':
+src/BBbarRecoTMVA_DEBUG.C:1052:21: warning: comparison of integer expressions of different signedness: 'int' and 'unsigned int' [-Wsign-compare]
+   for(int i = 0 ; i < muonsize; i++ ){
+                   ~~^~~~~~~~~~
+src/BBbarRecoTMVA_DEBUG.C: In member function 'bool BBbarRecoTMVA_DEBUG::ZeeReco()':
+src/BBbarRecoTMVA_DEBUG.C:1084:21: warning: comparison of integer expressions of different signedness: 'int' and 'unsigned int' [-Wsign-compare]
+   for(int i = 0 ; i < electronsize; i++ ){
+                   ~~^~~~~~~~~~~~~~
+src/BBbarRecoTMVA_DEBUG.C: In member function 'bool BBbarRecoTMVA_DEBUG::Tag1bjet()':
+src/BBbarRecoTMVA_DEBUG.C:1127:21: warning: comparison of integer expressions of different signedness: 'int' and 'unsigned int' [-Wsign-compare]
+   for(int i = 0 ; i < jetsize; i ++){
+                   ~~^~~~~~~~~
+Compiling src/TTsemilep_JetAssignScore.C
+src/TTsemilep_JetAssignScore.C: In member function 'void TTsemilep_JetAssignScore::AnalyzeLHE()':
+src/TTsemilep_JetAssignScore.C:204:10: warning: variable 'pz' set but not used [-Wunused-but-set-variable]
+   double pz=-999,E=-999, charge=-999;
+          ^~
+src/TTsemilep_JetAssignScore.C:204:18: warning: variable 'E' set but not used [-Wunused-but-set-variable]
+   double pz=-999,E=-999, charge=-999;
+                  ^
+src/TTsemilep_JetAssignScore.C:204:26: warning: variable 'charge' set but not used [-Wunused-but-set-variable]
+   double pz=-999,E=-999, charge=-999;
+                          ^~~~~~
+src/TTsemilep_JetAssignScore.C: In member function 'bool TTsemilep_JetAssignScore::TTbarMuReco()':
+src/TTsemilep_JetAssignScore.C:343:21: warning: comparison of integer expressions of different signedness: 'int' and 'unsigned int' [-Wsign-compare]
+   for(int i = 0 ; i < muonsize; i++ ){
+                   ~~^~~~~~~~~~
+src/TTsemilep_JetAssignScore.C:335:10: warning: variable 'this_leptonid_sf' set but not used [-Wunused-but-set-variable]
+   double this_leptonid_sf=1.;
+          ^~~~~~~~~~~~~~~~
+src/TTsemilep_JetAssignScore.C:336:10: warning: variable 'this_trigger_sf' set but not used [-Wunused-but-set-variable]
+   double this_trigger_sf=1.;
+          ^~~~~~~~~~~~~~~
+src/TTsemilep_JetAssignScore.C:337:10: warning: variable 'this_iso_sf' set but not used [-Wunused-but-set-variable]
+   double this_iso_sf=1.;
+          ^~~~~~~~~~~
+src/TTsemilep_JetAssignScore.C:339:7: warning: variable 'i_l1' set but not used [-Wunused-but-set-variable]
+   int i_l1=-1;
+       ^~~~
+src/TTsemilep_JetAssignScore.C: In member function 'bool TTsemilep_JetAssignScore::TTbarElReco()':
+src/TTsemilep_JetAssignScore.C:400:21: warning: comparison of integer expressions of different signedness: 'int' and 'unsigned int' [-Wsign-compare]
+   for(int i = 0 ; i < electronsize; i++ ){
+                   ~~^~~~~~~~~~~~~~
+src/TTsemilep_JetAssignScore.C:393:10: warning: unused variable 'this_leptonid_sf' [-Wunused-variable]
+   double this_leptonid_sf=1.;
+          ^~~~~~~~~~~~~~~~
+src/TTsemilep_JetAssignScore.C:394:10: warning: unused variable 'this_trigger_sf' [-Wunused-variable]
+   double this_trigger_sf=1.;
+          ^~~~~~~~~~~~~~~
+src/TTsemilep_JetAssignScore.C:395:10: warning: unused variable 'this_iso_sf' [-Wunused-variable]
+   double this_iso_sf=1.;
+          ^~~~~~~~~~~
+src/TTsemilep_JetAssignScore.C: In member function 'bool TTsemilep_JetAssignScore::CheckJets()':
+src/TTsemilep_JetAssignScore.C:464:21: warning: comparison of integer expressions of different signedness: 'int' and 'unsigned int' [-Wsign-compare]
+   for(int i = 0 ; i < jetsize; i ++){
+                   ~~^~~~~~~~~
+src/TTsemilep_JetAssignScore.C:441:10: warning: unused variable 'bveto_cut' [-Wunused-variable]
+   double bveto_cut = mcCorr->MCCorrection::GetJetTaggingCutValue(JetTagging::DeepJet,JetTagging::Loose);
+          ^~~~~~~~~
+src/TTsemilep_JetAssignScore.C:447:16: warning: unused variable '_Nbbar' [-Wunused-variable]
+   unsigned int _Nbbar=0;
+                ^~~~~~
+src/TTsemilep_JetAssignScore.C:654:7: warning: variable 'ib1' set but not used [-Wunused-but-set-variable]
+   int ib1=idxset_dnn[0], ib2=idxset_dnn[1], iq1=idxset_dnn[2], iq2=idxset_dnn[3];
+       ^~~
+src/TTsemilep_JetAssignScore.C: In member function 'void TTsemilep_JetAssignScore::FillTreeValues()':
+src/TTsemilep_JetAssignScore.C:831:12: warning: comparison of integer expressions of different signedness: 'unsigned int' and 'int' [-Wsign-compare]
+       if( i==tightjetidx_q1_flav_match && j==tightjetidx_q2_flav_match ) continue;
+           ~^~~~~~~~~~~~~~~~~~~~~~~~~~~
+src/TTsemilep_JetAssignScore.C:831:44: warning: comparison of integer expressions of different signedness: 'unsigned int' and 'int' [-Wsign-compare]
+       if( i==tightjetidx_q1_flav_match && j==tightjetidx_q2_flav_match ) continue;
+                                           ~^~~~~~~~~~~~~~~~~~~~~~~~~~~
+src/TTsemilep_JetAssignScore.C:832:12: warning: comparison of integer expressions of different signedness: 'unsigned int' and 'int' [-Wsign-compare]
+       if( i==tightjetidx_q2_flav_match && j==tightjetidx_q1_flav_match ) continue;
+           ~^~~~~~~~~~~~~~~~~~~~~~~~~~~
+src/TTsemilep_JetAssignScore.C:832:44: warning: comparison of integer expressions of different signedness: 'unsigned int' and 'int' [-Wsign-compare]
+       if( i==tightjetidx_q2_flav_match && j==tightjetidx_q1_flav_match ) continue;
+                                           ~^~~~~~~~~~~~~~~~~~~~~~~~~~~
+Compiling src/ForLepJetChargeReliability.C
+src/ForLepJetChargeReliability.C: In member function 'void ForLepJetChargeReliability::AnalyzeLHE()':
+src/ForLepJetChargeReliability.C:622:10: warning: variable 'pz' set but not used [-Wunused-but-set-variable]
+   double pz=-999,E=-999;
+          ^~
+src/ForLepJetChargeReliability.C:622:18: warning: variable 'E' set but not used [-Wunused-but-set-variable]
+   double pz=-999,E=-999;
+                  ^
+src/ForLepJetChargeReliability.C: In member function 'int ForLepJetChargeReliability::Rank1n2Leptons(std::vector<int>&, std::vector<double>&)':
+src/ForLepJetChargeReliability.C:772:21: warning: comparison of integer expressions of different signedness: 'int' and 'unsigned int' [-Wsign-compare]
+   for(int i = 0 ; i < vsize ; i++){
+                   ~~^~~~~~~
+src/ForLepJetChargeReliability.C:781:21: warning: comparison of integer expressions of different signedness: 'int' and 'unsigned int' [-Wsign-compare]
+   for(int i = 0 ; i < vsize ; i++){
+                   ~~^~~~~~~
+src/ForLepJetChargeReliability.C:784:23: warning: comparison of integer expressions of different signedness: 'int' and 'unsigned int' [-Wsign-compare]
+     for(int j = 0 ; j < vsize ; j++){
+                     ~~^~~~~~~
+src/ForLepJetChargeReliability.C: In member function 'void ForLepJetChargeReliability::RunLeptonCutStudyMuon()':
+src/ForLepJetChargeReliability.C:833:9: warning: comparison of integer expressions of different signedness: 'unsigned int' and 'int' [-Wsign-compare]
+     if(i==myRECO.idx_Zmuon1) continue;
+        ~^~~~~~~~~~~~~~~~~~~
+src/ForLepJetChargeReliability.C:834:9: warning: comparison of integer expressions of different signedness: 'unsigned int' and 'int' [-Wsign-compare]
+     if(i==myRECO.idx_Zmuon2) continue;
+        ~^~~~~~~~~~~~~~~~~~~
+src/ForLepJetChargeReliability.C:847:9: warning: unused variable 'muon_charge' [-Wunused-variable]
+     int muon_charge=AllMuons[i].Charge();
+         ^~~~~~~~~~~
+src/ForLepJetChargeReliability.C: In member function 'void ForLepJetChargeReliability::SetTreeValuesMuon(std::vector<int>)':
+src/ForLepJetChargeReliability.C:864:18: warning: comparison of integer expressions of different signedness: 'int' and 'unsigned int' [-Wsign-compare]
+   for(int i=0; i < nbmuon; i++){
+                ~~^~~~~~~~
+src/ForLepJetChargeReliability.C: In member function 'void ForLepJetChargeReliability::RunLeptonCutStudyElectron()':
+src/ForLepJetChargeReliability.C:967:9: warning: comparison of integer expressions of different signedness: 'unsigned int' and 'int' [-Wsign-compare]
+     if(i==myRECO.idx_Zelectron1) continue;
+        ~^~~~~~~~~~~~~~~~~~~~~~~
+src/ForLepJetChargeReliability.C:968:9: warning: comparison of integer expressions of different signedness: 'unsigned int' and 'int' [-Wsign-compare]
+     if(i==myRECO.idx_Zelectron2) continue;
+        ~^~~~~~~~~~~~~~~~~~~~~~~
+src/ForLepJetChargeReliability.C:983:9: warning: unused variable 'electron_charge' [-Wunused-variable]
+     int electron_charge=AllElectrons[i].Charge();
+         ^~~~~~~~~~~~~~~
+src/ForLepJetChargeReliability.C: In member function 'void ForLepJetChargeReliability::SetTreeValuesElectron(std::vector<int>)':
+src/ForLepJetChargeReliability.C:1006:18: warning: comparison of integer expressions of different signedness: 'int' and 'unsigned int' [-Wsign-compare]
+   for(int i=0; i < nbelectron; i++){
+                ~~^~~~~~~~~~~~
+Compiling src/SKFlatValidation.C
+Compiling src/TTsemilep_LeptonChargeAccuracy.C
+Compiling src/ExampleRun.C
+src/ExampleRun.C: In member function 'void ExampleRun::executeEventFromParameter(AnalyzerParameter)':
+src/ExampleRun.C:337:10: warning: unused variable 'btagWeight' [-Wunused-variable]
+   double btagWeight = mcCorr->GetBTaggingReweight_1a(jets, jtp_DeepCSV_Medium);
+          ^~~~~~~~~~
+Compiling src/ForTMVA_BBbarAnalyzer.C
+src/ForTMVA_BBbarAnalyzer.C: In member function 'void ForTMVA_BBbarAnalyzer::AnalyzeLHE()':
+src/ForTMVA_BBbarAnalyzer.C:601:10: warning: variable 'pz' set but not used [-Wunused-but-set-variable]
+   double pz=-999,E=-999;
+          ^~
+src/ForTMVA_BBbarAnalyzer.C:601:18: warning: variable 'E' set but not used [-Wunused-but-set-variable]
+   double pz=-999,E=-999;
+                  ^
+src/ForTMVA_BBbarAnalyzer.C: In member function 'int ForTMVA_BBbarAnalyzer::Rank1n2Leptons(std::vector<int>&, std::vector<double>&)':
+src/ForTMVA_BBbarAnalyzer.C:751:21: warning: comparison of integer expressions of different signedness: 'int' and 'unsigned int' [-Wsign-compare]
+   for(int i = 0 ; i < vsize ; i++){
+                   ~~^~~~~~~
+src/ForTMVA_BBbarAnalyzer.C:760:21: warning: comparison of integer expressions of different signedness: 'int' and 'unsigned int' [-Wsign-compare]
+   for(int i = 0 ; i < vsize ; i++){
+                   ~~^~~~~~~
+src/ForTMVA_BBbarAnalyzer.C:763:23: warning: comparison of integer expressions of different signedness: 'int' and 'unsigned int' [-Wsign-compare]
+     for(int j = 0 ; j < vsize ; j++){
+                     ~~^~~~~~~
+src/ForTMVA_BBbarAnalyzer.C: In member function 'void ForTMVA_BBbarAnalyzer::RunLeptonCutStudyMuon()':
+src/ForTMVA_BBbarAnalyzer.C:812:9: warning: comparison of integer expressions of different signedness: 'unsigned int' and 'int' [-Wsign-compare]
+     if(i==myRECO.idx_Zmuon1) continue;
+        ~^~~~~~~~~~~~~~~~~~~
+src/ForTMVA_BBbarAnalyzer.C:813:9: warning: comparison of integer expressions of different signedness: 'unsigned int' and 'int' [-Wsign-compare]
+     if(i==myRECO.idx_Zmuon2) continue;
+        ~^~~~~~~~~~~~~~~~~~~
+src/ForTMVA_BBbarAnalyzer.C: In member function 'void ForTMVA_BBbarAnalyzer::RunLeptonCutStudyElectron()':
+src/ForTMVA_BBbarAnalyzer.C:991:9: warning: comparison of integer expressions of different signedness: 'unsigned int' and 'int' [-Wsign-compare]
+     if(i==myRECO.idx_Zelectron1) continue;
+        ~^~~~~~~~~~~~~~~~~~~~~~~
+src/ForTMVA_BBbarAnalyzer.C:992:9: warning: comparison of integer expressions of different signedness: 'unsigned int' and 'int' [-Wsign-compare]
+     if(i==myRECO.idx_Zelectron2) continue;
+        ~^~~~~~~~~~~~~~~~~~~~~~~
+Compiling src/TTsemilep_JetAssign_FlavourMatPlots.C
+src/TTsemilep_JetAssign_FlavourMatPlots.C: In member function 'void TTsemilep_JetAssign_FlavourMatPlots::AnalyzeLHE()':
+src/TTsemilep_JetAssign_FlavourMatPlots.C:258:10: warning: variable 'pz' set but not used [-Wunused-but-set-variable]
+   double pz=-999,E=-999, charge=-999;
+          ^~
+src/TTsemilep_JetAssign_FlavourMatPlots.C:258:18: warning: variable 'E' set but not used [-Wunused-but-set-variable]
+   double pz=-999,E=-999, charge=-999;
+                  ^
+src/TTsemilep_JetAssign_FlavourMatPlots.C:258:26: warning: variable 'charge' set but not used [-Wunused-but-set-variable]
+   double pz=-999,E=-999, charge=-999;
+                          ^~~~~~
+src/TTsemilep_JetAssign_FlavourMatPlots.C: In member function 'bool TTsemilep_JetAssign_FlavourMatPlots::TTbarMuReco()':
+src/TTsemilep_JetAssign_FlavourMatPlots.C:397:21: warning: comparison of integer expressions of different signedness: 'int' and 'unsigned int' [-Wsign-compare]
+   for(int i = 0 ; i < muonsize; i++ ){
+                   ~~^~~~~~~~~~
+src/TTsemilep_JetAssign_FlavourMatPlots.C:389:10: warning: variable 'this_leptonid_sf' set but not used [-Wunused-but-set-variable]
+   double this_leptonid_sf=1.;
+          ^~~~~~~~~~~~~~~~
+src/TTsemilep_JetAssign_FlavourMatPlots.C:390:10: warning: variable 'this_trigger_sf' set but not used [-Wunused-but-set-variable]
+   double this_trigger_sf=1.;
+          ^~~~~~~~~~~~~~~
+src/TTsemilep_JetAssign_FlavourMatPlots.C:391:10: warning: variable 'this_iso_sf' set but not used [-Wunused-but-set-variable]
+   double this_iso_sf=1.;
+          ^~~~~~~~~~~
+src/TTsemilep_JetAssign_FlavourMatPlots.C:393:7: warning: variable 'i_l1' set but not used [-Wunused-but-set-variable]
+   int i_l1=-1;
+       ^~~~
+src/TTsemilep_JetAssign_FlavourMatPlots.C: In member function 'bool TTsemilep_JetAssign_FlavourMatPlots::TTbarElReco()':
+src/TTsemilep_JetAssign_FlavourMatPlots.C:454:21: warning: comparison of integer expressions of different signedness: 'int' and 'unsigned int' [-Wsign-compare]
+   for(int i = 0 ; i < electronsize; i++ ){
+                   ~~^~~~~~~~~~~~~~
+src/TTsemilep_JetAssign_FlavourMatPlots.C:447:10: warning: unused variable 'this_leptonid_sf' [-Wunused-variable]
+   double this_leptonid_sf=1.;
+          ^~~~~~~~~~~~~~~~
+src/TTsemilep_JetAssign_FlavourMatPlots.C:448:10: warning: unused variable 'this_trigger_sf' [-Wunused-variable]
+   double this_trigger_sf=1.;
+          ^~~~~~~~~~~~~~~
+src/TTsemilep_JetAssign_FlavourMatPlots.C:449:10: warning: unused variable 'this_iso_sf' [-Wunused-variable]
+   double this_iso_sf=1.;
+          ^~~~~~~~~~~
+src/TTsemilep_JetAssign_FlavourMatPlots.C: In member function 'bool TTsemilep_JetAssign_FlavourMatPlots::CheckJets()':
+src/TTsemilep_JetAssign_FlavourMatPlots.C:517:21: warning: comparison of integer expressions of different signedness: 'int' and 'unsigned int' [-Wsign-compare]
+   for(int i = 0 ; i < jetsize; i ++){
+                   ~~^~~~~~~~~
+src/TTsemilep_JetAssign_FlavourMatPlots.C:712:19: warning: '*' in boolean context, suggest '&&' instead [-Wint-in-bool-context]
+   if(flavourmatch1*flavourmatch2){
+      ~~~~~~~~~~~~~^~~~~~~~~~~~~~
+src/TTsemilep_JetAssign_FlavourMatPlots.C:722:21: warning: '*' in boolean context, suggest '&&' instead [-Wint-in-bool-context]
+     if(flavourmatch1*flavourmatch2) FillHist("Event_with_b1_b2_GEN_eta_2p4_pt30/nTightJet_if_flavour_matched/"+ProcessName,tightjetsize, weight, 10, 0, 10);
+        ~~~~~~~~~~~~~^~~~~~~~~~~~~~
+src/TTsemilep_JetAssign_FlavourMatPlots.C:495:10: warning: unused variable 'bveto_cut' [-Wunused-variable]
+   double bveto_cut = mcCorr->MCCorrection::GetJetTaggingCutValue(JetTagging::DeepJet,JetTagging::Loose);
+          ^~~~~~~~~
+src/TTsemilep_JetAssign_FlavourMatPlots.C: In member function 'void TTsemilep_JetAssign_FlavourMatPlots::FillTreeValues()':
+src/TTsemilep_JetAssign_FlavourMatPlots.C:885:12: warning: comparison of integer expressions of different signedness: 'unsigned int' and 'int' [-Wsign-compare]
+       if( i==tightjetidx_q1_flav_match && j==tightjetidx_q2_flav_match ) continue;
+           ~^~~~~~~~~~~~~~~~~~~~~~~~~~~
+src/TTsemilep_JetAssign_FlavourMatPlots.C:885:44: warning: comparison of integer expressions of different signedness: 'unsigned int' and 'int' [-Wsign-compare]
+       if( i==tightjetidx_q1_flav_match && j==tightjetidx_q2_flav_match ) continue;
+                                           ~^~~~~~~~~~~~~~~~~~~~~~~~~~~
+src/TTsemilep_JetAssign_FlavourMatPlots.C:886:12: warning: comparison of integer expressions of different signedness: 'unsigned int' and 'int' [-Wsign-compare]
+       if( i==tightjetidx_q2_flav_match && j==tightjetidx_q1_flav_match ) continue;
+           ~^~~~~~~~~~~~~~~~~~~~~~~~~~~
+src/TTsemilep_JetAssign_FlavourMatPlots.C:886:44: warning: comparison of integer expressions of different signedness: 'unsigned int' and 'int' [-Wsign-compare]
+       if( i==tightjetidx_q2_flav_match && j==tightjetidx_q1_flav_match ) continue;
+                                           ~^~~~~~~~~~~~~~~~~~~~~~~~~~~
+Compiling src/B_In_LHE.C
+src/B_In_LHE.C: In member function 'virtual void B_In_LHE::executeEvent()':
+src/B_In_LHE.C:122:55: warning: variable 'LHE_index' set but not used [-Wunused-but-set-variable]
+   double LHE_px,LHE_py,LHE_pz,LHE_E,LHE_status,LHE_id,LHE_index, LHE_pt,LHE_eta, LHE_phi;
+                                                       ^~~~~~~~~
+src/B_In_LHE.C: In member function 'void B_In_LHE::executeEventFromParameter(AnalyzerParameter)':
+src/B_In_LHE.C:482:10: warning: unused variable 'btagWeight' [-Wunused-variable]
+   double btagWeight = mcCorr->GetBTaggingReweight_1a(jets, jtp_DeepCSV_Medium);
+          ^~~~~~~~~~
+Compiling src/SkimTree_LRSMHighPt.C
+Compiling src/ForLepJetChargeReliabilityCoeff.C
+src/ForLepJetChargeReliabilityCoeff.C: In member function 'int ForLepJetChargeReliabilityCoeff::Rank1n2Leptons(std::vector<int>&, std::vector<double>&)':
+src/ForLepJetChargeReliabilityCoeff.C:397:21: warning: comparison of integer expressions of different signedness: 'int' and 'unsigned int' [-Wsign-compare]
+   for(int i = 0 ; i < vsize ; i++){
+                   ~~^~~~~~~
+src/ForLepJetChargeReliabilityCoeff.C:406:21: warning: comparison of integer expressions of different signedness: 'int' and 'unsigned int' [-Wsign-compare]
+   for(int i = 0 ; i < vsize ; i++){
+                   ~~^~~~~~~
+src/ForLepJetChargeReliabilityCoeff.C:409:23: warning: comparison of integer expressions of different signedness: 'int' and 'unsigned int' [-Wsign-compare]
+     for(int j = 0 ; j < vsize ; j++){
+                     ~~^~~~~~~
+src/ForLepJetChargeReliabilityCoeff.C: In member function 'void ForLepJetChargeReliabilityCoeff::RunLeptonCutStudyMuon()':
+src/ForLepJetChargeReliabilityCoeff.C:437:9: warning: comparison of integer expressions of different signedness: 'unsigned int' and 'int' [-Wsign-compare]
+     if(i==myRECO.idx_Zmuon1) continue;
+        ~^~~~~~~~~~~~~~~~~~~
+src/ForLepJetChargeReliabilityCoeff.C:438:9: warning: comparison of integer expressions of different signedness: 'unsigned int' and 'int' [-Wsign-compare]
+     if(i==myRECO.idx_Zmuon2) continue;
+        ~^~~~~~~~~~~~~~~~~~~
+src/ForLepJetChargeReliabilityCoeff.C:503:18: warning: comparison of integer expressions of different signedness: 'int' and 'unsigned int' [-Wsign-compare]
+   for(int i=0; i < bmuonsize; i++){//
+                ~~^~~~~~~~~~~
+src/ForLepJetChargeReliabilityCoeff.C: In member function 'void ForLepJetChargeReliabilityCoeff::RunLeptonCutStudyElectron()':
+src/ForLepJetChargeReliabilityCoeff.C:552:9: warning: comparison of integer expressions of different signedness: 'unsigned int' and 'int' [-Wsign-compare]
+     if(i==myRECO.idx_Zelectron1) continue;
+        ~^~~~~~~~~~~~~~~~~~~~~~~
+src/ForLepJetChargeReliabilityCoeff.C:553:9: warning: comparison of integer expressions of different signedness: 'unsigned int' and 'int' [-Wsign-compare]
+     if(i==myRECO.idx_Zelectron2) continue;
+        ~^~~~~~~~~~~~~~~~~~~~~~~
+src/ForLepJetChargeReliabilityCoeff.C:618:18: warning: comparison of integer expressions of different signedness: 'int' and 'unsigned int' [-Wsign-compare]
+   for(int i=0; i < belectronsize; i++){//
+                ~~^~~~~~~~~~~~~~~
+src/ForLepJetChargeReliabilityCoeff.C: In member function 'bool ForLepJetChargeReliabilityCoeff::ZmmReco()':
+src/ForLepJetChargeReliabilityCoeff.C:672:21: warning: comparison of integer expressions of different signedness: 'int' and 'unsigned int' [-Wsign-compare]
+   for(int i = 0 ; i < muonsize; i++ ){
+                   ~~^~~~~~~~~~
+src/ForLepJetChargeReliabilityCoeff.C:702:21: warning: comparison of integer expressions of different signedness: 'int' and 'unsigned int' [-Wsign-compare]
+   for(int i = 0 ; i <SelectedMuonSize ; i++){
+                   ~~^~~~~~~~~~~~~~~~~
+src/ForLepJetChargeReliabilityCoeff.C:668:10: warning: variable 'this_iso_sf' set but not used [-Wunused-but-set-variable]
+   double this_iso_sf=1.;
+          ^~~~~~~~~~~
+src/ForLepJetChargeReliabilityCoeff.C: In member function 'bool ForLepJetChargeReliabilityCoeff::ZeeReco()':
+src/ForLepJetChargeReliabilityCoeff.C:734:21: warning: comparison of integer expressions of different signedness: 'int' and 'unsigned int' [-Wsign-compare]
+   for(int i = 0 ; i < electronsize; i++ ){
+                   ~~^~~~~~~~~~~~~~
+src/ForLepJetChargeReliabilityCoeff.C:733:10: warning: unused variable 'this_trigger_sf' [-Wunused-variable]
+   double this_trigger_sf=1.;
+          ^~~~~~~~~~~~~~~
+src/ForLepJetChargeReliabilityCoeff.C: In member function 'bool ForLepJetChargeReliabilityCoeff::Tag1bjet()':
+src/ForLepJetChargeReliabilityCoeff.C:795:21: warning: comparison of integer expressions of different signedness: 'int' and 'unsigned int' [-Wsign-compare]
+   for(int i = 0 ; i < jetsize; i ++){
+                   ~~^~~~~~~~~
+Compiling src/TTsemilep_JetAssignScore_TrainingInput.C
+src/TTsemilep_JetAssignScore_TrainingInput.C: In member function 'void TTsemilep_JetAssignScore_TrainingInput::AnalyzeLHE()':
+src/TTsemilep_JetAssignScore_TrainingInput.C:258:10: warning: variable 'pz' set but not used [-Wunused-but-set-variable]
+   double pz=-999,E=-999, charge=-999;
+          ^~
+src/TTsemilep_JetAssignScore_TrainingInput.C:258:18: warning: variable 'E' set but not used [-Wunused-but-set-variable]
+   double pz=-999,E=-999, charge=-999;
+                  ^
+src/TTsemilep_JetAssignScore_TrainingInput.C:258:26: warning: variable 'charge' set but not used [-Wunused-but-set-variable]
+   double pz=-999,E=-999, charge=-999;
+                          ^~~~~~
+src/TTsemilep_JetAssignScore_TrainingInput.C: In member function 'bool TTsemilep_JetAssignScore_TrainingInput::TTbarMuReco()':
+src/TTsemilep_JetAssignScore_TrainingInput.C:397:21: warning: comparison of integer expressions of different signedness: 'int' and 'unsigned int' [-Wsign-compare]
+   for(int i = 0 ; i < muonsize; i++ ){
+                   ~~^~~~~~~~~~
+src/TTsemilep_JetAssignScore_TrainingInput.C:389:10: warning: variable 'this_leptonid_sf' set but not used [-Wunused-but-set-variable]
+   double this_leptonid_sf=1.;
+          ^~~~~~~~~~~~~~~~
+src/TTsemilep_JetAssignScore_TrainingInput.C:390:10: warning: variable 'this_trigger_sf' set but not used [-Wunused-but-set-variable]
+   double this_trigger_sf=1.;
+          ^~~~~~~~~~~~~~~
+src/TTsemilep_JetAssignScore_TrainingInput.C:391:10: warning: variable 'this_iso_sf' set but not used [-Wunused-but-set-variable]
+   double this_iso_sf=1.;
+          ^~~~~~~~~~~
+src/TTsemilep_JetAssignScore_TrainingInput.C:393:7: warning: variable 'i_l1' set but not used [-Wunused-but-set-variable]
+   int i_l1=-1;
+       ^~~~
+src/TTsemilep_JetAssignScore_TrainingInput.C: In member function 'bool TTsemilep_JetAssignScore_TrainingInput::TTbarElReco()':
+src/TTsemilep_JetAssignScore_TrainingInput.C:454:21: warning: comparison of integer expressions of different signedness: 'int' and 'unsigned int' [-Wsign-compare]
+   for(int i = 0 ; i < electronsize; i++ ){
+                   ~~^~~~~~~~~~~~~~
+src/TTsemilep_JetAssignScore_TrainingInput.C:447:10: warning: unused variable 'this_leptonid_sf' [-Wunused-variable]
+   double this_leptonid_sf=1.;
+          ^~~~~~~~~~~~~~~~
+src/TTsemilep_JetAssignScore_TrainingInput.C:448:10: warning: unused variable 'this_trigger_sf' [-Wunused-variable]
+   double this_trigger_sf=1.;
+          ^~~~~~~~~~~~~~~
+src/TTsemilep_JetAssignScore_TrainingInput.C:449:10: warning: unused variable 'this_iso_sf' [-Wunused-variable]
+   double this_iso_sf=1.;
+          ^~~~~~~~~~~
+src/TTsemilep_JetAssignScore_TrainingInput.C: In member function 'void TTsemilep_JetAssignScore_TrainingInput::CollectJets()':
+src/TTsemilep_JetAssignScore_TrainingInput.C:512:21: warning: comparison of integer expressions of different signedness: 'int' and 'unsigned int' [-Wsign-compare]
+   for(int i = 0 ; i < jetsize; i ++){
+                   ~~^~~~~~~~~
+src/TTsemilep_JetAssignScore_TrainingInput.C: In member function 'bool TTsemilep_JetAssignScore_TrainingInput::CheckJets()':
+src/TTsemilep_JetAssignScore_TrainingInput.C:703:19: warning: '*' in boolean context, suggest '&&' instead [-Wint-in-bool-context]
+   if(flavourmatch1*flavourmatch2){
+      ~~~~~~~~~~~~~^~~~~~~~~~~~~~
+src/TTsemilep_JetAssignScore_TrainingInput.C:713:21: warning: '*' in boolean context, suggest '&&' instead [-Wint-in-bool-context]
+     if(flavourmatch1*flavourmatch2) FillHist("Event_with_b1_b2_GEN_eta_2p4_pt30/nTightJet_if_flavour_matched/"+ProcessName,tightjetsize, weight, 10, 0, 10);
+        ~~~~~~~~~~~~~^~~~~~~~~~~~~~
+src/TTsemilep_JetAssignScore_TrainingInput.C: In member function 'void TTsemilep_JetAssignScore_TrainingInput::FillTreeValues()':
+src/TTsemilep_JetAssignScore_TrainingInput.C:857:12: warning: comparison of integer expressions of different signedness: 'unsigned int' and 'int' [-Wsign-compare]
+       if( i==tightjetidx_q1_flav_match && j==tightjetidx_q2_flav_match ) continue;
+           ~^~~~~~~~~~~~~~~~~~~~~~~~~~~
+src/TTsemilep_JetAssignScore_TrainingInput.C:857:44: warning: comparison of integer expressions of different signedness: 'unsigned int' and 'int' [-Wsign-compare]
+       if( i==tightjetidx_q1_flav_match && j==tightjetidx_q2_flav_match ) continue;
+                                           ~^~~~~~~~~~~~~~~~~~~~~~~~~~~
+src/TTsemilep_JetAssignScore_TrainingInput.C:858:12: warning: comparison of integer expressions of different signedness: 'unsigned int' and 'int' [-Wsign-compare]
+       if( i==tightjetidx_q2_flav_match && j==tightjetidx_q1_flav_match ) continue;
+           ~^~~~~~~~~~~~~~~~~~~~~~~~~~~
+src/TTsemilep_JetAssignScore_TrainingInput.C:858:44: warning: comparison of integer expressions of different signedness: 'unsigned int' and 'int' [-Wsign-compare]
+       if( i==tightjetidx_q2_flav_match && j==tightjetidx_q1_flav_match ) continue;
+                                           ~^~~~~~~~~~~~~~~~~~~~~~~~~~~
+Compiling src/LepJetChargeReliability_RECO_NoDNNcut_Tree.C
+src/LepJetChargeReliability_RECO_NoDNNcut_Tree.C: In member function 'int LepJetChargeReliability_RECO_NoDNNcut_Tree::Rank1n2Leptons(std::vector<int>&, std::vector<double>&)':
+src/LepJetChargeReliability_RECO_NoDNNcut_Tree.C:400:21: warning: comparison of integer expressions of different signedness: 'int' and 'unsigned int' [-Wsign-compare]
+   for(int i = 0 ; i < vsize ; i++){
+                   ~~^~~~~~~
+src/LepJetChargeReliability_RECO_NoDNNcut_Tree.C:409:21: warning: comparison of integer expressions of different signedness: 'int' and 'unsigned int' [-Wsign-compare]
+   for(int i = 0 ; i < vsize ; i++){
+                   ~~^~~~~~~
+src/LepJetChargeReliability_RECO_NoDNNcut_Tree.C:412:23: warning: comparison of integer expressions of different signedness: 'int' and 'unsigned int' [-Wsign-compare]
+     for(int j = 0 ; j < vsize ; j++){
+                     ~~^~~~~~~
+src/LepJetChargeReliability_RECO_NoDNNcut_Tree.C: In member function 'void LepJetChargeReliability_RECO_NoDNNcut_Tree::RunBMuon()':
+src/LepJetChargeReliability_RECO_NoDNNcut_Tree.C:440:9: warning: comparison of integer expressions of different signedness: 'unsigned int' and 'int' [-Wsign-compare]
+     if(i==myRECO.idx_Zmuon1) continue;
+        ~^~~~~~~~~~~~~~~~~~~
+src/LepJetChargeReliability_RECO_NoDNNcut_Tree.C:441:9: warning: comparison of integer expressions of different signedness: 'unsigned int' and 'int' [-Wsign-compare]
+     if(i==myRECO.idx_Zmuon2) continue;
+        ~^~~~~~~~~~~~~~~~~~~
+src/LepJetChargeReliability_RECO_NoDNNcut_Tree.C:506:18: warning: comparison of integer expressions of different signedness: 'int' and 'unsigned int' [-Wsign-compare]
+   for(int i=0; i < bmuonsize; i++){//
+                ~~^~~~~~~~~~~
+src/LepJetChargeReliability_RECO_NoDNNcut_Tree.C: In member function 'void LepJetChargeReliability_RECO_NoDNNcut_Tree::RunBElectron()':
+src/LepJetChargeReliability_RECO_NoDNNcut_Tree.C:557:9: warning: comparison of integer expressions of different signedness: 'unsigned int' and 'int' [-Wsign-compare]
+     if(i==myRECO.idx_Zelectron1) continue;
+        ~^~~~~~~~~~~~~~~~~~~~~~~
+src/LepJetChargeReliability_RECO_NoDNNcut_Tree.C:558:9: warning: comparison of integer expressions of different signedness: 'unsigned int' and 'int' [-Wsign-compare]
+     if(i==myRECO.idx_Zelectron2) continue;
+        ~^~~~~~~~~~~~~~~~~~~~~~~
+src/LepJetChargeReliability_RECO_NoDNNcut_Tree.C:623:18: warning: comparison of integer expressions of different signedness: 'int' and 'unsigned int' [-Wsign-compare]
+   for(int i=0; i < belectronsize; i++){//
+                ~~^~~~~~~~~~~~~~~
+src/LepJetChargeReliability_RECO_NoDNNcut_Tree.C: In member function 'bool LepJetChargeReliability_RECO_NoDNNcut_Tree::ZmmReco()':
+src/LepJetChargeReliability_RECO_NoDNNcut_Tree.C:679:21: warning: comparison of integer expressions of different signedness: 'int' and 'unsigned int' [-Wsign-compare]
+   for(int i = 0 ; i < muonsize; i++ ){
+                   ~~^~~~~~~~~~
+src/LepJetChargeReliability_RECO_NoDNNcut_Tree.C:718:21: warning: comparison of integer expressions of different signedness: 'int' and 'unsigned int' [-Wsign-compare]
+   for(int i = 0 ; i <SelectedMuonSize ; i++){
+                   ~~^~~~~~~~~~~~~~~~~
+src/LepJetChargeReliability_RECO_NoDNNcut_Tree.C:673:10: warning: variable 'this_iso_sf' set but not used [-Wunused-but-set-variable]
+   double this_iso_sf=1.;
+          ^~~~~~~~~~~
+src/LepJetChargeReliability_RECO_NoDNNcut_Tree.C: In member function 'bool LepJetChargeReliability_RECO_NoDNNcut_Tree::ZeeReco()':
+src/LepJetChargeReliability_RECO_NoDNNcut_Tree.C:752:21: warning: comparison of integer expressions of different signedness: 'int' and 'unsigned int' [-Wsign-compare]
+   for(int i = 0 ; i < electronsize; i++ ){
+                   ~~^~~~~~~~~~~~~~
+src/LepJetChargeReliability_RECO_NoDNNcut_Tree.C:751:10: warning: unused variable 'this_trigger_sf' [-Wunused-variable]
+   double this_trigger_sf=1.;
+          ^~~~~~~~~~~~~~~
+src/LepJetChargeReliability_RECO_NoDNNcut_Tree.C: In member function 'bool LepJetChargeReliability_RECO_NoDNNcut_Tree::Tag1bjet()':
+src/LepJetChargeReliability_RECO_NoDNNcut_Tree.C:826:21: warning: comparison of integer expressions of different signedness: 'int' and 'unsigned int' [-Wsign-compare]
+   for(int i = 0 ; i < jetsize; i ++){
+                   ~~^~~~~~~~~
+src/LepJetChargeReliability_RECO_NoDNNcut_Tree.C:809:10: warning: variable '_bjet_tagscore' set but not used [-Wunused-but-set-variable]
+   double _bjet_tagscore;
+          ^~~~~~~~~~~~~~
+Compiling src/TTsemilep_ChargeReliability.C
+Compiling src/SkimTree_HighPt1LJets.C
+Compiling src/AnalyzerCore.C
+Compiling src/GetEffLumi.C
+Compiling src/SkimTree_HNFake.C
+Compiling src/LepJetChargeReliability_RECO.C
+Compiling src/BBbarRecoTMVA.C
+src/BBbarRecoTMVA.C: In member function 'int BBbarRecoTMVA::Rank1n2Leptons(std::vector<int>&, std::vector<double>&)':
+src/BBbarRecoTMVA.C:613:21: warning: comparison of integer expressions of different signedness: 'int' and 'unsigned int' [-Wsign-compare]
+   for(int i = 0 ; i < vsize ; i++){
+                   ~~^~~~~~~
+src/BBbarRecoTMVA.C:622:21: warning: comparison of integer expressions of different signedness: 'int' and 'unsigned int' [-Wsign-compare]
+   for(int i = 0 ; i < vsize ; i++){
+                   ~~^~~~~~~
+src/BBbarRecoTMVA.C:625:23: warning: comparison of integer expressions of different signedness: 'int' and 'unsigned int' [-Wsign-compare]
+     for(int j = 0 ; j < vsize ; j++){
+                     ~~^~~~~~~
+src/BBbarRecoTMVA.C: In member function 'void BBbarRecoTMVA::RunLeptonCutStudyMuon()':
+src/BBbarRecoTMVA.C:652:9: warning: comparison of integer expressions of different signedness: 'unsigned int' and 'int' [-Wsign-compare]
+     if(i==myRECO.idx_Zmuon1) continue;
+        ~^~~~~~~~~~~~~~~~~~~
+src/BBbarRecoTMVA.C:653:9: warning: comparison of integer expressions of different signedness: 'unsigned int' and 'int' [-Wsign-compare]
+     if(i==myRECO.idx_Zmuon2) continue;
+        ~^~~~~~~~~~~~~~~~~~~
+src/BBbarRecoTMVA.C:666:9: warning: unused variable 'muon_charge' [-Wunused-variable]
+     int muon_charge=AllMuons[i].Charge();
+         ^~~~~~~~~~~
+src/BBbarRecoTMVA.C: In member function 'void BBbarRecoTMVA::RunLeptonCutStudyElectron()':
+src/BBbarRecoTMVA.C:801:9: warning: comparison of integer expressions of different signedness: 'unsigned int' and 'int' [-Wsign-compare]
+     if(i==myRECO.idx_Zelectron1) continue;
+        ~^~~~~~~~~~~~~~~~~~~~~~~
+src/BBbarRecoTMVA.C:802:9: warning: comparison of integer expressions of different signedness: 'unsigned int' and 'int' [-Wsign-compare]
+     if(i==myRECO.idx_Zelectron2) continue;
+        ~^~~~~~~~~~~~~~~~~~~~~~~
+src/BBbarRecoTMVA.C:817:9: warning: unused variable 'electron_charge' [-Wunused-variable]
+     int electron_charge=AllElectrons[i].Charge();
+         ^~~~~~~~~~~~~~~
+src/BBbarRecoTMVA.C: In member function 'bool BBbarRecoTMVA::ZmmReco()':
+src/BBbarRecoTMVA.C:965:21: warning: comparison of integer expressions of different signedness: 'int' and 'unsigned int' [-Wsign-compare]
+   for(int i = 0 ; i < muonsize; i++ ){
+                   ~~^~~~~~~~~~
+src/BBbarRecoTMVA.C:995:21: warning: comparison of integer expressions of different signedness: 'int' and 'unsigned int' [-Wsign-compare]
+   for(int i = 0 ; i <SelectedMuonSize ; i++){
+                   ~~^~~~~~~~~~~~~~~~~
+src/BBbarRecoTMVA.C:961:10: warning: variable 'this_iso_sf' set but not used [-Wunused-but-set-variable]
+   double this_iso_sf=1.;
+          ^~~~~~~~~~~
+src/BBbarRecoTMVA.C: In member function 'bool BBbarRecoTMVA::ZeeReco()':
+src/BBbarRecoTMVA.C:1027:21: warning: comparison of integer expressions of different signedness: 'int' and 'unsigned int' [-Wsign-compare]
+   for(int i = 0 ; i < electronsize; i++ ){
+                   ~~^~~~~~~~~~~~~~
+src/BBbarRecoTMVA.C:1026:10: warning: unused variable 'this_trigger_sf' [-Wunused-variable]
+   double this_trigger_sf=1.;
+          ^~~~~~~~~~~~~~~
+src/BBbarRecoTMVA.C: In member function 'bool BBbarRecoTMVA::Tag1bjet()':
+src/BBbarRecoTMVA.C:1088:21: warning: comparison of integer expressions of different signedness: 'int' and 'unsigned int' [-Wsign-compare]
+   for(int i = 0 ; i < jetsize; i ++){
+                   ~~^~~~~~~~~
+Compiling src/SkimTree_SS2lOR3l.C
+Compiling src/B_In_GEN.C
+src/B_In_GEN.C: In member function 'virtual void B_In_GEN::executeEvent()':
+src/B_In_GEN.C:123:37: warning: variable 'GEN_status' set but not used [-Wunused-but-set-variable]
+   double GEN_px,GEN_py,GEN_pz,GEN_E,GEN_status,GEN_id,GEN_index, GEN_pt,GEN_eta, GEN_phi, GEN_mother, GEN_isLastCopy, GEN_Virtuality;
+                                     ^~~~~~~~~~
+src/B_In_GEN.C:123:55: warning: variable 'GEN_index' set but not used [-Wunused-but-set-variable]
+   double GEN_px,GEN_py,GEN_pz,GEN_E,GEN_status,GEN_id,GEN_index, GEN_pt,GEN_eta, GEN_phi, GEN_mother, GEN_isLastCopy, GEN_Virtuality;
+                                                       ^~~~~~~~~
+src/B_In_GEN.C:123:91: warning: variable 'GEN_mother' set but not used [-Wunused-but-set-variable]
+   double GEN_px,GEN_py,GEN_pz,GEN_E,GEN_status,GEN_id,GEN_index, GEN_pt,GEN_eta, GEN_phi, GEN_mother, GEN_isLastCopy, GEN_Virtuality;
+                                                                                           ^~~~~~~~~~
+src/B_In_GEN.C:123:103: warning: variable 'GEN_isLastCopy' set but not used [-Wunused-but-set-variable]
+   double GEN_px,GEN_py,GEN_pz,GEN_E,GEN_status,GEN_id,GEN_index, GEN_pt,GEN_eta, GEN_phi, GEN_mother, GEN_isLastCopy, GEN_Virtuality;
+                                                                                                       ^~~~~~~~~~~~~~
+src/B_In_GEN.C:123:119: warning: variable 'GEN_Virtuality' set but not used [-Wunused-but-set-variable]
+   double GEN_px,GEN_py,GEN_pz,GEN_E,GEN_status,GEN_id,GEN_index, GEN_pt,GEN_eta, GEN_phi, GEN_mother, GEN_isLastCopy, GEN_Virtuality;
+                                                                                                                       ^~~~~~~~~~~~~~
+src/B_In_GEN.C:125:16: warning: unused variable 'nb_GEN' [-Wunused-variable]
+   unsigned int nb_GEN=0;
+                ^~~~~~
+src/B_In_GEN.C:131:10: warning: unused variable 'LHE_px' [-Wunused-variable]
+   double LHE_px,LHE_py,LHE_pz,LHE_E,LHE_status,LHE_id,LHE_index, LHE_pt,LHE_eta, LHE_phi;
+          ^~~~~~
+src/B_In_GEN.C:131:17: warning: unused variable 'LHE_py' [-Wunused-variable]
+   double LHE_px,LHE_py,LHE_pz,LHE_E,LHE_status,LHE_id,LHE_index, LHE_pt,LHE_eta, LHE_phi;
+                 ^~~~~~
+src/B_In_GEN.C:131:24: warning: unused variable 'LHE_pz' [-Wunused-variable]
+   double LHE_px,LHE_py,LHE_pz,LHE_E,LHE_status,LHE_id,LHE_index, LHE_pt,LHE_eta, LHE_phi;
+                        ^~~~~~
+src/B_In_GEN.C:131:55: warning: unused variable 'LHE_index' [-Wunused-variable]
+   double LHE_px,LHE_py,LHE_pz,LHE_E,LHE_status,LHE_id,LHE_index, LHE_pt,LHE_eta, LHE_phi;
+                                                       ^~~~~~~~~
+src/B_In_GEN.C:135:8: warning: unused variable 'isExotic' [-Wunused-variable]
+   bool isExotic = false;
+        ^~~~~~~~
+src/B_In_GEN.C:140:70: warning: unused variable 'GEN_B_pid' [-Wunused-variable]
+   double GEN_B_pt=-999, GEN_B_eta=-999,GEN_B_phi=-999, GEN_B_E=-999, GEN_B_pid=-999;
+                                                                      ^~~~~~~~~
+src/B_In_GEN.C:141:77: warning: variable 'RECO_bj_m' set but not used [-Wunused-but-set-variable]
+   double RECO_bj_pt=-999, RECO_bj_eta=-999,RECO_bj_phi=-999, RECO_bj_E=-999,RECO_bj_m=-999, RECO_bj_pid=-999;
+                                                                             ^~~~~~~~~
+src/B_In_GEN.C:141:93: warning: unused variable 'RECO_bj_pid' [-Wunused-variable]
+   double RECO_bj_pt=-999, RECO_bj_eta=-999,RECO_bj_phi=-999, RECO_bj_E=-999,RECO_bj_m=-999, RECO_bj_pid=-999;
+                                                                                             ^~~~~~~~~~~
+src/B_In_GEN.C:170:10: warning: variable '_dR' set but not used [-Wunused-but-set-variable]
+   double _dR=10000;
+          ^~~
+src/B_In_GEN.C:175:10: warning: unused variable '_dRcut' [-Wunused-variable]
+   double _dRcut=0.8;
+          ^~~~~~
+src/B_In_GEN.C:177:16: warning: unused variable 'nstatus1' [-Wunused-variable]
+   unsigned int nstatus1=0;
+                ^~~~~~~~
+src/B_In_GEN.C:268:10: warning: variable 'dR_GEN_b_GEN_B' set but not used [-Wunused-but-set-variable]
+   double dR_GEN_b_GEN_B=-1;
+          ^~~~~~~~~~~~~~
+src/B_In_GEN.C:285:10: warning: variable 'dR_RECO_bj_GEN_b' set but not used [-Wunused-but-set-variable]
+   double dR_RECO_bj_GEN_b=-1;
+          ^~~~~~~~~~~~~~~~
+src/B_In_GEN.C:286:10: warning: variable 'dR_RECO_bj_GEN_B' set but not used [-Wunused-but-set-variable]
+   double dR_RECO_bj_GEN_B=-1;
+          ^~~~~~~~~~~~~~~~
+src/B_In_GEN.C: In member function 'void B_In_GEN::executeEventFromParameter(AnalyzerParameter)':
+src/B_In_GEN.C:488:10: warning: unused variable 'btagWeight' [-Wunused-variable]
+   double btagWeight = mcCorr->GetBTaggingReweight_1a(jets, jtp_DeepCSV_Medium);
+          ^~~~~~~~~~
+src/B_In_GEN.C: In member function 'virtual void B_In_GEN::executeEvent()':
+src/B_In_GEN.C:201:5: warning: 'LHE_b_pid' may be used uninitialized in this function [-Wmaybe-uninitialized]
+     if(GEN_id==LHE_b_pid){
+     ^~
+src/B_In_GEN.C:250:11: warning: 'LHE_b_E' may be used uninitialized in this function [-Wmaybe-uninitialized]
+   FillHist("Nocut/LHE_b_E/"+ProcessName, LHE_b_E, weight, 500, 0., 1000.); //nbin,xmin,xmax
+   ~~~~~~~~^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+src/B_In_GEN.C:249:11: warning: 'LHE_b_phi' may be used uninitialized in this function [-Wmaybe-uninitialized]
+   FillHist("Nocut/LHE_b_phi/"+ProcessName, LHE_b_phi, weight, 80, -4., 4.); //nbin,xmin,xmax
+   ~~~~~~~~^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+src/B_In_GEN.C:248:11: warning: 'LHE_b_eta' may be used uninitialized in this function [-Wmaybe-uninitialized]
+   FillHist("Nocut/LHE_b_eta/"+ProcessName, LHE_b_eta, weight, 100, -5., 5.); //nbin,xmin,xmax
+   ~~~~~~~~^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+src/B_In_GEN.C:247:11: warning: 'LHE_b_pt' may be used uninitialized in this function [-Wmaybe-uninitialized]
+   FillHist("Nocut/LHE_b_pt/"+ProcessName, LHE_b_pt, weight, 300, 0., 300.); //nbin,xmin,xmax
+   ~~~~~~~~^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Compiling src/BasicTest.C
+src/BasicTest.C: In member function 'void BasicTest::executeEventFromParameter(AnalyzerParameter)':
+src/BasicTest.C:401:10: warning: unused variable 'btagWeight' [-Wunused-variable]
+   double btagWeight = mcCorr->GetBTaggingReweight_1a(jets, jtp_DeepCSV_Medium);
+          ^~~~~~~~~~
+Compiling src/BBosillation.C
+Compiling src/MeasureJetTaggingEfficiency.C
+Compiling src/SkimTree_Dilepton.C
+Compiling src/SysTemplate.C
+Generating dictionary src/Analyzers_Dict.cxx
+Compiling src/Analyzers_Dict.cxx
+Making shared library: /data6/Users/jhchoi/SKFlatAnalyzers/test/SKFlatAnalyzer/lib//libAnalyzers.so
+make[1]: Leaving directory '/data6/Users/jhchoi/SKFlatAnalyzers/test/SKFlatAnalyzer/Analyzers'
+(mvexist.sh Analyzers/src/Analyzers_Dict_rdict.pcm lib/)
+(mvexist.sh Analyzers/libAnalyzers.rootmap lib/)
+(tar -zcf lib/DataFormats.tar.gz DataFormats)
+(tar -zcf lib/AnalyzerTools.tar.gz AnalyzerTools)
+(tar -zcf lib/GEScaleSyst.tar.gz external/GEScaleSyst/GEScaleSyst.*)
+(tar -zcf lib/Analyzers.tar.gz Analyzers)

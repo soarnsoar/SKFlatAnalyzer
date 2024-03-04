@@ -1,0 +1,42 @@
+Submitting job(s)......................................................................................................................................................
+150 job(s) submitted to cluster 2219209.
+Submitting job(s)......................................................................................................................................................
+150 job(s) submitted to cluster 2219210.
+Submitting job(s)......................................................................................................................................................
+150 job(s) submitted to cluster 2219211.
+Submitting job(s)......................................................................................................................................................
+150 job(s) submitted to cluster 2219212.
+Submitting job(s)......................................................................................................................................................
+150 job(s) submitted to cluster 2219213.
+condor_submit WORKDIR_HADD/run.jds > WORKDIR_HADD/run.jid
+condor_submit WORKDIR_HADD/run.jds > WORKDIR_HADD/run.jid
+condor_submit WORKDIR_HADD/run.jds > WORKDIR_HADD/run.jid
+condor_submit WORKDIR_HADD/run.jds > WORKDIR_HADD/run.jid
+condor_submit WORKDIR_HADD/run.jds > WORKDIR_HADD/run.jid
+##################################################
+Submission Finished
+- JobID = 883881
+- Analyzer = TTsemilep_ChargeReliability
+- Skim = 
+- InputSamples = ['TTLL_powheg', 'WJets_Sherpa', 'DYJetsToEE_MiNNLO', 'DYJetsToMuMu_MiNNLO', 'DYJetsToTauTau_MiNNLO']
+- NJobs = 150
+- Era = 2017
+- UserFlags = ['RunSyst', 'RunSoftElectron', 'RunHadronSide', 'RunReliab']
+- RunDir = /data6/Users/jhchoi/SKFlatRunlog//2024_02_17_132442__883881__TTsemilep_ChargeReliability__Era2017__RunSyst__RunSoftElectron__RunHadronSide__RunReliab__TAMSA1/DYJetsToTauTau_MiNNLO/
+- output will be send to : /data6/Users/jhchoi/SKFlatOutput//Run2UltraLegacy_v3/TTsemilep_ChargeReliability/2017/RunSyst__RunSoftElectron__RunHadronSide__RunReliab__
+##################################################
+submit hadd
+<AFTER hadd fin. please rm remainings..>
+rm /data6/Users/jhchoi/SKFlatRunlog//2024_02_17_132442__883881__TTsemilep_ChargeReliability__Era2017__RunSyst__RunSoftElectron__RunHadronSide__RunReliab__TAMSA1/WJets_Sherpa//output/*.root
+submit hadd
+<AFTER hadd fin. please rm remainings..>
+rm /data6/Users/jhchoi/SKFlatRunlog//2024_02_17_132442__883881__TTsemilep_ChargeReliability__Era2017__RunSyst__RunSoftElectron__RunHadronSide__RunReliab__TAMSA1/DYJetsToEE_MiNNLO//output/*.root
+submit hadd
+<AFTER hadd fin. please rm remainings..>
+rm /data6/Users/jhchoi/SKFlatRunlog//2024_02_17_132442__883881__TTsemilep_ChargeReliability__Era2017__RunSyst__RunSoftElectron__RunHadronSide__RunReliab__TAMSA1/DYJetsToMuMu_MiNNLO//output/*.root
+submit hadd
+<AFTER hadd fin. please rm remainings..>
+rm /data6/Users/jhchoi/SKFlatRunlog//2024_02_17_132442__883881__TTsemilep_ChargeReliability__Era2017__RunSyst__RunSoftElectron__RunHadronSide__RunReliab__TAMSA1/DYJetsToTauTau_MiNNLO//output/*.root
+submit hadd
+<AFTER hadd fin. please rm remainings..>
+rm /data6/Users/jhchoi/SKFlatRunlog//2024_02_17_132442__883881__TTsemilep_ChargeReliability__Era2017__RunSyst__RunSoftElectron__RunHadronSide__RunReliab__TAMSA1/TTLL_powheg//output/*.root

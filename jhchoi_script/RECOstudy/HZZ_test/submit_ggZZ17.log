@@ -1,0 +1,30 @@
+Submitting job(s)...................
+19 job(s) submitted to cluster 2194437.
+Submitting job(s)............................
+28 job(s) submitted to cluster 2194440.
+Submitting job(s)...........................
+27 job(s) submitted to cluster 2194442.
+condor_submit WORKDIR_HADD/run.jds > WORKDIR_HADD/run.jid
+condor_submit WORKDIR_HADD/run.jds > WORKDIR_HADD/run.jid
+condor_submit WORKDIR_HADD/run.jds > WORKDIR_HADD/run.jid
+##################################################
+Submission Finished
+- JobID = 534915
+- Analyzer = HZZ_test
+- Skim = 
+- InputSamples = ['GluGluToZZto2e2mu', 'GluGluToZZto4mu', 'GluGluToZZto4e']
+- NJobs = 27
+- Era = 2017
+- UserFlags = []
+- RunDir = /data6/Users/jhchoi/SKFlatRunlog//2024_01_10_061307__534915__HZZ_test__Era2017__TAMSA1/GluGluToZZto4e/
+- output will be send to : /data6/Users/jhchoi/SKFlatOutput//Run2UltraLegacy_v3/HZZ_test/2017/
+##################################################
+submit hadd
+<AFTER hadd fin. please rm remainings..>
+rm /data6/Users/jhchoi/SKFlatRunlog//2024_01_10_061307__534915__HZZ_test__Era2017__TAMSA1/GluGluToZZto2e2mu//output/*.root
+submit hadd
+<AFTER hadd fin. please rm remainings..>
+rm /data6/Users/jhchoi/SKFlatRunlog//2024_01_10_061307__534915__HZZ_test__Era2017__TAMSA1/GluGluToZZto4mu//output/*.root
+submit hadd
+<AFTER hadd fin. please rm remainings..>
+rm /data6/Users/jhchoi/SKFlatRunlog//2024_01_10_061307__534915__HZZ_test__Era2017__TAMSA1/GluGluToZZto4e//output/*.root

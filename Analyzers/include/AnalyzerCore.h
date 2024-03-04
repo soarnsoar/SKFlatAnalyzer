@@ -234,6 +234,7 @@ public:
   TH2D* GetHist2D(TString histname);
   TH3D* GetHist3D(TString histname);
 
+
   void FillHist(TString histname, double value, double weight, int n_bin, double x_min, double x_max);
   void FillHistUnderAndOverFlow(TString histname, double value, double weight, int n_bin, double x_min, double x_max);
   void FillHist(TString histname, double value, double weight, int n_bin, double *xbins);
@@ -299,9 +300,90 @@ public:
   TTree *jhchoi_newtree3;
   TTree *jhchoi_newtree4;
 
-  void executeEventWithParam();
 
-  //--end jhchoi
+
+
+
+
+  ///--jhchoi Systematic!!--//
+  virtual void executeEventWithCurrentSet();
+  std::unordered_map<string,std::vector<double>> syslist_w;//syslist, weight type
+  std::unordered_map<string,std::vector<std::vector<double>>> syslist_efftool;//syslist, weight type
+  void InitSystematics();
+  vector<TString> MuonTriggerNames;
+  vector<TString> MuonTriggerSFKeys;
+  vector<TString> ElectronTriggerNames;
+  vector<TString> ElectronTriggerSFKeys;
+  TString MuonID;
+  TString ElectronID;
+
+
+
+  
+
+
+
+
+
+
+
+
+
+  TString _sys_suffix;
+  //--Make new functions depends on member variable
+  bool _run_weightbase;
+  //----Non-Weight variations----//
+  int _var_muonscale;//calibration by rochcorr
+  int _var_electronscale;
+  int _var_jes;
+  int _var_jer;
+  TString _JESsource;
+  //---For Scale Variation of Momentum
+  std::vector<Muon> AllMuons_raw;
+  unsigned int muonsize;
+  std::vector<Electron> AllElectrons_raw;
+  unsigned int electronsize;
+  std::vector<Jet> AllJets_raw;
+  unsigned int jetsize;
+  std::vector<Muon> AllMuons;
+  std::vector<Electron> AllElectrons;
+  std::vector<Jet> AllJets;
+
+
+  struct ArgFillHist{
+    TString histname;
+    double value; double weight;
+    int n_bin; double x_min;
+    double x_max;
+  };
+  vector<ArgFillHist> vReserveHist;
+  void ClearReserveHist();
+  struct ArgFillCutflow{
+    TString histname;
+    TString label;
+    double weight;
+  };
+  vector<ArgFillCutflow> vReserveCutflow;
+  void ClearReserveCutflow();
+  void ReserveFillHist(TString histname, double value, double weight, int n_bin, double x_min, double x_max);
+  void ReserveFillCutflow(TString histname,TString label,double weight);
+  
+
+  vector<string> SysToRun_w;
+  vector<string> SysToRun_efftool;
+  vector<string> SysToRun_vv;
+  TString syssuffix;
+  TString sysdir;
+  void ApplySysToRun();
+  //virtual void GetAllObjects();
+  void FillReservedHist();
+  void SetRunWeightBase(bool _doRun);
+  Event ev;
+  void SetAllVar_syslist_efftool_muontrigger(double nominal ,const vector<Lepton*>& leps);
+  void SetAllVar_syslist_efftool_electrontrigger(double nominal ,const vector<Lepton*>& leps);
+  void SetAllVar_syslist_efftool(double nominal, const Lepton* lep,string key_syslist, TString key_efftool);
+  void InitSysVar();
+  //--end jhchoi--//
   //==== Quick Plotters
   void FillLeptonPlots(std::vector<Lepton *> leps, TString this_region, double weight);
   void FillJetPlots(std::vector<Jet> jets, std::vector<FatJet> fatjets, TString this_region, double weight);

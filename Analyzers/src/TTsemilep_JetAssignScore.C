@@ -22,7 +22,7 @@ TTsemilep_JetAssignScore::~TTsemilep_JetAssignScore(){
 void TTsemilep_JetAssignScore::initTMVAmodel_muon(){//TTsemilepJetAssign/2312/v1
   //TString xmlfile=SKFLAT_WD+"/data/Run2UltraLegacy_v3/2017/TMVA/TTsemilepJetAssign/2312/v1//muon/TMVAClassification_DNN.weights.xml";//using only matched jets exist
   //TMVA/TTsemilepJetAssign/add_unmatchedjet_event/muon
-  TString xmlfile=SKFLAT_WD+"/data/Run2UltraLegacy_v3/2017/TMVA/TTsemilepJetAssign/add_unmatchedjet_event/muon/TMVAClassification_DNN.weights.xml";//add nonmatchedjet events
+  TString xmlfile=SKFLAT_WD+"/data/Run2UltraLegacy_v3/2017/TMVA/TTsemilepJetAssign/FullLearning/muon/TMVAClassification_DNN.weights.xml";//add nonmatchedjet events
   cout << "define tmvareader"<< endl;
   myreader_muon=new TMVA::Reader("V");
   cout << "add variables"<< endl;
@@ -67,7 +67,7 @@ void TTsemilep_JetAssignScore::initTMVAmodel_muon(){//TTsemilepJetAssign/2312/v1
 
 void TTsemilep_JetAssignScore::initTMVAmodel_electron(){
   //TString xmlfile=SKFLAT_WD+"/data/Run2UltraLegacy_v3/2017/TMVA/TTsemilepJetAssign/2312/v1/electron/TMVAClassification_DNN.weights.xml";//training with only matchedjet events
-  TString xmlfile=SKFLAT_WD+"/data/Run2UltraLegacy_v3/2017/TMVA/TTsemilepJetAssign/add_unmatchedjet_event/electron/TMVAClassification_DNN.weights.xml";//add nonmatchedjet events
+  TString xmlfile=SKFLAT_WD+"/data/Run2UltraLegacy_v3/2017/TMVA/TTsemilepJetAssign/FullLearning/electron/TMVAClassification_DNN.weights.xml";//add nonmatchedjet events
   cout << "define tmvareader"<< endl;
   myreader_electron=new TMVA::Reader("V");
   cout << "add variables"<< endl;
@@ -184,7 +184,8 @@ void TTsemilep_JetAssignScore::initializeAnalyzer(){
     
     TriggerSafeCut_muon = 30.;
     TriggerSafeCut_electron = 35.;
-    
+    MuonID="Muon_MediumID_trkIsoLoose";
+    ElectronID="Electron_MediumID";
   }
 
   
