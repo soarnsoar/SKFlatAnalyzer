@@ -9,3 +9,7 @@ lib/*.rootmap
 */obj
 python/UserInfo_*.py
 !python/UserInfo_template.py
+keras_my
+SKFlatTools
+alt_keras
+*#

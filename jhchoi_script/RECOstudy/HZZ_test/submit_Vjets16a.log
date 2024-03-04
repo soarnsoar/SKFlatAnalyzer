@@ -1,0 +1,66 @@
+Submitting job(s)......................................................................................................................................................
+150 job(s) submitted to cluster 2194474.
+Submitting job(s)......................................................................................................................................................
+150 job(s) submitted to cluster 2194478.
+Submitting job(s).......................................................................
+71 job(s) submitted to cluster 2194482.
+Submitting job(s)......................................................................................................
+102 job(s) submitted to cluster 2194486.
+Submitting job(s).......................
+23 job(s) submitted to cluster 2194490.
+Submitting job(s).........................................................
+57 job(s) submitted to cluster 2194494.
+Submitting job(s).............................................................
+61 job(s) submitted to cluster 2194498.
+Submitting job(s)....................................................................................................
+100 job(s) submitted to cluster 2194502.
+Submitting job(s).....................................................................
+69 job(s) submitted to cluster 2194506.
+condor_submit WORKDIR_HADD/run.jds > WORKDIR_HADD/run.jid
+condor_submit WORKDIR_HADD/run.jds > WORKDIR_HADD/run.jid
+condor_submit WORKDIR_HADD/run.jds > WORKDIR_HADD/run.jid
+condor_submit WORKDIR_HADD/run.jds > WORKDIR_HADD/run.jid
+condor_submit WORKDIR_HADD/run.jds > WORKDIR_HADD/run.jid
+condor_submit WORKDIR_HADD/run.jds > WORKDIR_HADD/run.jid
+condor_submit WORKDIR_HADD/run.jds > WORKDIR_HADD/run.jid
+condor_submit WORKDIR_HADD/run.jds > WORKDIR_HADD/run.jid
+condor_submit WORKDIR_HADD/run.jds > WORKDIR_HADD/run.jid
+##################################################
+Submission Finished
+- JobID = 486218
+- Analyzer = HZZ_test
+- Skim = 
+- InputSamples = ['WJets_MG', 'DYJets_MG_HT-100to200', 'DYJets_MG_HT-1200to2500', 'DYJets_MG_HT-200to400', 'DYJets_MG_HT-2500toInf', 'DYJets_MG_HT-400to600', 'DYJets_MG_HT-600to800', 'DYJets_MG_HT-70to100', 'DYJets_MG_HT-800to1200']
+- NJobs = 69
+- Era = 2016preVFP
+- UserFlags = []
+- RunDir = /data6/Users/jhchoi/SKFlatRunlog//2024_01_10_074217__486218__HZZ_test__Era2016preVFP__TAMSA1/DYJets_MG_HT-800to1200/
+- output will be send to : /data6/Users/jhchoi/SKFlatOutput//Run2UltraLegacy_v3/HZZ_test/2016preVFP/
+##################################################
+submit hadd
+<AFTER hadd fin. please rm remainings..>
+rm /data6/Users/jhchoi/SKFlatRunlog//2024_01_10_074217__486218__HZZ_test__Era2016preVFP__TAMSA1/WJets_MG//output/*.root
+submit hadd
+<AFTER hadd fin. please rm remainings..>
+rm /data6/Users/jhchoi/SKFlatRunlog//2024_01_10_074217__486218__HZZ_test__Era2016preVFP__TAMSA1/DYJets_MG_HT-100to200//output/*.root
+submit hadd
+<AFTER hadd fin. please rm remainings..>
+rm /data6/Users/jhchoi/SKFlatRunlog//2024_01_10_074217__486218__HZZ_test__Era2016preVFP__TAMSA1/DYJets_MG_HT-1200to2500//output/*.root
+submit hadd
+<AFTER hadd fin. please rm remainings..>
+rm /data6/Users/jhchoi/SKFlatRunlog//2024_01_10_074217__486218__HZZ_test__Era2016preVFP__TAMSA1/DYJets_MG_HT-200to400//output/*.root
+submit hadd
+<AFTER hadd fin. please rm remainings..>
+rm /data6/Users/jhchoi/SKFlatRunlog//2024_01_10_074217__486218__HZZ_test__Era2016preVFP__TAMSA1/DYJets_MG_HT-2500toInf//output/*.root
+submit hadd
+<AFTER hadd fin. please rm remainings..>
+rm /data6/Users/jhchoi/SKFlatRunlog//2024_01_10_074217__486218__HZZ_test__Era2016preVFP__TAMSA1/DYJets_MG_HT-400to600//output/*.root
+submit hadd
+<AFTER hadd fin. please rm remainings..>
+rm /data6/Users/jhchoi/SKFlatRunlog//2024_01_10_074217__486218__HZZ_test__Era2016preVFP__TAMSA1/DYJets_MG_HT-600to800//output/*.root
+submit hadd
+<AFTER hadd fin. please rm remainings..>
+rm /data6/Users/jhchoi/SKFlatRunlog//2024_01_10_074217__486218__HZZ_test__Era2016preVFP__TAMSA1/DYJets_MG_HT-70to100//output/*.root
+submit hadd
+<AFTER hadd fin. please rm remainings..>
+rm /data6/Users/jhchoi/SKFlatRunlog//2024_01_10_074217__486218__HZZ_test__Era2016preVFP__TAMSA1/DYJets_MG_HT-800to1200//output/*.root

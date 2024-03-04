@@ -1,0 +1,18 @@
+Submitting job(s)............................................................................................................................................................................................................................................................................................................
+300 job(s) submitted to cluster 2205553.
+condor_submit WORKDIR_HADD/run.jds > WORKDIR_HADD/run.jid
+##################################################
+Submission Finished
+- JobID = 623302
+- Analyzer = BBosillation
+- Skim = 
+- InputSamples = ['TTLJ_powheg']
+- NJobs = 300
+- Era = 2017
+- UserFlags = []
+- RunDir = /data6/Users/jhchoi/SKFlatRunlog//2024_01_25_151550__623302__BBosillation__Era2017__TAMSA1/TTLJ_powheg/
+- output will be send to : /data6/Users/jhchoi/SKFlatOutput//Run2UltraLegacy_v3/BBosillation/2017/
+##################################################
+submit hadd
+<AFTER hadd fin. please rm remainings..>
+rm /data6/Users/jhchoi/SKFlatRunlog//2024_01_25_151550__623302__BBosillation__Era2017__TAMSA1/TTLJ_powheg//output/*.root

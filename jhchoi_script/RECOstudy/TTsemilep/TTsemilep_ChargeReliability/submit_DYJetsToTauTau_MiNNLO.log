@@ -1,0 +1,18 @@
+Submitting job(s)...........................................................................................................................................................................................................................
+219 job(s) submitted to cluster 2192770.
+condor_submit WORKDIR_HADD/run.jds > WORKDIR_HADD/run.jid
+##################################################
+Submission Finished
+- JobID = 258703
+- Analyzer = TTsemilep_ChargeReliability
+- Skim = 
+- InputSamples = ['DYJetsToTauTau_MiNNLO']
+- NJobs = 219
+- Era = 2017
+- UserFlags = []
+- RunDir = /data6/Users/jhchoi/SKFlatRunlog//2024_01_07_044008__258703__TTsemilep_ChargeReliability__Era2017__TAMSA1/DYJetsToTauTau_MiNNLO/
+- output will be send to : /data6/Users/jhchoi/SKFlatOutput//Run2UltraLegacy_v3/TTsemilep_ChargeReliability/2017/
+##################################################
+submit hadd
+<AFTER hadd fin. please rm remainings..>
+rm /data6/Users/jhchoi/SKFlatRunlog//2024_01_07_044008__258703__TTsemilep_ChargeReliability__Era2017__TAMSA1/DYJetsToTauTau_MiNNLO//output/*.root

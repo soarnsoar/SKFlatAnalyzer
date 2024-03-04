@@ -1,0 +1,42 @@
+Submitting job(s)......................................................................................................................................................
+150 job(s) submitted to cluster 2194606.
+Submitting job(s)......................................................................................................................................................
+150 job(s) submitted to cluster 2194611.
+Submitting job(s)......................................................................................................................................................
+150 job(s) submitted to cluster 2194615.
+Submitting job(s)...............
+15 job(s) submitted to cluster 2194619.
+Submitting job(s)..............................
+30 job(s) submitted to cluster 2194623.
+condor_submit WORKDIR_HADD/run.jds > WORKDIR_HADD/run.jid
+condor_submit WORKDIR_HADD/run.jds > WORKDIR_HADD/run.jid
+condor_submit WORKDIR_HADD/run.jds > WORKDIR_HADD/run.jid
+condor_submit WORKDIR_HADD/run.jds > WORKDIR_HADD/run.jid
+condor_submit WORKDIR_HADD/run.jds > WORKDIR_HADD/run.jid
+##################################################
+Submission Finished
+- JobID = 45150
+- Analyzer = HZZ_test
+- Skim = 
+- InputSamples = ['DYJets_Pt-50To100', 'DYJets_Pt-100To250', 'DYJets_Pt-250To400', 'DYJets_Pt-400To650', 'DYJets_Pt-650ToInf']
+- NJobs = 30
+- Era = 2017
+- UserFlags = []
+- RunDir = /data6/Users/jhchoi/SKFlatRunlog//2024_01_10_095420__45150__HZZ_test__Era2017__TAMSA1/DYJets_Pt-650ToInf/
+- output will be send to : /data6/Users/jhchoi/SKFlatOutput//Run2UltraLegacy_v3/HZZ_test/2017/
+##################################################
+submit hadd
+<AFTER hadd fin. please rm remainings..>
+rm /data6/Users/jhchoi/SKFlatRunlog//2024_01_10_095420__45150__HZZ_test__Era2017__TAMSA1/DYJets_Pt-50To100//output/*.root
+submit hadd
+<AFTER hadd fin. please rm remainings..>
+rm /data6/Users/jhchoi/SKFlatRunlog//2024_01_10_095420__45150__HZZ_test__Era2017__TAMSA1/DYJets_Pt-100To250//output/*.root
+submit hadd
+<AFTER hadd fin. please rm remainings..>
+rm /data6/Users/jhchoi/SKFlatRunlog//2024_01_10_095420__45150__HZZ_test__Era2017__TAMSA1/DYJets_Pt-250To400//output/*.root
+submit hadd
+<AFTER hadd fin. please rm remainings..>
+rm /data6/Users/jhchoi/SKFlatRunlog//2024_01_10_095420__45150__HZZ_test__Era2017__TAMSA1/DYJets_Pt-400To650//output/*.root
+submit hadd
+<AFTER hadd fin. please rm remainings..>
+rm /data6/Users/jhchoi/SKFlatRunlog//2024_01_10_095420__45150__HZZ_test__Era2017__TAMSA1/DYJets_Pt-650ToInf//output/*.root

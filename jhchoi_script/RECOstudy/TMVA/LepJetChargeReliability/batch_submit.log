@@ -1,0 +1,18 @@
+Submitting job(s)............................................................................................................................................................................................................................................................................................................
+300 job(s) submitted to cluster 2003775.
+condor_submit WORKDIR_HADD/run.jds > WORKDIR_HADD/run.jid
+##################################################
+Submission Finished
+- JobID = 74336
+- Analyzer = ForLepJetChargeReliability
+- Skim = 
+- InputSamples = ['DYJets']
+- NJobs = 300
+- Era = 2017
+- UserFlags = []
+- RunDir = /data6/Users/jhchoi/SKFlatRunlog//2023_11_23_203058__74336__ForLepJetChargeReliability__Era2017__TAMSA1/DYJets/
+- output will be send to : /data6/Users/jhchoi/SKFlatOutput//Run2UltraLegacy_v3/ForLepJetChargeReliability/2017/
+##################################################
+submit hadd
+<AFTER hadd fin. please rm remainings..>
+rm /data6/Users/jhchoi/SKFlatRunlog//2023_11_23_203058__74336__ForLepJetChargeReliability__Era2017__TAMSA1/DYJets//output/*.root

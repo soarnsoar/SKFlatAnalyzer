@@ -13,6 +13,17 @@ void SysTemplate::initializeAnalyzer(){
     
   }
 
+  MuonTriggerNames = {"HLT_IsoMu24_v","HLT_IsoMu27_v"};
+  MuonTriggerSFKeys={"IsoMu24_MediumID_trkIsoLoose","IsoMu27_MediumID_trkIsoLoose"};
+  ElectronTriggerNames = {"HLT_Ele27_WPTight_Gsf_v","HLT_Ele32_WPTight_Gsf_v"};
+  ElectronTriggerSFKeys = {"Ele27_MediumID","Ele32_MediumID"};
+  TriggerSafeCut_muon = 30.;
+  TriggerSafeCut_electron = 35.;
+
+  MuonID="Muon_MediumID_trkIsoLoose";
+  ElectronID="Electron_MediumID";
+
+
 }
 
 SysTemplate::~SysTemplate(){

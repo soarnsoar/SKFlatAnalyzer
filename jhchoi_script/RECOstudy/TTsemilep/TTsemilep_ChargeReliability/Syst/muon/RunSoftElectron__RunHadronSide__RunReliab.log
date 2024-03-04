@@ -1,0 +1,42 @@
+Submitting job(s)..................................................
+50 job(s) submitted to cluster 2219226.
+Submitting job(s)..................................................
+50 job(s) submitted to cluster 2219227.
+Submitting job(s)..................................................
+50 job(s) submitted to cluster 2219228.
+Submitting job(s)..................................................
+50 job(s) submitted to cluster 2219229.
+Submitting job(s)..................................................
+50 job(s) submitted to cluster 2219230.
+condor_submit WORKDIR_HADD/run.jds > WORKDIR_HADD/run.jid
+condor_submit WORKDIR_HADD/run.jds > WORKDIR_HADD/run.jid
+condor_submit WORKDIR_HADD/run.jds > WORKDIR_HADD/run.jid
+condor_submit WORKDIR_HADD/run.jds > WORKDIR_HADD/run.jid
+condor_submit WORKDIR_HADD/run.jds > WORKDIR_HADD/run.jid
+##################################################
+Submission Finished
+- JobID = 143087
+- Analyzer = TTsemilep_ChargeReliability
+- Skim = 
+- InputSamples = ['SingleMuon:B', 'SingleMuon:C', 'SingleMuon:D', 'SingleMuon:E', 'SingleMuon:F']
+- NJobs = 50
+- Era = 2017
+- UserFlags = ['RunSyst', 'RunSoftElectron', 'RunHadronSide', 'RunReliab']
+- RunDir = /data6/Users/jhchoi/SKFlatRunlog//2024_02_17_132522__143087__TTsemilep_ChargeReliability__Era2017__RunSyst__RunSoftElectron__RunHadronSide__RunReliab__TAMSA1/SingleMuon_periodF/
+- output will be send to : /data6/Users/jhchoi/SKFlatOutput//Run2UltraLegacy_v3/TTsemilep_ChargeReliability/2017/RunSyst__RunSoftElectron__RunHadronSide__RunReliab__/DATA/
+##################################################
+submit hadd
+<AFTER hadd fin. please rm remainings..>
+rm /data6/Users/jhchoi/SKFlatRunlog//2024_02_17_132522__143087__TTsemilep_ChargeReliability__Era2017__RunSyst__RunSoftElectron__RunHadronSide__RunReliab__TAMSA1/SingleMuon_periodD//output/*.root
+submit hadd
+<AFTER hadd fin. please rm remainings..>
+rm /data6/Users/jhchoi/SKFlatRunlog//2024_02_17_132522__143087__TTsemilep_ChargeReliability__Era2017__RunSyst__RunSoftElectron__RunHadronSide__RunReliab__TAMSA1/SingleMuon_periodB//output/*.root
+submit hadd
+<AFTER hadd fin. please rm remainings..>
+rm /data6/Users/jhchoi/SKFlatRunlog//2024_02_17_132522__143087__TTsemilep_ChargeReliability__Era2017__RunSyst__RunSoftElectron__RunHadronSide__RunReliab__TAMSA1/SingleMuon_periodC//output/*.root
+submit hadd
+<AFTER hadd fin. please rm remainings..>
+rm /data6/Users/jhchoi/SKFlatRunlog//2024_02_17_132522__143087__TTsemilep_ChargeReliability__Era2017__RunSyst__RunSoftElectron__RunHadronSide__RunReliab__TAMSA1/SingleMuon_periodE//output/*.root
+submit hadd
+<AFTER hadd fin. please rm remainings..>
+rm /data6/Users/jhchoi/SKFlatRunlog//2024_02_17_132522__143087__TTsemilep_ChargeReliability__Era2017__RunSyst__RunSoftElectron__RunHadronSide__RunReliab__TAMSA1/SingleMuon_periodF//output/*.root

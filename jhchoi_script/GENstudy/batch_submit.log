@@ -1,0 +1,14 @@
+Submitting job(s)............................................................................................................................................................................................................................................................................................................
+300 job(s) submitted to cluster 1922677.
+##################################################
+Submission Finished
+- JobID = 205545
+- Analyzer = BBbar_Analyzer
+- Skim = 
+- InputSamples = ['DYJets']
+- NJobs = 300
+- Era = 2017
+- UserFlags = []
+- RunDir = /data6/Users/jhchoi/SKFlatRunlog//2023_10_11_155010__205545__BBbar_Analyzer__Era2017__TAMSA1/DYJets/
+- output will be send to : /data6/Users/jhchoi/SKFlatOutput//Run2UltraLegacy_v3/BBbar_Analyzer/2017/
+##################################################

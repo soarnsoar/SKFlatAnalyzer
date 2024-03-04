@@ -1,0 +1,24 @@
+Submitting job(s)...................................................................
+67 job(s) submitted to cluster 2219448.
+Submitting job(s)..................................................................
+66 job(s) submitted to cluster 2219449.
+condor_submit WORKDIR_HADD/run.jds > WORKDIR_HADD/run.jid
+condor_submit WORKDIR_HADD/run.jds > WORKDIR_HADD/run.jid
+##################################################
+Submission Finished
+- JobID = 181236
+- Analyzer = TTsemilep_ChargeReliability
+- Skim = 
+- InputSamples = ['SingleTop_tW_antitop_NoFullyHad', 'SingleTop_tW_top_NoFullyHad']
+- NJobs = 66
+- Era = 2017
+- UserFlags = ['RunSyst', 'RunJet', 'RunLeptonSide', 'RunReliab']
+- RunDir = /data6/Users/jhchoi/SKFlatRunlog//2024_02_18_061112__181236__TTsemilep_ChargeReliability__Era2017__RunSyst__RunJet__RunLeptonSide__RunReliab__TAMSA1/SingleTop_tW_top_NoFullyHad/
+- output will be send to : /data6/Users/jhchoi/SKFlatOutput//Run2UltraLegacy_v3/TTsemilep_ChargeReliability/2017/RunSyst__RunJet__RunLeptonSide__RunReliab__
+##################################################
+submit hadd
+<AFTER hadd fin. please rm remainings..>
+rm /data6/Users/jhchoi/SKFlatRunlog//2024_02_18_061112__181236__TTsemilep_ChargeReliability__Era2017__RunSyst__RunJet__RunLeptonSide__RunReliab__TAMSA1/SingleTop_tW_antitop_NoFullyHad//output/*.root
+submit hadd
+<AFTER hadd fin. please rm remainings..>
+rm /data6/Users/jhchoi/SKFlatRunlog//2024_02_18_061112__181236__TTsemilep_ChargeReliability__Era2017__RunSyst__RunJet__RunLeptonSide__RunReliab__TAMSA1/SingleTop_tW_top_NoFullyHad//output/*.root

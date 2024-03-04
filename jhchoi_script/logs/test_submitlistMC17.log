@@ -1,0 +1,22 @@
+Submitting job(s)..................................................
+50 job(s) submitted to cluster 1829025.
+Submitting job(s)..................................................
+50 job(s) submitted to cluster 1829026.
+Submitting job(s)..................................................
+50 job(s) submitted to cluster 1829027.
+Submitting job(s)..................................................
+50 job(s) submitted to cluster 1829028.
+Submitting job(s)..................................................
+50 job(s) submitted to cluster 1829029.
+##################################################
+Submission Finished
+- JobID = 913718
+- Analyzer = BasicTest
+- Skim = 
+- InputSamples = ['DYJets10to50_MG', 'DYJets', 'TTLJ_powheg', 'TTLL_powheg', 'WJets_amcatnlo']
+- NJobs = 50
+- Era = 2017
+- UserFlags = []
+- RunDir = /data6/Users/jhchoi/SKFlatRunlog//2023_09_07_163528__913718__BasicTest__Era2017__TAMSA1/WJets_amcatnlo/
+- output will be send to : /data6/Users/jhchoi/SKFlatOutput//Run2UltraLegacy_v3/BasicTest/2017/
+##################################################

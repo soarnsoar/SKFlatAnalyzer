@@ -1,0 +1,54 @@
+Submitting job(s)....................................................................................................
+100 job(s) submitted to cluster 2219357.
+Submitting job(s)....................................................................................................
+100 job(s) submitted to cluster 2219358.
+Submitting job(s)............................................................................................
+92 job(s) submitted to cluster 2219359.
+Submitting job(s)........................................................................
+72 job(s) submitted to cluster 2219360.
+Submitting job(s)...........................
+27 job(s) submitted to cluster 2219361.
+Submitting job(s).......................
+23 job(s) submitted to cluster 2219362.
+Submitting job(s)...............
+15 job(s) submitted to cluster 2219363.
+condor_submit WORKDIR_HADD/run.jds > WORKDIR_HADD/run.jid
+condor_submit WORKDIR_HADD/run.jds > WORKDIR_HADD/run.jid
+condor_submit WORKDIR_HADD/run.jds > WORKDIR_HADD/run.jid
+condor_submit WORKDIR_HADD/run.jds > WORKDIR_HADD/run.jid
+condor_submit WORKDIR_HADD/run.jds > WORKDIR_HADD/run.jid
+condor_submit WORKDIR_HADD/run.jds > WORKDIR_HADD/run.jid
+condor_submit WORKDIR_HADD/run.jds > WORKDIR_HADD/run.jid
+##################################################
+Submission Finished
+- JobID = 956048
+- Analyzer = TTsemilep_ChargeReliability
+- Skim = 
+- InputSamples = ['QCD_bEnriched_HT100to200', 'QCD_bEnriched_HT200to300', 'QCD_bEnriched_HT300to500', 'QCD_bEnriched_HT500to700', 'QCD_bEnriched_HT700to1000', 'QCD_bEnriched_HT1000to1500', 'QCD_bEnriched_HT1500to2000']
+- NJobs = 15
+- Era = 2017
+- UserFlags = ['RunSyst', 'RunJet', 'RunHadronSide', 'RunReliab']
+- RunDir = /data6/Users/jhchoi/SKFlatRunlog//2024_02_18_003542__956048__TTsemilep_ChargeReliability__Era2017__RunSyst__RunJet__RunHadronSide__RunReliab__TAMSA1/QCD_bEnriched_HT1500to2000/
+- output will be send to : /data6/Users/jhchoi/SKFlatOutput//Run2UltraLegacy_v3/TTsemilep_ChargeReliability/2017/RunSyst__RunJet__RunHadronSide__RunReliab__
+##################################################
+submit hadd
+<AFTER hadd fin. please rm remainings..>
+rm /data6/Users/jhchoi/SKFlatRunlog//2024_02_18_003542__956048__TTsemilep_ChargeReliability__Era2017__RunSyst__RunJet__RunHadronSide__RunReliab__TAMSA1/QCD_bEnriched_HT100to200//output/*.root
+submit hadd
+<AFTER hadd fin. please rm remainings..>
+rm /data6/Users/jhchoi/SKFlatRunlog//2024_02_18_003542__956048__TTsemilep_ChargeReliability__Era2017__RunSyst__RunJet__RunHadronSide__RunReliab__TAMSA1/QCD_bEnriched_HT200to300//output/*.root
+submit hadd
+<AFTER hadd fin. please rm remainings..>
+rm /data6/Users/jhchoi/SKFlatRunlog//2024_02_18_003542__956048__TTsemilep_ChargeReliability__Era2017__RunSyst__RunJet__RunHadronSide__RunReliab__TAMSA1/QCD_bEnriched_HT300to500//output/*.root
+submit hadd
+<AFTER hadd fin. please rm remainings..>
+rm /data6/Users/jhchoi/SKFlatRunlog//2024_02_18_003542__956048__TTsemilep_ChargeReliability__Era2017__RunSyst__RunJet__RunHadronSide__RunReliab__TAMSA1/QCD_bEnriched_HT500to700//output/*.root
+submit hadd
+<AFTER hadd fin. please rm remainings..>
+rm /data6/Users/jhchoi/SKFlatRunlog//2024_02_18_003542__956048__TTsemilep_ChargeReliability__Era2017__RunSyst__RunJet__RunHadronSide__RunReliab__TAMSA1/QCD_bEnriched_HT700to1000//output/*.root
+submit hadd
+<AFTER hadd fin. please rm remainings..>
+rm /data6/Users/jhchoi/SKFlatRunlog//2024_02_18_003542__956048__TTsemilep_ChargeReliability__Era2017__RunSyst__RunJet__RunHadronSide__RunReliab__TAMSA1/QCD_bEnriched_HT1000to1500//output/*.root
+submit hadd
+<AFTER hadd fin. please rm remainings..>
+rm /data6/Users/jhchoi/SKFlatRunlog//2024_02_18_003542__956048__TTsemilep_ChargeReliability__Era2017__RunSyst__RunJet__RunHadronSide__RunReliab__TAMSA1/QCD_bEnriched_HT1500to2000//output/*.root

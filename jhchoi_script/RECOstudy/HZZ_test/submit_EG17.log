@@ -1,0 +1,42 @@
+Submitting job(s)......................................................................................................................................................
+150 job(s) submitted to cluster 2194327.
+Submitting job(s)......................................................................................................................................................
+150 job(s) submitted to cluster 2194339.
+Submitting job(s)......................................................................................................................................................
+150 job(s) submitted to cluster 2194351.
+Submitting job(s)......................................................................................................................................................
+150 job(s) submitted to cluster 2194361.
+Submitting job(s)......................................................................................................................................................
+150 job(s) submitted to cluster 2194370.
+condor_submit WORKDIR_HADD/run.jds > WORKDIR_HADD/run.jid
+condor_submit WORKDIR_HADD/run.jds > WORKDIR_HADD/run.jid
+condor_submit WORKDIR_HADD/run.jds > WORKDIR_HADD/run.jid
+condor_submit WORKDIR_HADD/run.jds > WORKDIR_HADD/run.jid
+condor_submit WORKDIR_HADD/run.jds > WORKDIR_HADD/run.jid
+##################################################
+Submission Finished
+- JobID = 229791
+- Analyzer = HZZ_test
+- Skim = SkimTree_Dilepton
+- InputSamples = ['DoubleEG:B', 'DoubleEG:C', 'DoubleEG:D', 'DoubleEG:E', 'DoubleEG:F']
+- NJobs = 150
+- Era = 2017
+- UserFlags = []
+- RunDir = /data6/Users/jhchoi/SKFlatRunlog//2024_01_09_234754__229791__HZZ_test__Era2017__SkimTree_Dilepton__TAMSA1/DoubleEG_periodF/
+- output will be send to : /data6/Users/jhchoi/SKFlatOutput//Run2UltraLegacy_v3/HZZ_test/2017//DATA/
+##################################################
+submit hadd
+<AFTER hadd fin. please rm remainings..>
+rm /data6/Users/jhchoi/SKFlatRunlog//2024_01_09_234754__229791__HZZ_test__Era2017__SkimTree_Dilepton__TAMSA1/DoubleEG_periodB//output/*.root
+submit hadd
+<AFTER hadd fin. please rm remainings..>
+rm /data6/Users/jhchoi/SKFlatRunlog//2024_01_09_234754__229791__HZZ_test__Era2017__SkimTree_Dilepton__TAMSA1/DoubleEG_periodC//output/*.root
+submit hadd
+<AFTER hadd fin. please rm remainings..>
+rm /data6/Users/jhchoi/SKFlatRunlog//2024_01_09_234754__229791__HZZ_test__Era2017__SkimTree_Dilepton__TAMSA1/DoubleEG_periodD//output/*.root
+submit hadd
+<AFTER hadd fin. please rm remainings..>
+rm /data6/Users/jhchoi/SKFlatRunlog//2024_01_09_234754__229791__HZZ_test__Era2017__SkimTree_Dilepton__TAMSA1/DoubleEG_periodE//output/*.root
+submit hadd
+<AFTER hadd fin. please rm remainings..>
+rm /data6/Users/jhchoi/SKFlatRunlog//2024_01_09_234754__229791__HZZ_test__Era2017__SkimTree_Dilepton__TAMSA1/DoubleEG_periodF//output/*.root

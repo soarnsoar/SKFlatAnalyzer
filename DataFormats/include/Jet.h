@@ -50,6 +50,11 @@ public:
   bool PassID(TString ID) const;
 
   double GetTaggerResult(JetTagging::Tagger tg) const;
+  double GetChargedHadronEnergyFraction() const;
+  double GetNeutralHadronEnergyFraction() const;
+  double GetNeutralEmEnergyFraction() const;
+  double GetChargedEmEnergyFraction() const;
+  double GetMuonEnergyFraction() const;
 
 private:
 

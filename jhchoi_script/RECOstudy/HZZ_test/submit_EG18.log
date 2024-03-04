@@ -1,0 +1,36 @@
+Submitting job(s)......................................................................................................................................................
+150 job(s) submitted to cluster 2194325.
+Submitting job(s)......................................................................................................................................................
+150 job(s) submitted to cluster 2194337.
+Submitting job(s)......................................................................................................................................................
+150 job(s) submitted to cluster 2194349.
+Submitting job(s)......................................................................................................................................................
+150 job(s) submitted to cluster 2194359.
+condor_submit WORKDIR_HADD/run.jds > WORKDIR_HADD/run.jid
+condor_submit WORKDIR_HADD/run.jds > WORKDIR_HADD/run.jid
+condor_submit WORKDIR_HADD/run.jds > WORKDIR_HADD/run.jid
+condor_submit WORKDIR_HADD/run.jds > WORKDIR_HADD/run.jid
+##################################################
+Submission Finished
+- JobID = 377322
+- Analyzer = HZZ_test
+- Skim = SkimTree_Dilepton
+- InputSamples = ['EGamma:A', 'EGamma:B', 'EGamma:C', 'EGamma:D']
+- NJobs = 150
+- Era = 2018
+- UserFlags = []
+- RunDir = /data6/Users/jhchoi/SKFlatRunlog//2024_01_09_234754__377322__HZZ_test__Era2018__SkimTree_Dilepton__TAMSA1/EGamma_periodD/
+- output will be send to : /data6/Users/jhchoi/SKFlatOutput//Run2UltraLegacy_v3/HZZ_test/2018//DATA/
+##################################################
+submit hadd
+<AFTER hadd fin. please rm remainings..>
+rm /data6/Users/jhchoi/SKFlatRunlog//2024_01_09_234754__377322__HZZ_test__Era2018__SkimTree_Dilepton__TAMSA1/EGamma_periodA//output/*.root
+submit hadd
+<AFTER hadd fin. please rm remainings..>
+rm /data6/Users/jhchoi/SKFlatRunlog//2024_01_09_234754__377322__HZZ_test__Era2018__SkimTree_Dilepton__TAMSA1/EGamma_periodB//output/*.root
+submit hadd
+<AFTER hadd fin. please rm remainings..>
+rm /data6/Users/jhchoi/SKFlatRunlog//2024_01_09_234754__377322__HZZ_test__Era2018__SkimTree_Dilepton__TAMSA1/EGamma_periodC//output/*.root
+submit hadd
+<AFTER hadd fin. please rm remainings..>
+rm /data6/Users/jhchoi/SKFlatRunlog//2024_01_09_234754__377322__HZZ_test__Era2018__SkimTree_Dilepton__TAMSA1/EGamma_periodD//output/*.root

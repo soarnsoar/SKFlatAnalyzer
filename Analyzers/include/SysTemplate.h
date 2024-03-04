@@ -18,10 +18,9 @@ public:
 
   TString IsoMuTriggerName;
   double TriggerSafePtCut;
-
+  double TriggerSafeCut_muon;
+  double TriggerSafeCut_electron;
   vector<TString> MuonIDs, MuonIDSFKeys;
-  vector<Muon> AllMuons;
-  vector<Jet> AllJets;
 
   double weight_Prefire;
   //

@@ -51,14 +51,9 @@ public:
   double DNNcut;
   double taged_bjet_score;
   TString SKFLAT_WD;
-  Event ev;
+  //Event ev;
 
 
-  vector<TString> MuonTriggerNames;
-  vector<TString> MuonTriggerSFKeys;
-  vector<TString> ElectronTriggerNames;
-  vector<TString> ElectronTriggerSFKeys;
-  
   double TriggerSafeCut_muon;
   double TriggerSafeCut_electron;
 
@@ -134,6 +129,7 @@ public:
   bool CheckJets();
   void AnalyzeLHE();
   void executeEventFromParameter(AnalyzerParameter param);
+  void executeEventWithCurrentSet();
   void FillHists(TString cutname);
   bool AnalyzerLHE();
   bool ApplyEventKinematicCut();
@@ -150,8 +146,10 @@ public:
   void FillHist_bJet(TString cutname);
   void FillHist_bHadJet(TString cutname);
   void FillHist_bLepJet(TString cutname);
+  void FillHist_bmuon_in_b(TString cutname);
   void FillHist_bmuon_in_bHad(TString cutname);
   void FillHist_bmuon_in_bLep(TString cutname);
+  void FillHist_belectron_in_b(TString cutname);
   void FillHist_belectron_in_bHad(TString cutname);
   void FillHist_belectron_in_bLep(TString cutname);
  
@@ -160,6 +158,14 @@ public:
   JetTagging::Parameters jtp;
   JetTagging::Parameters jtp_loose;
   void executeEvent();
+
+  bool SkipRunSoftMuon;
+  bool SkipRunSoftElectron;
+  bool SkipRunJet;
+  bool SkipRunHadronBJetSide;
+  bool SkipRunLeptonBJetSide;
+  bool SkipMeasureReliab; 
+  bool SkipMeasureChAcc;
 
   bool RunSyst;
   bool RunNewPDF;
@@ -170,12 +176,6 @@ public:
   TString IsoMuTriggerName;
   double TriggerSafePtCut;
 
-  vector<Muon> AllMuons;
-  unsigned int muonsize;
-  vector<Electron> AllElectrons;
-  unsigned int electronsize;
-  vector<Jet> AllJets;
-  unsigned int jetsize;
   vector<Jet> tightjets;
   unsigned int tightjetsize;
   vector<Jet> tightbjets;
@@ -307,7 +307,7 @@ public:
   void FillTreeValues();
   void AnalyzeRECO();
   void AnalyzeGEN();
-  
+  void GetAllObject();
   //For Histograms//
   //---leptons
 

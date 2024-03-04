@@ -1,0 +1,42 @@
+Submitting job(s)..................................................
+50 job(s) submitted to cluster 2178514.
+Submitting job(s)..................................................
+50 job(s) submitted to cluster 2178519.
+Submitting job(s)..................................................
+50 job(s) submitted to cluster 2178522.
+Submitting job(s)..................................................
+50 job(s) submitted to cluster 2178526.
+Submitting job(s)..................................................
+50 job(s) submitted to cluster 2178530.
+condor_submit WORKDIR_HADD/run.jds > WORKDIR_HADD/run.jid
+condor_submit WORKDIR_HADD/run.jds > WORKDIR_HADD/run.jid
+condor_submit WORKDIR_HADD/run.jds > WORKDIR_HADD/run.jid
+condor_submit WORKDIR_HADD/run.jds > WORKDIR_HADD/run.jid
+condor_submit WORKDIR_HADD/run.jds > WORKDIR_HADD/run.jid
+##################################################
+Submission Finished
+- JobID = 416862
+- Analyzer = LepJetChargeReliability_RECO
+- Skim = SkimTree_Dilepton
+- InputSamples = ['DoubleEG:B', 'DoubleEG:C', 'DoubleEG:D', 'DoubleEG:E', 'DoubleEG:F']
+- NJobs = 50
+- Era = 2017
+- UserFlags = []
+- RunDir = /data6/Users/jhchoi/SKFlatRunlog//2023_12_14_164855__416862__LepJetChargeReliability_RECO__Era2017__SkimTree_Dilepton__TAMSA1/DoubleEG_periodF/
+- output will be send to : /data6/Users/jhchoi/SKFlatOutput//Run2UltraLegacy_v3/LepJetChargeReliability_RECO/2017//DATA/
+##################################################
+submit hadd
+<AFTER hadd fin. please rm remainings..>
+rm /data6/Users/jhchoi/SKFlatRunlog//2023_12_14_164855__416862__LepJetChargeReliability_RECO__Era2017__SkimTree_Dilepton__TAMSA1/DoubleEG_periodB//output/*.root
+submit hadd
+<AFTER hadd fin. please rm remainings..>
+rm /data6/Users/jhchoi/SKFlatRunlog//2023_12_14_164855__416862__LepJetChargeReliability_RECO__Era2017__SkimTree_Dilepton__TAMSA1/DoubleEG_periodC//output/*.root
+submit hadd
+<AFTER hadd fin. please rm remainings..>
+rm /data6/Users/jhchoi/SKFlatRunlog//2023_12_14_164855__416862__LepJetChargeReliability_RECO__Era2017__SkimTree_Dilepton__TAMSA1/DoubleEG_periodD//output/*.root
+submit hadd
+<AFTER hadd fin. please rm remainings..>
+rm /data6/Users/jhchoi/SKFlatRunlog//2023_12_14_164855__416862__LepJetChargeReliability_RECO__Era2017__SkimTree_Dilepton__TAMSA1/DoubleEG_periodE//output/*.root
+submit hadd
+<AFTER hadd fin. please rm remainings..>
+rm /data6/Users/jhchoi/SKFlatRunlog//2023_12_14_164855__416862__LepJetChargeReliability_RECO__Era2017__SkimTree_Dilepton__TAMSA1/DoubleEG_periodF//output/*.root

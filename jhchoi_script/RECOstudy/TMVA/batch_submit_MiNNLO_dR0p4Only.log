@@ -1,0 +1,24 @@
+Submitting job(s)............................................................................................................................................................................................................................................................................................................
+300 job(s) submitted to cluster 1998217.
+Submitting job(s)............................................................................................................................................................................................................................................................................................................
+300 job(s) submitted to cluster 1998218.
+condor_submit WORKDIR_HADD/run.jds > WORKDIR_HADD/run.jid
+condor_submit WORKDIR_HADD/run.jds > WORKDIR_HADD/run.jid
+##################################################
+Submission Finished
+- JobID = 994463
+- Analyzer = ForTMVA_BBbarAnalyzer
+- Skim = 
+- InputSamples = ['DYJetsToEE_MiNNLO', 'DYJetsToMuMu_MiNNLO']
+- NJobs = 300
+- Era = 2017
+- UserFlags = []
+- RunDir = /data6/Users/jhchoi/SKFlatRunlog//2023_11_21_162808__994463__ForTMVA_BBbarAnalyzer__Era2017__TAMSA1/DYJetsToMuMu_MiNNLO/
+- output will be send to : /data6/Users/jhchoi/SKFlatOutput//Run2UltraLegacy_v3/ForTMVA_BBbarAnalyzer/2017/
+##################################################
+submit hadd
+<AFTER hadd fin. please rm remainings..>
+rm /data6/Users/jhchoi/SKFlatRunlog//2023_11_21_162808__994463__ForTMVA_BBbarAnalyzer__Era2017__TAMSA1/DYJetsToEE_MiNNLO//output/*.root
+submit hadd
+<AFTER hadd fin. please rm remainings..>
+rm /data6/Users/jhchoi/SKFlatRunlog//2023_11_21_162808__994463__ForTMVA_BBbarAnalyzer__Era2017__TAMSA1/DYJetsToMuMu_MiNNLO//output/*.root

@@ -51,13 +51,9 @@ public:
   Event ev;
 
 
-  vector<TString> MuonTriggerNames;
-  vector<TString> MuonTriggerSFKeys;
-  vector<TString> ElectronTriggerNames;
-  vector<TString> ElectronTriggerSFKeys;
-  
   double TriggerSafeCut_muon;
   double TriggerSafeCut_electron;
+
 
 
   double DNNscore;
@@ -92,12 +88,7 @@ public:
   TString IsoMuTriggerName;
   double TriggerSafePtCut;
 
-  vector<Muon> AllMuons;
-  unsigned int muonsize;
-  vector<Electron> AllElectrons;
-  unsigned int electronsize;
-  vector<Jet> AllJets;
-  unsigned int jetsize;
+
   vector<Jet> tightjets;
   unsigned int tightjetsize;
   vector<Jet> tightbjets;

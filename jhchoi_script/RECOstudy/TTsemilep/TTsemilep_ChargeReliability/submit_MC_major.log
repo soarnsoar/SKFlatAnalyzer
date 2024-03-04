@@ -1,0 +1,48 @@
+Submitting job(s)............................................................................................................................................................................................................................................................................................................
+300 job(s) submitted to cluster 2204498.
+Submitting job(s)............................................................................................................................................................................................................................................................................................................
+300 job(s) submitted to cluster 2204502.
+Submitting job(s)............................................................................................................................................................................................................................................................................................................
+300 job(s) submitted to cluster 2204508.
+Submitting job(s)............................................................................................................................................................................................................................................................................................................
+300 job(s) submitted to cluster 2204512.
+Submitting job(s)............................................................................................................................................................................................................................................................................................................
+300 job(s) submitted to cluster 2204518.
+Submitting job(s)...........................................................................................................................................................................................................................
+219 job(s) submitted to cluster 2204523.
+condor_submit WORKDIR_HADD/run.jds > WORKDIR_HADD/run.jid
+condor_submit WORKDIR_HADD/run.jds > WORKDIR_HADD/run.jid
+condor_submit WORKDIR_HADD/run.jds > WORKDIR_HADD/run.jid
+condor_submit WORKDIR_HADD/run.jds > WORKDIR_HADD/run.jid
+condor_submit WORKDIR_HADD/run.jds > WORKDIR_HADD/run.jid
+condor_submit WORKDIR_HADD/run.jds > WORKDIR_HADD/run.jid
+##################################################
+Submission Finished
+- JobID = 878227
+- Analyzer = TTsemilep_ChargeReliability
+- Skim = 
+- InputSamples = ['TTLJ_powheg', 'TTLL_powheg', 'WJets_Sherpa', 'DYJetsToEE_MiNNLO', 'DYJetsToMuMu_MiNNLO', 'DYJetsToTauTau_MiNNLO']
+- NJobs = 219
+- Era = 2017
+- UserFlags = []
+- RunDir = /data6/Users/jhchoi/SKFlatRunlog//2024_01_22_150219__878227__TTsemilep_ChargeReliability__Era2017__TAMSA1/DYJetsToTauTau_MiNNLO/
+- output will be send to : /data6/Users/jhchoi/SKFlatOutput//Run2UltraLegacy_v3/TTsemilep_ChargeReliability/2017/
+##################################################
+submit hadd
+<AFTER hadd fin. please rm remainings..>
+rm /data6/Users/jhchoi/SKFlatRunlog//2024_01_22_150219__878227__TTsemilep_ChargeReliability__Era2017__TAMSA1/TTLJ_powheg//output/*.root
+submit hadd
+<AFTER hadd fin. please rm remainings..>
+rm /data6/Users/jhchoi/SKFlatRunlog//2024_01_22_150219__878227__TTsemilep_ChargeReliability__Era2017__TAMSA1/TTLL_powheg//output/*.root
+submit hadd
+<AFTER hadd fin. please rm remainings..>
+rm /data6/Users/jhchoi/SKFlatRunlog//2024_01_22_150219__878227__TTsemilep_ChargeReliability__Era2017__TAMSA1/WJets_Sherpa//output/*.root
+submit hadd
+<AFTER hadd fin. please rm remainings..>
+rm /data6/Users/jhchoi/SKFlatRunlog//2024_01_22_150219__878227__TTsemilep_ChargeReliability__Era2017__TAMSA1/DYJetsToEE_MiNNLO//output/*.root
+submit hadd
+<AFTER hadd fin. please rm remainings..>
+rm /data6/Users/jhchoi/SKFlatRunlog//2024_01_22_150219__878227__TTsemilep_ChargeReliability__Era2017__TAMSA1/DYJetsToMuMu_MiNNLO//output/*.root
+submit hadd
+<AFTER hadd fin. please rm remainings..>
+rm /data6/Users/jhchoi/SKFlatRunlog//2024_01_22_150219__878227__TTsemilep_ChargeReliability__Era2017__TAMSA1/DYJetsToTauTau_MiNNLO//output/*.root
