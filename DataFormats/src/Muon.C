@@ -108,6 +108,8 @@ bool Muon::PassID(TString ID) const {
   if(ID=="POGTight") return isPOGTight();
   if(ID=="POGHighPt") return isPOGHighPt();
   if(ID=="POGMedium") return isPOGMedium();
+  if(ID=="POGMedium_nohip") return isPOGMedium_nohip();
+  if(ID=="POGMedium_hip") return isPOGMedium_hip();
   if(ID=="POGLoose") return isPOGLoose();
   if(ID=="POGTightWithTightIso") return Pass_POGTightWithTightIso();
   if(ID=="POGHighPtWithLooseTrkIso") return Pass_POGHighPtWithLooseTrkIso();
@@ -211,7 +213,12 @@ bool Muon::PassFilter(TString filter) const{
   }
   return false;
 }
-
+bool Muon::PassFilterOR(const vector<TString>& filters) const{
+  for(const auto& filter:filters)
+    if(PassFilter(filter))
+      return true;
+  return false;
+}
 bool Muon::PassPath(TString path) const{
   if( path=="HLT_DiMu9_Ele9_CaloIdL_TrackIdL_DZ_v" ) return j_pathbits&(ULong64_t(1)<<0);
   else if( path=="HLT_DiMu9_Ele9_CaloIdL_TrackIdL_v" ) return j_pathbits&(ULong64_t(1)<<1);
@@ -251,5 +258,11 @@ bool Muon::PassPath(TString path) const{
     cout<<"[Muon::PassPath] unknown path "<<path<<endl;
     exit(ENODATA);
   }
+  return false;
+}
+bool Muon::PassPathOR(const vector<TString>& paths) const{
+  for(const auto& path:paths)
+    if(PassPath(path))
+      return true;
   return false;
 }
