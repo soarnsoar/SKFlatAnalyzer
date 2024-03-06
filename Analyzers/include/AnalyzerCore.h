@@ -300,8 +300,27 @@ public:
   TTree *jhchoi_newtree3;
   TTree *jhchoi_newtree4;
 
+  int GetIdxSingleMuReco(vector<Muon> &MuonCollection, double ptmin, double etacut=2.4, double ptveto=10.);
+  int GetIdxSingleElReco(vector<Electron> &ElectronCollection, double ptmin, double etacut=2.5, double ptveto=15.);
+  vector<int> GetIdxDiMuReco(vector<Muon> &MuonCollection, double ptmin1, double ptmin2, double etacut=2.4, double ptveto=10. );
+  vector<int> GetIdxDiElReco(vector<Electron> &ElectronCollection, double ptmin1, double ptmin2, double etacut=2.5, double ptveto=15. );
+  void SetupSingleLeptonChannel();
+  void SetupDiLeptonChannel();
 
+  double TriggerSafeCut_muon1, TriggerSafeCut_muon2;
+  double TriggerSafeCut_electron1, TriggerSafeCut_electron2;
+  vector<TString> MuonTriggerNames;
+  vector<TString> MuonTriggerSFKeys;
+  vector<TString> ElectronTriggerNames;
+  vector<TString> ElectronTriggerSFKeys;
+  TString MuonRecoSFKey,MuonIDSFKey,MuonTrkSFKey,MuonDZSFKey;
+  TString ElectronRecoSFKey,ElectronIDSFKey,ElectronDZSFKey;
+  TString MuonID;
+  TString ElectronID;
 
+  std::vector<Muon> AllMuons;
+  std::vector<Electron> AllElectrons;
+  std::vector<Jet> AllJets;
 
 
 
@@ -310,12 +329,7 @@ public:
   std::unordered_map<string,std::vector<double>> syslist_w;//syslist, weight type
   std::unordered_map<string,std::vector<std::vector<double>>> syslist_efftool;//syslist, weight type
   void InitSystematics();
-  vector<TString> MuonTriggerNames;
-  vector<TString> MuonTriggerSFKeys;
-  vector<TString> ElectronTriggerNames;
-  vector<TString> ElectronTriggerSFKeys;
-  TString MuonID;
-  TString ElectronID;
+
 
 
 
@@ -345,9 +359,6 @@ public:
   unsigned int electronsize;
   std::vector<Jet> AllJets_raw;
   unsigned int jetsize;
-  std::vector<Muon> AllMuons;
-  std::vector<Electron> AllElectrons;
-  std::vector<Jet> AllJets;
 
 
   struct ArgFillHist{
