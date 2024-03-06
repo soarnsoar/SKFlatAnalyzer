@@ -2866,8 +2866,8 @@ void AnalyzerCore::InitSystematics(){
 void AnalyzerCore::ApplySysToRun(){
   //--syslist_w--//                                                                                                                                         
   for(auto _ittotal = syslist_w.begin(); _ittotal != syslist_w.end();){
-    auto _it = std::find(SysToRun_w.begin(), SysToRun_w.end(), _ittotal->first);// iterator pointer to check whether _ittotal in SysToRun_w.                      
-    if(_it == SysToRun_w.end()){//Not in SysToRun_w                                                                                                             
+    auto _it = std::find(SysToRun_w.begin(), SysToRun_w.end(), _ittotal->first);// iterator pointer to check whether _ittotal in SysToRun_w.
+    if(_it == SysToRun_w.end()){//Not in SysToRun_w
       _ittotal = syslist_w.erase(_ittotal);//remove                                                                                                         
     }
     else{
@@ -2877,7 +2877,7 @@ void AnalyzerCore::ApplySysToRun(){
   }
   //--syslist_efftool--//                                                                                                                                   
   for(auto _ittotal = syslist_efftool.begin(); _ittotal != syslist_efftool.end();){
-    auto _it = std::find(SysToRun_efftool.begin(), SysToRun_efftool.end(), _ittotal->first);// iterator pointer to check whether _ittotal in SysToRun_efftool.                      
+    auto _it = std::find(SysToRun_efftool.begin(), SysToRun_efftool.end(), _ittotal->first);// iterator pointer to check whether _ittotal in SysToRun_efftool.
     if(_it == SysToRun_efftool.end()){//Not in SysToRun_efftool                                                                                                             
       _ittotal = syslist_efftool.erase(_ittotal);//remove                                                                                                   
     }
@@ -2885,7 +2885,6 @@ void AnalyzerCore::ApplySysToRun(){
       ++_ittotal;
     }
   }
-  
 }
 
 void AnalyzerCore::SetAllVar_syslist_efftool_muontrigger(double nominal ,const vector<Lepton*>& leps){
@@ -2893,7 +2892,6 @@ void AnalyzerCore::SetAllVar_syslist_efftool_muontrigger(double nominal ,const v
   for(unsigned int iset = 0 ; iset < setsize; iset++){
     unsigned int memsize=syslist_efftool["muontrigger"][iset].size();
     for(unsigned int imem =0; imem < memsize; imem++){
-
       if(nominal!=0){
 	double _this_sf=GetLeptonTriggerORSF(ev, MuonTriggerNames, MuonTriggerSFKeys, leps,iset,imem,"");
 	syslist_efftool["muontrigger"][iset][imem]=_this_sf/nominal;
@@ -2918,7 +2916,6 @@ void AnalyzerCore::SetAllVar_syslist_efftool_electrontrigger(double nominal ,con
       else{
 	syslist_efftool["electrontrigger"][iset][imem]=0.;
       }
-      
     }
   }
 }
@@ -2937,6 +2934,263 @@ void AnalyzerCore::SetAllVar_syslist_efftool(double nominal, const Lepton* lep,s
     }
   }
 
+}
+
+
+int AnalyzerCore::GetIdxSingleMuReco(vector<Muon> &MuonCollection, double ptmin, double etacut, double ptveto){
+  
+  unsigned int muonsize = MuonCollection.size();
+  unsigned int nselected= 0;
+  int muonidx=-1;
+  double maxpt=-100.;
+  for(unsigned int i = 0 ; i < muonsize; i++ ){
+    double pt=MuonCollection[i].Pt();
+    double eta=MuonCollection[i].Eta();
+    bool passID=MuonCollection[i].PassID("POGLoose");
+    bool passISO=MuonCollection[i].PassSelector(Muon::Selector::TkIsoLoose);
+    //double reliso=MuonCollection[i].RelIso();
+    if(fabs(eta) > etacut) continue;
+    if(pt < ptveto) continue;
+    if (!passID) continue;
+    if (!passISO) continue;
+    if (pt > maxpt) {
+      maxpt=pt;
+      muonidx=i;
+    }
+    nselected+=1;
+  }
+
+  
+  if (nselected!=1) return -1;
+  if (!MuonCollection[muonidx].PassID("POGMedium")) return -1;
+  if (maxpt < ptmin) return -1;
+  
+  return muonidx;
+
+}
+
+
+
+int AnalyzerCore::GetIdxSingleElReco(vector<Electron> &ElectronCollection, double ptmin, double etacut, double ptveto){
+
+  unsigned int electronsize = ElectronCollection.size();
+  unsigned int nselected= 0;
+  int electronidx=-1;
+  double maxpt=-100.;
+  for(unsigned int i = 0 ; i < electronsize; i++ ){
+    double pt=ElectronCollection[i].Pt();
+    double eta=ElectronCollection[i].Eta();
+    bool passID=ElectronCollection[i].PassID("passLooseID");
+    if(fabs(eta) > etacut) continue;
+    if(pt < ptveto) continue;
+    if(!passID) continue;
+    if(pt > maxpt){
+      maxpt = pt;
+      electronidx=i;
+    }
+  }
+  if (nselected!=1) return -1;
+  if (!ElectronCollection[electronidx].PassID("passMediumID")) return -1;
+  if (maxpt < ptmin) return -1;
+  return electronidx;
+}
+
+
+
+vector<int> AnalyzerCore::GetIdxDiMuReco(vector<Muon> &MuonCollection, double ptmin1, double ptmin2, double etacut, double ptveto ){
+  vector<int> v_muonidx;
+  unsigned int muonsize = MuonCollection.size();
+  unsigned int npassveto=0;
+  unsigned int npasstight=0;
+  
+  double maxpt=-9999.;
+  double minpt=9999.;
+  for(unsigned int i = 0 ; i < muonsize; i++ ){
+    double pt=MuonCollection[i].Pt();
+    double eta=MuonCollection[i].Eta();
+    bool passID=MuonCollection[i].PassID("POGMedium");
+    bool passVetoID=MuonCollection[i].PassID("POGLoose");
+    bool passISO=MuonCollection[i].PassSelector(Muon::Selector::TkIsoLoose);
+    //double reliso=MuonCollection[i].RelIso();
+    if(fabs(eta) > etacut) continue;
+    if(pt < ptveto) continue;
+    if (!passISO) continue;
+    if (!passVetoID) continue;
+    if (pt > maxpt){
+      maxpt=pt;
+    }
+    if (pt < minpt){
+      minpt=pt;
+    }
+    if (passID) npasstight+=1;
+    npassveto+=1;
+    v_muonidx.push_back(i);
+  }
+  if(npassveto>2) return {};
+  if(npasstight!=2) return {};
+  if(maxpt < ptmin1) return {};
+  if(minpt < ptmin2) return {};
+  return v_muonidx;
+}
+
+
+vector<int> AnalyzerCore::GetIdxDiElReco(vector<Electron> &ElectronCollection, double ptmin1, double ptmin2, double etacut, double ptveto ){
+  vector<int> v_electronidx;
+  unsigned int electronsize = ElectronCollection.size();
+  unsigned int npassveto=0;
+  unsigned int npasstight=0;
+  double maxpt=-9999.;
+  double minpt=9999.;
+  for(unsigned int i = 0 ; i < electronsize; i++ ){
+    double pt=ElectronCollection[i].Pt();
+    double eta=ElectronCollection[i].Eta();
+    bool passID=ElectronCollection[i].PassID("passMediumID");
+    bool passVetoID=ElectronCollection[i].PassID("passLooseID");
+    if(fabs(eta) > etacut) continue;
+    if(pt < ptveto) continue;
+    if (!passVetoID) continue;
+    if (pt > maxpt){
+      maxpt=pt;
+    }
+    if (pt < minpt){
+      minpt=pt;
+    }
+    if (passID) npasstight+=1;
+    npassveto+=1;
+    v_electronidx.push_back(i);
+  }
+  if(npassveto>2) return {};
+  if(npasstight!=2) return {};
+  if(maxpt < ptmin1) return {};
+  if(minpt < ptmin2) return {};
+  return v_electronidx;
+}
+
+
+void AnalyzerCore::SetupSingleLeptonChannel(){
+  //common setup
+  MuonID="POGMedium";
+  MuonRecoSFKey="Muon_RECO";
+  MuonIDSFKey="Muon_MediumID_trkIsoLoose";
+  MuonTrkSFKey="Muon_Tracking";
+  MuonDZSFKey="";
+
+  ElectronID="passMediumID";
+  ElectronRecoSFKey="Electron_RECO";
+  ElectronIDSFKey="Electron_MediumID";
+  ElectronDZSFKey="";
+
+  if(DataYear==2016){
+    if (DataEra=="2016preVFP"){
+      MuonID="POGMedium_hip";
+    }
+    MuonTriggerNames = {"HLT_IsoMu24_v","HLT_IsoTkMu24_v"};
+    MuonTriggerSFKeys={"IsoMu24_MediumID_trkIsoLoose"};
+    TriggerSafeCut_muon1 = 27.;
+    TriggerSafeCut_muon2 = -1.;
+
+
+    ElectronTriggerNames = {"HLT_Ele27_WPTight_Gsf_v"};
+    ElectronTriggerSFKeys = {"Ele27_MediumID"};
+    TriggerSafeCut_electron1 = 30.;
+    TriggerSafeCut_electron2 = -1.;
+
+
+  }  
+  else if(DataYear==2017){
+    MuonTriggerNames = {"HLT_IsoMu24_v","HLT_IsoMu27_v"};
+    MuonTriggerSFKeys={"IsoMu24_MediumID_trkIsoLoose","IsoMu27_MediumID_trkIsoLoose"};
+    TriggerSafeCut_muon1 = 30.;
+    TriggerSafeCut_muon2 = -1.;
+
+    ElectronTriggerNames = {"HLT_Ele27_WPTight_Gsf_v","HLT_Ele32_WPTight_Gsf_v"};
+    ElectronTriggerSFKeys = {"Ele27_MediumID","Ele32_MediumID"};
+    TriggerSafeCut_electron1 = 35.;
+    TriggerSafeCut_electron2 = -1.;
+
+  }
+
+  else if(DataYear==2018){
+    MuonTriggerNames = {"HLT_IsoMu24_v"};
+    MuonTriggerSFKeys={"IsoMu24_MediumID_trkIsoLoose"};
+    TriggerSafeCut_muon1 = 27.;
+    TriggerSafeCut_muon2 = -1.;
+
+    ElectronTriggerNames = {"HLT_Ele28_WPTight_Gsf_v","HLT_Ele32_WPTight_Gsf_v"};
+    ElectronTriggerSFKeys = {"Ele28_MediumID","Ele32_MediumID"};
+    TriggerSafeCut_electron1 = 35.;
+    TriggerSafeCut_electron2 = -1.;
+
+
+  }
+  
+}
+
+
+
+void AnalyzerCore::SetupDiLeptonChannel(){
+  //common setup
+  MuonID="POGMedium";
+  MuonRecoSFKey="Muon_RECO";
+  MuonIDSFKey="Muon_MediumID_trkIsoLoose";
+  MuonTrkSFKey="Muon_Tracking";
+  MuonDZSFKey="";
+
+  ElectronID="passMediumID";
+  ElectronRecoSFKey="Electron_RECO";
+  ElectronIDSFKey="Electron_MediumID";
+  ElectronDZSFKey="";
+
+
+  if(DataYear==2016){
+    ElectronDZSFKey="DZ_MediumID";
+    if (DataEra=="2016preVFP"){
+      MuonID="POGMedium_hip";
+    }else{
+      MuonDZSFKey="DZ_MediumID_trkIsoLoose";
+    }
+    MuonTriggerNames ={"HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_v","HLT_Mu17_TrkIsoVVL_TkMu8_TrkIsoVVL_v","HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ_v","HLT_Mu17_TrkIsoVVL_TkMu8_TrkIsoVVL_DZ_v","HLT_TkMu17_TrkIsoVVL_TkMu8_TrkIsoVVL_v","HLT_TkMu17_TrkIsoVVL_TkMu8_TrkIsoVVL_DZ_v"};
+    MuonTriggerSFKeys={"Mu17Leg1_MediumID_trkIsoLoose","Mu8Leg2_MediumID_trkIsoLoose"};
+    TriggerSafeCut_muon1 = 20.;
+    TriggerSafeCut_muon2 = 11.;
+
+    
+    ElectronTriggerNames = {"HLT_Ele23_Ele12_CaloIdL_TrackIdL_IsoVL_DZ_v"};
+    ElectronTriggerSFKeys = {"Ele23Leg1_MediumID","Ele12Leg2_MediumID"};
+    TriggerSafeCut_electron1 = 26.;
+    TriggerSafeCut_electron2 = 15.;
+    ElectronDZSFKey="DZ_MediumID";
+
+  }  
+  else if(DataYear==2017){
+    MuonTriggerNames = {"HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ_Mass8_v"};
+    MuonTriggerSFKeys={"Mu17Leg1_MediumID_trkIsoLoose","Mu8Leg2_MediumID_trkIsoLoose"};
+    TriggerSafeCut_muon1 = 20.;
+    TriggerSafeCut_muon2 = 11.;
+    MuonDZSFKey="DZ_MediumID_trkIsoLoose";
+
+    ElectronTriggerNames = {"HLT_Ele23_Ele12_CaloIdL_TrackIdL_IsoVL_v"};
+    ElectronTriggerSFKeys = {"Ele23Leg1_MediumID","Ele12Leg2_MediumID"};
+    TriggerSafeCut_electron1 = 26.;
+    TriggerSafeCut_electron2 = 15.;
+
+  }
+
+  else if(DataYear==2018){
+    MuonTriggerNames = {"HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ_Mass3p8_v"};
+    MuonTriggerSFKeys={"Mu17Leg1_MediumID_trkIsoLoose","Mu8Leg2_MediumID_trkIsoLoose"};
+    TriggerSafeCut_muon1 = 20.;
+    TriggerSafeCut_muon2 = 11.;
+    MuonDZSFKey="DZ_MediumID_trkIsoLoose";
+
+    ElectronTriggerNames = {"HLT_Ele23_Ele12_CaloIdL_TrackIdL_IsoVL_v"};
+    ElectronTriggerSFKeys = {"Ele23Leg1_MediumID","Ele12Leg2_MediumID"};
+    TriggerSafeCut_electron1 = 26.;
+    TriggerSafeCut_electron2 = 15.;
+
+
+  }
+  
 }
 
 //---end jhchoi sys

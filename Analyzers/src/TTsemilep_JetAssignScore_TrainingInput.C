@@ -241,6 +241,8 @@ void TTsemilep_JetAssignScore_TrainingInput::initializeAnalyzer(){
   jtp_loose=JetTagging::Parameters(JetTagging::DeepJet,JetTagging::Loose,JetTagging::incl,JetTagging::comb);
 
 
+  SetupSingleLeptonChannel();
+
   if(DataYear==2017){
     MuonTriggerNames = {"HLT_IsoMu24_v","HLT_IsoMu27_v"};
     MuonTriggerSFKeys={"IsoMu24_MediumID_trkIsoLoose","IsoMu27_MediumID_trkIsoLoose"};

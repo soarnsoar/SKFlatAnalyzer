@@ -17,7 +17,7 @@
 //#pragma link C++ class SkimTree_HighPt1LJets+;
 //#pragma link C++ class SkimTree_HNMultiLep+;
 #pragma link C++ class MeasureJetTaggingEfficiency+;
-#pragma link C++ class SkimTree_Dilepton+;
+//#pragma link C++ class SkimTree_Dilepton+;
 
 #pragma link C++ class TTsemilep_ChargeReliability+;
 #pragma link C++ class TTsemilep_LeptonChargeAccuracy+;
@@ -36,7 +36,7 @@
 #pragma link C++ class LepJetChargeReliability_RECO+;
 #pragma link C++ class LepJetChargeReliability_RECO_NoDNNcut_Tree+;
 #pragma link C++ class BBosillation+;
-
+#pragma link C++ class AnalyzerBase+;
 #pragma link C++ class HZZ_test+;
 
 
