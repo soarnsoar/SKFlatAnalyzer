@@ -8,7 +8,7 @@ from GetXSECTable import *
 from TimeTools import *
 import random
 import subprocess
-
+from math import sqrt
 ## Arguments
 
 parser = argparse.ArgumentParser(description='SKFlat Command')
@@ -893,12 +893,15 @@ try:
                 #  os.system('echo "Too many hadd currently (nhadd='+str(nhadd)+'). Sleep 60s" >> JobStatus.log')
                 #  time.sleep(60)
                 print "submit hadd"
+                print "CheckOutputSize..."
+                __outputsize=os.path.getsize("output")
                 #os.chdir("output")
                 #ExportShellCondorSetup_snu.py -c "cd $PWD&&hadd -j 10 -f combine.root *.root" -d "WORKDIR_HADD" -n "hadd" -m 10 -r "10000" -s
                 _nhadd=10
                 if nFiles>100:
-                  _nhadd=NJobs/10
-                _req_memory=1000*_nhadd
+                  #_nhadd=NJobs/10
+                  _nhadd=sqrt(NJobs)
+                _req_memory=int(__outputsize)
                 os.system("ExportShellCondorSetup_tamsa.py -c \"cd "+base_rundir+"&&hadd -j "+str(_nhadd)+" -f "+outputname+".root output/*.root&&mv "+outputname+".root "+FinalOutputPath+"\" -d WORKDIR_HADD -n hadd_"+outputname+" -m "+str(_nhadd)+" -r \""+str(_req_memory)+"\" -s")
                 #os.system("submit_hadd.sh")
                 #os.system('hadd -f '+outputname+'.root output/*.root >> JobStatus.log')
