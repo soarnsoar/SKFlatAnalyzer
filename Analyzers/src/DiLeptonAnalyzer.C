@@ -93,31 +93,19 @@ void DiLeptonAnalyzer::RunBasicZregion(){
   njet=v_jetidx.size();
   nbjet=v_bjetidx.size();
 
-  double PuppiMET_pt=PuppiMET.Pt();
+  //double PuppiMET_pt=PuppiMET.Pt();
 
   //
   FillHistAll("ll");
   FillHistAll(LepCh);
   if(nbjet==1){
     FillHistAll("ll__1bjet");
-    if(PuppiMET_pt > 100){
-      FillHistAll("ll__1bjet__metOVER100");
-    }else{
-      FillHistAll("ll__1bjet__metUNDER100");
-    }
+    FillHistAll(LepCh+"__1bjet");
   }
   if(nbjet==2){
-    FillHistAll("ll__2bjet");
-    if(PuppiMET_pt > 100){
-      FillHistAll("ll__2bjet__metOVER100");
-    }else{
-      FillHistAll("ll__2bjet__metUNDER100");
+    FillHistAll(LepCh+"__2bjet");
   }
-
-  if(nbjet==1) FillHistAll("ll__1bjet");
-  if(nbjet==2) FillHistAll("ll__2bjet");
-
-  }
+  
 }
 void DiLeptonAnalyzer::FillHistAll(TString cutname){
   FillHist(cutname,"M_ll",vZ.M(),weight,100,40,140);

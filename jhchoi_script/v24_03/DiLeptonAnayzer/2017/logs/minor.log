@@ -1,18 +1,6 @@
-Submitting job(s)......................................................................................................................................................
-150 job(s) submitted to cluster 2232191.
-Submitting job(s)......................................................................................................................................................
-150 job(s) submitted to cluster 2232197.
-Submitting job(s)........................................................................................................
-104 job(s) submitted to cluster 2232202.
-Traceback (most recent call last):
-  File "/data6/Users/jhchoi/SKFlatAnalyzers/test/ForTMVA/SKFlatAnalyzer/bin/ExportShellCondorSetup_tamsa.py", line 109, in <module>
-    Export(workdir,command,jobname,submit,ncpu,memory)
-  File "/data6/Users/jhchoi/SKFlatAnalyzers/test/ForTMVA/SKFlatAnalyzer/bin/ExportShellCondorSetup_tamsa.py", line 73, in Export
-    if int(ncpu) < int(ncpu_criteria):
-ValueError: invalid literal for int() with base 10: '10.1980390272'
-Traceback (most recent call last):
-  File "/data6/Users/jhchoi/SKFlatAnalyzers/test/ForTMVA/SKFlatAnalyzer/bin/ExportShellCondorSetup_tamsa.py", line 109, in <module>
-    Export(workdir,command,jobname,submit,ncpu,memory)
-  File "/data6/Users/jhchoi/SKFlatAnalyzers/test/ForTMVA/SKFlatAnalyzer/bin/ExportShellCondorSetup_tamsa.py", line 73, in Export
-    if int(ncpu) < int(ncpu_criteria):
-ValueError: invalid literal for int() with base 10: '10.1980390272'
+Submitting job(s)..................................................
+50 job(s) submitted to cluster 2233810.
+Submitting job(s)..................................................
+50 job(s) submitted to cluster 2233816.
+Submitting job(s)..................................................
+50 job(s) submitted to cluster 2233821.
