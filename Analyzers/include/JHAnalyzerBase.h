@@ -105,8 +105,8 @@ class JHAnalyzerBase : public AnalyzerCore {
     int n_bin; double x_min;
     double x_max;
   };
-  //vector<ArgFillHist> vReserveHist;
-  vector<std::tuple<TString, double, double, int, double, double>> vReserveHist;
+  vector<ArgFillHist> vReserveHist;
+  //vector<std::tuple<TString, double, double, int, double, double>> vReserveHist;
   void ClearReservedHist();
   
   //syst

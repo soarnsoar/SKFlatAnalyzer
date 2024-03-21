@@ -116,8 +116,6 @@ void JHAnalyzerBase::executeEvent(){
     SetSys(sys);
     EventLoop();
     FillReservedHistMomentumVariations();
-
-    //ClearReservedHist();
   }
   t_FillMomentumBase+=timer_FillMomentumBase.RealTime();
 }
@@ -200,13 +198,12 @@ void JHAnalyzerBase::FillHist(TString histname, double value, double this_weight
   };
 
    */
-  //ArgFillHist this_arg={histname,value,this_weight,n_bin,x_min,x_max};
-  
-  //vReserveHist.push_back(this_arg);
-  vReserveHist.push_back(make_tuple(histname,value,this_weight,n_bin,x_min,x_max));
+  ArgFillHist this_arg={histname,value,this_weight,n_bin,x_min,x_max};
+  vReserveHist.push_back(this_arg);
+  //vReserveHist.push_back(make_tuple(histname,value,this_weight,n_bin,x_min,x_max));
 }
 
-/*
+
 ///----FillHistForSystematic---//
 void JHAnalyzerBase::FillHistUp(TString sysname,TString histname,double value,double this_weight,int n_bin,double x_min, double x_max){
   AnalyzerCore::FillHist("SYS/"+histname+"/"+sysname+"/0/Up/"+ProcessName,value,this_weight,n_bin,x_min,x_max);
@@ -387,26 +384,20 @@ void JHAnalyzerBase::FillHistMuonTrk(TString histname, double value, double this
   }
 }
 
-*/
+
 
 
 void JHAnalyzerBase::FillReservedHistWeightBase(){
   //Because it could be kind of time consuming, it doesn't call defined addtional functions for each sys.
   for(const auto& arg : vReserveHist){ 
-    /*
+
     TString histname=arg.histname;
     double value=arg.value;
     double this_weight=arg.weight;
     int n_bin=arg.n_bin;
     double x_min=arg.x_min;
     double x_max=arg.x_max;
-    */
-    TString histname=get<0>(arg);
-    double value=get<1>(arg);
-    double this_weight=get<2>(arg);
-    int n_bin=get<3>(arg);
-    double x_min=get<4>(arg);
-    double x_max=get<5>(arg);
+
     
     //Nominal//
     AnalyzerCore::FillHist(histname+"/"+ProcessName,value,this_weight,n_bin,x_min,x_max);
@@ -414,193 +405,68 @@ void JHAnalyzerBase::FillReservedHistWeightBase(){
     if(!runSys) continue;
     //-PU
     timer_pu.Start();
-    //FillHistPUSys(histname,value,this_weight,n_bin,x_min,x_max);
-    AnalyzerCore::FillHist("SYS/"+histname+"/pu/0/Up/"+ProcessName,value,this_weight*r_PU[0],n_bin,x_min,x_max);
-    AnalyzerCore::FillHist("SYS/"+histname+"/pu/0/Down/"+ProcessName,value,this_weight*r_PU[1],n_bin,x_min,x_max);
+    FillHistPUSys(histname,value,this_weight,n_bin,x_min,x_max);
     t_pu+=timer_pu.RealTime();
     //-PartonShower
     timer_ps.Start();
-    //FillHistPSSys(histname,value,this_weight,n_bin,x_min,x_max);
-    int psidx=0;
-    for(const auto& _pssyst : *weight_PSSyst){
-      //FillHistIdx2("ps",0,idx,histname,value,this_weight*_pssyst,n_bin,x_min,x_max);
-      //TString idx1_in_str, idx2_in_str;
-      //idx1_in_str.Form("%d",idx1);   idx2_in_str.Form("%d",idx2);
-      //psidx_in_str.Form("%d",psidx);
-      AnalyzerCore::FillHist("SYS/"+histname+"/ps/0/"+TString::Format("%d", psidx)+"/"+ProcessName,value,this_weight*_pssyst,n_bin,x_min,x_max);
-      psidx+=1;
-    }
+    FillHistPSSys(histname,value,this_weight,n_bin,x_min,x_max);
     t_ps+=timer_ps.RealTime();
     //prefire//
     timer_prefire.Start();
-    //FillHistPrefireSys(histname,value,this_weight,n_bin,x_min,x_max);
-    //FillHistUp("prefire",histname,value,this_weight*r_Prefire[0],n_bin,x_min,x_max);
-    AnalyzerCore::FillHist("SYS/"+histname+"/prefire/0/Up/"+ProcessName,value,this_weight*r_Prefire[0],n_bin,x_min,x_max);
-    AnalyzerCore::FillHist("SYS/"+histname+"/prefire/0/Down/"+ProcessName,value,this_weight*r_Prefire[1],n_bin,x_min,x_max);
+    FillHistPrefireSys(histname,value,this_weight,n_bin,x_min,x_max);
     t_prefire+=timer_prefire.RealTime();
     //btag
     timer_btag.Start();
-    //FillHistBtag(histname,value,this_weight,n_bin,x_min,x_max);
-    AnalyzerCore::FillHist("SYS/"+histname+"/btag/LTagCorr/Up/"+ProcessName,value,this_weight*r_SystUpLTagCorr,n_bin,x_min,x_max);
-    AnalyzerCore::FillHist("SYS/"+histname+"/btag/LTagCorr/Down/"+ProcessName,value,this_weight*r_SystDownLTagCorr,n_bin,x_min,x_max);
-
-    AnalyzerCore::FillHist("SYS/"+histname+"/btag/LTagUnCorr/Up/"+ProcessName,value,this_weight*r_SystUpLTagUnCorr,n_bin,x_min,x_max);
-    AnalyzerCore::FillHist("SYS/"+histname+"/btag/LTagUnCorr/Down/"+ProcessName,value,this_weight*r_SystDownLTagUnCorr,n_bin,x_min,x_max);
-
-    AnalyzerCore::FillHist("SYS/"+histname+"/btag/HTagCorr/Up/"+ProcessName,value,this_weight*r_SystUpHTagCorr,n_bin,x_min,x_max);
-    AnalyzerCore::FillHist("SYS/"+histname+"/btag/HTagCorr/Down/"+ProcessName,value,this_weight*r_SystDownHTagCorr,n_bin,x_min,x_max);
-
-    AnalyzerCore::FillHist("SYS/"+histname+"/btag/HTagUnCorr/Up/"+ProcessName,value,this_weight*r_SystUpHTagUnCorr,n_bin,x_min,x_max);
-    AnalyzerCore::FillHist("SYS/"+histname+"/btag/HTagUnCorr/Down/"+ProcessName,value,this_weight*r_SystDownHTagUnCorr,n_bin,x_min,x_max);
-
+    FillHistBtag(histname,value,this_weight,n_bin,x_min,x_max);
     t_btag+=timer_btag.RealTime();
 
 
     ///---EffTool--//
-    //--declare--// 
-    unsigned int setsize = 0;
-    unsigned int memsize = 0;
     //electronID//
     timer_ElectronID.Start();
-    //FillHistElectronID(histname,value,this_weight,n_bin,x_min,x_max);
-    setsize = w_ElectronID.size();
-    for(unsigned int iset=0;iset<setsize;iset++){
-      memsize = w_ElectronID[iset].size();
-      for(unsigned int imem=0;imem<memsize;imem++){
-	//double new_weight=w_ElectronID[0][0] ? this_weight*w_ElectronID[iset][imem]/w_ElectronID[0][0] : 0.;
-	//double new_weight=this_weight*r_ElectronID[iset][imem];
-	//FillHistIdx2("electronID",iset,imem,histname,value,new_weight,n_bin,x_min,x_max);
-	//FillHistIdx2("electronID",iset,imem,histname,value,this_weight*r_ElectronID[iset][imem],n_bin,x_min,x_max);
-	AnalyzerCore::FillHist("SYS/"+histname+"/ElectronID/"+TString::Format("%d", iset)+"/"+TString::Format("%d", imem)+"/"+ProcessName,value,this_weight*r_ElectronID[iset][imem],n_bin,x_min,x_max);
-      }
-    }
+    FillHistElectronID(histname,value,this_weight,n_bin,x_min,x_max);
     t_ElectronID+=timer_ElectronID.RealTime();
-    
-
     //electronRECO
+    
     timer_ElectronRECO.Start();
-    //FillHistElectronRECO(histname,value,this_weight,n_bin,x_min,x_max);
-    //unsigned int setsize = w_ElectronRECO.size();
-    setsize = w_ElectronRECO.size();
-    for(unsigned int iset=0;iset<setsize;iset++){
-      memsize = w_ElectronRECO[iset].size();
-      for(unsigned int imem=0;imem<memsize;imem++){
-	//double new_weight=w_ElectronRECO[0][0] ? this_weight*w_ElectronRECO[iset][imem]/w_ElectronRECO[0][0] : 0.;
-	//double new_weight=this_weight*r_ElectronRECO[iset][imem];
-	//FillHistIdx2("electronID",iset,imem,histname,value,new_weight,n_bin,x_min,x_max);
-	//FillHistIdx2("electronID",iset,imem,histname,value,this_weight*r_ElectronRECO[iset][imem],n_bin,x_min,x_max);
-	AnalyzerCore::FillHist("SYS/"+histname+"/ElectronRECO/"+TString::Format("%d", iset)+"/"+TString::Format("%d", imem)+"/"+ProcessName,value,this_weight*r_ElectronRECO[iset][imem],n_bin,x_min,x_max);
-      }
-    }
+    FillHistElectronRECO(histname,value,this_weight,n_bin,x_min,x_max);
     t_ElectronRECO+=timer_ElectronRECO.RealTime();
-
 
     //electronTrigger
     timer_ElectronTrigger.Start();
-    //FillHistElectronTrigger(histname,value,this_weight,n_bin,x_min,x_max);
-    //unsigned int setsize = w_ElectronTrigger.size();
-    setsize = w_ElectronTrigger.size();
-    for(unsigned int iset=0;iset<setsize;iset++){
-      memsize = w_ElectronTrigger[iset].size();
-      for(unsigned int imem=0;imem<memsize;imem++){
-	//double new_weight=w_ElectronTrigger[0][0] ? this_weight*w_ElectronTrigger[iset][imem]/w_ElectronTrigger[0][0] : 0.;
-	//double new_weight=this_weight*r_ElectronTrigger[iset][imem];
-	//FillHistIdx2("electronID",iset,imem,histname,value,new_weight,n_bin,x_min,x_max);
-	//FillHistIdx2("electronID",iset,imem,histname,value,this_weight*r_ElectronTrigger[iset][imem],n_bin,x_min,x_max);
-	AnalyzerCore::FillHist("SYS/"+histname+"/ElectronTrigger/"+TString::Format("%d", iset)+"/"+TString::Format("%d", imem)+"/"+ProcessName,value,this_weight*r_ElectronTrigger[iset][imem],n_bin,x_min,x_max);
-      }
-    }
+    FillHistElectronTrigger(histname,value,this_weight,n_bin,x_min,x_max);
     t_ElectronTrigger+=timer_ElectronTrigger.RealTime();
 
     //muonID
     timer_MuonID.Start();
-    //FillHistMuonID(histname,value,this_weight,n_bin,x_min,x_max);
-    //unsigned int setsize = w_MuonID.size();
-    setsize = w_MuonID.size();
-    for(unsigned int iset=0;iset<setsize;iset++){
-      memsize = w_MuonID[iset].size();
-      for(unsigned int imem=0;imem<memsize;imem++){
-	//double new_weight=w_MuonID[0][0] ? this_weight*w_MuonID[iset][imem]/w_MuonID[0][0] : 0.;
-	//double new_weight=this_weight*r_MuonID[iset][imem];
-	//FillHistIdx2("electronID",iset,imem,histname,value,new_weight,n_bin,x_min,x_max);
-	//FillHistIdx2("electronID",iset,imem,histname,value,this_weight*r_MuonID[iset][imem],n_bin,x_min,x_max);
-	AnalyzerCore::FillHist("SYS/"+histname+"/MuonID/"+TString::Format("%d", iset)+"/"+TString::Format("%d", imem)+"/"+ProcessName,value,this_weight*r_MuonID[iset][imem],n_bin,x_min,x_max);
-      }
-    }
+    FillHistMuonID(histname,value,this_weight,n_bin,x_min,x_max);
     t_MuonID+=timer_MuonID.RealTime();
-
 
     //muonRECO
     timer_MuonRECO.Start();
-    //FillHistMuonRECO(histname,value,this_weight,n_bin,x_min,x_max);
-    //unsigned int setsize = w_MuonRECO.size();
-    setsize = w_MuonRECO.size();
-    for(unsigned int iset=0;iset<setsize;iset++){
-      memsize = w_MuonRECO[iset].size();
-      for(unsigned int imem=0;imem<memsize;imem++){
-	//double new_weight=w_MuonRECO[0][0] ? this_weight*w_MuonRECO[iset][imem]/w_MuonRECO[0][0] : 0.;
-	//double new_weight=this_weight*r_MuonRECO[iset][imem];
-	//FillHistIdx2("electronID",iset,imem,histname,value,new_weight,n_bin,x_min,x_max);
-	//FillHistIdx2("electronID",iset,imem,histname,value,this_weight*r_MuonRECO[iset][imem],n_bin,x_min,x_max);
-	AnalyzerCore::FillHist("SYS/"+histname+"/MuonRECO/"+TString::Format("%d", iset)+"/"+TString::Format("%d", imem)+"/"+ProcessName,value,this_weight*r_MuonRECO[iset][imem],n_bin,x_min,x_max);
-      }
-    }
+    FillHistMuonRECO(histname,value,this_weight,n_bin,x_min,x_max);
     t_MuonRECO+=timer_MuonRECO.RealTime();
-
 
     //MuonTrigger
     timer_MuonTrigger.Start();
-    //FillHistMuonTrigger(histname,value,this_weight,n_bin,x_min,x_max);
-    //unsigned int setsize = w_MuonTrigger.size();
-    setsize = w_MuonTrigger.size();
-    for(unsigned int iset=0;iset<setsize;iset++){
-      memsize = w_MuonTrigger[iset].size();
-      for(unsigned int imem=0;imem<memsize;imem++){
-	//double new_weight=w_MuonTrigger[0][0] ? this_weight*w_MuonTrigger[iset][imem]/w_MuonTrigger[0][0] : 0.;
-	//double new_weight=this_weight*r_MuonTrigger[iset][imem];
-	//FillHistIdx2("electronID",iset,imem,histname,value,new_weight,n_bin,x_min,x_max);
-	//FillHistIdx2("electronID",iset,imem,histname,value,this_weight*r_MuonTrigger[iset][imem],n_bin,x_min,x_max);
-	AnalyzerCore::FillHist("SYS/"+histname+"/MuonTrigger/"+TString::Format("%d", iset)+"/"+TString::Format("%d", imem)+"/"+ProcessName,value,this_weight*r_MuonTrigger[iset][imem],n_bin,x_min,x_max);
-      }
-    }
+    FillHistMuonTrigger(histname,value,this_weight,n_bin,x_min,x_max);
     t_MuonTrigger+=timer_MuonTrigger.RealTime();
     
-
     //MuonTrk
     timer_MuonTrk.Start();
-    //FillHistMuonTrk(histname,value,this_weight,n_bin,x_min,x_max);
-    //unsigned int setsize = w_MuonTrk.size();
-    setsize = w_MuonTrk.size();
-    for(unsigned int iset=0;iset<setsize;iset++){
-      memsize = w_MuonTrk[iset].size();
-      for(unsigned int imem=0;imem<memsize;imem++){
-	//double new_weight=w_MuonTrk[0][0] ? this_weight*w_MuonTrk[iset][imem]/w_MuonTrk[0][0] : 0.;
-	//double new_weight=this_weight*r_MuonTrk[iset][imem];
-	//FillHistIdx2("electronID",iset,imem,histname,value,new_weight,n_bin,x_min,x_max);
-	//FillHistIdx2("electronID",iset,imem,histname,value,this_weight*r_MuonTrk[iset][imem],n_bin,x_min,x_max);
-	AnalyzerCore::FillHist("SYS/"+histname+"/MuonTrk/"+TString::Format("%d", iset)+"/"+TString::Format("%d", imem)+"/"+ProcessName,value,this_weight*r_MuonTrk[iset][imem],n_bin,x_min,x_max);
-      }
-    }
+    FillHistMuonTrk(histname,value,this_weight,n_bin,x_min,x_max);
     t_MuonTrk+=timer_MuonTrk.RealTime();    
   }
   ClearReserveHist();
 }
 void JHAnalyzerBase::FillReservedHistMomentumVariations(){
- for(const auto &arg : vReserveHist){ 
-   /*
+ for(const auto &arg : vReserveHist){    
     TString histname="SYS/"+arg.histname+"/"+sysname_current+"/0/"+sysdir_current;
     double value=arg.value;
     double this_weight=arg.weight;
     int n_bin=arg.n_bin;
     double x_min=arg.x_min;
-    double x_max=arg.x_max;
-   */
-    TString histname=get<0>(arg);
-    double value=get<1>(arg);
-    double this_weight=get<2>(arg);
-    int n_bin=get<3>(arg);
-    double x_min=get<4>(arg);
-    double x_max=get<5>(arg);
+    double x_max=arg.x_max;   
     AnalyzerCore::FillHist(histname+"/"+ProcessName,value,this_weight,n_bin,x_min,x_max);
  }
  ClearReserveHist();
