@@ -20,8 +20,9 @@ public:
   double TriggerSafePtCut;
 
   vector<TString> MuonIDs, MuonIDSFKeys;
-  //vector<Muon> AllMuons;
-  //vector<Jet> AllJets;
+  vector<Muon> AllMuons;
+  vector<Electron> AllElectrons;
+  vector<Jet> AllJets;
 
   double weight_Prefire;
   //

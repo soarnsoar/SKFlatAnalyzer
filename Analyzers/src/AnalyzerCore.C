@@ -283,6 +283,7 @@ double AnalyzerCore::GetDileptonTriggerSF(TString triggerSF_key0,TString trigger
 ////---END jhchoi---///
 AnalyzerCore::~AnalyzerCore(){
   //jhchoi
+  timer_Destructor.Start();
   DeleteEfficiency();
   //end jhchoi
 
@@ -325,7 +326,9 @@ AnalyzerCore::~AnalyzerCore(){
   AK8CHSJECUncMap.clear();
   AK8PUPPIJECUncMap.clear();
   
-
+  t_Destructor=timer_Destructor.RealTime();
+  cout << "t_Destructor=" << t_Destructor << endl;
+    
 }
 
 //==== Attach the historams to ai different direcotry, not outfile
@@ -1470,10 +1473,6 @@ bool AnalyzerCore::PassMETFilter(){
 }
 
 void AnalyzerCore::initializeAnalyzerTools(){
-  //jhchoi
-  SetupEfficiency();
-  
-  //jhchoi end
   //==== MCCorrection
   mcCorr->SetMCSample(MCSample);
   mcCorr->SetEra(GetEra());
@@ -1497,8 +1496,7 @@ void AnalyzerCore::initializeAnalyzerTools(){
   cfEst->ReadHistograms();
 
 
-  //jhchoi//
-  InitSystematics();
+
 }
 
 double AnalyzerCore::MCweight(bool usesign, bool norm_1invpb) const {
@@ -2619,6 +2617,7 @@ void AnalyzerCore::JSFillHist(TString suffix, TString histname,
 }
 
 void AnalyzerCore::WriteHist(){
+  timer_WriteHist.Start();
 
   outfile->cd();
   for(std::map< TString, TH1D* >::iterator mapit = maphist_TH1D.begin(); mapit!=maphist_TH1D.end(); mapit++){
@@ -2626,6 +2625,7 @@ void AnalyzerCore::WriteHist(){
     TString this_name=this_fullname(this_fullname.Last('/')+1,this_fullname.Length());
     TString this_suffix=this_fullname(0,this_fullname.Last('/'));
     TDirectory *dir = outfile->GetDirectory(this_suffix);
+    
     if(!dir){
       outfile->mkdir(this_suffix);
     }
@@ -2707,493 +2707,12 @@ void AnalyzerCore::WriteHist(){
   jhchoi_newtree4->Write();
   outfile->cd();
 
-
+  t_WriteHist=timer_WriteHist.RealTime();
+  cout << "t_WriteHist=" << t_WriteHist << endl;
 }
 //----jhchoi---- Systematics---//
 
 
-
-
-
-
-void AnalyzerCore::ReserveFillHist(TString histname, double value, double weight, int n_bin, double x_min, double x_max){
-  ArgFillHist _this_Args={histname,value,weight,n_bin,x_min,x_max};
-  vReserveHist.push_back(_this_Args);
-}
-void AnalyzerCore::ReserveFillCutflow(TString histname,TString label,double weight){
-  ArgFillCutflow _this_Args={histname,label,weight};
-  vReserveCutflow.push_back(_this_Args);
-}
-void AnalyzerCore::ClearReserveHist(){
-  vReserveHist.clear();
-}
-void AnalyzerCore::ClearReserveCutflow(){
-  vReserveCutflow.clear();
-}
-
-void AnalyzerCore::executeEventWithCurrentSet(){
-
-}
-void AnalyzerCore::SetRunWeightBase(bool doRun){
-  _run_weightbase=doRun;
-}
-void AnalyzerCore::InitSysVar(){
-  _var_muonscale=0;
-  _var_electronscale=0;
-  _var_jes=0;
-  _var_jer=0;
-  _JESsource="Total";
-}
-//void AnalyzerCore::GetAllObjects(){
-//}
-void AnalyzerCore::FillReservedHist(){
-  //unsigned int vReserveHistsize=vReserveHist.size();
-  
-  for(const auto& _args : vReserveHist){
-    //TString histname, double value, double weight, int n_bin, double x_min, double x_max
-    TString _histname = _args.histname;
-    double _value     = _args.value;
-    double _weight    = _args.weight; 
-    double _n_bin     = _args.n_bin;
-    double _x_min     = _args.x_min;
-    double _x_max     = _args.x_max;
-    if(_run_weightbase){
-      //--Fill Nominal--//
-      FillHist(_histname+"/nominal/0",
-	       _value,
-	       _weight,
-	       _n_bin,_x_min,_x_max);
-      if(IsDATA) continue;
-      //---syslist_w---//
-      for(const auto& _sys : SysToRun_w){//_sys : [name] / [vector value]
-	//name = _sys.first
-	//value = _sys.second
-	//TString _histname_sys=_histname+"/"+_sys->first;
-	//cout << _histname << endl;
-	//cout << _sys.first << endl;
-	//cout << _histname_sys << endl;
-	unsigned int _syssize=syslist_w[_sys].size();
-	for(unsigned int isys=0; isys<_syssize;isys++){
-	  FillHist(_histname+"/"+_sys+"/"+to_string(isys),
-		   _value,
-		   _weight*syslist_w[_sys][isys],
-		   _n_bin,_x_min,_x_max);
-	}//[end] all variations of current sys
-      }//[end]for sys
-      //---syslist_efftool---//
-      for(const auto& _sys : SysToRun_efftool){//_sys : [name] / [vector value]
-	//name = _sys.first
-	//value = _sys.second
-	//TString _histname_sys=_histname+"/"+_sys->first;
-	//cout << _histname << endl;
-	//cout << _sys.first << endl;
-	//cout << _histname_sys << endl;
-	unsigned int setsize=syslist_efftool[_sys].size();
-	for(unsigned int iset=0; iset<setsize;iset++){
-	  unsigned int memsize=syslist_efftool[_sys][iset].size();
-	  for(unsigned int imem=0; imem<memsize;imem++){
-	    FillHist(_histname+"/"+_sys+"/"+to_string(iset)+"__"+to_string(imem),
-		     _value,
-		     _weight*syslist_efftool[_sys][iset][imem],
-		     _n_bin,_x_min,_x_max);
-	  }//[end] imem
-	}//[end] iset
-      }//[end]for syslist_efftool
-    }//[end] weightbase
-    else{
-      //---Value variation---//
-      FillHist(_histname+"/"+syssuffix+"/"+sysdir,
-	       _value,
-	       _weight,
-	       _n_bin,_x_min,_x_max);
-      
-    }//[end] not weightbase
-  }//[end] for v reservedhist
-
-
-
-  vReserveHist.clear();
-  //Then, initialize syslist_w and syslist_efftool
-  if(_run_weightbase){
-
-    for(const auto& _sys : SysToRun_w){//_sys : [name] / [vector value]                                                                                       
-      syslist_w[_sys].clear();
-    }//[end] for systorun_w
-    for(const auto& _sys : SysToRun_efftool){
-      unsigned int setsize=syslist_efftool[_sys].size();
-      for(unsigned int iset=0; iset<setsize;iset++){
-	unsigned int memsize=syslist_efftool[_sys][iset].size();
-	for(unsigned int imem=0; imem<memsize;imem++){
-	  syslist_efftool[_sys][iset][imem]=1.;
-	}
-      }
-    }//[end] for systorun_efftool
-  }//[end]_run_weightbase
-}
-
-
-void AnalyzerCore::InitSystematics(){
-  //----basic weight base---//
-  syslist_w["prefire"]={};
-  syslist_w["pu"]={};
-  syslist_w["pdf"]={};
-  syslist_w["scale"]={};
-  syslist_w["ps"]={};
-  syslist_w["btaglfcorr"]={};
-  syslist_w["btaghfcorr"]={};
-  syslist_w["btaglfuncorr"]={};
-  syslist_w["btaghfuncorr"]={};
-  //----efftool----//
-  syslist_efftool["muonreco"]=fEff->GetStructure("Muon_RECO");
-  fEff->PrintStructure("Muon_RECO");
-  syslist_efftool["muontrk"]=fEff->GetStructure("Muon_Tracking");
-  fEff->PrintStructure("Muon_Tracking");
-  syslist_efftool["muonid"]=fEff->GetStructure(MuonID);
-  fEff->PrintStructure(MuonID);
-  cout << "MuonTriggerSFKeys[0]=" << MuonTriggerSFKeys[0] << endl;
-  syslist_efftool["muontrigger"]=fEff->GetStructure(MuonTriggerSFKeys[0]);
-  fEff->PrintStructure(MuonTriggerSFKeys[0]);
-
-  syslist_efftool["electronreco"]=fEff->GetStructure("Electron_RECO");
-  fEff->PrintStructure("Electron_RECO");
-  syslist_efftool["electronid"]=fEff->GetStructure(ElectronID);
-  fEff->PrintStructure(ElectronID);
-  syslist_efftool["electrontrigger"]=fEff->GetStructure(ElectronTriggerSFKeys[0]);
-  fEff->PrintStructure(ElectronTriggerSFKeys[0]);
-  ApplySysToRun();
-}
-
-void AnalyzerCore::ApplySysToRun(){
-  //--syslist_w--//                                                                                                                                         
-  for(auto _ittotal = syslist_w.begin(); _ittotal != syslist_w.end();){
-    auto _it = std::find(SysToRun_w.begin(), SysToRun_w.end(), _ittotal->first);// iterator pointer to check whether _ittotal in SysToRun_w.
-    if(_it == SysToRun_w.end()){//Not in SysToRun_w
-      _ittotal = syslist_w.erase(_ittotal);//remove                                                                                                         
-    }
-    else{
-      ++_ittotal;
-    }
-    
-  }
-  //--syslist_efftool--//                                                                                                                                   
-  for(auto _ittotal = syslist_efftool.begin(); _ittotal != syslist_efftool.end();){
-    auto _it = std::find(SysToRun_efftool.begin(), SysToRun_efftool.end(), _ittotal->first);// iterator pointer to check whether _ittotal in SysToRun_efftool.
-    if(_it == SysToRun_efftool.end()){//Not in SysToRun_efftool                                                                                                             
-      _ittotal = syslist_efftool.erase(_ittotal);//remove                                                                                                   
-    }
-    else{
-      ++_ittotal;
-    }
-  }
-}
-
-void AnalyzerCore::SetAllVar_syslist_efftool_muontrigger(double nominal ,const vector<Lepton*>& leps){
-  unsigned int setsize=syslist_efftool["muontrigger"].size();
-  for(unsigned int iset = 0 ; iset < setsize; iset++){
-    unsigned int memsize=syslist_efftool["muontrigger"][iset].size();
-    for(unsigned int imem =0; imem < memsize; imem++){
-      if(nominal!=0){
-	double _this_sf=GetLeptonTriggerORSF(ev, MuonTriggerNames, MuonTriggerSFKeys, leps,iset,imem,"");
-	syslist_efftool["muontrigger"][iset][imem]=_this_sf/nominal;
-      }
-      else{
-	syslist_efftool["muontrigger"][iset][imem]=0.;
-      }
-    }
-  }
-}
-
-
-void AnalyzerCore::SetAllVar_syslist_efftool_electrontrigger(double nominal ,const vector<Lepton*>& leps){
-  unsigned int setsize=syslist_efftool["electrontrigger"].size();
-  for(unsigned int iset = 0 ; iset < setsize; iset++){
-    unsigned int memsize=syslist_efftool["electrontrigger"][iset].size();
-    for(unsigned int imem =0; imem < memsize; imem++){
-      if(nominal!=0){
-	double _this_sf=GetLeptonTriggerORSF(ev, ElectronTriggerNames, ElectronTriggerSFKeys, leps,iset,imem,"");
-	syslist_efftool["electrontrigger"][iset][imem]=_this_sf/nominal;
-      }
-      else{
-	syslist_efftool["electrontrigger"][iset][imem]=0.;
-      }
-    }
-  }
-}
-
-void AnalyzerCore::SetAllVar_syslist_efftool(double nominal, const Lepton* lep,string key_syslist, TString key_efftool){
-  unsigned int setsize=syslist_efftool[key_syslist].size();
-  for(unsigned int iset = 0 ; iset < setsize; iset++){
-    unsigned int memsize=syslist_efftool[key_syslist][iset].size();
-    for(unsigned int imem =0; imem < memsize; imem++){
-      if(nominal!=0){
-	syslist_efftool[key_syslist][iset][imem]=fEff->GetEfficiencySF(key_efftool,lep,iset,imem)/nominal;
-      }
-      else{
-	syslist_efftool[key_syslist][iset][imem]=0.;
-      }
-    }
-  }
-
-}
-
-
-int AnalyzerCore::GetIdxSingleMuReco(vector<Muon> &MuonCollection, double ptmin, double etacut, double ptveto){
-  
-  unsigned int muonsize = MuonCollection.size();
-  unsigned int nselected= 0;
-  int muonidx=-1;
-  double maxpt=-100.;
-  for(unsigned int i = 0 ; i < muonsize; i++ ){
-    double pt=MuonCollection[i].Pt();
-    double eta=MuonCollection[i].Eta();
-    bool passID=MuonCollection[i].PassID("POGLoose");
-    bool passISO=MuonCollection[i].PassSelector(Muon::Selector::TkIsoLoose);
-    //double reliso=MuonCollection[i].RelIso();
-    if(fabs(eta) > etacut) continue;
-    if(pt < ptveto) continue;
-    if (!passID) continue;
-    if (!passISO) continue;
-    if (pt > maxpt) {
-      maxpt=pt;
-      muonidx=i;
-    }
-    nselected+=1;
-  }
-
-  
-  if (nselected!=1) return -1;
-  if (!MuonCollection[muonidx].PassID("POGMedium")) return -1;
-  if (maxpt < ptmin) return -1;
-  
-  return muonidx;
-
-}
-
-
-
-int AnalyzerCore::GetIdxSingleElReco(vector<Electron> &ElectronCollection, double ptmin, double etacut, double ptveto){
-
-  unsigned int electronsize = ElectronCollection.size();
-  unsigned int nselected= 0;
-  int electronidx=-1;
-  double maxpt=-100.;
-  for(unsigned int i = 0 ; i < electronsize; i++ ){
-    double pt=ElectronCollection[i].Pt();
-    double eta=ElectronCollection[i].Eta();
-    bool passID=ElectronCollection[i].PassID("passLooseID");
-    if(fabs(eta) > etacut) continue;
-    if(pt < ptveto) continue;
-    if(!passID) continue;
-    if(pt > maxpt){
-      maxpt = pt;
-      electronidx=i;
-    }
-  }
-  if (nselected!=1) return -1;
-  if (!ElectronCollection[electronidx].PassID("passMediumID")) return -1;
-  if (maxpt < ptmin) return -1;
-  return electronidx;
-}
-
-
-
-vector<int> AnalyzerCore::GetIdxDiMuReco(vector<Muon> &MuonCollection, double ptmin1, double ptmin2, double etacut, double ptveto ){
-  vector<int> v_muonidx;
-  unsigned int muonsize = MuonCollection.size();
-  unsigned int npassveto=0;
-  unsigned int npasstight=0;
-  
-  double maxpt=-9999.;
-  double minpt=9999.;
-  for(unsigned int i = 0 ; i < muonsize; i++ ){
-    double pt=MuonCollection[i].Pt();
-    double eta=MuonCollection[i].Eta();
-    bool passID=MuonCollection[i].PassID("POGMedium");
-    bool passVetoID=MuonCollection[i].PassID("POGLoose");
-    bool passISO=MuonCollection[i].PassSelector(Muon::Selector::TkIsoLoose);
-    //double reliso=MuonCollection[i].RelIso();
-    if(fabs(eta) > etacut) continue;
-    if(pt < ptveto) continue;
-    if (!passISO) continue;
-    if (!passVetoID) continue;
-    if (pt > maxpt){
-      maxpt=pt;
-    }
-    if (pt < minpt){
-      minpt=pt;
-    }
-    if (passID) npasstight+=1;
-    npassveto+=1;
-    v_muonidx.push_back(i);
-  }
-  if(npassveto>2) return {};
-  if(npasstight!=2) return {};
-  if(maxpt < ptmin1) return {};
-  if(minpt < ptmin2) return {};
-  return v_muonidx;
-}
-
-
-vector<int> AnalyzerCore::GetIdxDiElReco(vector<Electron> &ElectronCollection, double ptmin1, double ptmin2, double etacut, double ptveto ){
-  vector<int> v_electronidx;
-  unsigned int electronsize = ElectronCollection.size();
-  unsigned int npassveto=0;
-  unsigned int npasstight=0;
-  double maxpt=-9999.;
-  double minpt=9999.;
-  for(unsigned int i = 0 ; i < electronsize; i++ ){
-    double pt=ElectronCollection[i].Pt();
-    double eta=ElectronCollection[i].Eta();
-    bool passID=ElectronCollection[i].PassID("passMediumID");
-    bool passVetoID=ElectronCollection[i].PassID("passLooseID");
-    if(fabs(eta) > etacut) continue;
-    if(pt < ptveto) continue;
-    if (!passVetoID) continue;
-    if (pt > maxpt){
-      maxpt=pt;
-    }
-    if (pt < minpt){
-      minpt=pt;
-    }
-    if (passID) npasstight+=1;
-    npassveto+=1;
-    v_electronidx.push_back(i);
-  }
-  if(npassveto>2) return {};
-  if(npasstight!=2) return {};
-  if(maxpt < ptmin1) return {};
-  if(minpt < ptmin2) return {};
-  return v_electronidx;
-}
-
-
-void AnalyzerCore::SetupSingleLeptonChannel(){
-  //common setup
-  MuonID="POGMedium";
-  MuonRecoSFKey="Muon_RECO";
-  MuonIDSFKey="Muon_MediumID_trkIsoLoose";
-  MuonTrkSFKey="Muon_Tracking";
-  MuonDZSFKey="";
-
-  ElectronID="passMediumID";
-  ElectronRecoSFKey="Electron_RECO";
-  ElectronIDSFKey="Electron_MediumID";
-  ElectronDZSFKey="";
-
-  if(DataYear==2016){
-    if (DataEra=="2016preVFP"){
-      MuonID="POGMedium_hip";
-    }
-    MuonTriggerNames = {"HLT_IsoMu24_v","HLT_IsoTkMu24_v"};
-    MuonTriggerSFKeys={"IsoMu24_MediumID_trkIsoLoose"};
-    TriggerSafeCut_muon1 = 27.;
-    TriggerSafeCut_muon2 = -1.;
-
-
-    ElectronTriggerNames = {"HLT_Ele27_WPTight_Gsf_v"};
-    ElectronTriggerSFKeys = {"Ele27_MediumID"};
-    TriggerSafeCut_electron1 = 30.;
-    TriggerSafeCut_electron2 = -1.;
-
-
-  }  
-  else if(DataYear==2017){
-    MuonTriggerNames = {"HLT_IsoMu24_v","HLT_IsoMu27_v"};
-    MuonTriggerSFKeys={"IsoMu24_MediumID_trkIsoLoose","IsoMu27_MediumID_trkIsoLoose"};
-    TriggerSafeCut_muon1 = 30.;
-    TriggerSafeCut_muon2 = -1.;
-
-    ElectronTriggerNames = {"HLT_Ele27_WPTight_Gsf_v","HLT_Ele32_WPTight_Gsf_v"};
-    ElectronTriggerSFKeys = {"Ele27_MediumID","Ele32_MediumID"};
-    TriggerSafeCut_electron1 = 35.;
-    TriggerSafeCut_electron2 = -1.;
-
-  }
-
-  else if(DataYear==2018){
-    MuonTriggerNames = {"HLT_IsoMu24_v"};
-    MuonTriggerSFKeys={"IsoMu24_MediumID_trkIsoLoose"};
-    TriggerSafeCut_muon1 = 27.;
-    TriggerSafeCut_muon2 = -1.;
-
-    ElectronTriggerNames = {"HLT_Ele28_WPTight_Gsf_v","HLT_Ele32_WPTight_Gsf_v"};
-    ElectronTriggerSFKeys = {"Ele28_MediumID","Ele32_MediumID"};
-    TriggerSafeCut_electron1 = 35.;
-    TriggerSafeCut_electron2 = -1.;
-
-
-  }
-  
-}
-
-
-
-void AnalyzerCore::SetupDiLeptonChannel(){
-  //common setup
-  MuonID="POGMedium";
-  MuonRecoSFKey="Muon_RECO";
-  MuonIDSFKey="Muon_MediumID_trkIsoLoose";
-  MuonTrkSFKey="Muon_Tracking";
-  MuonDZSFKey="";
-
-  ElectronID="passMediumID";
-  ElectronRecoSFKey="Electron_RECO";
-  ElectronIDSFKey="Electron_MediumID";
-  ElectronDZSFKey="";
-
-
-  if(DataYear==2016){
-    ElectronDZSFKey="DZ_MediumID";
-    if (DataEra=="2016preVFP"){
-      MuonID="POGMedium_hip";
-    }else{
-      MuonDZSFKey="DZ_MediumID_trkIsoLoose";
-    }
-    MuonTriggerNames ={"HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_v","HLT_Mu17_TrkIsoVVL_TkMu8_TrkIsoVVL_v","HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ_v","HLT_Mu17_TrkIsoVVL_TkMu8_TrkIsoVVL_DZ_v","HLT_TkMu17_TrkIsoVVL_TkMu8_TrkIsoVVL_v","HLT_TkMu17_TrkIsoVVL_TkMu8_TrkIsoVVL_DZ_v"};
-    MuonTriggerSFKeys={"Mu17Leg1_MediumID_trkIsoLoose","Mu8Leg2_MediumID_trkIsoLoose"};
-    TriggerSafeCut_muon1 = 20.;
-    TriggerSafeCut_muon2 = 11.;
-
-    
-    ElectronTriggerNames = {"HLT_Ele23_Ele12_CaloIdL_TrackIdL_IsoVL_DZ_v"};
-    ElectronTriggerSFKeys = {"Ele23Leg1_MediumID","Ele12Leg2_MediumID"};
-    TriggerSafeCut_electron1 = 26.;
-    TriggerSafeCut_electron2 = 15.;
-    ElectronDZSFKey="DZ_MediumID";
-
-  }  
-  else if(DataYear==2017){
-    MuonTriggerNames = {"HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ_Mass8_v"};
-    MuonTriggerSFKeys={"Mu17Leg1_MediumID_trkIsoLoose","Mu8Leg2_MediumID_trkIsoLoose"};
-    TriggerSafeCut_muon1 = 20.;
-    TriggerSafeCut_muon2 = 11.;
-    MuonDZSFKey="DZ_MediumID_trkIsoLoose";
-
-    ElectronTriggerNames = {"HLT_Ele23_Ele12_CaloIdL_TrackIdL_IsoVL_v"};
-    ElectronTriggerSFKeys = {"Ele23Leg1_MediumID","Ele12Leg2_MediumID"};
-    TriggerSafeCut_electron1 = 26.;
-    TriggerSafeCut_electron2 = 15.;
-
-  }
-
-  else if(DataYear==2018){
-    MuonTriggerNames = {"HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ_Mass3p8_v"};
-    MuonTriggerSFKeys={"Mu17Leg1_MediumID_trkIsoLoose","Mu8Leg2_MediumID_trkIsoLoose"};
-    TriggerSafeCut_muon1 = 20.;
-    TriggerSafeCut_muon2 = 11.;
-    MuonDZSFKey="DZ_MediumID_trkIsoLoose";
-
-    ElectronTriggerNames = {"HLT_Ele23_Ele12_CaloIdL_TrackIdL_IsoVL_v"};
-    ElectronTriggerSFKeys = {"Ele23Leg1_MediumID","Ele12Leg2_MediumID"};
-    TriggerSafeCut_electron1 = 26.;
-    TriggerSafeCut_electron2 = 15.;
-
-
-  }
-  
-}
-
-//---end jhchoi sys
 void AnalyzerCore::FillLeptonPlots(std::vector<Lepton *> leps, TString this_region, double weight){
 
   for(unsigned int i=0; i<leps.size(); i++){

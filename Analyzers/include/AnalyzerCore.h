@@ -35,7 +35,7 @@
 //#include "TH4D.h"
 #include "EfficiencyTool.h"
 //#include "RocPFProb.h"
-
+#include "TStopwatch.h"
 
 #define M_Z 91.1876
 #define M_W 80.379
@@ -290,7 +290,7 @@ public:
   double GetDileptonTriggerSF(TString SFhistkey0,TString SFhistkey1,TString DZSFhistkey,const vector<Lepton*>& leps,int set,int mem,TString option="");
   double GetLeptonTriggerSF(TString triggerSF_key,const vector<Lepton*>& leps,int set,int mem,TString option);
   double GetLeptonTriggerORSF(Event &_event,  vector<TString> triggers, vector<TString> trigSFkeys,const vector<Lepton*>& leps,int set,int mem,TString option);
-  std::vector<Electron> ElectronEnergyCorrection(const vector<Electron>& electrons,int set,int member);
+  //std::vector<Electron> ElectronEnergyCorrection(const vector<Electron>& electrons,int set,int member);
   //void SetupRoccoR();
   void SetupEfficiency();
   void DeleteEfficiency();
@@ -300,101 +300,10 @@ public:
   TTree *jhchoi_newtree3;
   TTree *jhchoi_newtree4;
 
-  int GetIdxSingleMuReco(vector<Muon> &MuonCollection, double ptmin, double etacut=2.4, double ptveto=10.);
-  int GetIdxSingleElReco(vector<Electron> &ElectronCollection, double ptmin, double etacut=2.5, double ptveto=15.);
-  vector<int> GetIdxDiMuReco(vector<Muon> &MuonCollection, double ptmin1, double ptmin2, double etacut=2.4, double ptveto=10. );
-  vector<int> GetIdxDiElReco(vector<Electron> &ElectronCollection, double ptmin1, double ptmin2, double etacut=2.5, double ptveto=15. );
-  void SetupSingleLeptonChannel();
-  void SetupDiLeptonChannel();
+  //--Timer--//
+  TStopwatch timer_WriteHist; double t_WriteHist;
+  TStopwatch timer_Destructor; double t_Destructor;
 
-  double TriggerSafeCut_muon1, TriggerSafeCut_muon2;
-  double TriggerSafeCut_electron1, TriggerSafeCut_electron2;
-  vector<TString> MuonTriggerNames;
-  vector<TString> MuonTriggerSFKeys;
-  vector<TString> ElectronTriggerNames;
-  vector<TString> ElectronTriggerSFKeys;
-  TString MuonRecoSFKey,MuonIDSFKey,MuonTrkSFKey,MuonDZSFKey;
-  TString ElectronRecoSFKey,ElectronIDSFKey,ElectronDZSFKey;
-  TString MuonID;
-  TString ElectronID;
-
-  std::vector<Muon> AllMuons;
-  std::vector<Electron> AllElectrons;
-  std::vector<Jet> AllJets;
-
-
-
-  ///--jhchoi Systematic!!--//
-  virtual void executeEventWithCurrentSet();
-  std::unordered_map<string,std::vector<double>> syslist_w;//syslist, weight type
-  std::unordered_map<string,std::vector<std::vector<double>>> syslist_efftool;//syslist, weight type
-  void InitSystematics();
-
-
-
-
-  
-
-
-
-
-
-
-
-
-
-  TString _sys_suffix;
-  //--Make new functions depends on member variable
-  bool _run_weightbase;
-  //----Non-Weight variations----//
-  int _var_muonscale;//calibration by rochcorr
-  int _var_electronscale;
-  int _var_jes;
-  int _var_jer;
-  TString _JESsource;
-  //---For Scale Variation of Momentum
-  std::vector<Muon> AllMuons_raw;
-  unsigned int muonsize;
-  std::vector<Electron> AllElectrons_raw;
-  unsigned int electronsize;
-  std::vector<Jet> AllJets_raw;
-  unsigned int jetsize;
-
-
-  struct ArgFillHist{
-    TString histname;
-    double value; double weight;
-    int n_bin; double x_min;
-    double x_max;
-  };
-  vector<ArgFillHist> vReserveHist;
-  void ClearReserveHist();
-  struct ArgFillCutflow{
-    TString histname;
-    TString label;
-    double weight;
-  };
-  vector<ArgFillCutflow> vReserveCutflow;
-  void ClearReserveCutflow();
-  void ReserveFillHist(TString histname, double value, double weight, int n_bin, double x_min, double x_max);
-  void ReserveFillCutflow(TString histname,TString label,double weight);
-  
-
-  vector<string> SysToRun_w;
-  vector<string> SysToRun_efftool;
-  vector<string> SysToRun_vv;
-  TString syssuffix;
-  TString sysdir;
-  void ApplySysToRun();
-  //virtual void GetAllObjects();
-  void FillReservedHist();
-  void SetRunWeightBase(bool _doRun);
-  Event ev;
-  void SetAllVar_syslist_efftool_muontrigger(double nominal ,const vector<Lepton*>& leps);
-  void SetAllVar_syslist_efftool_electrontrigger(double nominal ,const vector<Lepton*>& leps);
-  void SetAllVar_syslist_efftool(double nominal, const Lepton* lep,string key_syslist, TString key_efftool);
-  void InitSysVar();
-  //--end jhchoi--//
   //==== Quick Plotters
   void FillLeptonPlots(std::vector<Lepton *> leps, TString this_region, double weight);
   void FillJetPlots(std::vector<Jet> jets, std::vector<FatJet> fatjets, TString this_region, double weight);

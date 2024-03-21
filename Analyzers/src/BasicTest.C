@@ -116,7 +116,7 @@ void BasicTest::executeEvent(){
   //GetDileptonTriggerSF
   //double AnalyzerCore::GetDileptonTriggerSF(TString triggerSF_key0,TString triggerSF_key1,TString DZSF,const vector<Lepton*>& leps,int set,int mem,TString option)
   //MakeLeptonPointerVector()
-  AllMuons = GetAllMuons();
+  vector<Muon> AllMuons = GetAllMuons();
   if (AllMuons.size()<2) return;
   vector<Lepton*> leps=MakeLeptonPointerVector(AllMuons);
   double triggersf=GetDileptonTriggerSF("Mu17Leg1_MediumID_trkIsoLoose","Mu8Leg2_MediumID_trkIsoLoose","DZ_MediumID_trkIsoLoose",leps,0,0);
@@ -176,7 +176,7 @@ void BasicTest::executeEvent(){
   //==== Later, do "SelectMuons(AllMuons, ID, pt, eta)" to get muons with ID cuts
   AllMuons = GetAllMuons();
   //=== Jets too
-  AllJets = GetAllJets();
+  vector<Jet> AllJets = GetAllJets();
 
   //==== Get L1Prefire reweight
   //==== If data, 1.;

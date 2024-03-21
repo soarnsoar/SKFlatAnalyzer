@@ -1,0 +1,28 @@
+Submitting job(s)......................................................................................................................................................
+150 job(s) submitted to cluster 2232190.
+Submitting job(s)..................................................................................................................................
+130 job(s) submitted to cluster 2232196.
+Submitting job(s)............................................................................................
+92 job(s) submitted to cluster 2232201.
+Submitting job(s)........................................................................
+72 job(s) submitted to cluster 2232205.
+Submitting job(s)...........................
+27 job(s) submitted to cluster 2232209.
+Submitting job(s).......................
+23 job(s) submitted to cluster 2232212.
+Submitting job(s)...............
+15 job(s) submitted to cluster 2232214.
+Submitting job(s)......................................................................................................................................................
+150 job(s) submitted to cluster 2232216.
+Traceback (most recent call last):
+  File "/data6/Users/jhchoi/SKFlatAnalyzers/test/ForTMVA/SKFlatAnalyzer/bin/ExportShellCondorSetup_tamsa.py", line 109, in <module>
+    Export(workdir,command,jobname,submit,ncpu,memory)
+  File "/data6/Users/jhchoi/SKFlatAnalyzers/test/ForTMVA/SKFlatAnalyzer/bin/ExportShellCondorSetup_tamsa.py", line 73, in Export
+    if int(ncpu) < int(ncpu_criteria):
+ValueError: invalid literal for int() with base 10: '12.2474487139'
+Traceback (most recent call last):
+  File "/data6/Users/jhchoi/SKFlatAnalyzers/test/ForTMVA/SKFlatAnalyzer/bin/ExportShellCondorSetup_tamsa.py", line 109, in <module>
+    Export(workdir,command,jobname,submit,ncpu,memory)
+  File "/data6/Users/jhchoi/SKFlatAnalyzers/test/ForTMVA/SKFlatAnalyzer/bin/ExportShellCondorSetup_tamsa.py", line 73, in Export
+    if int(ncpu) < int(ncpu_criteria):
+ValueError: invalid literal for int() with base 10: '12.2474487139'
