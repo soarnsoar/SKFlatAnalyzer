@@ -289,7 +289,7 @@ AnalyzerCore::~AnalyzerCore(){
 
   //=== hist maps
 
-  for(std::map< TString, TH1D* >::iterator mapit = maphist_TH1D.begin(); mapit!=maphist_TH1D.end(); mapit++){
+  for(std::unordered_map< TString, TH1D* >::iterator mapit = maphist_TH1D.begin(); mapit!=maphist_TH1D.end(); mapit++){
     delete mapit->second;
   }
   maphist_TH1D.clear();
@@ -1614,10 +1614,10 @@ double AnalyzerCore::projectedMET(TLorentzVector a, TLorentzVector b, Particle M
 
 bool AnalyzerCore::HasFlag(TString flag){
 
-  //cout << "[AnalyzerCore::HasFlag] Userflags.size() = " << Userflags.size() << endl;
-  //for(unsigned int i=0; i<Userflags.size(); i++){
-  //  cout << "[AnalyzerCore::HasFlag] " << Userflags.at(i) << endl;
-  //}
+  cout << "[AnalyzerCore::HasFlag] Userflags.size() = " << Userflags.size() << endl;
+  for(unsigned int i=0; i<Userflags.size(); i++){
+    cout << "[AnalyzerCore::HasFlag] " << Userflags.at(i) << endl;
+  }
   
   return std::find(Userflags.begin(), Userflags.end(), flag) != Userflags.end();
 
@@ -2375,7 +2375,7 @@ bool AnalyzerCore::IsSignalPID(int pid){
 TH1D* AnalyzerCore::GetHist1D(TString histname){
 
   TH1D *h = NULL;
-  std::map<TString, TH1D*>::iterator mapit = maphist_TH1D.find(histname);
+  std::unordered_map<TString, TH1D*>::iterator mapit = maphist_TH1D.find(histname);
   if(mapit != maphist_TH1D.end()) return mapit->second;
 
   return h;
@@ -2620,7 +2620,7 @@ void AnalyzerCore::WriteHist(){
   timer_WriteHist.Start();
 
   outfile->cd();
-  for(std::map< TString, TH1D* >::iterator mapit = maphist_TH1D.begin(); mapit!=maphist_TH1D.end(); mapit++){
+  for(std::unordered_map< TString, TH1D* >::iterator mapit = maphist_TH1D.begin(); mapit!=maphist_TH1D.end(); mapit++){
     TString this_fullname=mapit->second->GetName();
     TString this_name=this_fullname(this_fullname.Last('/')+1,this_fullname.Length());
     TString this_suffix=this_fullname(0,this_fullname.Last('/'));

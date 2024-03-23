@@ -431,12 +431,7 @@ void EfficiencyTool::Setup(TString path){
 }
 const Efficiency* EfficiencyTool::Get(TString key) const{
   const Efficiency* eff=NULL;
-  //jhchoi
-  //cout << "const Efficiency* EfficiencyTool::Get(TString key) const" << endl;
-  if(fEfficiencies.find(key)!=fEfficiencies.end()){
-    eff=fEfficiencies.find(key)->second;
-  }
-
+  if(fEfficiencies.find(key)!=fEfficiencies.end()) eff=fEfficiencies.find(key)->second;
   return eff;
 }
 double EfficiencyTool::GetDataEfficiency(TString key,double eta,double pt,int charge,int set,int mem,TString option) const{
@@ -449,7 +444,6 @@ double EfficiencyTool::GetDataEfficiency(TString key,double eta,double pt,int ch
   return eff->GetDataEfficiency(eta,pt,charge,set,mem,option);
 }
 double EfficiencyTool::GetDataEfficiency(TString key,const Lepton* lep,int set,int mem,TString option) const{
-  //jhchoi
   if(key==""||key=="Default") return 1.;
   double eta=0;
   double pt=0;
@@ -524,24 +518,6 @@ double EfficiencyTool::GetEfficiencySF(TString key,const Lepton* lep,int set,int
   }
   return GetEfficiencySF(key,eta,pt,charge,set,mem,option);
 }
-
-void EfficiencyTool::PrintStructure(TString key) const{
-  const Efficiency* eff=Get(key);
-  if(!eff){
-    cout<<"[EfficiencyTool::GetStructure] no key "<<key<<endl;
-    exit(ENODATA);
-  }
-  int nset=eff->fDataPlus.size();
-  cout << "[PrintStructure]key=" << key << endl;
-  for(int i=0;i<nset;i++){
-    //out.push_back(vector<double>(eff->fDataPlus.at(i).size(),1.));
-    //fDataPlus = vector<vector<TH2*> >
-    int nmem=eff->fDataPlus.at(i).size();
-    for(int j=0;j<nmem;j++){
-      cout << i << ". =>" << eff->fDataPlus.at(i).at(j)->GetTitle() << endl;
-    }
-  }
-}
 vector<vector<double>> EfficiencyTool::GetStructure(TString key) const{
   vector<vector<double>> out;
   if(key==""||key=="Default") return out;
@@ -564,4 +540,25 @@ bool EfficiencyTool::IsMinus(TString path){
   path.ToLower();
   if(path.Contains("minus")) return true;
   return false;
+}
+
+
+
+//jhchoi
+void EfficiencyTool::PrintStructure(TString key) const{
+  const Efficiency* eff=Get(key);
+  if(!eff){
+    cout<<"[EfficiencyTool::GetStructure] no key "<<key<<endl;
+    exit(ENODATA);
+  }
+  int nset=eff->fDataPlus.size();
+  cout << "[PrintStructure]key=" << key << endl;
+  for(int i=0;i<nset;i++){
+    //out.push_back(vector<double>(eff->fDataPlus.at(i).size(),1.));
+    //fDataPlus = vector<vector<TH2*> >
+    int nmem=eff->fDataPlus.at(i).size();
+    for(int j=0;j<nmem;j++){
+      cout << i << ". =>" << eff->fDataPlus.at(i).at(j)->GetTitle() << endl;
+    }
+  }
 }

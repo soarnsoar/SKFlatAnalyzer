@@ -1,7 +1,8 @@
 #include "DiLeptonAnalyzer.h"
 
 DiLeptonAnalyzer::DiLeptonAnalyzer(){
-  runSys=true;
+  //runSys=true;
+
   JHAnalyzerBase::SetupDiLeptonChannel();  
 }
 
@@ -15,11 +16,26 @@ void DiLeptonAnalyzer::SetMuonIdx(int _l1idx, int _l2idx){
   mu2idx=_l2idx;
   
 }
+void DiLeptonAnalyzer::SetMuon(Muon _l1, Muon _l2){
+  mu1=_l1;
+  mu2=_l2;
+  
+}
+/*
 bool DiLeptonAnalyzer::CheckIsDiMuonChannel(){
   if (!ev.PassTrigger(MuonTriggerNames)) return 0;
   vector<int> v_muonidx=GetIdxDiMuReco(AllMuons, TriggerSafeCut_muon1, TriggerSafeCut_muon2);
   if( v_muonidx.size()<2) return 0;
   SetMuonIdx(v_muonidx[0],v_muonidx[1]);
+  return 1;
+}  
+ */
+bool DiLeptonAnalyzer::CheckIsDiMuonChannel(){
+  if (!ev.PassTrigger(MuonTriggerNames)) return 0;
+  //vector<Lepton*> v_muon=GetIdxDiMuReco(AllMuons, TriggerSafeCut_muon1, TriggerSafeCut_muon2);
+  vector<Muon> v_muon=GetDiMuReco(TriggerSafeCut_muon1, TriggerSafeCut_muon2);
+  if( v_muon.size()<2) return 0;
+  SetMuon(v_muon[0],v_muon[1]);
   return 1;
 }  
 void DiLeptonAnalyzer::SetElectronIdx(int _l1idx, int _l2idx){
@@ -73,10 +89,13 @@ void DiLeptonAnalyzer::RunBasicZregion(){
 
   TString LepCh="ll";
   if(IsDiMuonChannel){
-    vZ=GetDiMuonVector();
+    //vZ=GetDiMuonVector();
+    vZ=mu1+mu2;
     LepCh="mm";
-    l1=AllMuons[mu1idx];
-    l2=AllMuons[mu2idx];
+    //l1=AllMuons[mu1idx];
+    //l2=AllMuons[mu2idx];
+    l1=mu1;
+    l2=mu2;
   }
   else if(IsDiElectronChannel){
     vZ=GetDiElectronVector();
@@ -87,11 +106,15 @@ void DiLeptonAnalyzer::RunBasicZregion(){
 
   //----Jet---//
   v_tightlep={l1,l2};
-  v_jetidx=GetIdxTightJet(AllJets,v_tightlep,30,2.4);    
-  v_bjetidx=GetIdxBJet(v_jetidx);
+  //v_jetidx=GetIdxTightJet(AllJets,v_tightlep,30,2.4);    
+  //v_bjetidx=GetIdxBJet(v_jetidx);
+  v_tightjet=GetTightJet(AllJets,v_tightlep,30,2.4);
+  v_bjet=GetBJet(v_tightjet);
 
-  njet=v_jetidx.size();
-  nbjet=v_bjetidx.size();
+  //njet=v_jetidx.size();
+  //nbjet=v_bjetidx.size();
+  njet=v_tightjet.size();
+  nbjet=v_bjet.size();
 
   //double PuppiMET_pt=PuppiMET.Pt();
 
@@ -108,33 +131,33 @@ void DiLeptonAnalyzer::RunBasicZregion(){
   
 }
 void DiLeptonAnalyzer::FillHistAll(TString cutname){
-  FillHist(cutname,"M_ll",vZ.M(),weight,100,40,140);
-  FillHist(cutname,"pt_l1",l1.Pt(),weight,200,0,400);
-  FillHist(cutname,"pt_l2",l2.Pt(),weight,200,0,400);
+  FillHist(cutname+"/M_ll",vZ.M(),weight,100,40,140);
+  FillHist(cutname+"/pt_l1",l1.Pt(),weight,200,0,400);
+  FillHist(cutname+"/pt_l2",l2.Pt(),weight,200,0,400);
 
-  FillHist(cutname,"eta_l1",l1.Eta(),weight,50,3,3);
-  FillHist(cutname,"eta_l2",l2.Eta(),weight,50,-3,3);
+  FillHist(cutname+"/eta_l1",l1.Eta(),weight,50,3,3);
+  FillHist(cutname+"/eta_l2",l2.Eta(),weight,50,-3,3);
 
-  FillHist(cutname,"njet",njet,weight,10,0,10);
-  FillHist(cutname,"nbjet",nbjet,weight,10,0,10);
+  FillHist(cutname+"/njet",njet,weight,10,0,10);
+  FillHist(cutname+"/nbjet",nbjet,weight,10,0,10);
 
-  FillHist(cutname,"puppimet",PuppiMET.Pt(),weight,100,0,100);
+  FillHist(cutname+"/puppimet",PuppiMET.Pt(),weight,100,0,100);
 
   if(njet>0){
-    FillHist(cutname,"pt_j1",AllJets[v_jetidx[0]].Pt(),weight,100,0,200);
-    FillHist(cutname,"eta_j1",AllJets[v_jetidx[0]].Eta(),weight,50,-3,3);
+    FillHist(cutname+"/pt_j1",AllJets[v_jetidx[0]].Pt(),weight,100,0,200);
+    FillHist(cutname+"/eta_j1",AllJets[v_jetidx[0]].Eta(),weight,50,-3,3);
     if(njet>1){
-      FillHist(cutname,"pt_j2",AllJets[v_jetidx[1]].Pt(),weight,100,0,200);
-      FillHist(cutname,"eta_j2",AllJets[v_jetidx[1]].Eta(),weight,50,-3,3);
+      FillHist(cutname+"/pt_j2",AllJets[v_jetidx[1]].Pt(),weight,100,0,200);
+      FillHist(cutname+"/eta_j2",AllJets[v_jetidx[1]].Eta(),weight,50,-3,3);
     }
   }
   
   
 }
 
-void DiLeptonAnalyzer::FillHist(TString cutname,TString variablename,double value,double weight,int nbin,double xmin,double xmax){
-  JHAnalyzerBase::FillHist(cutname+"/"+variablename,value,weight,nbin,xmin,xmax);
-}
+//void DiLeptonAnalyzer::FillHist(TString cutname,TString variablename,double value,double weight,int nbin,double xmin,double xmax){
+//  JHAnalyzerBase::FillHist(cutname+"/"+variablename,value,weight,nbin,xmin,xmax);
+//}
 
 
 void DiLeptonAnalyzer::EventLoop(){
