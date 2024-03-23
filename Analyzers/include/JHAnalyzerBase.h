@@ -2,38 +2,13 @@
 #define JHAnalyzerBase_h
 
 #include "AnalyzerCore.h"
-#include <TStopwatch.h>
 
 class JHAnalyzerBase : public AnalyzerCore {
 
  public:
 
-  //--Timer--//
-  TStopwatch timer_InitObj; int ncall_InitObj; double t_InitObj;
-  TStopwatch timer_InitVariable; int ncall_InitVariable; double t_InitVariable;
-  TStopwatch timer_EventLoop; int ncall_EventLoop; double t_EventLoop;
-  TStopwatch timer_FillWeightBase; int ncall_FillWeightBase; double t_FillWeightBase;
-  TStopwatch timer_FillMomentumBase; int ncall_FillMomentumBase; double t_FillMomentumBase;
 
 
-  //Timer detail//
-  TStopwatch timer_prefire; int ncall_prefire; double t_prefire;
-  TStopwatch timer_pu; int ncall_pu; double t_pu;
-  TStopwatch timer_ps; int ncall_ps; double t_ps;
-  TStopwatch timer_btag; int ncall_btag; double t_btag;
-
-  TStopwatch timer_ElectronID; int ncall_ElectronID; double t_ElectronID;
-  TStopwatch timer_ElectronRECO; int ncall_ElectronRECO; double t_ElectronRECO;
-  TStopwatch timer_ElectronTrigger; int ncall_ElectronTrigger; double t_ElectronTrigger;
-
-  TStopwatch timer_MuonID; int ncall_MuonID; double t_MuonID;
-  TStopwatch timer_MuonRECO; int ncall_MuonRECO; double t_MuonRECO;
-  TStopwatch timer_MuonTrigger; int ncall_MuonTrigger; double t_MuonTrigger;
-  TStopwatch timer_MuonTrk; int ncall_MuonTrk; double t_MuonTrk;
-  
-  //--[end]Timer//
-
-  //void initializeAnalyzer();
   void InitSystematicMomentumVariations();
   void initializeAnalyzer();
   void InitClassVariablesPerEvent();
@@ -51,6 +26,7 @@ class JHAnalyzerBase : public AnalyzerCore {
   bool runSys;
   double weight;
   double btagcut;
+  bool runWeightBase;
   //--(1) Prepare Event--//
   void InitAllObjects();
   //SetAllObjects()
@@ -75,8 +51,6 @@ class JHAnalyzerBase : public AnalyzerCore {
   void FillHistIdx2(TString sysname, TString idx1, TString idx2, TString histname,double value,double this_weight,int n_bin,double x_min, double x_max);
   //--(3) RunVariations
   void RunVariations();
-  void RunWeightVariations();
-  void RunMomentumVariations();
   void FillReservedHist();
   void FillReservedHistWeightBase();
   void ClearReserveHist();

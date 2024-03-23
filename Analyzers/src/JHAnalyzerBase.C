@@ -71,53 +71,30 @@ void JHAnalyzerBase::InitSystematicMomentumVariations(){
 }
 
 JHAnalyzerBase::~JHAnalyzerBase(){
-  /*
-  cout << "t_InitObj=" << t_InitObj << endl;
-  cout << "t_InitVariable=" << t_InitVariable << endl;
-  cout << "t_EventLoop=" << t_EventLoop << endl;
-  cout << "t_FillWeightBase=" << t_FillWeightBase << endl;
-  cout << "t_FillMomentumBase=" << t_FillMomentumBase << endl;
 
-  cout << "t_prefire=" << t_prefire << endl;
-  cout << "t_ps=" << t_ps << endl;
-  cout << "t_pu=" << t_pu << endl;
-  cout << "t_btag=" << t_btag << endl;
-
-  cout << "t_ElectronID=" << t_ElectronID << endl;
-  cout << "t_ElectronRECO=" << t_ElectronRECO << endl;
-  cout << "t_ElectronTrigger=" << t_ElectronTrigger << endl;
-
-  cout << "t_MuonID=" << t_MuonID << endl;
-  cout << "t_MuonRECO=" << t_MuonRECO << endl;
-  cout << "t_MuonTrigger=" << t_MuonTrigger << endl;
-  cout << "t_MuonTrk=" << t_MuonTrk << endl;
-  */
   //==== Destructor of this Analyzer
   
 }
 
 void JHAnalyzerBase::executeEvent(){  
-  //timer_InitObj.Start();
+
   InitAllObjects();
-  //t_InitObj+=timer_InitObj.RealTime();
   //---Nominal and weight-base variations--//
-  //timer_InitVariable.Start();
   InitClassVariablesPerEvent();
-  //t_InitVariable+=timer_InitVariable.RealTime();
   ev=GetEvent();
   SetEventBaseSysWeight();
-  //timer_EventLoop.Start();
+  runWeightBase=true;
   EventLoop();
-  //t_EventLoop+=timer_EventLoop.RealTime();
-  //timer_FillWeightBase.Start();
   FillReservedHistWeightBase();
   ClearReserveHist();
+
   //t_FillWeightBase+=timer_FillWeightBase.RealTime();
   if(!runSys) return;
   //---Momentum variations--//
-
+  runWeightBase=false;
   for(const auto &sys : vMomentumVar){
     SetSys(sys);
+    SetSysStructure();
     EventLoop();
     //timer_FillMomentumBase.Start();
     FillReservedHistMomentumVariations();
@@ -146,7 +123,7 @@ void JHAnalyzerBase::SetEventBaseSysWeight(){
   }
 }
 void JHAnalyzerBase::SetSysStructure(){
-  if(runSys){
+  if(runSys&&runWeightBase){
 
     w_ElectronID=fEff->GetStructure(ElectronIDSFKey);
     r_ElectronID=fEff->GetStructure(ElectronIDSFKey);
@@ -192,12 +169,29 @@ void JHAnalyzerBase::SetSysStructure(){
 
   }
   else{
+    w_ElectronID.clear();
+    r_ElectronID.clear();
+    w_ElectronRECO.clear();
+    r_ElectronRECO.clear();
+    w_ElectronTrigger.clear();
+    r_ElectronTrigger.clear();
+
     w_ElectronID.push_back({1.});
     r_ElectronID.push_back({1.});
     w_ElectronRECO.push_back({1.});
     r_ElectronRECO.push_back({1.});
     w_ElectronTrigger.push_back({1.});
     r_ElectronTrigger.push_back({1.});
+
+
+    w_MuonID.clear();
+    r_MuonID.clear();
+    w_MuonRECO.clear();
+    r_MuonRECO.clear();
+    w_MuonTrigger.clear();
+    r_MuonTrigger.clear();
+    w_MuonTrk.clear();
+    r_MuonTrk.clear();
 
     w_MuonID.push_back({1.});
     r_MuonID.push_back({1.});
@@ -441,6 +435,7 @@ void JHAnalyzerBase::FillReservedHistWeightBase(){
   }
   if(IsDATA) return;
   if(!runSys) return;
+  if(!runWeightBase) return;
   for(const auto& arg : vReserveHist){ 
     TString histname=arg.histname;
     double value=arg.value;
@@ -1358,7 +1353,6 @@ void JHAnalyzerBase::SetDoubleMuonTriggerSF(const vector<Lepton*> &v_muons){
   for(unsigned int iset=0;iset<setsize;iset++){
     unsigned int memsize = w_MuonTrigger[iset].size();
     for(unsigned int imem=0;imem<memsize;imem++){
-      //continue;
       //double AnalyzerCore::GetDileptonTriggerSF(TString triggerSF_key0,TString triggerSF_key1,TString DZSF,const vector<Lepton*>& leps,int set,int mem)
       w_MuonTrigger[iset][imem]=AnalyzerCore::GetDileptonTriggerSF(MuonTriggerSFKeys[0],MuonTriggerSFKeys[1],MuonDZSFKey,v_muons,iset,imem);
       r_MuonTrigger[iset][imem]=w_MuonTrigger[0][0] ? w_MuonTrigger[iset][imem]/w_MuonTrigger[0][0] : 0;
