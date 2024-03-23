@@ -133,14 +133,20 @@ class JHAnalyzerBase : public AnalyzerCore {
   int GetIdxSingleMuReco(const vector<Muon> &MuonCollection, double ptmin, double etacut=2.4, double ptveto=10.);
   int GetIdxSingleElReco(const vector<Electron> &ElectronCollection, double ptmin, double etacut=2.5, double ptveto=15.);
   vector<int> GetIdxDiMuReco(const vector<Muon> &MuonCollection, double ptmin1, double ptmin2, double etacut=2.4, double ptveto=10. );
+  vector<Muon> GetDiMuReco(double ptmin1, double ptmin2, double etacut=2.4, double ptveto=10. );
   vector<int> GetIdxDiElReco(const vector<Electron> &ElectronCollection, double ptmin1, double ptmin2, double etacut=2.5, double ptveto=15. );
+  vector<Electron*> GetDiElReco(const vector<Electron> &MuonCollection, double ptmin1, double ptmin2, double etacut=2.5, double ptveto=15. );
   void SetupSingleLeptonChannel();
   void SetupDiLeptonChannel();
   void SetIsDoubleLeptonTrigger();
 
   vector<int> GetIdxTightJet(const vector<Jet> &JetCollection, const vector<Lepton> &TightLeptonCollection ,double ptmin, double etacut, TString JetID="tight" );
+  //vector<Jet> GetTightJet(const vector<Jet> &JetCollection, const vector<Lepton> &v_tightlep, double ptmin, double etacut, TString JetID="tight" );
+  vector<Jet> GetTightJet(const vector<Jet> &JetCollection, const vector<Lepton> &v_tightlep, double ptmin, double etacut, TString JetID="tight" );
   vector<int> GetIdxBJet(const vector<int> &v_TightjetIdx);
+  vector<Jet> GetBJet(const vector<Jet> &v_Tightjet);
   void SetBtagSF(const vector<int> &v_jetidx);
+  void SetBtagSF(const vector<Jet> &v_jet);
 
 
   double TriggerSafeCut_muon1, TriggerSafeCut_muon2;
@@ -178,10 +184,15 @@ class JHAnalyzerBase : public AnalyzerCore {
 
   //eff scale Factor
   void SetMuonSFs(const vector<int> &v_muonidx);
+  void SetMuonSFs(const vector<Muon> &v_muon);
   void SetMuonRecoSF(const vector<int> &v_muonidx);
+  void SetMuonRecoSF(const vector<Lepton*> &v_muon);
   void SetMuonIDSF(const vector<int> &v_muonidx);
+  void SetMuonIDSF(const vector<Lepton*> &v_muon);
   void SetMuonTrkSF(const vector<int> &v_muonidx);
+  void SetMuonTrkSF(const vector<Lepton*> &v_muon);
   void SetMuonTriggerSF(const vector<int> &v_muonidx);
+  void SetMuonTriggerSF(const vector<Lepton*> &_v_muons);
   void SetSingleMuonTriggerSF(const vector<Lepton*> &v_muon);
   void SetDoubleMuonTriggerSF(const vector<Lepton*> &v_muon);
 

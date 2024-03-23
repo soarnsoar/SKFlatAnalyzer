@@ -901,7 +901,7 @@ try:
                 if nFiles>100:
                   #_nhadd=NJobs/10
                   _nhadd=sqrt(NJobs)
-                _req_memory=int(__outputsize)
+                _req_memory=int(__outputsize)*10
                 os.system("ExportShellCondorSetup_tamsa.py -c \"cd "+base_rundir+"&&hadd -j "+str(_nhadd)+" -f "+outputname+".root output/*.root&&mv "+outputname+".root "+FinalOutputPath+"\" -d WORKDIR_HADD -n hadd_"+outputname+" -m "+str(_nhadd)+" -r \""+str(_req_memory)+"\" -s")
                 #os.system("submit_hadd.sh")
                 #os.system('hadd -f '+outputname+'.root output/*.root >> JobStatus.log')

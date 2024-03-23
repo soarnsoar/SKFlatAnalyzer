@@ -40,6 +40,21 @@
 #define M_Z 91.1876
 #define M_W 80.379
 
+//------------To test unordered_map-----//
+#include <unordered_map>
+
+namespace std {
+
+  template <>
+    struct hash<TString> {
+    std::size_t operator()(const TString & k) const {
+      return std::hash<std::string>()(k.Data());
+    };
+  };
+  
+}
+//--end unoredered_map---//
+
 class AnalyzerCore: public SKFlatNtuple {
 
 public:
@@ -218,9 +233,9 @@ public:
 
   //==== Plotting
 
-  std::map< TString, TH1D* > maphist_TH1D;
-  std::map< TString, TH2D* > maphist_TH2D;
-  std::map< TString, TH3D* > maphist_TH3D;
+  std::unordered_map<TString, TH1D*> maphist_TH1D;
+  std::map<TString, TH2D*> maphist_TH2D;
+  std::map<TString, TH3D*> maphist_TH3D;
 
   // Map for JEC
   std::map<TString, std::vector<std::map<float, std::vector<float> > > > AK4CHSJECUncMap;
