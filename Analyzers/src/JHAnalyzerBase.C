@@ -1,21 +1,13 @@
 #include "JHAnalyzerBase.h"
 
 JHAnalyzerBase::JHAnalyzerBase(){
-
-  
-  //t_InitObj=0;
-  //t_InitVariable=0;
-  //t_EventLoop=0;
-  //t_FillWeightBase=0;
-  //t_FillMomentumBase=0;
-
   InitSystematicMomentumVariations();
   AnalyzerCore::SetupEfficiency();
 }
 void JHAnalyzerBase::initializeAnalyzer(){
   cout << "[JHAnalyzerBase::initializeAnalyzer]DataEra->" << DataEra << endl;
   runSys=HasFlag("runSys");
-  SetSysStructure();
+  //SetSysStructure();
   InitBtag();
   if(IsDATA){
     ProcessName="Data";
@@ -79,11 +71,14 @@ JHAnalyzerBase::~JHAnalyzerBase(){
 void JHAnalyzerBase::executeEvent(){  
 
   InitAllObjects();
-  //---Nominal and weight-base variations--//
-  InitClassVariablesPerEvent();
   ev=GetEvent();
-  SetEventBaseSysWeight();
+  //---Nominal and weight-base variations--//
+  //--init variables--//
   runWeightBase=true;
+  SetEventBaseSysWeight();
+  SetSysStructure();
+  InitClassVariablesPerEvent();
+  //--[END]init variables--//
   EventLoop();
   FillReservedHistWeightBase();
   ClearReserveHist();
@@ -123,6 +118,7 @@ void JHAnalyzerBase::SetEventBaseSysWeight(){
   }
 }
 void JHAnalyzerBase::SetSysStructure(){
+  //---WeightBase Systematic sources Only---//
   if(runSys&&runWeightBase){
 
     w_ElectronID=fEff->GetStructure(ElectronIDSFKey);
@@ -141,6 +137,7 @@ void JHAnalyzerBase::SetSysStructure(){
     w_MuonTrk=fEff->GetStructure(MuonTrkSFKey);
     r_MuonTrk=fEff->GetStructure(MuonTrkSFKey);
 
+    /*
     unsigned int n_efftool_var=0;
     for(unsigned int i =0 ; i < w_ElectronID.size(); i++){
       n_efftool_var+=w_ElectronID[i].size();
@@ -164,11 +161,12 @@ void JHAnalyzerBase::SetSysStructure(){
       n_efftool_var+=w_MuonTrk[i].size();
     }
     cout << "[n_efftool_var]=" << n_efftool_var << endl;
-
+    */
 
 
   }
-  else{
+  else{//if not weightbase
+    //--Electron--//
     w_ElectronID.clear();
     r_ElectronID.clear();
     w_ElectronRECO.clear();
@@ -183,7 +181,7 @@ void JHAnalyzerBase::SetSysStructure(){
     w_ElectronTrigger.push_back({1.});
     r_ElectronTrigger.push_back({1.});
 
-
+    //---Muon--//
     w_MuonID.clear();
     r_MuonID.clear();
     w_MuonRECO.clear();
@@ -217,6 +215,7 @@ void JHAnalyzerBase::InitClassVariablesPerEvent(){
 
 }
 void JHAnalyzerBase::FillHist(TString histname, double value, double this_weight, int n_bin, double x_min, double x_max){
+  //---ArgFillHist structure---//
   /*
   struct ArgFillHist{
     TString histname;
@@ -242,10 +241,6 @@ void JHAnalyzerBase::FillHistDown(TString sysname,TString histname,double value,
   AnalyzerCore::FillHist(histname+"/"+sysname+"/0/Down/"+ProcessName,value,this_weight,n_bin,x_min,x_max);
 }
 void JHAnalyzerBase::FillHistIdx2(TString sysname, int idx1, int idx2, TString histname,double value,double this_weight,int n_bin,double x_min, double x_max){
-  //TString idx1_in_str, idx2_in_str;
-  //idx1_in_str.Form("%d",idx1);   idx2_in_str.Form("%d",idx2);
-  //AnalyzerCore::FillHist("SYS/"+histname+"/"+sysname+"/"+idx1_in_str+"/"+idx2_in_str+"/"+ProcessName,value,this_weight,n_bin,x_min,x_max);
-  //AnalyzerCore::FillHist("SYS/"+histname+"/"+sysname+"/"+std::to_string(idx1)+"/"+std::to_string(idx2)+"/"+ProcessName,value,this_weight,n_bin,x_min,x_max);
   AnalyzerCore::FillHist(histname+"/"+sysname+"/"+std::to_string(idx1)+"/"+std::to_string(idx2)+"/"+ProcessName,value,this_weight,n_bin,x_min,x_max);
 }
 void JHAnalyzerBase::FillHistIdx2(TString sysname, TString idx1, TString idx2, TString histname,double value,double this_weight,int n_bin,double x_min, double x_max){
@@ -255,10 +250,6 @@ void JHAnalyzerBase::FillHistIdx2(TString sysname, TString idx1, TString idx2, T
 
 void JHAnalyzerBase::FillHistPUSys(TString histname, double value, double this_weight, int n_bin, double x_min, double x_max){
   //PU weight//
-  //double weightUp  =this_weight*r_PU[0];
-  //double weightDown=this_weight*r_PU[1];
-  //FillHistUp("pu",histname,value,weightUp,n_bin,x_min,x_max);
-  //FillHistDown("pu",histname,value,weightDown,n_bin,x_min,x_max);
   FillHistUp("pu",histname,value,this_weight*r_PU[0],n_bin,x_min,x_max);
   FillHistDown("pu",histname,value,this_weight*r_PU[1],n_bin,x_min,x_max);
 }
@@ -278,13 +269,6 @@ void JHAnalyzerBase::FillHistPSSys(TString histname, double value, double this_w
 }
 void JHAnalyzerBase::FillHistPrefireSys(TString histname, double value, double this_weight, int n_bin, double x_min, double x_max){
   //PU weight//
-
-  //double weightUp  = this_weight*r_Prefire[0];
-  //double weightDown= this_weight*r_Prefire[1];
-  //FillHistUp("prefire",histname,value,weightUp,n_bin,x_min,x_max);
-  //FillHistDown("prefire",histname,value,weightDown,n_bin,x_min,x_max);
-
-
   FillHistUp("prefire",histname,value,this_weight*r_Prefire[0],n_bin,x_min,x_max);
   FillHistDown("prefire",histname,value,this_weight*r_Prefire[1],n_bin,x_min,x_max);
 }
@@ -292,8 +276,6 @@ void JHAnalyzerBase::FillHistPrefireSys(TString histname, double value, double t
 
 void JHAnalyzerBase::FillHistBtag(TString histname, double value, double this_weight, int n_bin, double x_min, double x_max){
   //btag weight//  
-
-
   FillHistIdx2("btag","LTagCorr","Up",   histname, value,this_weight*r_SystUpLTagCorr,  n_bin,x_min,x_max);
   FillHistIdx2("btag","LTagCorr","Down", histname, value,this_weight*r_SystDownLTagCorr,n_bin,x_min,x_max);
 
@@ -316,9 +298,6 @@ void JHAnalyzerBase::FillHistElectronID(TString histname, double value, double t
   for(unsigned int iset=0;iset<setsize;iset++){
     unsigned int memsize = w_ElectronID[iset].size();
     for(unsigned int imem=0;imem<memsize;imem++){
-      //double new_weight=w_ElectronID[0][0] ? this_weight*w_ElectronID[iset][imem]/w_ElectronID[0][0] : 0.;
-      //double new_weight=this_weight*r_ElectronID[iset][imem];
-      //FillHistIdx2("electronID",iset,imem,histname,value,new_weight,n_bin,x_min,x_max);
       FillHistIdx2("electronID",iset,imem,histname,value,this_weight*r_ElectronID[iset][imem],n_bin,x_min,x_max);
     }
   }
@@ -331,9 +310,6 @@ void JHAnalyzerBase::FillHistElectronRECO(TString histname, double value, double
   for(unsigned int iset=0;iset<setsize;iset++){
     unsigned int memsize = w_ElectronRECO[iset].size();
     for(unsigned int imem=0;imem<memsize;imem++){
-      //double new_weight=w_ElectronRECO[0][0] ? this_weight*w_ElectronRECO[iset][imem]/w_ElectronRECO[0][0] : 0.;
-      //double new_weight=this_weight*r_ElectronRECO[iset][imem];
-      //FillHistIdx2("electronRECO",iset,imem,histname,value,new_weight,n_bin,x_min,x_max);
       FillHistIdx2("electronRECO",iset,imem,histname,value,this_weight*r_ElectronRECO[iset][imem],n_bin,x_min,x_max);
     }
   }
@@ -347,9 +323,6 @@ void JHAnalyzerBase::FillHistElectronTrigger(TString histname, double value, dou
   for(unsigned int iset=0;iset<setsize;iset++){
     unsigned int memsize = w_ElectronTrigger[iset].size();
     for(unsigned int imem=0;imem<memsize;imem++){
-      //double new_weight=w_ElectronTrigger[0][0] ? this_weight*w_ElectronTrigger[iset][imem]/w_ElectronTrigger[0][0] : 0;
-      //double new_weight=this_weight*r_ElectronTrigger[iset][imem];
-      //FillHistIdx2("electronTrigger",iset,imem,histname,value,new_weight,n_bin,x_min,x_max);
       FillHistIdx2("electronTrigger",iset,imem,histname,value,this_weight*r_ElectronTrigger[iset][imem],n_bin,x_min,x_max);
     }
   }
@@ -363,9 +336,6 @@ void JHAnalyzerBase::FillHistMuonID(TString histname, double value, double this_
   for(unsigned int iset=0;iset<setsize;iset++){
     unsigned int memsize = w_MuonID[iset].size();
     for(unsigned int imem=0;imem<memsize;imem++){
-      //double new_weight=w_MuonID[0][0] ? this_weight*w_MuonID[iset][imem]/w_MuonID[0][0] : 0;
-      //double new_weight=this_weight*r_MuonID[iset][imem];
-      //FillHistIdx2("muonID",iset,imem,histname,value,new_weight,n_bin,x_min,x_max);
       FillHistIdx2("muonID",iset,imem,histname,value,this_weight*r_MuonID[iset][imem],n_bin,x_min,x_max);
     }
   }
@@ -378,9 +348,6 @@ void JHAnalyzerBase::FillHistMuonRECO(TString histname, double value, double thi
   for(unsigned int iset=0;iset<setsize;iset++){
     unsigned int memsize = w_MuonRECO[iset].size();
     for(unsigned int imem=0;imem<memsize;imem++){
-      //double new_weight=w_MuonRECO[0][0] ?  this_weight*w_MuonRECO[iset][imem]/w_MuonRECO[0][0] : 0;
-      //double new_weight=this_weight*r_MuonRECO[iset][imem];
-      //FillHistIdx2("muonRECO",iset,imem,histname,value,new_weight,n_bin,x_min,x_max);
       FillHistIdx2("muonRECO",iset,imem,histname,value,this_weight*r_MuonRECO[iset][imem],n_bin,x_min,x_max);
     }
   }
@@ -393,9 +360,6 @@ void JHAnalyzerBase::FillHistMuonTrigger(TString histname, double value, double 
   for(unsigned int iset=0;iset<setsize;iset++){
     unsigned int memsize = w_MuonTrigger[iset].size();
     for(unsigned int imem=0;imem<memsize;imem++){
-      //double new_weight=w_MuonTrigger[0][0] ? this_weight*w_MuonTrigger[iset][imem]/w_MuonTrigger[0][0] : 0;
-      //double new_weight=this_weight*r_MuonTrigger[iset][imem];
-      //FillHistIdx2("muonTrigger",iset,imem,histname,value,new_weight,n_bin,x_min,x_max);
       FillHistIdx2("muonTrigger",iset,imem,histname,value,this_weight*r_MuonTrigger[iset][imem],n_bin,x_min,x_max);
     }
   }
@@ -408,9 +372,6 @@ void JHAnalyzerBase::FillHistMuonTrk(TString histname, double value, double this
   for(unsigned int iset=0;iset<setsize;iset++){
     unsigned int memsize = w_MuonTrk[iset].size();
     for(unsigned int imem=0;imem<memsize;imem++){
-      //double new_weight=w_MuonTrk[0][0] ? this_weight*w_MuonTrk[iset][imem]/w_MuonTrk[0][0] : 0;
-      //double new_weight=this_weight*r_MuonTrk[iset][imem];
-      //FillHistIdx2("muonTrk",iset,imem,histname,value,new_weight,n_bin,x_min,x_max);
       FillHistIdx2("muonTrk",iset,imem,histname,value,this_weight*r_MuonTrk[iset][imem],n_bin,x_min,x_max);
     }
   }
@@ -436,6 +397,7 @@ void JHAnalyzerBase::FillReservedHistWeightBase(){
   if(IsDATA) return;
   if(!runSys) return;
   if(!runWeightBase) return;
+  //---Here, weightbase sys varation only--//
   for(const auto& arg : vReserveHist){ 
     TString histname=arg.histname;
     double value=arg.value;
@@ -444,58 +406,30 @@ void JHAnalyzerBase::FillReservedHistWeightBase(){
     double x_min=arg.x_min;
     double x_max=arg.x_max;
     //-PU
-    //timer_pu.Start();
     FillHistPUSys(histname,value,this_weight,n_bin,x_min,x_max);
-    //t_pu+=timer_pu.RealTime();
     //-PartonShower
-    //timer_ps.Start();
     FillHistPSSys(histname,value,this_weight,n_bin,x_min,x_max);
-    //t_ps+=timer_ps.RealTime();
     //prefire//
-    //timer_prefire.Start();
     FillHistPrefireSys(histname,value,this_weight,n_bin,x_min,x_max);
-    //t_prefire+=timer_prefire.RealTime();
     //btag
-    //timer_btag.Start();
     FillHistBtag(histname,value,this_weight,n_bin,x_min,x_max);
-    //t_btag+=timer_btag.RealTime();
-
 
     ///---EffTool--//
     //electronID//
-    //timer_ElectronID.Start();
     FillHistElectronID(histname,value,this_weight,n_bin,x_min,x_max);
-    //t_ElectronID+=timer_ElectronID.RealTime();
     //electronRECO
-    
-    //timer_ElectronRECO.Start();
     FillHistElectronRECO(histname,value,this_weight,n_bin,x_min,x_max);
-    //t_ElectronRECO+=timer_ElectronRECO.RealTime();
-
     //electronTrigger
-    //timer_ElectronTrigger.Start();
     FillHistElectronTrigger(histname,value,this_weight,n_bin,x_min,x_max);
-    //t_ElectronTrigger+=timer_ElectronTrigger.RealTime();
 
     //muonID
-    //timer_MuonID.Start();
     FillHistMuonID(histname,value,this_weight,n_bin,x_min,x_max);
-    //t_MuonID+=timer_MuonID.RealTime();
-
     //muonRECO
-    //timer_MuonRECO.Start();
     FillHistMuonRECO(histname,value,this_weight,n_bin,x_min,x_max);
-    //t_MuonRECO+=timer_MuonRECO.RealTime();
-
     //MuonTrigger
-    //timer_MuonTrigger.Start();
     FillHistMuonTrigger(histname,value,this_weight,n_bin,x_min,x_max);
-    //t_MuonTrigger+=timer_MuonTrigger.RealTime();
-    
     //MuonTrk
-    //timer_MuonTrk.Start();
     FillHistMuonTrk(histname,value,this_weight,n_bin,x_min,x_max);
-    //t_MuonTrk+=timer_MuonTrk.RealTime();    
   }
 
 }
@@ -517,17 +451,12 @@ void JHAnalyzerBase::ClearReserveHist(){
 void JHAnalyzerBase::SetSys(MomentumVar _sys){
   sysname_current=_sys.name;
   sysdir_current=_sys.dir;
-  //jes=_sys.jes;
-  //jer=_sys.jer;
-  //muonscale=_sys.muonscale;
-  //electronscale=_sys.electronscale;
-  //met=_sys.met;
   
   if(_sys.muonscale!=0){
     AllMuons=ScaleMuons(AllMuons_raw,_sys.muonscale);
     std::sort(AllMuons.begin(), AllMuons.end(), PtComparing);
     PuppiMET=UpdateMETByMuonScale(PuppiMET_roch,_sys.muonscale); 
-    AllElectrons=AllElectrons_raw;
+    AllElectrons=AllElectrons_raw;//Collection with nominal 
     AllJets=AllJets_raw;
   }
   else if(_sys.electronscale!=0){ 
@@ -908,64 +837,125 @@ void JHAnalyzerBase::SetIsDoubleLeptonTrigger(){
 
 }
 
-int JHAnalyzerBase::GetIdxSingleMuReco(const vector<Muon> &MuonCollection, double ptmin, double etacut, double ptveto){
+//---Get Muon index-base. For SingleMuon Channel
+int JHAnalyzerBase::GetIdxSingleMuReco(double ptmin, double etacut, double ptveto){
 
-  unsigned int muonsize = MuonCollection.size();
+  unsigned int muonsize = AllMuons.size();
   unsigned int nselected= 0;
   int muonidx=-1;
   //vector<Muon> _vmuons;
   for(unsigned int i = 0 ; i < muonsize; i++ ){
-    double eta=MuonCollection[i].Eta();
+    double eta=AllMuons[i].Eta();
     if(fabs(eta) > etacut) continue;
-    //double reliso=MuonCollection[i].RelIso();
-    double pt=MuonCollection[i].Pt();
+    double pt=AllMuons[i].Pt();
     if(pt < ptveto) continue;
-    bool passLooseID=MuonCollection[i].PassID("POGLoose");
+    bool passLooseID=AllMuons[i].PassID("POGLoose");
     if (!passLooseID) continue;
-    bool passISO=MuonCollection[i].PassSelector(Muon::Selector::TkIsoLoose);
+    bool passISO=AllMuons[i].PassSelector(Muon::Selector::TkIsoLoose);
     if (!passISO) continue;
     //----Loose ID Muon passing pt/eta/iso cut
     nselected+=1;
     if(nselected>1) return -1;
     //--For One selected as prompt lepton--//
-    if(!MuonCollection[i].PassID("POGMedium")) return -1;
     if(pt<ptmin) return -1;
-    //_vmuons.push_back(MuonCollection[i]);
+    if(!AllMuons[i].PassID("POGMedium")) return -1;
     muonidx=i;
   }
   if (nselected==0) return -1;
   //---GetSF--//
   vector<int> v_muonidx={muonidx};
-  //SetMuonSFs(v_muonidx);
   SetMuonSFs(v_muonidx);
   return muonidx;
+
+}
+//---Get Muon Object-Base. For SingleMuon Channel.
+vector<Muon> JHAnalyzerBase::GetSingleMuReco(double ptmin, double etacut, double ptveto){
+
+  //unsigned int muonsize = AllMuons.size();
+  unsigned int nselected= 0;
+  vector<Muon> _v_muons;
+  //for(unsigned int i = 0 ; i < muonsize; i++ ){
+  for(const auto &muon : AllMuons){
+    //double eta=AllMuons[i].Eta();
+    if(fabs(muon.Eta()) > etacut) continue;
+    //double pt=AllMuons[i].Pt();
+    if(muon.Pt() < ptveto) continue;
+    //bool passLooseID=AllMuons[i].PassID("POGLoose");
+    if (!muon.PassID("POGLoose")) continue;
+    //bool passISO=AllMuons[i].PassSelector(Muon::Selector::TkIsoLoose);
+    if (!muon.PassSelector(Muon::Selector::TkIsoLoose)) continue;
+    //----Loose ID Muon passing pt/eta/iso cut
+    nselected+=1;
+    if(nselected>1) return {};
+    //--For One selected as prompt lepton--//
+    if(muon.Pt()<ptmin) return {};
+    if(!muon.PassID("POGMedium")) return {};
+    //muonidx=i;
+    _v_muons.push_back(muon);
+  }
+  if (nselected==0) return {};
+  //---GetSF--//
+  //vector<int> v_muonidx={muonidx};
+  //SetMuonSFs(v_muonidx);
+  SetMuonSFs(_v_muons);
+  return _v_muons;
+
+}
+
+//---Get Muon ObjectPointer-Base. For SingleMuon Channel.
+vector<Lepton*> JHAnalyzerBase::GetPointerSingleMuReco(double ptmin, double etacut, double ptveto){
+
+  //unsigned int muonsize = AllMuons.size();
+  unsigned int nselected= 0;
+  vector<Lepton*> _v_muons;
+  //for(unsigned int i = 0 ; i < muonsize; i++ ){
+  for(const auto &muon : AllMuons){
+    //double eta=AllMuons[i].Eta();
+    if(fabs(muon.Eta()) > etacut) continue;
+    //double pt=AllMuons[i].Pt();
+    if(muon.Pt() < ptveto) continue;
+    //bool passLooseID=AllMuons[i].PassID("POGLoose");
+    if (!muon.PassID("POGLoose")) continue;
+    //bool passISO=AllMuons[i].PassSelector(Muon::Selector::TkIsoLoose);
+    if (!muon.PassSelector(Muon::Selector::TkIsoLoose)) continue;
+    //----Loose ID Muon passing pt/eta/iso cut
+    nselected+=1;
+    if(nselected>1) return {};
+    //--For One selected as prompt lepton--//
+    if(muon.Pt()<ptmin) return {};
+    if(!muon.PassID("POGMedium")) return {};
+    //muonidx=i;
+    _v_muons.push_back((Lepton*)&muon);
+  }
+  if (nselected==0) return {};
+  //---GetSF--//
+  //vector<int> v_muonidx={muonidx};
+  //SetMuonSFs(v_muonidx);
+  SetMuonSFs(_v_muons);
+  return _v_muons;
 
 }
 
 
 
-
-int JHAnalyzerBase::GetIdxSingleElReco(const vector<Electron> &ElectronCollection, double ptmin, double etacut, double ptveto){
-
-  unsigned int electronsize = ElectronCollection.size();
+//---Get Muon index-base. For SingleMuon Channel
+int JHAnalyzerBase::GetIdxSingleElReco(double ptmin, double etacut, double ptveto){
+  unsigned int electronsize = AllElectrons.size();
   unsigned int nselected= 0;
   int electronidx=-1;
   for(unsigned int i = 0 ; i < electronsize; i++ ){
-    double pt=ElectronCollection[i].Pt();
+    double pt=AllElectrons[i].Pt();
     if(pt < ptveto) continue;
-    double eta=ElectronCollection[i].Eta();
+    double eta=AllElectrons[i].Eta();
     if(fabs(eta) > etacut) continue;
-    bool passID=ElectronCollection[i].PassID("passLooseID");
+    bool passID=AllElectrons[i].PassID("passLooseID");
     if(!passID) continue;
     nselected+=1;
-    if(nselected > 1) return -1;
-    if(pt < ptmin) return -1;
-    if (!ElectronCollection[i].PassID("passMediumID")) return -1;
+    if(nselected > 1) return -1;//if # of electron passing ptveto cut > 1, the event cannot pass the selection
+    //Now Only 1 electron passing ptvetocut
+    if(pt < ptmin) return -1; 
+    if (!AllElectrons[i].PassID("passMediumID")) return -1;
     electronidx=i;
-
-
-
-
   }
   if (nselected==0) return -1;
   vector<int> v_electronidx= {electronidx};
@@ -973,100 +963,241 @@ int JHAnalyzerBase::GetIdxSingleElReco(const vector<Electron> &ElectronCollectio
   return electronidx;
 }
 
+//---Get Muon Object-base. For SingleMuon Channel
+vector<Electron> JHAnalyzerBase::GetSingleElReco(double ptmin, double etacut, double ptveto){
+  vector<Electron> _v_electrons;
+  unsigned int nselected= 0;
+  //for(unsigned int i = 0 ; i < electronsize; i++ ){
+  for(const auto& electron : AllElectrons){
+    //double pt=AllElectrons[i].Pt();
+    if(electron.Pt() < ptveto) continue;
+    //double eta=AllElectrons[i].Eta();
+    if(fabs(electron.Eta()) > etacut) continue;
+    //bool passID=AllElectrons[i].PassID("passLooseID");
+    if(!electron.PassID("passLooseID")) continue;
+    nselected+=1;
+    if(nselected > 1) return {};//if # of electron passing ptveto cut > 1, the event cannot pass the selection
+    //Now Only 1 electron passing ptvetocut
+    if(electron.Pt() < ptmin) return {}; 
+    //if (!AllElectrons[i].PassID("passMediumID")) return -1;
+    if (electron.PassID("passMediumID")) return {};
+    _v_electrons.push_back(electron);
+  }
+  if (nselected==0) return {};
+
+  SetElectronSFs(_v_electrons);
+  return _v_electrons;
+}
+
+//---Get Muon ObjectPointer-base. For SingleMuon Channel
+vector<Lepton*> JHAnalyzerBase::GetPointerSingleElReco(double ptmin, double etacut, double ptveto){
+  vector<Lepton*> _v_electrons;
+  unsigned int nselected= 0;
+  //for(unsigned int i = 0 ; i < electronsize; i++ ){
+  for(const auto& electron : AllElectrons){
+    //double pt=AllElectrons[i].Pt();
+    if(electron.Pt() < ptveto) continue;
+    //double eta=AllElectrons[i].Eta();
+    if(fabs(electron.Eta()) > etacut) continue;
+    //bool passID=AllElectrons[i].PassID("passLooseID");
+    if(!electron.PassID("passLooseID")) continue;
+    nselected+=1;
+    if(nselected > 1) return {};//if # of electron passing ptveto cut > 1, the event cannot pass the selection
+    //Now Only 1 electron passing ptvetocut
+    if(electron.Pt() < ptmin) return {}; 
+    //if (!AllElectrons[i].PassID("passMediumID")) return -1;
+    if (electron.PassID("passMediumID")) return {};
+    _v_electrons.push_back((Lepton*)&electron);
+  }
+  if (nselected==0) return {};
+
+  SetElectronSFs(_v_electrons);
+  return _v_electrons;
+}
 
 
-vector<int> JHAnalyzerBase::GetIdxDiMuReco(const vector<Muon> &MuonCollection, double ptmin1, double ptmin2, double etacut, double ptveto ){
+//Get Muons index-base. For DiMuonChannel
+vector<int> JHAnalyzerBase::GetIdxDiMuReco(double ptmin1, double ptmin2, double etacut, double ptveto ){
   vector<int> v_muonidx;
-  unsigned int muonsize = MuonCollection.size();
+  unsigned int muonsize = AllMuons.size();
   unsigned int npassveto=0;
   unsigned int npasstight=0;
 
 
   for(unsigned int i = 0 ; i < muonsize; i++ ){
-    double pt=MuonCollection[i].Pt();
+    double pt=AllMuons[i].Pt();
     if(pt < ptveto) continue;
-    double eta=MuonCollection[i].Eta();
+    double eta=AllMuons[i].Eta();
     if(fabs(eta) > etacut) continue;
-    bool passISO=MuonCollection[i].PassSelector(Muon::Selector::TkIsoLoose);
+    bool passISO=AllMuons[i].PassSelector(Muon::Selector::TkIsoLoose);
     if (!passISO) continue;
-    bool passVetoID=MuonCollection[i].PassID("POGLoose");
+    bool passVetoID=AllMuons[i].PassID("POGLoose");
     if (!passVetoID) continue;
     npassveto+=1;
     if(npassveto>2) return {};
-    bool passID=MuonCollection[i].PassID("POGMedium");    
-    if (!passID) continue;
+    //Now only 2 muons passing ptveto cut
+    bool passID=AllMuons[i].PassID("POGMedium");    
+    if (!passID) continue; // the muons must pass ID
     npasstight+=1;
     v_muonidx.push_back(i);
     
   }
   if(npasstight<2) return {};
-  if(MuonCollection[v_muonidx[0]].Pt() < ptmin1) return {};
-  if(MuonCollection[v_muonidx[1]].Pt() < ptmin2) return {};
+  if(AllMuons[v_muonidx[0]].Pt() < ptmin1) return {};
+  if(AllMuons[v_muonidx[1]].Pt() < ptmin2) return {};
   SetMuonSFs(v_muonidx);
   return v_muonidx;
 }
-//---Speed Test---//
+//--GetMuons object-base For DiMuonChannel
 vector<Muon> JHAnalyzerBase::GetDiMuReco(double ptmin1, double ptmin2, double etacut, double ptveto ){
-  vector<Muon> v_muon;
-  //unsigned int muonsize = MuonCollection.size();
+  vector<Muon> _v_muons;
   unsigned int npassveto=0;
   unsigned int npasstight=0;
 
-  for(const auto& muon : AllMuons){
 
-    //double pt=muon.Pt();
+  //for(unsigned int i = 0 ; i < muonsize; i++ ){
+  for(const auto& muon : AllMuons){
+    //double pt=AllMuons[i].Pt();
     if(muon.Pt() < ptveto) continue;
-    //double eta=muon.Eta();
+    //double eta=AllMuons[i].Eta();
     if(fabs(muon.Eta()) > etacut) continue;
-    //bool passISO=MuonCollection[i].PassSelector(Muon::Selector::TkIsoLoose);
+    //bool passISO=AllMuons[i].PassSelector(Muon::Selector::TkIsoLoose);
     if (!muon.PassSelector(Muon::Selector::TkIsoLoose)) continue;
-    //bool passVetoID=MuonCollection[i].PassID("POGLoose");
+    //bool passVetoID=AllMuons[i].PassID("POGLoose");
     if (!muon.PassID("POGLoose")) continue;
     npassveto+=1;
     if(npassveto>2) return {};
-    //bool passID=MuonCollection[i].PassID("POGMedium");    
-    if (!muon.PassID("POGMedium")) continue;
+    //Now only 2 muons passing ptveto cut
+    //bool passID=AllMuons[i].PassID("POGMedium");    
+    if (!muon.PassID("POGMedium")) continue; // the muons must pass ID for main selection
     npasstight+=1;
-    v_muon.push_back(muon);
-    
+    _v_muons.push_back(muon);
   }
   if(npasstight<2) return {};
-  if(v_muon[0].Pt() < ptmin1) return {};
-  if(v_muon[1].Pt() < ptmin2) return {};
-  SetMuonSFs(v_muon);
-  return v_muon;
+  if(_v_muons[0].Pt() < ptmin1) return {};
+  if(_v_muons[1].Pt() < ptmin2) return {};
+  SetMuonSFs(_v_muons);
+  return _v_muons;
 }
-//---[END]Speed Test---//
 
-vector<int> JHAnalyzerBase::GetIdxDiElReco(const vector<Electron> &ElectronCollection, double ptmin1, double ptmin2, double etacut, double ptveto ){
+//--GetMuons objectPointer-base For DiMuonChannel
+vector<Lepton*> JHAnalyzerBase::GetPointerDiMuReco(double ptmin1, double ptmin2, double etacut, double ptveto ){
+  vector<Lepton*> _v_muons;
+  unsigned int npassveto=0;
+  unsigned int npasstight=0;
+  //for(unsigned int i = 0 ; i < muonsize; i++ ){
+  for(const auto& muon : AllMuons){
+    //double pt=AllMuons[i].Pt();
+    if(muon.Pt() < ptveto) continue;
+    //double eta=AllMuons[i].Eta();
+    if(fabs(muon.Eta()) > etacut) continue;
+    //bool passISO=AllMuons[i].PassSelector(Muon::Selector::TkIsoLoose);
+    if (!muon.PassSelector(Muon::Selector::TkIsoLoose)) continue;
+    //bool passVetoID=AllMuons[i].PassID("POGLoose");
+    if (!muon.PassID("POGLoose")) continue;
+    npassveto+=1;
+    if(npassveto>2) return {};
+    //Now only 2 muons passing ptveto cut
+    //bool passID=AllMuons[i].PassID("POGMedium");    
+    if (!muon.PassID("POGMedium")) continue; // the muons must pass ID for main selection
+    npasstight+=1;
+    _v_muons.push_back((Lepton*)&muon);
+  }
+  if(npasstight<2) return {};
+  if(_v_muons[0]->Pt() < ptmin1) return {};
+  if(_v_muons[1]->Pt() < ptmin2) return {};
+  SetMuonSFs(_v_muons);
+  return _v_muons;
+}
+
+//Get Electrons index-base. For DiElectron Channel
+vector<int> JHAnalyzerBase::GetIdxDiElReco(double ptmin1, double ptmin2, double etacut, double ptveto ){
   vector<int> v_electronidx;
-  unsigned int electronsize = ElectronCollection.size();
+  unsigned int electronsize = AllElectrons.size();
   unsigned int npassveto=0;
   unsigned int npasstight=0;
   for(unsigned int i = 0 ; i < electronsize; i++ ){
-    double pt=ElectronCollection[i].Pt();
+    double pt=AllElectrons[i].Pt();
     if(pt < ptveto) continue;
-    double eta=ElectronCollection[i].Eta();
+    double eta=AllElectrons[i].Eta();
     if(fabs(eta) > etacut) continue;
-    bool passVetoID=ElectronCollection[i].PassID("passLooseID");
+    bool passVetoID=AllElectrons[i].PassID("passLooseID");
     if (!passVetoID) continue;
     npassveto+=1;
     if(npassveto>2) return {};
-    bool passID=ElectronCollection[i].PassID("passMediumID");
+    ///---Now we have only 2 electrons passing ptveto cut
+    bool passID=AllElectrons[i].PassID("passMediumID");
     if (!passID) continue;
     npasstight+=1;
     v_electronidx.push_back(i);
   }
   if(npasstight<2) return {};
-  if(ElectronCollection[v_electronidx[0]].Pt() < ptmin1) return {};
-  if(ElectronCollection[v_electronidx[1]].Pt() < ptmin2) return {};
+  if(AllElectrons[v_electronidx[0]].Pt() < ptmin1) return {};
+  if(AllElectrons[v_electronidx[1]].Pt() < ptmin2) return {};
   SetElectronSFs(v_electronidx);
   return v_electronidx;
 }
 
-vector<int> JHAnalyzerBase::GetIdxTightJet(const vector<Jet> &JetCollection, const vector<Lepton> &v_tightlep, double ptmin, double etacut, TString JetID ){
+//--Get Electrons Obejct-base. For DiElectron Channel
+vector<Electron> JHAnalyzerBase::GetDiElReco(double ptmin1, double ptmin2, double etacut, double ptveto ){
+  vector<Electron> _v_electrons;
+  unsigned int npassveto=0;
+  unsigned int npasstight=0;
+  //for(unsigned int i = 0 ; i < electronsize; i++ ){
+  for(const auto& electron : AllElectrons){
+    //double pt=AllElectrons[i].Pt();
+    if(electron.Pt() < ptveto) continue;
+    //double eta=AllElectrons[i].Eta();
+    if(fabs(electron.Eta()) > etacut) continue;
+    //bool passVetoID=AllElectrons[i].PassID("passLooseID");
+    if (!electron.PassID("passLooseID")) continue;
+    npassveto+=1;
+    if(npassveto>2) return {};
+    ///---Now we have only 2 electrons passing ptveto cut
+    //bool passID=AllElectrons[i].PassID("passMediumID");
+    if (!electron.PassID("passMediumID")) continue;
+    npasstight+=1;
+    _v_electrons.push_back(electron);
+  }
+  if(npasstight<2) return {};
+  if(_v_electrons[0].Pt() < ptmin1) return {};
+  if(_v_electrons[1].Pt() < ptmin2) return {};
+  SetElectronSFs(_v_electrons);
+  return _v_electrons;
+}
+
+//--Get Electrons ObejctPointer-base. For DiElectron Channel
+vector<Lepton*> JHAnalyzerBase::GetPointerDiElReco(double ptmin1, double ptmin2, double etacut, double ptveto ){
+  vector<Lepton*> _v_electrons;
+  unsigned int npassveto=0;
+  unsigned int npasstight=0;
+  //for(unsigned int i = 0 ; i < electronsize; i++ ){
+  for(const auto& electron : AllElectrons){
+    //double pt=AllElectrons[i].Pt();
+    if(electron.Pt() < ptveto) continue;
+    //double eta=AllElectrons[i].Eta();
+    if(fabs(electron.Eta()) > etacut) continue;
+    //bool passVetoID=AllElectrons[i].PassID("passLooseID");
+    if (!electron.PassID("passLooseID")) continue;
+    npassveto+=1;
+    if(npassveto>2) return {};
+    ///---Now we have only 2 electrons passing ptveto cut
+    //bool passID=AllElectrons[i].PassID("passMediumID");
+    if (!electron.PassID("passMediumID")) continue;
+    npasstight+=1;
+    _v_electrons.push_back((Lepton*)&electron);
+  }
+  if(npasstight<2) return {};
+  if(_v_electrons[0]->Pt() < ptmin1) return {};
+  if(_v_electrons[1]->Pt() < ptmin2) return {};
+  SetElectronSFs(_v_electrons);
+  return _v_electrons;
+}
+
+//---GetTightJet index base
+vector<int> JHAnalyzerBase::GetIdxTightJet(const vector<Lepton> &v_tightlep, double ptmin, double etacut, TString JetID ){
   vector<int> v_jetidx;
-  unsigned int jetsize = JetCollection.size();
+  unsigned int jetsize = AllJets.size();
   for(unsigned int i=0; i < jetsize; i++){
     if(AllJets[i].Pt() < ptmin) continue;
     if(fabs(AllJets[i].Eta()) > etacut) continue;
@@ -1086,31 +1217,56 @@ vector<int> JHAnalyzerBase::GetIdxTightJet(const vector<Jet> &JetCollection, con
   SetBtagSF(v_jetidx);
   return v_jetidx;
 }
-
-vector<Jet> JHAnalyzerBase::GetTightJet(const vector<Jet> &JetCollection, const vector<Lepton> &v_tightlep, double ptmin, double etacut, TString JetID ){
-  vector<Jet> v_jet;
-  //unsigned int jetsize = JetCollection.size();
-  //for(unsigned int i=0; i < jetsize; i++){
-  for(const auto & this_jet : v_jet){
-    if(this_jet.Pt() < ptmin) continue;
-    if(fabs(this_jet.Eta()) > etacut) continue;
-    if(!this_jet.PassID(JetID)) continue;
+//---Get TightJet Object base
+vector<Jet> JHAnalyzerBase::GetTightJet(const vector<Lepton> &v_tightlep, double ptmin, double etacut, TString JetID ){
+  vector<Jet> v_tightjet;
+  for(const auto& jet : AllJets){
+    if(jet.Pt() < ptmin) continue;
+    if(fabs(jet.Eta()) > etacut) continue;
+    if(!jet.PassID(JetID)) continue;
     //--Lepton Cleaning--//
     bool HasCloseLep=false;
     for(const auto& lep : v_tightlep){
-      if (lep.DeltaR(this_jet)<0.4){
+      if (jet.DeltaR(lep)<0.4){
 	HasCloseLep=true;
 	break;
       }
     }
     if(HasCloseLep)continue;
     //--end lepton cleaning--//
-    v_jet.push_back(this_jet);
+    v_tightjet.push_back(jet);
   }
-  SetBtagSF(v_jet);
-  return v_jet;
+  SetBtagSF(v_tightjet);
+  return v_tightjet;
 }
 
+//---Get TightJet ObjectPointer base
+vector<Jet*> JHAnalyzerBase::GetPointerTightJet(const vector<Lepton*> &v_tightlep, double ptmin, double etacut, TString JetID ){
+  vector<Jet*> v_tightjet;
+  vector<Jet> v_jetobj;
+  for(const auto& jet : AllJets){
+    if(jet.Pt() < ptmin) continue;
+    if(fabs(jet.Eta()) > etacut) continue;
+    if(!jet.PassID(JetID)) continue;
+    //--Lepton Cleaning--//
+    bool HasCloseLep=false;
+    for(const auto& lep : v_tightlep){
+      if (lep->DeltaR(jet)<0.4){
+	HasCloseLep=true;
+	break;
+      }
+    }
+    if(HasCloseLep)continue;
+    //--end lepton cleaning--//
+    v_tightjet.push_back((Jet*)&jet);
+    v_jetobj.push_back(jet);
+  }
+  SetBtagSF(v_jetobj);
+  return v_tightjet;
+}
+
+
+//--Get BJet index base
 vector<int> JHAnalyzerBase::GetIdxBJet(const vector<int> &v_TightjetIdx){
   vector<int> v_bjetidx;
   for(const auto& i : v_TightjetIdx){
@@ -1120,16 +1276,28 @@ vector<int> JHAnalyzerBase::GetIdxBJet(const vector<int> &v_TightjetIdx){
   }
   return v_bjetidx;
 }
-
+//--Get BJet Object base
 vector<Jet> JHAnalyzerBase::GetBJet(const vector<Jet> &v_Tightjet){
   vector<Jet> v_bjet;
-  for(const auto& this_jet : v_Tightjet){
-    double btagscore=this_jet.GetTaggerResult(JetTagging::DeepJet);
+  for(const auto& jet : v_Tightjet){
+    double btagscore=jet.GetTaggerResult(JetTagging::DeepJet);
     if(btagscore < btagcut) continue;
-    v_bjet.push_back(this_jet);
+    v_bjet.push_back(jet);
   }
   return v_bjet;
 }
+
+//--Get BJet ObjectPointer base
+vector<Jet*> JHAnalyzerBase::GetPointerBJet(const vector<Jet*> &v_Tightjet){
+  vector<Jet*> v_bjet;
+  for(const auto& jet : v_Tightjet){
+    double btagscore=jet->GetTaggerResult(JetTagging::DeepJet);
+    if(btagscore < btagcut) continue;
+    v_bjet.push_back(jet);
+  }
+  return v_bjet;
+}
+
 void JHAnalyzerBase::SetBtagSF(const vector<int> &v_jetidx){
   //r_SystUpLTagUnCorr
   vector<Jet> v_tightjet;
@@ -1149,9 +1317,8 @@ void JHAnalyzerBase::SetBtagSF(const vector<int> &v_jetidx){
   }
 }
 
-
 void JHAnalyzerBase::SetBtagSF(const vector<Jet> &v_tightjet){
-  //r_SystUpLTagUnCorr
+
   btagsf = mcCorr->GetBTaggingReweight_1a(v_tightjet, jtp);
   if(runSys){
     r_SystUpLTagCorr     =mcCorr->GetBTaggingReweight_1a(v_tightjet, jtp,"SystUpLTagCorr")/btagsf;
@@ -1173,11 +1340,21 @@ void JHAnalyzerBase::SetMuonSFs(const vector<int> &v_muonidx){
 }
 
 void JHAnalyzerBase::SetMuonSFs(const vector<Muon> &v_muon){
-  vector<Lepton*> v_muon_pointer=MakeLeptonPointerVector(v_muon);
-  SetMuonRecoSF(v_muon_pointer);
-  SetMuonIDSF(v_muon_pointer);
-  SetMuonTrkSF(v_muon_pointer);
-  SetMuonTriggerSF(v_muon_pointer);
+  vector<Lepton*> v_lepton;
+  for(const auto& muon : v_muon){
+    v_lepton.push_back((Lepton*)&muon);
+  }
+  SetMuonRecoSF(v_lepton);
+  SetMuonIDSF(v_lepton);
+  SetMuonTrkSF(v_lepton);
+  SetMuonTriggerSF(v_lepton);
+}
+
+void JHAnalyzerBase::SetMuonSFs(const vector<Lepton*> &v_lepton){
+  SetMuonRecoSF(v_lepton);
+  SetMuonIDSF(v_lepton);
+  SetMuonTrkSF(v_lepton);
+  SetMuonTriggerSF(v_lepton);
 }
 
 void JHAnalyzerBase::SetElectronSFs(const vector<int> &v_electronidx){
@@ -1186,6 +1363,21 @@ void JHAnalyzerBase::SetElectronSFs(const vector<int> &v_electronidx){
   SetElectronTriggerSF(v_electronidx);
 }
 
+void JHAnalyzerBase::SetElectronSFs(const vector<Electron> &v_electron){
+  vector<Lepton*> v_lepton;
+  for(const auto& electron : v_electron){
+    v_lepton.push_back((Lepton*)&electron);
+  }
+  SetElectronRecoSF(v_lepton);
+  SetElectronIDSF(v_lepton);
+  SetElectronTriggerSF(v_lepton);
+}
+
+void JHAnalyzerBase::SetElectronSFs(const vector<Lepton*> &v_lepton){
+  SetElectronRecoSF(v_lepton);
+  SetElectronIDSF(v_lepton);
+  SetElectronTriggerSF(v_lepton);
+}
 void JHAnalyzerBase::SetMuonRecoSF(const vector<int> &v_muonidx){
 
   unsigned int setsize = w_MuonRECO.size();
@@ -1200,20 +1392,18 @@ void JHAnalyzerBase::SetMuonRecoSF(const vector<int> &v_muonidx){
     }
   }
 }
-
 void JHAnalyzerBase::SetMuonRecoSF(const vector<Lepton*> &v_muon){
-  
+
   unsigned int setsize = w_MuonRECO.size();
   for(unsigned int iset=0;iset<setsize;iset++){
     unsigned int memsize = w_MuonRECO[iset].size();
     for(unsigned int imem=0;imem<memsize;imem++){
-      //w_MuonRECO[iset][imem]=1;
+      w_MuonRECO[iset][imem]=1;
       for(const auto& muon : v_muon){
-	w_MuonRECO[iset][imem]*=fEff->GetEfficiencySF(MuonRecoSFKey,(Lepton*)muon,iset,imem);
+	w_MuonRECO[iset][imem]*=fEff->GetEfficiencySF(MuonRecoSFKey,(Lepton *)muon,iset,imem);
       }
       r_MuonRECO[iset][imem]= w_MuonRECO[0][0] ? w_MuonRECO[iset][imem]/w_MuonRECO[0][0] : 0;
-      //r_MuonRECO[iset][imem]= w_MuonRECO[iset][imem]/w_MuonRECO[0][0];
-    }    
+    }
   }
 }
 
@@ -1232,8 +1422,19 @@ void JHAnalyzerBase::SetElectronRecoSF(const vector<int> &v_electronidx){
   }
 }
 
-    
-
+void JHAnalyzerBase::SetElectronRecoSF(const vector<Lepton*> &v_electron){
+  unsigned int setsize = w_ElectronRECO.size();
+  for(unsigned int iset=0;iset<setsize;iset++){
+    unsigned int memsize = w_ElectronRECO[iset].size();
+    for(unsigned int imem=0;imem<memsize;imem++){
+      w_ElectronRECO[iset][imem]=1;
+      for(const auto& electron : v_electron){
+	w_ElectronRECO[iset][imem]*=fEff->GetEfficiencySF(ElectronRecoSFKey,(Lepton *)electron,iset,imem);
+      }
+      r_ElectronRECO[iset][imem]= w_ElectronRECO[0][0] ? w_ElectronRECO[iset][imem]/w_ElectronRECO[0][0] : 0;
+    }
+  }
+}
 
 void JHAnalyzerBase::SetMuonIDSF(const vector<int> &v_muonidx){
   unsigned int setsize = w_MuonID.size();
@@ -1249,7 +1450,6 @@ void JHAnalyzerBase::SetMuonIDSF(const vector<int> &v_muonidx){
   }
 }
 
-
 void JHAnalyzerBase::SetMuonIDSF(const vector<Lepton*> &v_muon){
   unsigned int setsize = w_MuonID.size();
   for(unsigned int iset=0;iset<setsize;iset++){
@@ -1264,6 +1464,7 @@ void JHAnalyzerBase::SetMuonIDSF(const vector<Lepton*> &v_muon){
   }
 }
 
+
 void JHAnalyzerBase::SetElectronIDSF(const vector<int> &v_electronidx){
   unsigned int setsize = w_ElectronID.size();
   for(unsigned int iset=0;iset<setsize;iset++){
@@ -1272,6 +1473,21 @@ void JHAnalyzerBase::SetElectronIDSF(const vector<int> &v_electronidx){
       w_ElectronID[iset][imem]=1;
       for(const auto& electronidx : v_electronidx){
 	w_ElectronID[iset][imem]*=fEff->GetEfficiencySF(ElectronIDSFKey,(Lepton *)&AllElectrons[electronidx],iset,imem);
+      }
+      r_ElectronID[iset][imem]= w_ElectronID[0][0] ? w_ElectronID[iset][imem]/w_ElectronID[0][0] : 0;
+    }
+  }
+}
+
+
+void JHAnalyzerBase::SetElectronIDSF(const vector<Lepton*> &v_electron){
+  unsigned int setsize = w_ElectronID.size();
+  for(unsigned int iset=0;iset<setsize;iset++){
+    unsigned int memsize = w_ElectronID[iset].size();
+    for(unsigned int imem=0;imem<memsize;imem++){
+      w_ElectronID[iset][imem]=1;
+      for(const auto& electron : v_electron){
+	w_ElectronID[iset][imem]*=fEff->GetEfficiencySF(ElectronIDSFKey,(Lepton *)electron,iset,imem);
       }
       r_ElectronID[iset][imem]= w_ElectronID[0][0] ? w_ElectronID[iset][imem]/w_ElectronID[0][0] : 0;
     }
@@ -1309,10 +1525,12 @@ void JHAnalyzerBase::SetMuonTrkSF(const vector<Lepton*> &v_muon){
 
 
 void JHAnalyzerBase::SetMuonTriggerSF(const vector<int> &v_muonidx){
+  //---Make vector whose elements are Lepton pointers
   vector<Lepton*> _v_muons;
   for(const auto& muonidx : v_muonidx){
     _v_muons.push_back((Lepton*)&AllMuons[muonidx] );
   }
+
   if(!IsDoubleMuonTrigger){
     SetSingleMuonTriggerSF(_v_muons);
   }
@@ -1321,14 +1539,12 @@ void JHAnalyzerBase::SetMuonTriggerSF(const vector<int> &v_muonidx){
   }
 
 }
-
-
-void JHAnalyzerBase::SetMuonTriggerSF(const vector<Lepton*> &_v_muons){
+void JHAnalyzerBase::SetMuonTriggerSF(const vector<Lepton*> &v_muon){
   if(!IsDoubleMuonTrigger){
-    SetSingleMuonTriggerSF(_v_muons);
+    SetSingleMuonTriggerSF(v_muon);
   }
   else{
-    SetDoubleMuonTriggerSF(_v_muons);
+    SetDoubleMuonTriggerSF(v_muon);
   }
 
 }
@@ -1373,6 +1589,18 @@ void JHAnalyzerBase::SetElectronTriggerSF(const vector<int> &v_electronidx){
   }
   else{
     SetDoubleElectronTriggerSF(_v_electrons);
+  }
+
+}
+
+
+void JHAnalyzerBase::SetElectronTriggerSF(const vector<Lepton*> &v_electron){
+
+  if(!IsDoubleElectronTrigger){
+    SetSingleElectronTriggerSF(v_electron);
+  }
+  else{
+    SetDoubleElectronTriggerSF(v_electron);
   }
 
 }

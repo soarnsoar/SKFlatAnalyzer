@@ -14,9 +14,9 @@ DiLeptonAnalyzer::~DiLeptonAnalyzer(){
 void DiLeptonAnalyzer::SetMuonIdx(int _l1idx, int _l2idx){
   mu1idx=_l1idx;
   mu2idx=_l2idx;
-  
+  SetMuon(AllMuons[mu1idx],AllMuons[mu2idx]);  
 }
-void DiLeptonAnalyzer::SetMuon(Lepton* _l1, Lepton* _l2){
+void DiLeptonAnalyzer::SetMuon(const Muon& _l1, const Muon& _l2){
   mu1=_l1;
   mu2=_l2;
   
@@ -24,7 +24,7 @@ void DiLeptonAnalyzer::SetMuon(Lepton* _l1, Lepton* _l2){
 bool DiLeptonAnalyzer::CheckIsDiMuonChannel(){
   if (!ev.PassTrigger(MuonTriggerNames)) return 0;
   //vector<int> v_muonidx=GetIdxDiMuReco(TriggerSafeCut_muon1, TriggerSafeCut_muon2);
-  vector<Lepton*> v_muon=GetPointerDiMuReco(TriggerSafeCut_muon1, TriggerSafeCut_muon2);
+  vector<Muon> v_muon=GetDiMuReco(TriggerSafeCut_muon1, TriggerSafeCut_muon2);
   if( v_muon.size()<2) return 0;
   SetMuon(v_muon[0],v_muon[1]);
 
@@ -33,9 +33,9 @@ bool DiLeptonAnalyzer::CheckIsDiMuonChannel(){
 void DiLeptonAnalyzer::SetElectronIdx(int _l1idx, int _l2idx){
   el1idx=_l1idx;
   el2idx=_l2idx;  
-  
+  SetElectron(AllElectrons[el1idx], AllElectrons[el2idx]);
 }
-void DiLeptonAnalyzer::SetElectron(Lepton* _l1, Lepton* _l2){
+void DiLeptonAnalyzer::SetElectron(const Electron& _l1, const Electron& _l2){
   el1=_l1;
   el2=_l2;
   
@@ -48,7 +48,7 @@ bool DiLeptonAnalyzer::CheckIsDiElectronChannel(){
   if ( IsDATA && isElectronData && ev.PassTrigger(MuonTriggerNames)) return 0; // to avoid double count
   
   //vector<int> v_electronidx=GetIdxDiElReco(TriggerSafeCut_electron1, TriggerSafeCut_electron2);
-  vector<Lepton*> v_electron=GetPointerDiElReco(TriggerSafeCut_electron1, TriggerSafeCut_electron2);
+  vector<Electron> v_electron=GetDiElReco(TriggerSafeCut_electron1, TriggerSafeCut_electron2);
   if( v_electron.size()<2) return 0;
   //SetElectronIdx(v_electronidx[0],v_electronidx[1]);
   SetElectron(v_electron[0],v_electron[1]);
@@ -83,30 +83,24 @@ void DiLeptonAnalyzer::RunBasicZregion(){
 
   TString LepCh="ll";
   if(IsDiMuonChannel){
-    vZ=(*mu1)+(*mu2);
+    vZ=mu1+mu2;
     LepCh="mm";
     l1=mu1;
     l2=mu2;
   }
   else if(IsDiElectronChannel){
-    //vZ=GetDiElectronVector();
-    vZ=(*el1)+(*el2);
+    vZ=GetDiElectronVector();
     LepCh="ee";
-    //l1=AllElectrons[el1idx];
-    //l2=AllElectrons[el2idx];
-    l1=el1;
-    l2=el2;
+    l1=AllElectrons[el1idx];
+    l2=AllElectrons[el2idx];
   }  
 
-  else{
-    return;
-  }
   //----Jet---//
   v_tightlep={l1,l2};
   //v_jetidx=GetIdxTightJet(v_tightlep,30,2.4);
   //v_bjetidx=GetIdxBJet(v_jetidx);
-  v_tightjet=GetPointerTightJet(v_tightlep,30,2.4);
-  v_bjet=GetPointerBJet(v_tightjet);
+  v_tightjet=GetTightJet(v_tightlep,30,2.4);
+  v_bjet=GetBJet(v_tightjet);
 
   //njet=v_jetidx.size();
   //nbjet=v_bjetidx.size();
@@ -126,11 +120,11 @@ void DiLeptonAnalyzer::RunBasicZregion(){
 }
 void DiLeptonAnalyzer::FillHistAll(TString cutname){
   FillHist(cutname+"/M_ll",vZ.M(),weight,100,40,140);
-  FillHist(cutname+"/pt_l1",l1->Pt(),weight,200,0,200);
-  FillHist(cutname+"/pt_l2",l2->Pt(),weight,200,0,200);
+  FillHist(cutname+"/pt_l1",l1.Pt(),weight,200,0,200);
+  FillHist(cutname+"/pt_l2",l2.Pt(),weight,200,0,200);
 
-  FillHist(cutname+"/eta_l1",l1->Eta(),weight,50,3,3);
-  FillHist(cutname+"/eta_l2",l2->Eta(),weight,50,-3,3);
+  FillHist(cutname+"/eta_l1",l1.Eta(),weight,50,3,3);
+  FillHist(cutname+"/eta_l2",l2.Eta(),weight,50,-3,3);
 
   FillHist(cutname+"/njet",njet,weight,10,0,10);
   FillHist(cutname+"/nbjet",nbjet,weight,10,0,10);
@@ -140,13 +134,13 @@ void DiLeptonAnalyzer::FillHistAll(TString cutname){
   if(njet>0){
     //FillHist(cutname+"/pt_j1",AllJets[v_jetidx[0]].Pt(),weight,200,0,200);
     //FillHist(cutname+"/eta_j1",AllJets[v_jetidx[0]].Eta(),weight,50,-3,3);
-    FillHist(cutname+"/pt_j1",v_tightjet[0]->Pt(),weight,200,0,200);
-    FillHist(cutname+"/eta_j1",v_tightjet[0]->Eta(),weight,50,-3,3);
+    FillHist(cutname+"/pt_j1",v_tightjet[0].Pt(),weight,200,0,200);
+    FillHist(cutname+"/eta_j1",v_tightjet[0].Eta(),weight,50,-3,3);
     if(njet>1){
       //FillHist(cutname+"/pt_j2",AllJets[v_jetidx[1]].Pt(),weight,200,0,200);
       //FillHist(cutname+"/eta_j2",AllJets[v_jetidx[1]].Eta(),weight,50,-3,3);
-      FillHist(cutname+"/pt_j2",v_tightjet[1]->Pt(),weight,200,0,200);
-      FillHist(cutname+"/eta_j2",v_tightjet[1]->Eta(),weight,50,-3,3);
+      FillHist(cutname+"/pt_j2",v_tightjet[1].Pt(),weight,200,0,200);
+      FillHist(cutname+"/eta_j2",v_tightjet[1].Eta(),weight,50,-3,3);
     }
   }
   

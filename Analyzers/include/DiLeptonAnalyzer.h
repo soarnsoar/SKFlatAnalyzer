@@ -15,8 +15,9 @@ public:
   void SetIsDimuonChannel();
   void SetIsDielectronChannel();
   void SetMuonIdx(int _idx1,int _idx2);
-  void SetMuon(Muon _l1, Muon _l2);
+  void SetMuon(Lepton* _l1, Lepton* _l2);
   void SetElectronIdx(int _idx1,int _idx2);  
+  void SetElectron(Lepton* _l1, Lepton* _l2);
   TLorentzVector GetDiMuonVector();
   TLorentzVector GetDiElectronVector();
   
@@ -31,17 +32,18 @@ public:
   bool IsDiElectronChannel;
   void SetEventWeight();
   int mu1idx,mu2idx,el1idx,el2idx;
-  Lepton mu1, mu2;
+  Lepton *mu1, *mu2;
+  Lepton *el1, *el2;
   TLorentzVector vZ;
-  Lepton l1, l2;
+  Lepton *l1, *l2;
   unsigned int njet, nbjet;
-  vector<Lepton> v_tightlep;
+  vector<Lepton*> v_tightlep;
 
   vector<int> v_jetidx;
   vector<int> v_bjetidx;
 
-  vector<Jet> v_tightjet;
-  vector<Jet> v_bjet;
+  vector<Jet*> v_tightjet;
+  vector<Jet*> v_bjet;
 
   DiLeptonAnalyzer();
   ~DiLeptonAnalyzer();
