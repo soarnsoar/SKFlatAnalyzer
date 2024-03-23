@@ -7,8 +7,7 @@ JHAnalyzerBase::JHAnalyzerBase(){
 void JHAnalyzerBase::initializeAnalyzer(){
   cout << "[JHAnalyzerBase::initializeAnalyzer]DataEra->" << DataEra << endl;
   runSys=HasFlag("runSys");
-  //SetSysStructure();
-  InitBtag();
+  SetUpBtag();
   if(IsDATA){
     ProcessName="Data";
   }
@@ -17,14 +16,14 @@ void JHAnalyzerBase::initializeAnalyzer(){
   }
   cout << "[JHAnalyzerBase::initializeAnalyzer] runSys=" << runSys << endl;
 }
-void JHAnalyzerBase::InitBtag(){
+void JHAnalyzerBase::SetUpBtag(){
   std::vector<JetTagging::Parameters> jtps;
   jtps.push_back( JetTagging::Parameters(JetTagging::DeepJet, JetTagging::Tight, JetTagging::incl, JetTagging::comb) );
   mcCorr->SetJetTaggingParameters(jtps);
   jtp=JetTagging::Parameters(JetTagging::DeepJet,JetTagging::Tight,JetTagging::incl,JetTagging::comb);
   mcCorr->MCCorrection::SetEra(DataEra);
   btagcut = mcCorr->MCCorrection::GetJetTaggingCutValue(JetTagging::DeepJet,JetTagging::Tight);
-  cout << "[JHAnalyzerBase::InitBtag]btagcut=" << btagcut << endl;
+  cout << "[JHAnalyzerBase::SetUpBtag]btagcut=" << btagcut << endl;
 }
 void JHAnalyzerBase::InitSystematicMomentumVariations(){
   //--Define--//
@@ -75,26 +74,26 @@ void JHAnalyzerBase::executeEvent(){
   //---Nominal and weight-base variations--//
   //--init variables--//
   runWeightBase=true;
-  SetEventBaseSysWeight();
   SetSysStructure();
-  InitClassVariablesPerEvent();
+  SetEventBaseSysWeight();
+  //InitClassVariablesPerEvent();
+  //InitBtagSys();
   //--[END]init variables--//
   EventLoop();
   FillReservedHistWeightBase();
   ClearReserveHist();
 
-  //t_FillWeightBase+=timer_FillWeightBase.RealTime();
   if(!runSys) return;
+
   //---Momentum variations--//
   runWeightBase=false;
+  SetSysStructure();//remove sysvariation weights
   for(const auto &sys : vMomentumVar){
     SetSys(sys);
-    SetSysStructure();
     EventLoop();
-    //timer_FillMomentumBase.Start();
     FillReservedHistMomentumVariations();
     ClearReserveHist();
-    //t_FillMomentumBase+=timer_FillMomentumBase.RealTime();
+
   }
 
 }
@@ -203,12 +202,15 @@ void JHAnalyzerBase::SetSysStructure(){
   }
 
 }
-void JHAnalyzerBase::InitClassVariablesPerEvent(){
+void JHAnalyzerBase::InitBtagSys(){
   //---btagSF variations---//
   r_SystUpLTagCorr=1;r_SystDownLTagCorr=1;
   r_SystUpLTagUnCorr=1;r_SystDownLTagUnCorr=1;
   r_SystUpHTagCorr=1;r_SystDownHTagCorr=1;
   r_SystUpHTagUnCorr=1;r_SystDownHTagUnCorr=1;
+}
+
+void JHAnalyzerBase::InitClassVariablesPerEvent(){
   //--Event variables--//
   weight=1.;
   btagsf=1.;
@@ -233,19 +235,16 @@ void JHAnalyzerBase::FillHist(TString histname, double value, double this_weight
 
 ///----FillHistForSystematic---//
 void JHAnalyzerBase::FillHistUp(TString sysname,TString histname,double value,double this_weight,int n_bin,double x_min, double x_max){
-  //AnalyzerCore::FillHist("SYS/"+histname+"/"+sysname+"/0/Up/"+ProcessName,value,this_weight,n_bin,x_min,x_max);
-  AnalyzerCore::FillHist(histname+"/"+sysname+"/0/Up/"+ProcessName,value,this_weight,n_bin,x_min,x_max);
+  AnalyzerCore::FillHist("SYS/"+histname+"/"+sysname+"/0/Up/"+ProcessName,value,this_weight,n_bin,x_min,x_max);
 }
 void JHAnalyzerBase::FillHistDown(TString sysname,TString histname,double value,double this_weight,int n_bin,double x_min, double x_max){
-  //AnalyzerCore::FillHist("SYS/"+histname+"/"+sysname+"/0/Down/"+ProcessName,value,this_weight,n_bin,x_min,x_max);
-  AnalyzerCore::FillHist(histname+"/"+sysname+"/0/Down/"+ProcessName,value,this_weight,n_bin,x_min,x_max);
+  AnalyzerCore::FillHist("SYS/"+histname+"/"+sysname+"/0/Down/"+ProcessName,value,this_weight,n_bin,x_min,x_max);
 }
 void JHAnalyzerBase::FillHistIdx2(TString sysname, int idx1, int idx2, TString histname,double value,double this_weight,int n_bin,double x_min, double x_max){
-  AnalyzerCore::FillHist(histname+"/"+sysname+"/"+std::to_string(idx1)+"/"+std::to_string(idx2)+"/"+ProcessName,value,this_weight,n_bin,x_min,x_max);
+  AnalyzerCore::FillHist("SYS/"+histname+"/"+sysname+"/"+std::to_string(idx1)+"/"+std::to_string(idx2)+"/"+ProcessName,value,this_weight,n_bin,x_min,x_max);
 }
 void JHAnalyzerBase::FillHistIdx2(TString sysname, TString idx1, TString idx2, TString histname,double value,double this_weight,int n_bin,double x_min, double x_max){
-  //AnalyzerCore::FillHist("SYS/"+histname+"/"+sysname+"/"+idx1+"/"+idx2+"/"+ProcessName,value,this_weight,n_bin,x_min,x_max);
-  AnalyzerCore::FillHist(histname+"/"+sysname+"/"+idx1+"/"+idx2+"/"+ProcessName,value,this_weight,n_bin,x_min,x_max);
+  AnalyzerCore::FillHist("SYS/"+histname+"/"+sysname+"/"+idx1+"/"+idx2+"/"+ProcessName,value,this_weight,n_bin,x_min,x_max);
 }
 
 void JHAnalyzerBase::FillHistPUSys(TString histname, double value, double this_weight, int n_bin, double x_min, double x_max){

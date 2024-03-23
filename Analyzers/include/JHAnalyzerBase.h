@@ -12,9 +12,10 @@ class JHAnalyzerBase : public AnalyzerCore {
   void InitSystematicMomentumVariations();
   void initializeAnalyzer();
   void InitClassVariablesPerEvent();
-  void InitBtag();
+  void SetUpBtag();
   void SetSysStructure();
   void SetEventBaseSysWeight();
+  void InitBtagSys();
   void executeEvent();
   //
   JHAnalyzerBase();
@@ -128,7 +129,7 @@ class JHAnalyzerBase : public AnalyzerCore {
   vector<Jet*> GetPointerBJet(const vector<Jet*> &v_Tightjet);
   void SetBtagSF(const vector<int> &v_jetidx);
   void SetBtagSF(const vector<Jet> &v_jet);
-  void SetBtagSF(const vector<Jet*> &v_jet);
+  
   
   double TriggerSafeCut_muon1, TriggerSafeCut_muon2;
   double TriggerSafeCut_electron1, TriggerSafeCut_electron2;

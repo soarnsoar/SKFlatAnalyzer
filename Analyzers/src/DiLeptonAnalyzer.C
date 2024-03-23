@@ -82,7 +82,7 @@ void DiLeptonAnalyzer::RunBasicZregion(){
   //--Now Objects are ready--//
 
 
-  TString LepCh="ll";
+  TString LepCh="";
   if(IsDiMuonChannel){
     //vZ=(*mu1)+(*mu2);
     vZ=mu1+mu2;
@@ -122,12 +122,14 @@ void DiLeptonAnalyzer::RunBasicZregion(){
     FillHistAll(LepCh+"__1bjet");
   }
   if(nbjet==2){
+    FillHistAll("ll__2bjet");
     FillHistAll(LepCh+"__2bjet");
   }
   
 }
 void DiLeptonAnalyzer::FillHistAll(TString cutname){
   FillHist(cutname+"/M_ll",vZ.M(),weight,100,40,140);
+
   FillHist(cutname+"/pt_l1",l1.Pt(),weight,200,0,200);
   FillHist(cutname+"/pt_l2",l2.Pt(),weight,200,0,200);
 
@@ -137,16 +139,12 @@ void DiLeptonAnalyzer::FillHistAll(TString cutname){
   FillHist(cutname+"/njet",njet,weight,10,0,10);
   FillHist(cutname+"/nbjet",nbjet,weight,10,0,10);
 
-  FillHist(cutname+"/puppimet",PuppiMET.Pt(),weight,100,0,100);
+  FillHist(cutname+"/puppimet",PuppiMET.Pt(),weight,200,0,200);
 
   if(njet>0){
-    //FillHist(cutname+"/pt_j1",AllJets[v_jetidx[0]].Pt(),weight,200,0,200);
-    //FillHist(cutname+"/eta_j1",AllJets[v_jetidx[0]].Eta(),weight,50,-3,3);
     FillHist(cutname+"/pt_j1",v_tightjet[0].Pt(),weight,200,0,200);
     FillHist(cutname+"/eta_j1",v_tightjet[0].Eta(),weight,50,-3,3);
     if(njet>1){
-      //FillHist(cutname+"/pt_j2",AllJets[v_jetidx[1]].Pt(),weight,200,0,200);
-      //FillHist(cutname+"/eta_j2",AllJets[v_jetidx[1]].Eta(),weight,50,-3,3);
       FillHist(cutname+"/pt_j2",v_tightjet[1].Pt(),weight,200,0,200);
       FillHist(cutname+"/eta_j2",v_tightjet[1].Eta(),weight,50,-3,3);
     }
