@@ -3,13 +3,19 @@
 DiLeptonAnalyzer::DiLeptonAnalyzer(){
   //runSys=true;
 
-  JHAnalyzerBase::SetupDiLeptonChannel();  
+  //JHAnalyzerBase::SetupDiLeptonChannel();  
 }
 
 DiLeptonAnalyzer::~DiLeptonAnalyzer(){
   //==== Destructor of this Analyzer
 }
 
+void DiLeptonAnalyzer::initializeAnalyzer(){
+  cout << "[DiLeptonAnalyzer::initializeAnalyzer]" << endl;
+  JHAnalyzerBase::initializeAnalyzer();
+  JHAnalyzerBase::SetupDiLeptonChannel();
+
+}
 
 void DiLeptonAnalyzer::SetMuonIdx(int _l1idx, int _l2idx){
   mu1idx=_l1idx;
@@ -24,6 +30,7 @@ void DiLeptonAnalyzer::SetMuon(const Muon& _l1, const Muon& _l2){
 
 bool DiLeptonAnalyzer::CheckIsDiMuonChannel(){
   if (!ev.PassTrigger(MuonTriggerNames)) return 0;
+  cout << "Pass DiMuonTrigger!" << endl;
   //vector<int> v_muonidx=GetIdxDiMuReco(TriggerSafeCut_muon1, TriggerSafeCut_muon2);
   vector<Muon> v_muon=GetDiMuReco(TriggerSafeCut_muon1, TriggerSafeCut_muon2);
   if( v_muon.size()<2) return 0;
@@ -67,6 +74,7 @@ void DiLeptonAnalyzer::SetEventWeight(){
   else if(IsDiElectronChannel){
     weight*=w_ElectronID[0][0]*w_ElectronRECO[0][0]*w_ElectronTrigger[0][0];
   }
+  
 }
 
 void DiLeptonAnalyzer::RunBasicZregion(){

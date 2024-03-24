@@ -1,0 +1,1000 @@
+ 2440  jobs
+ 2441  ls
+ 2442  emc batch_submit_all.sh 
+ 2443  source batch_submit_all.sh 
+ 2444  myjob
+ 2445  condor_tail -f 2233841.0
+ 2446  myjob
+ 2447  jobs
+ 2448  kill %1
+ 2449  kill %2
+ 2450  kill %3
+ 2451  kill %4
+ 2452  kill %5
+ 2453  kill %6
+ 2454  kill %7
+ 2455  ls
+ 2456  emc batch_submit_all.sh 
+ 2457  ls
+ 2458  myjob
+ 2459  condor_rm jhchoi&
+ 2460  le
+ 2461  ls
+ 2462  emc nosub_test.sh 
+ 2463  emc batch_submit_all.sh 
+ 2464  source nosub_test.sh 
+ 2465  cd /data6/Users/jhchoi/SKFlatRunlog//2024_03_22_032141__509682__DiLeptonAnalyzer__Era2017__SkimTree_Dilepton__TAMSA1/DYJetsToMuMu_MiNNLO/
+ 2466  ls
+ 2467  emc run_0.C 
+ 2468  source DiLeptonAnalyzer_2017_DYJetsToMuMu_MiNNLO.sh 0 &> DiLeptonAnalyzer_2017_DYJetsToMuMu_MiNNLO.log&
+ 2469  tail -f DiLeptonAnalyzer_2017_DYJetsToMuMu_MiNNLO.log 
+ 2470  ls
+ 2471  emc DiLeptonAnalyzer_2017_DYJetsToMuMu_MiNNLO.log 
+ 2472  tail -f DiLeptonAnalyzer_2017_DYJetsToMuMu_MiNNLO.log 
+ 2473  jobs
+ 2474  kill %1
+ 2475  ls
+ 2476  ww
+ 2477  ls
+ 2478  cd 2017/
+ 2479  ls
+ 2480  source nosub_test.sh 
+ 2481  cd /data6/Users/jhchoi/SKFlatRunlog//2024_03_22_032501__196686__DiLeptonAnalyzer__Era2017__SkimTree_Dilepton__TAMSA1/DYJetsToMuMu_MiNNLO/
+ 2482  ls
+ 2483  source DiLeptonAnalyzer_2017_DYJetsToMuMu_MiNNLO.sh 0 &> DiLeptonAnalyzer_2017_DYJetsToMuMu_MiNNLO.log&
+ 2484  tail -f DiLeptonAnalyzer_2017_DYJetsToMuMu_MiNNLO.log 
+ 2485  ww
+ 2486  ls
+ 2487  cd 2017/
+ 2488  ls
+ 2489  emc nosub_test.sh 
+ 2490  emc batch_submit_all.sh 
+ 2491  emc nosub_test.sh 
+ 2492  source nosub_test.sh 
+ 2493  cd /data6/Users/jhchoi/SKFlatRunlog//2024_03_22_032716__932307__DiLeptonAnalyzer__Era2017__SkimTree_Dilepton__runSys__TAMSA1/DYJetsToMuMu_MiNNLO/
+ 2494  ls
+ 2495  source DiLeptonAnalyzer_2017_DYJetsToMuMu_MiNNLO__runSys.sh 0 &> DiLeptonAnalyzer_2017_DYJetsToMuMu_MiNNLO__runSys.log&
+ 2496  tail -f DiLeptonAnalyzer_2017_DYJetsToMuMu_MiNNLO__runSys.log 
+ 2497  ls
+ 2498  ww
+ 2499  cd 2017/
+ 2500  ls
+ 2501  emc nosub_test.sh 
+ 2502  jobs
+ 2503  ls
+ 2504  source nosub_test.sh 
+ 2505  emc nosub_test.sh 
+ 2506  cd /data6/Users/jhchoi/SKFlatRunlog//2024_03_22_032802__700566__DiLeptonAnalyzer__Era2017__SkimTree_Dilepton__runSys__TAMSA1/DYJetsToMuMu_MiNNLO/
+ 2507  emc run_0.C 
+ 2508  source DiLeptonAnalyzer_2017_DYJetsToMuMu_MiNNLO__runSys.sh 0 &> DiLeptonAnalyzer_2017_DYJetsToMuMu_MiNNLO__runSys.log&
+ 2509  jobs
+ 2510  tail -f d
+ 2511  tail -f DiLeptonAnalyzer_2017_DYJetsToMuMu_MiNNLO__runSys.log 
+ 2512  ls
+ 2513  emc DiLeptonAnalyzer_2017_DYJetsToMuMu_MiNNLO__runSys.log 
+ 2514  ww
+ 2515  ls
+ 2516  cd 2017/
+ 2517  ls
+ 2518  source nosub_test.sh 
+ 2519  cd /data6/Users/jhchoi/SKFlatRunlog//2024_03_22_033034__875922__DiLeptonAnalyzer__Era2017__SkimTree_Dilepton__runSys__TAMSA1/DYJetsToMuMu_MiNNLO/
+ 2520  ls
+ 2521  source DiLeptonAnalyzer_2017_DYJetsToMuMu_MiNNLO__runSys.sh 0 &> DiLeptonAnalyzer_2017_DYJetsToMuMu_MiNNLO__runSys.log&
+ 2522  tail -f DiLeptonAnalyzer_2017_DYJetsToMuMu_MiNNLO__runSys.log 
+ 2523  jobs
+ 2524  kill %1
+ 2525  ls
+ 2526  emc DiLeptonAnalyzer_2017_DYJetsToMuMu_MiNNLO__runSys.
+ 2527  emc DiLeptonAnalyzer_2017_DYJetsToMuMu_MiNNLO__runSys.log 
+ 2528  ww
+ 2529  ls
+ 2530  cd 2017/
+ 2531  ls
+ 2532  source nosub_test.sh 
+ 2533  cd /data6/Users/jhchoi/SKFlatRunlog//2024_03_22_033330__619624__DiLeptonAnalyzer__Era2017__SkimTree_Dilepton__runSys__TAMSA1/DYJetsToMuMu_MiNNLO/
+ 2534  ls
+ 2535  source DiLeptonAnalyzer_2017_DYJetsToMuMu_MiNNLO__runSys.sh 0 &> DiLeptonAnalyzer_2017_DYJetsToMuMu_MiNNLO__runSys.log&
+ 2536  tail -f DiLeptonAnalyzer_2017_DYJetsToMuMu_MiNNLO__runSys.log 
+ 2537  ww
+ 2538  ls
+ 2539  myjob
+ 2540  cd 2017/
+ 2541  ls
+ 2542  emc batch_submit_all.sh 
+ 2543  source batch_submit_all.sh 
+ 2544  ls
+ 2545  emc batch_submit_all.sh 
+ 2546  ls
+ 2547  cp batch_submit_all.sh batch_submit_allsys.sh
+ 2548  emc batch_submit_allsys.sh 
+ 2549  myjob
+ 2550  source batch_submit_allsys.sh
+ 2551  ls
+ 2552  emc batch_submit_allsys.sh
+ 2553  myjob
+ 2554  condor_tail -f 2233870.0
+ 2555  condor_tail -f 2233870.1
+ 2556  condor_tail -f 2233870.2
+ 2557  myjob
+ 2558  condor_tail -f 2233879.0
+ 2559  cd /data6/Users/jhchoi/SKFlatRunlog/2024_03_22_033330__619624__DiLeptonAnalyzer__Era2017__SkimTree_Dilepton__runSys__TAMSA1/DYJetsToMuMu_MiNNLO
+ 2560  ls
+ 2561  emc DiLeptonAnalyzer_2017_DYJetsToMuMu_MiNNLO__runSys.log 
+ 2562  myjob
+ 2563  ww
+ 2564  myjob
+ 2565  ls
+ 2566  cd 2017/
+ 2567  ls
+ 2568  emc nosub_test.sh 
+ 2569  source nosub_test.sh 
+ 2570  cd /data6/Users/jhchoi/SKFlatRunlog//2024_03_22_034315__725170__DiLeptonAnalyzer__Era2017__SkimTree_Dilepton__runSys__TAMSA1/DYJetsToMuMu_MiNNLO/
+ 2571  ls
+ 2572  source DiLeptonAnalyzer_2017_DYJetsToMuMu_MiNNLO__runSys.sh 0 &> DiLeptonAnalyzer_2017_DYJetsToMuMu_MiNNLO__runSys.log&
+ 2573  tail -f DiLeptonAnalyzer_2017_DYJetsToMuMu_MiNNLO__runSys.log 
+ 2574  jobs
+ 2575  ww
+ 2576  ls
+ 2577  cd 2017/
+ 2578  ls
+ 2579  source nosub_test.sh 
+ 2580  cd /data6/Users/jhchoi/SKFlatRunlog//2024_03_22_035106__440285__DiLeptonAnalyzer__Era2017__SkimTree_Dilepton__runSys__TAMSA1/DYJetsToMuMu_MiNNLO/
+ 2581  ls
+ 2582  source DiLeptonAnalyzer_2017_DYJetsToMuMu_MiNNLO__runSys.sh 0 &> DiLeptonAnalyzer_2017_DYJetsToMuMu_MiNNLO__runSys.log&
+ 2583  tail -f DiLeptonAnalyzer_2017_DYJetsToMuMu_MiNNLO__runSys.log 
+ 2584  ww
+ 2585  ls
+ 2586  cd 2017
+ 2587  ls
+ 2588  cd /data6/Users/jhchoi/SKFlatRunlog/2024_03_22_035106__440285__DiLeptonAnalyzer__Era2017__SkimTree_Dilepton__runSys__TAMSA1/DYJetsToMuMu_MiNNLO
+ 2589  setww2
+ 2590  ls
+ 2591  emc run_0.C 
+ 2592  myjob
+ 2593  ls
+ 2594  ww
+ 2595  ls
+ 2596  cd 2017/
+ 2597  ls
+ 2598  myjob
+ 2599  ls
+ 2600  source nosub_test.sh 
+ 2601  cd /data6/Users/jhchoi/SKFlatRunlog//2024_03_22_043752__38736__DiLeptonAnalyzer__Era2017__SkimTree_Dilepton__runSys__TAMSA1/DYJetsToMuMu_MiNNLO/
+ 2602  ls
+ 2603  source DiLeptonAnalyzer_2017_DYJetsToMuMu_MiNNLO__runSys.sh 0 &> DiLeptonAnalyzer_2017_DYJetsToMuMu_MiNNLO__runSys.log&
+ 2604  tail -f DiLeptonAnalyzer_2017_DYJetsToMuMu_MiNNLO__runSys.log 
+ 2605  ls
+ 2606  du -hs hists.root 
+ 2607  jobs
+ 2608  pwd
+ 2609  jobs
+ 2610  myjob
+ 2611  ww
+ 2612  ls
+ 2613  cd 2017/
+ 2614  ls
+ 2615  myjob
+ 2616  emc syslogs/major.log 
+ 2617  jobs
+ 2618  kill %10
+ 2619  myjob
+ 2620  condor_rm jhchoi
+ 2621  ls
+ 2622  emc nosub_test.sh 
+ 2623  source nosub_test.sh 
+ 2624  cd /data6/Users/jhchoi/SKFlatRunlog//2024_03_22_045130__683575__DiLeptonAnalyzer__Era2017__SkimTree_Dilepton__TAMSA1/DYJetsToMuMu_MiNNLO/
+ 2625  ls
+ 2626  source DiLeptonAnalyzer_2017_DYJetsToMuMu_MiNNLO.sh 0 &> DiLeptonAnalyzer_2017_DYJetsToMuMu_MiNNLO.log&
+ 2627  tail -f DiLeptonAnalyzer_2017_DYJetsToMuMu_MiNNLO.log 
+ 2628  ls
+ 2629  ww
+ 2630  ls
+ 2631  cd 2017/
+ 2632  ls
+ 2633  source nosub_test.sh 
+ 2634  cd /data6/Users/jhchoi/SKFlatRunlog//2024_03_22_045337__781411__DiLeptonAnalyzer__Era2017__SkimTree_Dilepton__TAMSA1/DYJetsToMuMu_MiNNLO/
+ 2635  ls
+ 2636  source DiLeptonAnalyzer_2017_DYJetsToMuMu_MiNNLO.sh 0 &> DiLeptonAnalyzer_2017_DYJetsToMuMu_MiNNLO.log&
+ 2637  tail -f DiLeptonAnalyzer_2017_DYJetsToMuMu_MiNNLO.log 
+ 2638  ls
+ 2639  ww
+ 2640  ls
+ 2641  cd 2017/
+ 2642  ls
+ 2643  emc batch_submit_all.sh 
+ 2644  source batch_submit_all.sh 
+ 2645  myjob
+ 2646  jobs
+ 2647  myjob
+ 2648  jobs
+ 2649  myjob
+ 2650  source batch_submit_allsys.sh
+ 2651  myjob
+ 2652  ls
+ 2653  emc batch_submit_allsys.sh
+ 2654  myjob
+ 2655  jobs
+ 2656  emc batch_submit_allsys.sh
+ 2657  myjob
+ 2658  condor_tail -f 2234005.0
+ 2659  ls
+ 2660  jobs
+ 2661  kill %1
+ 2662  kill %2
+ 2663  kill %3
+ 2664  kill %4
+ 2665  kill %5
+ 2666  kill %6
+ 2667  kill %7
+ 2668  kill %8
+ 2669  kill %9
+ 2670  kill %10
+ 2671  kill %11
+ 2672  kill %12
+ 2673  jobs
+ 2674  myjob
+ 2675  jobs
+ 2676  condor_rm jhchoi&
+ 2677  myjob
+ 2678  jobs
+ 2679  ls
+ 2680  myjob
+ 2681  source batch_submit_all.sh
+ 2682  myjob
+ 2683  source batch_submit_allsys.sh
+ 2684  emc batch_submit_allsys.sh
+ 2685  myjob
+ 2686  jobs
+ 2687  ls
+ 2688  emc nosub_test.sh 
+ 2689  source nosub_test.sh 
+ 2690  cd /data6/Users/jhchoi/SKFlatRunlog//2024_03_22_144002__110255__DiLeptonAnalyzer__Era2017__SkimTree_Dilepton__runSys__TAMSA1/DYJetsToMuMu_MiNNLO/
+ 2691  ls
+ 2692  source DiLeptonAnalyzer_2017_DYJetsToMuMu_MiNNLO__runSys.sh 0 &> DiLeptonAnalyzer_2017_DYJetsToMuMu_MiNNLO__runSys.log&
+ 2693  top
+ 2694  ls
+ 2695  perf top -p 2492707 --call-graph-dwarf
+ 2696  perf top -p 2492707 --call-graph dwarf
+ 2697  ls
+ 2698  tail DiLeptonAnalyzer_2017_DYJetsToMuMu_MiNNLO__runSys.log 
+ 2699  jobs
+ 2700  perf top -p 2492707 --call-graph dwarf
+ 2701  top -u jhchoi
+ 2702  perf top -p 2492707 --call-graph dwarf
+ 2703  top
+ 2704  perf top -p 2492707 --call-graph dwarf
+ 2705  perf top -p 2492707 --call-graph=dwarf
+ 2706  tail DiLeptonAnalyzer_2017_DYJetsToMuMu_MiNNLO__runSys.log 
+ 2707  jobs
+ 2708  ww
+ 2709  ls
+ 2710  cd 2017/
+ 2711  ls
+ 2712  emc nosub_test.sh 
+ 2713  source nosub_test.sh 
+ 2714  cd /data6/Users/jhchoi/SKFlatRunlog//2024_03_22_144550__491239__DiLeptonAnalyzer__Era2017__SkimTree_Dilepton__runSys__TAMSA1/DYJetsToMuMu_MiNNLO/
+ 2715  ls
+ 2716  jobs
+ 2717  kill %13
+ 2718  ls
+ 2719  source DiLeptonAnalyzer_2017_DYJetsToMuMu_MiNNLO__runSys.sh 0 &> DiLeptonAnalyzer_2017_DYJetsToMuMu_MiNNLO__runSys.log&
+ 2720  tail -f DiLeptonAnalyzer_2017_DYJetsToMuMu_MiNNLO__runSys.log 
+ 2721  top
+ 2722  perf top -u jhchoi --call-graph=dwarf
+ 2723  perf top -p 2496944 --call-graph=dwarf
+ 2724  tail DiLeptonAnalyzer_2017_DYJetsToMuMu_MiNNLO__runSys.log 
+ 2725  perf top -p 2496944 --call-graph=dwarf
+ 2726  top
+ 2727  perf top -p 2496944 --call-graph=dwarf
+ 2728  jobs
+ 2729  tail DiLeptonAnalyzer_2017_DYJetsToMuMu_MiNNLO__runSys.log 
+ 2730  top
+ 2731  perf top -p 2496944 --call-graph=dwarf
+ 2732  jobs
+ 2733  kill %13
+ 2734  source DiLeptonAnalyzer_2017_DYJetsToMuMu_MiNNLO__runSys.sh  0 &> DiLeptonAnalyzer_2017_DYJetsToMuMu_MiNNLO__runSys.log&
+ 2735  top
+ 2736  perf top -p 2501062 --call-graph=dwarf
+ 2737  perf top -p 2501062 --call-graph dwarf
+ 2738  jobs
+ 2739  perf top -p 2501062 --call-graph dwarf
+ 2740  perf top -p 2501062 --call-graph dwarf -a
+ 2741  perf top -p 2501062 --call-graph dwarf
+ 2742  which perf
+ 2743  ㅣㄴ
+ 2744  ls
+ 2745  jobs
+ 2746  tail DiLeptonAnalyzer_2017_DYJetsToMuMu_MiNNLO__runSys.log 
+ 2747  ww
+ 2748  ls
+ 2749  cd 2017/
+ 2750  ls
+ 2751  source nosub_test.sh 
+ 2752  cd /data6/Users/jhchoi/SKFlatRunlog//2024_03_22_160755__465857__DiLeptonAnalyzer__Era2017__SkimTree_Dilepton__runSys__TAMSA1/DYJetsToMuMu_MiNNLO/
+ 2753  ls
+ 2754  source DiLeptonAnalyzer_2017_DYJetsToMuMu_MiNNLO__runSys.sh 0 &> DiLeptonAnalyzer_2017_DYJetsToMuMu_MiNNLO__runSys.log&
+ 2755  tail -f DiLeptonAnalyzer_2017_DYJetsToMuMu_MiNNLO__runSys.log 
+ 2756  ls
+ 2757  jobs
+ 2758  tail DiLeptonAnalyzer_2017_DYJetsToMuMu_MiNNLO__runSys.log 
+ 2759  jobs
+ 2760  kill %14
+ 2761  kill %13
+ 2762  ls
+ 2763  ww
+ 2764  ls
+ 2765  source 2017/
+ 2766  ls
+ 2767  cd 201
+ 2768  cd 2017/
+ 2769  ls
+ 2770  source nosub_test.sh 
+ 2771  cd /data6/Users/jhchoi/SKFlatRunlog//2024_03_22_161043__221428__DiLeptonAnalyzer__Era2017__SkimTree_Dilepton__runSys__TAMSA1/DYJetsToMuMu_MiNNLO/
+ 2772  ls
+ 2773  source DiLeptonAnalyzer_2017_DYJetsToMuMu_MiNNLO__runSys.sh 0 &> DiLeptonAnalyzer_2017_DYJetsToMuMu_MiNNLO__runSys.log&
+ 2774  tail -f DiLeptonAnalyzer_2017_DYJetsToMuMu_MiNNLO__runSys.log 
+ 2775  jobs
+ 2776  tail -f DiLeptonAnalyzer_2017_DYJetsToMuMu_MiNNLO__runSys.log 
+ 2777  jobs
+ 2778  ww
+ 2779  ls
+ 2780  cd 2017/
+ 2781  ls
+ 2782  source nosub_test.sh 
+ 2783  cd /data6/Users/jhchoi/SKFlatRunlog//2024_03_22_164014__935396__DiLeptonAnalyzer__Era2017__SkimTree_Dilepton__runSys__TAMSA1/DYJetsToMuMu_MiNNLO/
+ 2784  ls
+ 2785  source DiLeptonAnalyzer_2017_DYJetsToMuMu_MiNNLO__runSys.sh 0 &> DiLeptonAnalyzer_2017_DYJetsToMuMu_MiNNLO__runSys.log&
+ 2786  tail -f DiLeptonAnalyzer_2017_DYJetsToMuMu_MiNNLO__runSys.log 
+ 2787  date
+ 2788  tail -f DiLeptonAnalyzer_2017_DYJetsToMuMu_MiNNLO__runSys.log 
+ 2789  jobs
+ 2790  kill %13
+ 2791  kill %14
+ 2792  jobs
+ 2793  ww
+ 2794  ls
+ 2795  cd 2017/
+ 2796  ls
+ 2797  source nosub_test.sh 
+ 2798  cd /data6/Users/jhchoi/SKFlatRunlog//2024_03_22_171244__552929__DiLeptonAnalyzer__Era2017__SkimTree_Dilepton__runSys__TAMSA1/DYJetsToMuMu_MiNNLO/
+ 2799  ls
+ 2800  source DiLeptonAnalyzer_2017_DYJetsToMuMu_MiNNLO__runSys.sh 0 &> DiLeptonAnalyzer_2017_DYJetsToMuMu_MiNNLO__runSys.log&
+ 2801  tail -f DiLeptonAnalyzer_2017_DYJetsToMuMu_MiNNLO__runSys.log 
+ 2802  jobs
+ 2803  myjob
+ 2804  cd ..
+ 2805  ls
+ 2806  ww
+ 2807  ls
+ 2808  cd 2018/
+ 2809  ls
+ 2810  emc batch_submit_all.sh
+ 2811  cp ../2017/* .
+ 2812  ls
+ 2813  emc batch_submit_all
+ 2814  emc batch_submit_allsys.sh
+ 2815  ls
+ 2816  emc nosub_test.sh
+ 2817  ww
+ 2818  pwd
+ 2819  ww2
+ 2820  pwd
+ 2821  ww3
+ 2822  ww
+ 2823  ls
+ 2824  cd 2018/
+ 2825  ls
+ 2826  emc nosub_test.sh
+ 2827  emc batch_submit_allsys.sh
+ 2828  ls
+ 2829  emc nosub_test.sh
+ 2830  ls
+ 2831  emc batch_submit_all.sh
+ 2832  source batch_submit_all.sh
+ 2833  myjob
+ 2834  tail logs/major.log 
+ 2835  ls /data6/Users/jhchoi/SKFlatAnalyzers/test/ForTMVA/SKFlatAnalyzer/data/Run2UltraLegacy_v3/2018/Sample//ForSNU
+ 2836  myjob
+ 2837  jobs
+ 2838  condor_rm jhchoi
+ 2839   %3
+ 2840  jobs
+ 2841  kill %4
+ 2842  kill %6
+ 2843  myjob
+ 2844  jobs
+ 2845  ls
+ 2846  myjob
+ 2847  ls
+ 2848  source batch_submit_all.sh
+ 2849  myjob
+ 2850  jobs
+ 2851  ls
+ 2852  emc batch_submit_all.sh
+ 2853  SKFlat.py -a DiLeptonAnalyzer  ${SKIM} -i EGamma -n 50 -e ${YEAR} $FLAG &> logs/EGamma.log&
+ 2854  ls
+ 2855  emc batch_submit_allsys.sh
+ 2856  ls
+ 2857  myjob
+ 2858  ls
+ 2859  jobs
+ 2860  pwd
+ 2861  emc batch_submit_allsys.sh
+ 2862  source batch_submit_allsys.sh
+ 2863  myjob
+ 2864  jobs
+ 2865  myjob
+ 2866  tail logs/tW.log 
+ 2867  tail logs/minor.log
+ 2868  tail logs/DoubleMuon.log 
+ 2869  tail logs/major.log 
+ 2870  tail logs/NoSkim.log 
+ 2871  tail logs/EGamma.log 
+ 2872  tail logs/minor.log 
+ 2873  tail logs/tW.log 
+ 2874  myjob
+ 2875  condor_tail -f 2235022.3
+ 2876  condor_tail -f 2235028.0
+ 2877  tail logs/EGamma.log 
+ 2878  ww
+ 2879  ls
+ 2880  cd 2017/
+ 2881  ls
+ 2882  emc nosub_test.sh 
+ 2883  source nosub_test.sh 
+ 2884  cd /data6/Users/jhchoi/SKFlatRunlog//2024_03_23_175314__692060__DiLeptonAnalyzer__Era2017__SkimTree_Dilepton__runSys__TAMSA1/DYJetsToMuMu_MiNNLO/
+ 2885  ls
+ 2886  source DiLeptonAnalyzer_2017_DYJetsToMuMu_MiNNLO__runSys.sh 0 &> DiLeptonAnalyzer_2017_DYJetsToMuMu_MiNNLO__runSys.log&
+ 2887  tail -f DiLeptonAnalyzer_2017_DYJetsToMuMu_MiNNLO__runSys.log 
+ 2888  pwd
+ 2889  tail -f DiLeptonAnalyzer_2017_DYJetsToMuMu_MiNNLO__runSys.log 
+ 2890  ls
+ 2891  tail -f DiLeptonAnalyzer_2017_DYJetsToMuMu_MiNNLO__runSys.log 
+ 2892  ls
+ 2893  jobs
+ 2894  tail DiLeptonAnalyzer_2017_DYJetsToMuMu_MiNNLO__runSys.log 
+ 2895  jobs
+ 2896  kill %14
+ 2897  ww
+ 2898  ls
+ 2899  cd 2017/
+ 2900  ls
+ 2901  source nosub_test.sh 
+ 2902  cd /data6/Users/jhchoi/SKFlatRunlog//2024_03_23_185808__234662__DiLeptonAnalyzer__Era2017__SkimTree_Dilepton__runSys__TAMSA1/DYJetsToMuMu_MiNNLO/
+ 2903  ls
+ 2904  source DiLeptonAnalyzer_2017_DYJetsToMuMu_MiNNLO__runSys.sh 0 &> DiLeptonAnalyzer_2017_DYJetsToMuMu_MiNNLO__runSys.log&
+ 2905  tail -f DiLeptonAnalyzer_2017_DYJetsToMuMu_MiNNLO__runSys.log 
+ 2906  ww
+ 2907  ls
+ 2908  cd 2017
+ 2909  source nosub_test.sh 
+ 2910  cd /data6/Users/jhchoi/SKFlatRunlog//2024_03_23_191031__593544__DiLeptonAnalyzer__Era2017__SkimTree_Dilepton__runSys__TAMSA1/DYJetsToMuMu_MiNNLO/
+ 2911  ls
+ 2912  source DiLeptonAnalyzer_2017_DYJetsToMuMu_MiNNLO__runSys.sh 0 &> DiLeptonAnalyzer_2017_DYJetsToMuMu_MiNNLO__runSys.log&
+ 2913  tail -f DiLeptonAnalyzer_2017_DYJetsToMuMu_MiNNLO__runSys.log 
+ 2914  ww
+ 2915  ls
+ 2916  cd 2017/
+ 2917  ls
+ 2918  source nosub_test.sh 
+ 2919  cd /data6/Users/jhchoi/SKFlatRunlog//2024_03_23_191428__38041__DiLeptonAnalyzer__Era2017__SkimTree_Dilepton__runSys__TAMSA1/DYJetsToMuMu_MiNNLO/
+ 2920  ls
+ 2921  source DiLeptonAnalyzer_2017_DYJetsToMuMu_MiNNLO__runSys.sh 0 &> DiLeptonAnalyzer_2017_DYJetsToMuMu_MiNNLO__runSys.log&
+ 2922  tail -f DiLeptonAnalyzer_2017_DYJetsToMuMu_MiNNLO__runSys.log 
+ 2923  jobs
+ 2924  kill %14
+ 2925  ww
+ 2926  ls
+ 2927  cd 2017/
+ 2928  ls
+ 2929  source nosub_test.sh 
+ 2930  cd /data6/Users/jhchoi/SKFlatRunlog//2024_03_23_192737__303967__DiLeptonAnalyzer__Era2017__SkimTree_Dilepton__runSys__TAMSA1/DYJetsToMuMu_MiNNLO/
+ 2931  ls
+ 2932  source DiLeptonAnalyzer_2017_DYJetsToMuMu_MiNNLO__runSys.sh 0 &> DiLeptonAnalyzer_2017_DYJetsToMuMu_MiNNLO__runSys.log&
+ 2933  tail -f DiLeptonAnalyzer_2017_DYJetsToMuMu_MiNNLO__runSys.log 
+ 2934  ls
+ 2935  ww
+ 2936  ls
+ 2937  cd 2017/
+ 2938  ls
+ 2939  source nosub_test.sh 
+ 2940  cd /data6/Users/jhchoi/SKFlatRunlog//2024_03_23_194348__219078__DiLeptonAnalyzer__Era2017__SkimTree_Dilepton__runSys__TAMSA1/DYJetsToMuMu_MiNNLO/
+ 2941  ls
+ 2942  source DiLeptonAnalyzer_2017_DYJetsToMuMu_MiNNLO__runSys.sh 0 &> DiLeptonAnalyzer_2017_DYJetsToMuMu_MiNNLO__runSys.log&
+ 2943  tail -f DiLeptonAnalyzer_2017_DYJetsToMuMu_MiNNLO__runSys.log 
+ 2944  jobs
+ 2945  kill %14
+ 2946  jobs
+ 2947  tail -f DiLeptonAnalyzer_2017_DYJetsToMuMu_MiNNLO__runSys.log 
+ 2948  jobs
+ 2949  kill %15
+ 2950  jobs
+ 2951  ww
+ 2952  ls
+ 2953  cd 2017/
+ 2954  source nosub_test.sh 
+ 2955  cd /data6/Users/jhchoi/SKFlatRunlog//2024_03_23_195004__916262__DiLeptonAnalyzer__Era2017__SkimTree_Dilepton__runSys__TAMSA1/DYJetsToMuMu_MiNNLO/
+ 2956  ls
+ 2957  source DiLeptonAnalyzer_2017_DYJetsToMuMu_MiNNLO__runSys.sh 0 &> DiLeptonAnalyzer_2017_DYJetsToMuMu_MiNNLO__runSys.log&
+ 2958  tail -f DiLeptonAnalyzer_2017_DYJetsToMuMu_MiNNLO__runSys.log 
+ 2959  jobs
+ 2960  kill %14
+ 2961  jobs
+ 2962  ww
+ 2963  ls
+ 2964  cd 2017/
+ 2965  myjob
+ 2966  ls
+ 2967  source nosub_test.sh 
+ 2968  cd /data6/Users/jhchoi/SKFlatRunlog//2024_03_23_195413__568943__DiLeptonAnalyzer__Era2017__SkimTree_Dilepton__runSys__TAMSA1/DYJetsToMuMu_MiNNLO/
+ 2969  ls
+ 2970  source DiLeptonAnalyzer_2017_DYJetsToMuMu_MiNNLO__runSys.sh 0 &> DiLeptonAnalyzer_2017_DYJetsToMuMu_MiNNLO__runSys.log&
+ 2971  tail -f DiLeptonAnalyzer_2017_DYJetsToMuMu_MiNNLO__runSys.log 
+ 2972  ls
+ 2973  jobs
+ 2974  kill %14
+ 2975  jobs
+ 2976  ww
+ 2977  ls
+ 2978  cd 2017/
+ 2979  ls
+ 2980  source nosub_test.sh 
+ 2981  cd /data6/Users/jhchoi/SKFlatRunlog//2024_03_23_195839__732835__DiLeptonAnalyzer__Era2017__SkimTree_Dilepton__runSys__TAMSA1/DYJetsToMuMu_MiNNLO/
+ 2982  ls
+ 2983  source DiLeptonAnalyzer_2017_DYJetsToMuMu_MiNNLO__runSys.sh 0 &> DiLeptonAnalyzer_2017_DYJetsToMuMu_MiNNLO__runSys.log&
+ 2984  tail -f DiLeptonAnalyzer_2017_DYJetsToMuMu_MiNNLO__runSys.log 
+ 2985  jobs
+ 2986  tail -f DiLeptonAnalyzer_2017_DYJetsToMuMu_MiNNLO__runSys.log 
+ 2987  jobs
+ 2988  kill %14
+ 2989  ww
+ 2990  ls
+ 2991  cd 2017/
+ 2992  ls
+ 2993  source nosub_test.sh 
+ 2994  cd /data6/Users/jhchoi/SKFlatRunlog//2024_03_23_200222__128121__DiLeptonAnalyzer__Era2017__SkimTree_Dilepton__runSys__TAMSA1/DYJetsToMuMu_MiNNLO/
+ 2995  ls
+ 2996  source DiLeptonAnalyzer_2017_DYJetsToMuMu_MiNNLO__runSys.sh 0 &> DiLeptonAnalyzer_2017_DYJetsToMuMu_MiNNLO__runSys.log&
+ 2997  tail -f DiLeptonAnalyzer_2017_DYJetsToMuMu_MiNNLO__runSys.log 
+ 2998  jobs
+ 2999  kill %14
+ 3000  ww
+ 3001  ls
+ 3002  cd 2017/
+ 3003  ls
+ 3004  source nosub_test.sh 
+ 3005  cd /data6/Users/jhchoi/SKFlatRunlog//2024_03_23_201644__843839__DiLeptonAnalyzer__Era2017__SkimTree_Dilepton__runSys__TAMSA1/DYJetsToMuMu_MiNNLO/
+ 3006  ls
+ 3007  source DiLeptonAnalyzer_2017_DYJetsToMuMu_MiNNLO__runSys.sh 0 &> DiLeptonAnalyzer_2017_DYJetsToMuMu_MiNNLO__runSys.log&
+ 3008  tail -f DiLeptonAnalyzer_2017_DYJetsToMuMu_MiNNLO__runSys.log 
+ 3009  jobs
+ 3010  kill %14
+ 3011  jobs
+ 3012  ww
+ 3013  ls
+ 3014  cd 2017/
+ 3015  source nosub_test.sh 
+ 3016  cd /data6/Users/jhchoi/SKFlatRunlog//2024_03_23_233205__767319__DiLeptonAnalyzer__Era2017__SkimTree_Dilepton__runSys__TAMSA1/DYJetsToMuMu_MiNNLO/
+ 3017  ls
+ 3018  source DiLeptonAnalyzer_2017_DYJetsToMuMu_MiNNLO__runSys.sh 0 &> DiLeptonAnalyzer_2017_DYJetsToMuMu_MiNNLO__runSys.log&
+ 3019  tail -f DiLeptonAnalyzer_2017_DYJetsToMuMu_MiNNLO__runSys.log 
+ 3020  jobs
+ 3021  kill %14
+ 3022  ls
+ 3023  ww
+ 3024  ls
+ 3025  myjob
+ 3026  jobs
+ 3027  ls
+ 3028  cd 2017/
+ 3029  ls
+ 3030  jobs
+ 3031  ls
+ 3032  source nosub_test.sh 
+ 3033  cd /data6/Users/jhchoi/SKFlatRunlog//2024_03_24_013237__773286__DiLeptonAnalyzer__Era2017__SkimTree_Dilepton__runSys__TAMSA1/DYJetsToMuMu_MiNNLO/
+ 3034  ls
+ 3035  source DiLeptonAnalyzer_2017_DYJetsToMuMu_MiNNLO__runSys.sh 0 &> DiLeptonAnalyzer_2017_DYJetsToMuMu_MiNNLO__runSys.log&
+ 3036  tail -f DiLeptonAnalyzer_2017_DYJetsToMuMu_MiNNLO__runSys.log 
+ 3037  jobs
+ 3038  kill %1
+ 3039  jobs
+ 3040  ww
+ 3041  ls
+ 3042  cd 2017
+ 3043  source nosub_test.sh 
+ 3044  cd /data6/Users/jhchoi/SKFlatRunlog//2024_03_24_022716__979099__DiLeptonAnalyzer__Era2017__SkimTree_Dilepton__runSys__TAMSA1/DYJetsToMuMu_MiNNLO/
+ 3045  ls
+ 3046  source DiLeptonAnalyzer_2017_DYJetsToMuMu_MiNNLO__runSys.sh 0 &> DiLeptonAnalyzer_2017_DYJetsToMuMu_MiNNLO__runSys.log&
+ 3047  tail -f DiLeptonAnalyzer_2017_DYJetsToMuMu_MiNNLO__runSys.log 
+ 3048  ww
+ 3049  ls
+ 3050  cd 2017/
+ 3051  ls
+ 3052  source nosub_test.sh 
+ 3053  cd /data6/Users/jhchoi/SKFlatRunlog//2024_03_24_022953__249596__DiLeptonAnalyzer__Era2017__SkimTree_Dilepton__runSys__TAMSA1/DYJetsToMuMu_MiNNLO/
+ 3054  ls
+ 3055  source DiLeptonAnalyzer_2017_DYJetsToMuMu_MiNNLO__runSys.sh 0 &> DiLeptonAnalyzer_2017_DYJetsToMuMu_MiNNLO__runSys.log&
+ 3056  tail -f DiLeptonAnalyzer_2017_DYJetsToMuMu_MiNNLO__runSys.log 
+ 3057  jobs
+ 3058  kill%1
+ 3059  kill %1
+ 3060  ww
+ 3061  ls
+ 3062  cd 2017/
+ 3063  ls
+ 3064  source nosub_test.sh 
+ 3065  cd /data6/Users/jhchoi/SKFlatRunlog//2024_03_24_031211__780533__DiLeptonAnalyzer__Era2017__SkimTree_Dilepton__runSys__TAMSA1/DYJetsToMuMu_MiNNLO/
+ 3066  ls
+ 3067  source DiLeptonAnalyzer_2017_DYJetsToMuMu_MiNNLO__runSys.sh 0 &> DiLeptonAnalyzer_2017_DYJetsToMuMu_MiNNLO__runSys.log&
+ 3068  tail -f DiLeptonAnalyzer_2017_DYJetsToMuMu_MiNNLO__runSys.log 
+ 3069  ls
+ 3070  tail -f DiLeptonAnalyzer_2017_DYJetsToMuMu_MiNNLO__runSys.log 
+ 3071  ls
+ 3072  ww
+ 3073  cd -
+ 3074  ls
+ 3075  jobs
+ 3076  tail DiLeptonAnalyzer_2017_DYJetsToMuMu_MiNNLO__runSys.log 
+ 3077  jobs
+ 3078  kill %1
+ 3079  ww
+ 3080  ls
+ 3081  cd 2017/
+ 3082  ls
+ 3083  source nosub_test.sh 
+ 3084  cd /data6/Users/jhchoi/SKFlatRunlog//2024_03_24_033357__997542__DiLeptonAnalyzer__Era2017__SkimTree_Dilepton__runSys__TAMSA1/DYJetsToMuMu_MiNNLO/
+ 3085  ls
+ 3086  source DiLeptonAnalyzer_2017_DYJetsToMuMu_MiNNLO__runSys.sh 0 &> DiLeptonAnalyzer_2017_DYJetsToMuMu_MiNNLO__runSys.log&
+ 3087  tail -f DiLeptonAnalyzer_2017_DYJetsToMuMu_MiNNLO__runSys.log 
+ 3088  jobs
+ 3089  kill %1
+ 3090  ww
+ 3091  cd 2017
+ 3092  ls
+ 3093  source nosub_test.sh 
+ 3094  cd /data6/Users/jhchoi/SKFlatRunlog//2024_03_24_034255__991214__DiLeptonAnalyzer__Era2017__SkimTree_Dilepton__runSys__TAMSA1/DYJetsToMuMu_MiNNLO/
+ 3095  ls
+ 3096  source DiLeptonAnalyzer_2017_DYJetsToMuMu_MiNNLO__runSys.sh 0 &> DiLeptonAnalyzer_2017_DYJetsToMuMu_MiNNLO__runSys.log&
+ 3097  tail -f DiLeptonAnalyzer_2017_DYJetsToMuMu_MiNNLO__runSys.log 
+ 3098  pwd
+ 3099  tail -f DiLeptonAnalyzer_2017_DYJetsToMuMu_MiNNLO__runSys.log 
+ 3100  jobs
+ 3101  kill %1
+ 3102  ls
+ 3103  ww
+ 3104  ls
+ 3105  cd 2017/
+ 3106  ls
+ 3107  source nosub_test.sh 
+ 3108  cd /data6/Users/jhchoi/SKFlatRunlog//2024_03_24_034648__783850__DiLeptonAnalyzer__Era2017__SkimTree_Dilepton__runSys__TAMSA1/DYJetsToMuMu_MiNNLO/
+ 3109  ls
+ 3110  source DiLeptonAnalyzer_2017_DYJetsToMuMu_MiNNLO__runSys.sh 0&> DiLeptonAnalyzer_2017_DYJetsToMuMu_MiNNLO__runSys.log&
+ 3111  tail -f DiLeptonAnalyzer_2017_DYJetsToMuMu_MiNNLO__runSys.
+ 3112  tail -f DiLeptonAnalyzer_2017_DYJetsToMuMu_MiNNLO__runSys.log 
+ 3113  jobs
+ 3114  kill %1
+ 3115  ls
+ 3116  ww
+ 3117  ls
+ 3118  cd 2017/
+ 3119  ls
+ 3120  source nosub_test.sh 
+ 3121  cd /data6/Users/jhchoi/SKFlatRunlog//2024_03_24_034910__492938__DiLeptonAnalyzer__Era2017__SkimTree_Dilepton__runSys__TAMSA1/DYJetsToMuMu_MiNNLO/
+ 3122  ls
+ 3123  source DiLeptonAnalyzer_2017_DYJetsToMuMu_MiNNLO__runSys.sh 0 &> DiLeptonAnalyzer_2017_DYJetsToMuMu_MiNNLO__runSys.log&
+ 3124  tail -f DiLeptonAnalyzer_2017_DYJetsToMuMu_MiNNLO__runSys.log 
+ 3125  ls
+ 3126  du -hs hists.root 
+ 3127  root -b -l hists.root 
+ 3128  ww
+ 3129  ls
+ 3130  cd 2017/
+ 3131  ls
+ 3132  source nosub_test.sh 
+ 3133  cd /data6/Users/jhchoi/SKFlatRunlog//2024_03_24_041307__949775__DiLeptonAnalyzer__Era2017__SkimTree_Dilepton__runSys__TAMSA1/DYJetsToMuMu_MiNNLO/
+ 3134  ls
+ 3135  source DiLeptonAnalyzer_2017_DYJetsToMuMu_MiNNLO__runSys.sh 0 &> DiLeptonAnalyzer_2017_DYJetsToMuMu_MiNNLO__runSys.log&
+ 3136  tail DiLeptonAnalyzer_2017_DYJetsToMuMu_MiNNLO__runSys.log 
+ 3137  tail -f DiLeptonAnalyzer_2017_DYJetsToMuMu_MiNNLO__runSys.log 
+ 3138  jobs
+ 3139  kill %1
+ 3140  ww
+ 3141  ls
+ 3142  cd 2017
+ 3143  ls
+ 3144  source nosub_test.sh 
+ 3145  cd /data6/Users/jhchoi/SKFlatRunlog//2024_03_24_041702__343255__DiLeptonAnalyzer__Era2017__SkimTree_Dilepton__runSys__TAMSA1/DYJetsToMuMu_MiNNLO/
+ 3146  ls
+ 3147  source DiLeptonAnalyzer_2017_DYJetsToMuMu_MiNNLO__runSys.sh 0 &> DiLeptonAnalyzer_2017_DYJetsToMuMu_MiNNLO__runSys.log&
+ 3148  tail -f DiLeptonAnalyzer_2017_DYJetsToMuMu_MiNNLO__runSys.log 
+ 3149  ls
+ 3150  root -b -l hists.root 
+ 3151  ls
+ 3152  du -hs hists.root 
+ 3153  ls
+ 3154  ww
+ 3155  ls
+ 3156  cd 2017/
+ 3157  ls
+ 3158  source nosub_test.sh 
+ 3159  cd /data6/Users/jhchoi/SKFlatRunlog//2024_03_24_043723__319969__DiLeptonAnalyzer__Era2017__SkimTree_Dilepton__runSys__TAMSA1/DYJetsToMuMu_MiNNLO/
+ 3160  ls
+ 3161  source DiLeptonAnalyzer_2017_DYJetsToMuMu_MiNNLO__runSys.sh 0 &> DiLeptonAnalyzer_2017_DYJetsToMuMu_MiNNLO__runSys.log&
+ 3162  tail -f DiLeptonAnalyzer_2017_DYJetsToMuMu_MiNNLO__runSys.log 
+ 3163  jobs
+ 3164  kill %1
+ 3165  ww
+ 3166  cd 2017
+ 3167  source nosub_test.sh 
+ 3168  cd /data6/Users/jhchoi/SKFlatRunlog//2024_03_24_044059__469147__DiLeptonAnalyzer__Era2017__SkimTree_Dilepton__runSys__TAMSA1/DYJetsToMuMu_MiNNLO/
+ 3169  ls
+ 3170  source DiLeptonAnalyzer_2017_DYJetsToMuMu_MiNNLO__runSys.sh 0 &> DiLeptonAnalyzer_2017_DYJetsToMuMu_MiNNLO__runSys.log&
+ 3171  tail DiLeptonAnalyzer_2017_DYJetsToMuMu_MiNNLO__runSys.log 
+ 3172  tail -f DiLeptonAnalyzer_2017_DYJetsToMuMu_MiNNLO__runSys.log 
+ 3173  jobs
+ 3174  tail -f DiLeptonAnalyzer_2017_DYJetsToMuMu_MiNNLO__runSys.log 
+ 3175  jobs
+ 3176  cd ..
+ 3177  ls
+ 3178  cd ..
+ 3179  ls
+ 3180  cd 2024_03_24_044059__469147__DiLeptonAnalyzer__Era2017__SkimTree_Dilepton__runSys__TAMSA1
+ 3181  ls
+ 3182  cd DYJetsToMuMu_MiNNLO/
+ 3183  ls
+ 3184  cd ..
+ 3185  ls
+ 3186  cd 2024_03_24_044100__527631__DiLeptonAnalyzer__Era2017__SkimTree_Dilepton__runSys__TAMSA1
+ 3187  ls
+ 3188  cd DYJetsToEE_MiNNLO/
+ 3189  ls
+ 3190  jobs
+ 3191  tail DiLeptonAnalyzer_2017_DYJetsToEE_MiNNLO__runSys.sh l
+ 3192  ls
+ 3193  jobs
+ 3194  cd ..
+ 3195  ls
+ 3196  ls -t
+ 3197  cd 2024_03_24_013237__773286__DiLeptonAnalyzer__Era2017__SkimTree_Dilepton__runSys__TAMSA1
+ 3198  ls
+ 3199  cd DYJetsToMuMu_MiNNLO/
+ 3200  ls
+ 3201  jobs
+ 3202  pwd
+ 3203  cd ..
+ 3204  ls
+ 3205  cd 2024_03_24_044059__469147__DiLeptonAnalyzer__Era2017__SkimTree_Dilepton__runSys__TAMSA1
+ 3206  ls
+ 3207  cd DYJetsToMuMu_MiNNLO/
+ 3208  ls
+ 3209  jobs
+ 3210  tail DiLeptonAnalyzer_2017_DYJetsToMuMu_MiNNLO__runSys.log 
+ 3211  tail -f DiLeptonAnalyzer_2017_DYJetsToMuMu_MiNNLO__runSys.log 
+ 3212  ls
+ 3213  pwd
+ 3214  ww
+ 3215  ls
+ 3216  ww
+ 3217  ls
+ 3218  cd 2017/
+ 3219  ls
+ 3220  source nosub_test.sh 
+ 3221  cd /data6/Users/jhchoi/SKFlatRunlog//2024_03_24_045853__364854__DiLeptonAnalyzer__Era2017__SkimTree_Dilepton__runSys__TAMSA1/DYJetsToMuMu_MiNNLO/
+ 3222  ls
+ 3223  source DiLeptonAnalyzer_2017_DYJetsToMuMu_MiNNLO__runSys.sh 0 &> DiLeptonAnalyzer_2017_DYJetsToMuMu_MiNNLO__runSys.log&
+ 3224  tail -f DiLeptonAnalyzer_2017_DYJetsToMuMu_MiNNLO__runSys.log 
+ 3225  jobs
+ 3226  kill %1
+ 3227  ww
+ 3228  ls
+ 3229  cd 2017/
+ 3230  ls
+ 3231  source nosub_test.sh 
+ 3232  cd /data6/Users/jhchoi/SKFlatRunlog//2024_03_24_050049__960744__DiLeptonAnalyzer__Era2017__SkimTree_Dilepton__runSys__TAMSA1/DYJetsToMuMu_MiNNLO/
+ 3233  ls
+ 3234  source DiLeptonAnalyzer_2017_DYJetsToMuMu_MiNNLO__runSys.sh 0 &> DiLeptonAnalyzer_2017_DYJetsToMuMu_MiNNLO__runSys.log&
+ 3235  tail -f DiLeptonAnalyzer_2017_DYJetsToMuMu_MiNNLO__runSys.log 
+ 3236  jobs
+ 3237  tail DiLeptonAnalyzer_2017_DYJetsToMuMu_MiNNLO__runSys.log 
+ 3238  jobs
+ 3239  kill %1
+ 3240  ww
+ 3241  ls
+ 3242  cd 2017/
+ 3243  jobs
+ 3244  source nosub_test.sh 
+ 3245  cd /data6/Users/jhchoi/SKFlatRunlog//2024_03_24_051405__206159__DiLeptonAnalyzer__Era2017__SkimTree_Dilepton__runSys__TAMSA1/DYJetsToMuMu_MiNNLO/
+ 3246  ls
+ 3247  source DiLeptonAnalyzer_2017_DYJetsToMuMu_MiNNLO__runSys.sh 0 &> DiLeptonAnalyzer_2017_DYJetsToMuMu_MiNNLO__runSys.log&
+ 3248  tail -f DiLeptonAnalyzer_2017_DYJetsToMuMu_MiNNLO__runSys.log 
+ 3249  jobs
+ 3250  kill %1
+ 3251  ww
+ 3252  ls
+ 3253  cd 2017
+ 3254  ls
+ 3255  source nosub_test.sh 
+ 3256  cd /data6/Users/jhchoi/SKFlatRunlog//2024_03_24_052228__894840__DiLeptonAnalyzer__Era2017__SkimTree_Dilepton__runSys__TAMSA1/DYJetsToMuMu_MiNNLO/
+ 3257  ls
+ 3258  source DiLeptonAnalyzer_2017_DYJetsToMuMu_MiNNLO__runSys.sh 0 &> DiLeptonAnalyzer_2017_DYJetsToMuMu_MiNNLO__runSys.log&
+ 3259  tail -f DiLeptonAnalyzer_2017_DYJetsToMuMu_MiNNLO__runSys.log 
+ 3260  jobs
+ 3261  kill %1
+ 3262  ww
+ 3263  ls
+ 3264  cd 2017
+ 3265  ls
+ 3266  source nosub_test.sh 
+ 3267  cd /data6/Users/jhchoi/SKFlatRunlog//2024_03_24_053633__98072__DiLeptonAnalyzer__Era2017__SkimTree_Dilepton__runSys__TAMSA1/DYJetsToMuMu_MiNNLO/
+ 3268  ls
+ 3269  source DiLeptonAnalyzer_2017_DYJetsToMuMu_MiNNLO__runSys.sh 0 &> DiLeptonAnalyzer_2017_DYJetsToMuMu_MiNNLO__runSys.log&
+ 3270  tail -f DiLeptonAnalyzer_2017_DYJetsToMuMu_MiNNLO__runSys.log 
+ 3271  setww2
+ 3272  cd  /data6/Users/jhchoi/SKFlatRunlog//2024_03_24_053634__805995__DiLeptonAnalyzer__Era2017__SkimTree_Dilepton__runSys__TAMSA1/DYJetsToEE_MiNNLO/
+ 3273  setww3
+ 3274  ls
+ 3275  source DiLeptonAnalyzer_2017_DYJetsToEE_MiNNLO__runSys.sh 0 &> DiLeptonAnalyzer_2017_DYJetsToEE_MiNNLO__runSys.log&
+ 3276  tail -f DiLeptonAnalyzer_2017_DYJetsToEE_MiNNLO__runSys.log 
+ 3277  ww
+ 3278  ls
+ 3279  jobs
+ 3280  kill %1
+ 3281  kill %2
+ 3282  ls
+ 3283  cd 2017
+ 3284  ls
+ 3285  source nosub_test.sh 
+ 3286  cd /data6/Users/jhchoi/SKFlatRunlog//2024_03_24_055112__683952__DiLeptonAnalyzer__Era2017__SkimTree_Dilepton__runSys__TAMSA1/DYJetsToMuMu_MiNNLO/
+ 3287  setww2
+ 3288  cd /data6/Users/jhchoi/SKFlatRunlog//2024_03_24_055113__986093__DiLeptonAnalyzer__Era2017__SkimTree_Dilepton__runSys__TAMSA1/DYJetsToEE_MiNNLO/
+ 3289  setww3
+ 3290  ww2
+ 3291  ls
+ 3292  source DiLeptonAnalyzer_2017_DYJetsToMuMu_MiNNLO__runSys.sh 0 &> DiLeptonAnalyzer_2017_DYJetsToMuMu_MiNNLO__runSys.log&
+ 3293  ww3
+ 3294  source DiLeptonAnalyzer_2017_DYJetsToEE_MiNNLO__runSys.sh 0 &> DiLeptonAnalyzer_2017_DYJetsToEE_MiNNLO__runSys.log&
+ 3295  tail -f DiLeptonAnalyzer_2017_DYJetsToEE_MiNNLO__runSys.log 
+ 3296  pwd
+ 3297  ww2
+ 3298  pwd
+ 3299  tail -f DiLeptonAnalyzer_2017_DYJetsToMuMu_MiNNLO__runSys.log 
+ 3300  jobs
+ 3301  kill %1
+ 3302  kill %2
+ 3303  jobs
+ 3304  ww
+ 3305  ls
+ 3306  cd 2017/
+ 3307  ls
+ 3308  source nosub_test.sh 
+ 3309  cd /data6/Users/jhchoi/SKFlatRunlog//2024_03_24_061759__169042__DiLeptonAnalyzer__Era2017__SkimTree_Dilepton__runSys__TAMSA1/DYJetsToMuMu_MiNNLO/
+ 3310  ls
+ 3311  source DiLeptonAnalyzer_2017_DYJetsToMuMu_MiNNLO__runSys.sh 0 &> DiLeptonAnalyzer_2017_DYJetsToMuMu_MiNNLO__runSys.log&
+ 3312  setww2
+ 3313  cd /data6/Users/jhchoi/SKFlatRunlog//2024_03_24_061800__4144__DiLeptonAnalyzer__Era2017__SkimTree_Dilepton__runSys__TAMSA1/DYJetsToEE_MiNNLO/
+ 3314  setww3
+ 3315  source DiLeptonAnalyzer_2017_DYJetsToEE_MiNNLO__runSys.sh 0 &> DiLeptonAnalyzer_2017_DYJetsToEE_MiNNLO__runSys.log&
+ 3316  tail DiLeptonAnalyzer_2017_DYJetsToEE_MiNNLO__runSys.log 
+ 3317  ww2
+ 3318  tail DiLeptonAnalyzer_2017_DYJetsToMuMu_MiNNLO__runSys.log 
+ 3319  tail -f DiLeptonAnalyzer_2017_DYJetsToMuMu_MiNNLO__runSys.log 
+ 3320  ww3
+ 3321  tail DiLeptonAnalyzer_2017_DYJetsToEE_MiNNLO__runSys.log 
+ 3322  ww2
+ 3323  tail DiLeptonAnalyzer_2017_DYJetsToMuMu_MiNNLO__runSys.log 
+ 3324  ww2
+ 3325  ww3
+ 3326  tail DiLeptonAnalyzer_2017_DYJetsToEE_MiNNLO__runSys.log 
+ 3327  myjob
+ 3328  jobs
+ 3329  kill %1
+ 3330  kill %2
+ 3331  cd ..
+ 3332  ls
+ 3333  cd ..
+ 3334  ls
+ 3335  mkdir trash
+ 3336  mv * trash/
+ 3337  rm r-f trash&
+ 3338  ww
+ 3339  jobs
+ 3340  cd -
+ 3341  ls
+ 3342  rm -rf trash/&
+ 3343  ww
+ 3344  ls
+ 3345  cd 2017/
+ 3346  ls
+ 3347  source batch_submit_all.sh 
+ 3348  myjob
+ 3349  jobs
+ 3350  myjob
+ 3351  jobs
+ 3352  tail logs/*.log
+ 3353  tail -f logs/*.log
+ 3354  myjob
+ 3355  source batch_submit_allsys.sh
+ 3356  tail -f syslogs/*.log
+ 3357  ls
+ 3358  myjob
+ 3359  cd ..
+ 3360  ls
+ 3361  cd 2018/
+ 3362  ls
+ 3363  source batch_submit_all.sh
+ 3364  jobs
+ 3365  myjob
+ 3366  tail logs/*.log
+ 3367  emc batch_submit_all.sh
+ 3368  emc batch_submit_allsys.sh
+ 3369  emc batch_submit_all.sh
+ 3370  rm logs/DoubleEG.log 
+ 3371  ls
+ 3372  jobs
+ 3373  history
+ 3374  ls
+ 3375  myjob
+ 3376  source source batch_submit_allsys.sh
+ 3377  jobs
+ 3378  myjob
+ 3379  source batch_submit_allsys.sh
+ 3380  cd ..
+ 3381  cd 2016a/
+ 3382  ls
+ 3383  emc batch_submit_all.sh
+ 3384  source batch_submit_all.sh
+ 3385  ls
+ 3386  emc batch_submit_all.sh
+ 3387  cp ../2017/* .
+ 3388  ls
+ 3389  emc batch_submit_all.sh
+ 3390  emc batch_submit_allsys.sh
+ 3391  source batch_submit_all.sh
+ 3392  tail logs/*.log
+ 3393  emc batch_submit_allsys.sh
+ 3394  ls
+ 3395  emc batch_submit_allsys.sh
+ 3396  jobs
+ 3397  history
+ 3398  myjob
+ 3399  emc batch_submit_allsys.sh
+ 3400  source batch_submit_allsys.sh
+ 3401  cd ..
+ 3402  cd 2017/
+ 3403  ls
+ 3404  cd ..
+ 3405  cd 2016b/
+ 3406  ls
+ 3407  cp ../2016a/* .
+ 3408  ls
+ 3409  emc batch_submit_all.sh
+ 3410  emc batch_submit_allsys.sh
+ 3411  source batch_submit_all.sh
+ 3412  jobs
+ 3413  tail logs/*
+ 3414  tail -f logs/*
+ 3415  ls
+ 3416  emc batch_submit_allsys.sh
+ 3417  source batch_submit_allsys.sh
+ 3418  ww
+ 3419  cd -
+ 3420  tail syslogs/*
+ 3421  tail -f syslogs/*
+ 3422  cd ..
+ 3423  cd 2016a/
+ 3424  ls
+ 3425  emc batch_submit_all.sh
+ 3426  emc batch_submit_allsys.sh
+ 3427  pwd
+ 3428  emc batch_submit_all.sh
+ 3429  cd ..
+ 3430  cd 2016b/
+ 3431  ls
+ 3432  emc batch_submit_all.sh
+ 3433  emc batch_submit_allsys.sh
+ 3434  cd ..
+ 3435  ls
+ 3436  cd 2016a
+ 3437  history
+ 3438  cd ..
+ 3439  history > histody.log

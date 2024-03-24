@@ -120,6 +120,7 @@ void AnalyzerCore::FillCutflow(TString histname,TString label,double weight){
 
 void AnalyzerCore::SetupEfficiency(){
   TString configpath=getenv("DATA_DIR")+TString("/")+GetEra()+"/ID/eff.conf";
+  cout << "[AnalyzerCore::SetupEfficiency] configpath= " << configpath << endl;
   if(IsExists(configpath)){
     fEff=new EfficiencyTool(configpath);
   }
@@ -283,7 +284,6 @@ double AnalyzerCore::GetDileptonTriggerSF(TString triggerSF_key0,TString trigger
 ////---END jhchoi---///
 AnalyzerCore::~AnalyzerCore(){
   //jhchoi
-  timer_Destructor.Start();
   DeleteEfficiency();
   //end jhchoi
 
@@ -326,8 +326,6 @@ AnalyzerCore::~AnalyzerCore(){
   AK8CHSJECUncMap.clear();
   AK8PUPPIJECUncMap.clear();
   
-  t_Destructor=timer_Destructor.RealTime();
-  cout << "t_Destructor=" << t_Destructor << endl;
     
 }
 
@@ -2617,8 +2615,7 @@ void AnalyzerCore::JSFillHist(TString suffix, TString histname,
 }
 
 void AnalyzerCore::WriteHist(){
-  timer_WriteHist.Start();
-
+  
   outfile->cd();
   for(std::unordered_map< TString, TH1D* >::iterator mapit = maphist_TH1D.begin(); mapit!=maphist_TH1D.end(); mapit++){
     TString this_fullname=mapit->second->GetName();
@@ -2707,8 +2704,6 @@ void AnalyzerCore::WriteHist(){
   jhchoi_newtree4->Write();
   outfile->cd();
 
-  t_WriteHist=timer_WriteHist.RealTime();
-  cout << "t_WriteHist=" << t_WriteHist << endl;
 }
 //----jhchoi---- Systematics---//
 

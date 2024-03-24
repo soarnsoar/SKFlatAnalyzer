@@ -1,11 +1,13 @@
 #include "JHAnalyzerBase.h"
 
 JHAnalyzerBase::JHAnalyzerBase(){
-  InitSystematicMomentumVariations();
-  AnalyzerCore::SetupEfficiency();
+
+  
 }
 void JHAnalyzerBase::initializeAnalyzer(){
   cout << "[JHAnalyzerBase::initializeAnalyzer]DataEra->" << DataEra << endl;
+  AnalyzerCore::SetupEfficiency();
+  InitSystematicMomentumVariations();
   runSys=HasFlag("runSys");
   SetUpBtag();
   if(IsDATA){
@@ -84,7 +86,6 @@ void JHAnalyzerBase::executeEvent(){
   ClearReserveHist();
 
   if(!runSys) return;
-
   //---Momentum variations--//
   runWeightBase=false;
   SetSysStructure();//remove sysvariation weights
@@ -93,7 +94,6 @@ void JHAnalyzerBase::executeEvent(){
     EventLoop();
     FillReservedHistMomentumVariations();
     ClearReserveHist();
-
   }
 
 }
@@ -739,6 +739,7 @@ void JHAnalyzerBase::SetupSingleLeptonChannel(){
 
 void JHAnalyzerBase::SetupDiLeptonChannel(){
   cout << "[SetupDiLeptonChannel] " << DataYear << "  " << endl;
+  cout << "[SetupDiLeptonChannel] " << GetEra() << "  " << endl;
   //common setup
   MuonID="POGMedium";
   MuonRecoSFKey="Muon_RECO";
@@ -759,7 +760,7 @@ void JHAnalyzerBase::SetupDiLeptonChannel(){
     }else{
       MuonDZSFKey="DZ_MediumID_trkIsoLoose";
     }
-    MuonTriggerNames ={"HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_v","HLT_Mu17_TrkIsoVVL_TkMu8_TrkIsoVVL_v","HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ_v","HLT_Mu17_TrkIsoVVL_TkMu8_TrkIsoVVL_DZ_v","HLT_TkMu17_TrkIsoVVL_TkMu8_TrkIsoVVL_v","HLT_TkMu17_TrkIsoVVL_TkMu8_TrkIsoVVL_DZ_v"};
+    MuonTriggerNames={"HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_v","HLT_Mu17_TrkIsoVVL_TkMu8_TrkIsoVVL_v","HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ_v","HLT_Mu17_TrkIsoVVL_TkMu8_TrkIsoVVL_DZ_v","HLT_TkMu17_TrkIsoVVL_TkMu8_TrkIsoVVL_v","HLT_TkMu17_TrkIsoVVL_TkMu8_TrkIsoVVL_DZ_v"};
     MuonTriggerSFKeys={"Mu17Leg1_MediumID_trkIsoLoose","Mu8Leg2_MediumID_trkIsoLoose"};
     TriggerSafeCut_muon1 = 20.;
     TriggerSafeCut_muon2 = 11.;

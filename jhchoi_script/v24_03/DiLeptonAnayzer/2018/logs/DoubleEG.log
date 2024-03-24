@@ -1,6 +1,0 @@
-sed: can't read /data6/Users/jhchoi/SKFlatAnalyzers/test/ForTMVA/SKFlatAnalyzer/data/Run2UltraLegacy_v3/2018/Sample//ForSNU/SkimTree_Dilepton_DoubleEG_A.txt: No such file or directory
-cp: cannot stat ‘/data6/Users/jhchoi/SKFlatAnalyzers/test/ForTMVA/SKFlatAnalyzer/data/Run2UltraLegacy_v3/2018/Sample//ForSNU/SkimTree_Dilepton_DoubleEG_A.txt’: No such file or directory
-Traceback (most recent call last):
-  File "/data6/Users/jhchoi/SKFlatAnalyzers/test/ForTMVA/SKFlatAnalyzer/python/SKFlat.py", line 273, in <module>
-    nfilepjob = int(NTotalFiles/NJobs)
-ZeroDivisionError: integer division or modulo by zero

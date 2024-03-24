@@ -7,7 +7,7 @@ class DiLeptonAnalyzer : public JHAnalyzerBase {
 
 public:
 
-
+  void initializeAnalyzer() override;
   void EventLoop() override;
   
   bool CheckIsDiMuonChannel();

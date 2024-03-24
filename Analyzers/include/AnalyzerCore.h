@@ -315,9 +315,7 @@ public:
   TTree *jhchoi_newtree3;
   TTree *jhchoi_newtree4;
 
-  //--Timer--//
-  TStopwatch timer_WriteHist; double t_WriteHist;
-  TStopwatch timer_Destructor; double t_Destructor;
+
 
   //==== Quick Plotters
   void FillLeptonPlots(std::vector<Lepton *> leps, TString this_region, double weight);

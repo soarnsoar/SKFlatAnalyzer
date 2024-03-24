@@ -1,0 +1,68 @@
+Submitting job(s)..................................................
+50 job(s) submitted to cluster 2235594.
+Submitting job(s)..................................................
+50 job(s) submitted to cluster 2235599.
+Submitting job(s)..................................................
+50 job(s) submitted to cluster 2235605.
+Submitting job(s)..................................................
+50 job(s) submitted to cluster 2235610.
+Submitting job(s).........................
+25 job(s) submitted to cluster 2235614.
+Submitting job(s)..........................................
+42 job(s) submitted to cluster 2235617.
+Submitting job(s)............................
+28 job(s) submitted to cluster 2235618.
+Submitting job(s)..................................................
+50 job(s) submitted to cluster 2235619.
+condor_submit WORKDIR_HADD/run.jds > WORKDIR_HADD/run.jid
+condor_submit WORKDIR_HADD/run.jds > WORKDIR_HADD/run.jid
+condor_submit WORKDIR_HADD/run.jds > WORKDIR_HADD/run.jid
+condor_submit WORKDIR_HADD/run.jds > WORKDIR_HADD/run.jid
+condor_submit WORKDIR_HADD/run.jds > WORKDIR_HADD/run.jid
+condor_submit WORKDIR_HADD/run.jds > WORKDIR_HADD/run.jid
+condor_submit WORKDIR_HADD/run.jds > WORKDIR_HADD/run.jid
+condor_submit WORKDIR_HADD/run.jds > WORKDIR_HADD/run.jid
+##################################################
+Submission Finished
+- JobID = 432427
+- Analyzer = DiLeptonAnalyzer
+- Skim = 
+- InputSamples = ['QCD_bEnriched_HT100to200', 'QCD_bEnriched_HT200to300', 'QCD_bEnriched_HT300to500', 'QCD_bEnriched_HT500to700', 'QCD_bEnriched_HT700to1000', 'QCD_bEnriched_HT1000to1500', 'QCD_bEnriched_HT1500to2000', 'WJets_Sherpa']
+- NJobs = 50
+- Era = 2016preVFP
+- UserFlags = []
+- RunDir = /data6/Users/jhchoi/SKFlatRunlog//2024_03_24_063326__432427__DiLeptonAnalyzer__Era2016preVFP__TAMSA1/WJets_Sherpa/
+- output will be send to : /data6/Users/jhchoi/SKFlatOutput//Run2UltraLegacy_v3/DiLeptonAnalyzer/2016preVFP/
+##################################################
+submit hadd
+CheckOutputSize...
+<AFTER hadd fin. please rm remainings..>
+rm /data6/Users/jhchoi/SKFlatRunlog//2024_03_24_063326__432427__DiLeptonAnalyzer__Era2016preVFP__TAMSA1/QCD_bEnriched_HT100to200//output/*.root
+submit hadd
+CheckOutputSize...
+<AFTER hadd fin. please rm remainings..>
+rm /data6/Users/jhchoi/SKFlatRunlog//2024_03_24_063326__432427__DiLeptonAnalyzer__Era2016preVFP__TAMSA1/QCD_bEnriched_HT200to300//output/*.root
+submit hadd
+CheckOutputSize...
+<AFTER hadd fin. please rm remainings..>
+rm /data6/Users/jhchoi/SKFlatRunlog//2024_03_24_063326__432427__DiLeptonAnalyzer__Era2016preVFP__TAMSA1/QCD_bEnriched_HT300to500//output/*.root
+submit hadd
+CheckOutputSize...
+<AFTER hadd fin. please rm remainings..>
+rm /data6/Users/jhchoi/SKFlatRunlog//2024_03_24_063326__432427__DiLeptonAnalyzer__Era2016preVFP__TAMSA1/QCD_bEnriched_HT500to700//output/*.root
+submit hadd
+CheckOutputSize...
+<AFTER hadd fin. please rm remainings..>
+rm /data6/Users/jhchoi/SKFlatRunlog//2024_03_24_063326__432427__DiLeptonAnalyzer__Era2016preVFP__TAMSA1/QCD_bEnriched_HT700to1000//output/*.root
+submit hadd
+CheckOutputSize...
+<AFTER hadd fin. please rm remainings..>
+rm /data6/Users/jhchoi/SKFlatRunlog//2024_03_24_063326__432427__DiLeptonAnalyzer__Era2016preVFP__TAMSA1/QCD_bEnriched_HT1000to1500//output/*.root
+submit hadd
+CheckOutputSize...
+<AFTER hadd fin. please rm remainings..>
+rm /data6/Users/jhchoi/SKFlatRunlog//2024_03_24_063326__432427__DiLeptonAnalyzer__Era2016preVFP__TAMSA1/QCD_bEnriched_HT1500to2000//output/*.root
+submit hadd
+CheckOutputSize...
+<AFTER hadd fin. please rm remainings..>
+rm /data6/Users/jhchoi/SKFlatRunlog//2024_03_24_063326__432427__DiLeptonAnalyzer__Era2016preVFP__TAMSA1/WJets_Sherpa//output/*.root

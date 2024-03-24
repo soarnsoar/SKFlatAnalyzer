@@ -7,10 +7,8 @@ class JHAnalyzerBase : public AnalyzerCore {
 
  public:
 
-
-
   void InitSystematicMomentumVariations();
-  void initializeAnalyzer();
+  virtual void initializeAnalyzer();
   void InitClassVariablesPerEvent();
   void SetUpBtag();
   void SetSysStructure();
