@@ -1,33 +1,33 @@
 Submitting job(s).....
-5 job(s) submitted to cluster 2235679.
+5 job(s) submitted to cluster 2236061.
 Submitting job(s).....
-5 job(s) submitted to cluster 2235684.
+5 job(s) submitted to cluster 2236067.
 Submitting job(s).....
-5 job(s) submitted to cluster 2235688.
+5 job(s) submitted to cluster 2236073.
 condor_submit WORKDIR_HADD/run.jds > WORKDIR_HADD/run.jid
 condor_submit WORKDIR_HADD/run.jds > WORKDIR_HADD/run.jid
 condor_submit WORKDIR_HADD/run.jds > WORKDIR_HADD/run.jid
 ##################################################
 Submission Finished
-- JobID = 67003
+- JobID = 235160
 - Analyzer = DiLeptonAnalyzer
 - Skim = SkimTree_Dilepton
 - InputSamples = ['DoubleEG:F', 'DoubleEG:G', 'DoubleEG:H']
 - NJobs = 5
 - Era = 2016postVFP
 - UserFlags = ['runSys']
-- RunDir = /data6/Users/jhchoi/SKFlatRunlog//2024_03_24_063602__67003__DiLeptonAnalyzer__Era2016postVFP__SkimTree_Dilepton__runSys__TAMSA1/DoubleEG_periodH/
+- RunDir = /data6/Users/jhchoi/SKFlatRunlog//2024_03_24_162804__235160__DiLeptonAnalyzer__Era2016postVFP__SkimTree_Dilepton__runSys__TAMSA1/DoubleEG_periodH/
 - output will be send to : /data6/Users/jhchoi/SKFlatOutput//Run2UltraLegacy_v3/DiLeptonAnalyzer/2016postVFP/runSys__/DATA/
 ##################################################
 submit hadd
 CheckOutputSize...
 <AFTER hadd fin. please rm remainings..>
-rm /data6/Users/jhchoi/SKFlatRunlog//2024_03_24_063602__67003__DiLeptonAnalyzer__Era2016postVFP__SkimTree_Dilepton__runSys__TAMSA1/DoubleEG_periodF//output/*.root
+rm /data6/Users/jhchoi/SKFlatRunlog//2024_03_24_162804__235160__DiLeptonAnalyzer__Era2016postVFP__SkimTree_Dilepton__runSys__TAMSA1/DoubleEG_periodF//output/*.root
 submit hadd
 CheckOutputSize...
 <AFTER hadd fin. please rm remainings..>
-rm /data6/Users/jhchoi/SKFlatRunlog//2024_03_24_063602__67003__DiLeptonAnalyzer__Era2016postVFP__SkimTree_Dilepton__runSys__TAMSA1/DoubleEG_periodG//output/*.root
+rm /data6/Users/jhchoi/SKFlatRunlog//2024_03_24_162804__235160__DiLeptonAnalyzer__Era2016postVFP__SkimTree_Dilepton__runSys__TAMSA1/DoubleEG_periodG//output/*.root
 submit hadd
 CheckOutputSize...
 <AFTER hadd fin. please rm remainings..>
-rm /data6/Users/jhchoi/SKFlatRunlog//2024_03_24_063602__67003__DiLeptonAnalyzer__Era2016postVFP__SkimTree_Dilepton__runSys__TAMSA1/DoubleEG_periodH//output/*.root
+rm /data6/Users/jhchoi/SKFlatRunlog//2024_03_24_162804__235160__DiLeptonAnalyzer__Era2016postVFP__SkimTree_Dilepton__runSys__TAMSA1/DoubleEG_periodH//output/*.root

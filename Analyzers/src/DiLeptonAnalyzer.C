@@ -30,7 +30,6 @@ void DiLeptonAnalyzer::SetMuon(const Muon& _l1, const Muon& _l2){
 
 bool DiLeptonAnalyzer::CheckIsDiMuonChannel(){
   if (!ev.PassTrigger(MuonTriggerNames)) return 0;
-  cout << "Pass DiMuonTrigger!" << endl;
   //vector<int> v_muonidx=GetIdxDiMuReco(TriggerSafeCut_muon1, TriggerSafeCut_muon2);
   vector<Muon> v_muon=GetDiMuReco(TriggerSafeCut_muon1, TriggerSafeCut_muon2);
   if( v_muon.size()<2) return 0;
