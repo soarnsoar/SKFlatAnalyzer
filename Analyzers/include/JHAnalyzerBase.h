@@ -133,9 +133,11 @@ class JHAnalyzerBase : public AnalyzerCore {
   double TriggerSafeCut_electron1, TriggerSafeCut_electron2;
   vector<TString> MuonTriggerNames;
   bool IsDoubleMuonTrigger;
+  bool IsORMuonTrigger;
   vector<TString> MuonTriggerSFKeys;
   vector<TString> ElectronTriggerNames;
   bool IsDoubleElectronTrigger;
+  bool IsORElectronTrigger;
   vector<TString> ElectronTriggerSFKeys;
   TString MuonRecoSFKey,MuonIDSFKey,MuonTrkSFKey,MuonDZSFKey;
   TString ElectronRecoSFKey,ElectronIDSFKey,ElectronDZSFKey;

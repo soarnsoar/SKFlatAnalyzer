@@ -679,6 +679,7 @@ TLorentzVector JHAnalyzerBase::GetShiftedMET(int sys){
 
 
 void JHAnalyzerBase::SetupSingleLeptonChannel(){
+
   //common setup
   MuonID="POGMedium";
   MuonRecoSFKey="Muon_RECO";
@@ -734,12 +735,13 @@ void JHAnalyzerBase::SetupSingleLeptonChannel(){
 
 
   }
-
+  SetIsDoubleLeptonTrigger();
 }
 
 void JHAnalyzerBase::SetupDiLeptonChannel(){
   cout << "[SetupDiLeptonChannel] " << DataYear << "  " << endl;
   cout << "[SetupDiLeptonChannel] " << GetEra() << "  " << endl;
+
   //common setup
   MuonID="POGMedium";
   MuonRecoSFKey="Muon_RECO";
@@ -764,6 +766,7 @@ void JHAnalyzerBase::SetupDiLeptonChannel(){
     MuonTriggerSFKeys={"Mu17Leg1_MediumID_trkIsoLoose","Mu8Leg2_MediumID_trkIsoLoose"};
     TriggerSafeCut_muon1 = 20.;
     TriggerSafeCut_muon2 = 11.;
+    
 
 
     ElectronTriggerNames = {"HLT_Ele23_Ele12_CaloIdL_TrackIdL_IsoVL_DZ_v"};
@@ -809,35 +812,30 @@ void JHAnalyzerBase::SetupDiLeptonChannel(){
 
 void JHAnalyzerBase::SetIsDoubleLeptonTrigger(){
   IsDoubleMuonTrigger=false;
-  if( MuonTriggerSFKeys.size() == 2 ){
+  if( TriggerSafeCut_muon2 > 0. && TriggerSafeCut_muon1 > 0. ){
     IsDoubleMuonTrigger=true;
   }
-  else if( MuonTriggerSFKeys.size() == 1 ){
-    IsDoubleMuonTrigger=false;
-  }
-  else{
-    cout << "[JHAnalyzerBase::SetIsDoubleLeptonTrigger] Wrong size of MuonTriggerSFKeys  -> " << MuonTriggerSFKeys.size() << endl;
-  }
-
-
   IsDoubleElectronTrigger=false;
-  if( ElectronTriggerSFKeys.size() == 2 ){
+  if( TriggerSafeCut_electron2 > 0. && TriggerSafeCut_electron1 >0. ){
     IsDoubleElectronTrigger=true;
   }
-  else if( ElectronTriggerSFKeys.size() == 1 ){
-    IsDoubleElectronTrigger=false;
-  }
-  else{
-    cout << "[JHAnalyzerBase::SetIsDoubleLeptonTrigger] Wrong size of ElectronTriggerSFKeys  -> " << ElectronTriggerSFKeys.size() << endl;
-  }
-    
   cout << "IsDoubleMuonTrigger=" << IsDoubleMuonTrigger << endl; 
   cout << "IsDoubleElectronTrigger=" << IsDoubleElectronTrigger << endl; 
-
-
+  
+  //----OR Trigger----//
+  IsORMuonTrigger=false;
+  if(!IsDoubleMuonTrigger){// SingleMuonTrigger
+    if(MuonTriggerNames.size()==2  && MuonTriggerSFKeys.size()==2) IsORMuonTrigger=true;
+  }
+  
+  IsORElectronTrigger=false;
+  if(!IsDoubleElectronTrigger){// SingleMuonTrigger
+    if(ElectronTriggerNames.size()==2  && ElectronTriggerSFKeys.size()==2) IsORElectronTrigger=true;
+  }
+  
 }
 
-//---Get Muon index-base. For SingleMuon Channel
+  //---Get Muon index-base. For SingleMuon Channel
 int JHAnalyzerBase::GetIdxSingleMuReco(double ptmin, double etacut, double ptveto){
 
   unsigned int muonsize = AllMuons.size();
@@ -1555,7 +1553,11 @@ void JHAnalyzerBase::SetSingleMuonTriggerSF(const vector<Lepton*> &v_muons){
   for(unsigned int iset=0;iset<setsize;iset++){
     unsigned int memsize = w_MuonTrigger[iset].size();
     for(unsigned int imem=0;imem<memsize;imem++){
-      w_MuonTrigger[iset][imem]=AnalyzerCore::GetLeptonTriggerORSF(ev,MuonTriggerNames,MuonTriggerSFKeys,v_muons,iset,imem,"");
+      if(IsORMuonTrigger){
+	w_MuonTrigger[iset][imem]=AnalyzerCore::GetLeptonTriggerORSF(ev,MuonTriggerNames,MuonTriggerSFKeys,v_muons,iset,imem,"");
+      }else{
+	w_MuonTrigger[iset][imem]=AnalyzerCore::GetLeptonTriggerSF(MuonTriggerSFKeys[0],v_muons,iset,imem,"");
+      }
       r_MuonTrigger[iset][imem]=w_MuonTrigger[0][0] ? w_MuonTrigger[iset][imem]/w_MuonTrigger[0][0] : 0;
     }
   }
@@ -1611,7 +1613,12 @@ void JHAnalyzerBase::SetSingleElectronTriggerSF(const vector<Lepton*> &v_electro
   for(unsigned int iset=0;iset<setsize;iset++){
     unsigned int memsize = w_ElectronTrigger[iset].size();
     for(unsigned int imem=0;imem<memsize;imem++){
-      w_ElectronTrigger[iset][imem]=AnalyzerCore::GetLeptonTriggerORSF(ev,ElectronTriggerNames,ElectronTriggerSFKeys,v_electrons,iset,imem,"");
+      if(IsORElectronTrigger){
+	w_ElectronTrigger[iset][imem]=AnalyzerCore::GetLeptonTriggerORSF(ev,ElectronTriggerNames,ElectronTriggerSFKeys,v_electrons,iset,imem,"");
+      }
+      else{
+	w_ElectronTrigger[iset][imem]=AnalyzerCore::GetLeptonTriggerSF(ElectronTriggerSFKeys[0],v_electrons,iset,imem,"");
+      }
       r_ElectronTrigger[iset][imem]=w_ElectronTrigger[0][0] ? w_ElectronTrigger[iset][imem]/w_ElectronTrigger[0][0] : 0;
     }
   }
