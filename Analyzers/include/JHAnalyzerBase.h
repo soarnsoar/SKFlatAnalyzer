@@ -181,6 +181,7 @@ class JHAnalyzerBase : public AnalyzerCore {
   void SetMuonTriggerSF(const vector<int> &v_muonidx);
   void SetMuonTriggerSF(const vector<Lepton*> &_v_muons);
   void SetSingleMuonTriggerSF(const vector<Lepton*> &v_muon);
+  void SetSingleMuonTriggerORSF(const vector<Lepton*> &v_muon);
   void SetDoubleMuonTriggerSF(const vector<Lepton*> &v_muon);
 
   void SetElectronSFs(const vector<int> &v_electronidx);
@@ -193,6 +194,7 @@ class JHAnalyzerBase : public AnalyzerCore {
   void SetElectronTriggerSF(const vector<int> &v_electronidx);
   void SetElectronTriggerSF(const vector<Lepton*> &v_electron);
   void SetSingleElectronTriggerSF(const vector<Lepton*> &v_electron);
+  void SetSingleElectronTriggerORSF(const vector<Lepton*> &v_electron);
   void SetDoubleElectronTriggerSF(const vector<Lepton*> &v_electron);
 
 

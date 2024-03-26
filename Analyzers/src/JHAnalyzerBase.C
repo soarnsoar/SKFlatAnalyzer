@@ -1542,16 +1542,26 @@ void JHAnalyzerBase::SetMuonTriggerSF(const vector<int> &v_muonidx){
   }
 
   if(!IsDoubleMuonTrigger){
-    SetSingleMuonTriggerSF(_v_muons);
+    if(IsORMuonTrigger){
+      SetSingleMuonTriggerORSF(_v_muons);
+    }
+    else{
+      SetSingleMuonTriggerSF(_v_muons);
+    }
   }
   else{
     SetDoubleMuonTriggerSF(_v_muons);
   }
-
+  
 }
 void JHAnalyzerBase::SetMuonTriggerSF(const vector<Lepton*> &v_muon){
   if(!IsDoubleMuonTrigger){
-    SetSingleMuonTriggerSF(v_muon);
+    if(IsORMuonTrigger){
+      SetSingleMuonTriggerORSF(v_muon);
+    }
+    else{
+      SetSingleMuonTriggerSF(v_muon);
+    }
   }
   else{
     SetDoubleMuonTriggerSF(v_muon);
@@ -1570,6 +1580,19 @@ void JHAnalyzerBase::SetSingleMuonTriggerSF(const vector<Lepton*> &v_muons){
       }else{
 	w_MuonTrigger[iset][imem]=AnalyzerCore::GetLeptonTriggerSF(MuonTriggerSFKeys[0],v_muons,iset,imem,"");
       }
+      r_MuonTrigger[iset][imem]=w_MuonTrigger[0][0] ? w_MuonTrigger[iset][imem]/w_MuonTrigger[0][0] : 0;
+    }
+  }
+}
+
+
+void JHAnalyzerBase::SetSingleMuonTriggerORSF(const vector<Lepton*> &v_muons){
+
+  unsigned int setsize = w_MuonTrigger.size();
+  for(unsigned int iset=0;iset<setsize;iset++){
+    unsigned int memsize = w_MuonTrigger[iset].size();
+    for(unsigned int imem=0;imem<memsize;imem++){
+      w_MuonTrigger[iset][imem]=AnalyzerCore::GetLeptonTriggerORSF(ev,MuonTriggerNames,MuonTriggerSFKeys,v_muons,iset,imem,"");
       r_MuonTrigger[iset][imem]=w_MuonTrigger[0][0] ? w_MuonTrigger[iset][imem]/w_MuonTrigger[0][0] : 0;
     }
   }
@@ -1599,7 +1622,12 @@ void JHAnalyzerBase::SetElectronTriggerSF(const vector<int> &v_electronidx){
     _v_electrons.push_back((Lepton*)&AllElectrons[electronidx] );
   }
   if(!IsDoubleElectronTrigger){
-    SetSingleElectronTriggerSF(_v_electrons);
+    if(IsORElectronTrigger){
+      SetSingleElectronTriggerORSF(_v_electrons);
+    }
+    else{
+      SetSingleElectronTriggerSF(_v_electrons);
+    }
   }
   else{
     SetDoubleElectronTriggerSF(_v_electrons);
@@ -1611,7 +1639,12 @@ void JHAnalyzerBase::SetElectronTriggerSF(const vector<int> &v_electronidx){
 void JHAnalyzerBase::SetElectronTriggerSF(const vector<Lepton*> &v_electron){
 
   if(!IsDoubleElectronTrigger){
-    SetSingleElectronTriggerSF(v_electron);
+    if(IsORElectronTrigger){
+      SetSingleElectronTriggerORSF(v_electron);
+    }
+    else{
+      SetSingleElectronTriggerSF(v_electron);
+    }
   }
   else{
     SetDoubleElectronTriggerSF(v_electron);
@@ -1625,12 +1658,22 @@ void JHAnalyzerBase::SetSingleElectronTriggerSF(const vector<Lepton*> &v_electro
   for(unsigned int iset=0;iset<setsize;iset++){
     unsigned int memsize = w_ElectronTrigger[iset].size();
     for(unsigned int imem=0;imem<memsize;imem++){
-      if(IsORElectronTrigger){
-	w_ElectronTrigger[iset][imem]=AnalyzerCore::GetLeptonTriggerORSF(ev,ElectronTriggerNames,ElectronTriggerSFKeys,v_electrons,iset,imem,"");
-      }
-      else{
-	w_ElectronTrigger[iset][imem]=AnalyzerCore::GetLeptonTriggerSF(ElectronTriggerSFKeys[0],v_electrons,iset,imem,"");
-      }
+      w_ElectronTrigger[iset][imem]=AnalyzerCore::GetLeptonTriggerSF(ElectronTriggerSFKeys[0],v_electrons,iset,imem,"");
+      r_ElectronTrigger[iset][imem]=w_ElectronTrigger[0][0] ? w_ElectronTrigger[iset][imem]/w_ElectronTrigger[0][0] : 0;
+    }
+  }
+}
+
+
+
+void JHAnalyzerBase::SetSingleElectronTriggerORSF(const vector<Lepton*> &v_electrons){
+
+  unsigned int setsize = w_ElectronTrigger.size();
+  for(unsigned int iset=0;iset<setsize;iset++){
+    unsigned int memsize = w_ElectronTrigger[iset].size();
+    for(unsigned int imem=0;imem<memsize;imem++){
+      
+      w_ElectronTrigger[iset][imem]=AnalyzerCore::GetLeptonTriggerORSF(ev,ElectronTriggerNames,ElectronTriggerSFKeys,v_electrons,iset,imem,"");
       r_ElectronTrigger[iset][imem]=w_ElectronTrigger[0][0] ? w_ElectronTrigger[iset][imem]/w_ElectronTrigger[0][0] : 0;
     }
   }
