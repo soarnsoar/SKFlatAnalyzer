@@ -1,109 +1,96 @@
-#include "DiLeptonAnalyzer.h"
+#include "SingleLeptonAnalyzer.h"
 
-DiLeptonAnalyzer::DiLeptonAnalyzer(){
+SingleLeptonAnalyzer::SingleLeptonAnalyzer(){
   //runSys=true;
-
-  //JHAnalyzerBase::SetupDiLeptonChannel();  
 }
 
-DiLeptonAnalyzer::~DiLeptonAnalyzer(){
+SingleLeptonAnalyzer::~SingleLeptonAnalyzer(){
   //==== Destructor of this Analyzer
 }
 
-void DiLeptonAnalyzer::initializeAnalyzer(){
-  cout << "[DiLeptonAnalyzer::initializeAnalyzer]" << endl;
+void SingleLeptonAnalyzer::initializeAnalyzer(){
+  cout << "[SingleLeptonAnalyzer::initializeAnalyzer]" << endl;
   JHAnalyzerBase::initializeAnalyzer();
-  JHAnalyzerBase::SetupDiLeptonChannel();
+  JHAnalyzerBase::SetupSingleLeptonChannel();
 
 }
 
 
-void DiLeptonAnalyzer::SetMuon(const Muon& _l1, const Muon& _l2){
+void SingleLeptonAnalyzer::SetMuon(const Muon& _l1){
   mu1=_l1;
-  mu2=_l2;
-  
 }
 
-bool DiLeptonAnalyzer::CheckIsDiMuonChannel(){
+bool SingleLeptonAnalyzer::CheckIsMuonChannel(){
   if (!ev.PassTrigger(MuonTriggerNames)) return 0;
-  //vector<int> v_muonidx=GetIdxDiMuReco(TriggerSafeCut_muon1, TriggerSafeCut_muon2);
-  vector<Muon> v_muon=GetDiMuReco(TriggerSafeCut_muon1, TriggerSafeCut_muon2);
-  if( v_muon.size()<2) return 0;
-  SetMuon(v_muon[0],v_muon[1]);
+  vector<Muon> v_muon=GetSingleMuReco(TriggerSafeCut_muon1);
+  if( v_muon.size()!=1) return 0;
+  SetMuon(v_muon[0]);
 
   return 1;
 }  
 
-void DiLeptonAnalyzer::SetElectron(const Electron& _l1, const Electron& _l2){
+void SingleLeptonAnalyzer::SetElectron(const Electron& _l1){
   el1=_l1;
-  el2=_l2;
-  
 }
 
 
-bool DiLeptonAnalyzer::CheckIsDiElectronChannel(){
+bool SingleLeptonAnalyzer::CheckIsElectronChannel(){
   if (!ev.PassTrigger(ElectronTriggerNames)) return 0;
   bool isElectronData = DataStream.Contains("EG")||DataStream.Contains("Electron");
   if ( IsDATA && isElectronData && ev.PassTrigger(MuonTriggerNames)) return 0; // to avoid double count
   
   //vector<int> v_electronidx=GetIdxDiElReco(TriggerSafeCut_electron1, TriggerSafeCut_electron2);
-  vector<Electron> v_electron=GetDiElReco(TriggerSafeCut_electron1, TriggerSafeCut_electron2);
-  if( v_electron.size()<2) return 0;
+  vector<Electron> v_electron=GetSingleElReco(TriggerSafeCut_electron1);
+  if( v_electron.size()!=1) return 0;
   //SetElectronIdx(v_electronidx[0],v_electronidx[1]);
-  SetElectron(v_electron[0],v_electron[1]);
+  SetElectron(v_electron[0]);
   return 1;
 }  
 
-void DiLeptonAnalyzer::SetEventWeight(){
+void SingleLeptonAnalyzer::SetEventWeight(){
   weight=1;
   if(IsDATA) return;
   weight=MCweight()*ev.GetTriggerLumi("Full")*GetPileUpWeight(nPileUp,0)*GetPrefireWeight(0);
   //Muon
-  if(IsDiMuonChannel){
+  if(IsMuonChannel){
     weight*=w_MuonID[0][0]*w_MuonRECO[0][0]*w_MuonTrk[0][0]*w_MuonTrigger[0][0];
   }
-  else if(IsDiElectronChannel){
+  else if(IsElectronChannel){
     weight*=w_ElectronID[0][0]*w_ElectronRECO[0][0]*w_ElectronTrigger[0][0];
   }
   
 }
 
-void DiLeptonAnalyzer::RunBasicZregion(){
+void SingleLeptonAnalyzer::RunBasicWregion(){
 
-  IsDiMuonChannel=false;
-  IsDiElectronChannel=false;
+  IsMuonChannel=false;
+  IsElectronChannel=false;
 
 
-  IsDiMuonChannel=CheckIsDiMuonChannel();
-  if(!IsDiMuonChannel) IsDiElectronChannel=CheckIsDiElectronChannel();
+  IsMuonChannel=CheckIsMuonChannel();
+  if(!IsMuonChannel) IsElectronChannel=CheckIsElectronChannel();
   SetEventWeight();
 
   //--Now Objects are ready--//
 
 
   TString LepCh="";
-  if(IsDiMuonChannel){
-    //vZ=(*mu1)+(*mu2);
-    vZ=mu1+mu2;
-    LepCh="mm";
+  if(IsMuonChannel){
+    vtW=GetTransverseVector(mu1)+PuppiMET;
+    LepCh="Muon";
     l1=mu1;
-    l2=mu2;
   }
-  else if(IsDiElectronChannel){
-    //vZ=GetDiElectronVector();
-    vZ=el1+el2;
-    LepCh="ee";
-    //l1=AllElectrons[el1idx];
-    //l2=AllElectrons[el2idx];
+  else if(IsElectronChannel){
+    vtW=GetTransverseVector(el1)+PuppiMET;
+    LepCh="Electron";
     l1=el1;
-    l2=el2;
   }  
 
   else{
     return;
   }
   //----Jet---//
-  v_tightlep={l1,l2};
+  v_tightlep={l1};
   //v_jetidx=GetIdxTightJet(v_tightlep,30,2.4);
   //v_bjetidx=GetIdxBJet(v_jetidx);
   v_tightjet=GetTightJet(v_tightlep,30,2.4);
@@ -114,26 +101,23 @@ void DiLeptonAnalyzer::RunBasicZregion(){
   njet=v_tightjet.size();
   nbjet=v_bjet.size();
 
-  FillHistAll("ll");
+  FillHistAll("Lepton");
   FillHistAll(LepCh);
   if(nbjet==1){
-    FillHistAll("ll__1bjet");
+    FillHistAll("Lepton__1bjet");
     FillHistAll(LepCh+"__1bjet");
   }
   if(nbjet==2){
-    FillHistAll("ll__2bjet");
+    FillHistAll("Lepton__2bjet");
     FillHistAll(LepCh+"__2bjet");
   }
   
 }
-void DiLeptonAnalyzer::FillHistAll(TString cutname){
-  FillHist(cutname+"/M_ll",vZ.M(),weight,100,40,140);
+void SingleLeptonAnalyzer::FillHistAll(TString cutname){
+  FillHist(cutname+"/MT_lv",vtW.M(),weight,200,0,200);
 
   FillHist(cutname+"/pt_l1",l1.Pt(),weight,200,0,200);
-  FillHist(cutname+"/pt_l2",l2.Pt(),weight,200,0,200);
-
   FillHist(cutname+"/eta_l1",l1.Eta(),weight,50,3,3);
-  FillHist(cutname+"/eta_l2",l2.Eta(),weight,50,-3,3);
 
   FillHist(cutname+"/njet",njet,weight,10,0,10);
   FillHist(cutname+"/nbjet",nbjet,weight,10,0,10);
@@ -153,8 +137,8 @@ void DiLeptonAnalyzer::FillHistAll(TString cutname){
 }
 
 
-void DiLeptonAnalyzer::EventLoop(){
-  RunBasicZregion();
+void SingleLeptonAnalyzer::EventLoop(){
+  RunBasicWregion();
 
 }
 

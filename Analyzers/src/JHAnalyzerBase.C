@@ -1635,5 +1635,28 @@ void JHAnalyzerBase::SetDoubleElectronTriggerSF(const vector<Lepton*> &v_electro
 
 
 
+//---For Calc
+TLorentzVector JHAnalyzerBase::GetTransverseVector(const TLorentzVector &v){
+  // 2nd section of 
+  //https://en.wikipedia.org/wiki/Transverse_mass
+  //cout << "GetTransverseVector" << endl;
+  double px=v.Px();
+  double py=v.Py();
+  double pz=0.;
+  double m =v.M();
+  double ee=sqrt(m*m+px*px+py*py);
+  TLorentzVector ret;
+  ret.SetPxPyPzE(px,py,pz,ee);
+  return ret;
+}
 
-
+TLorentzVector JHAnalyzerBase::GetTransverseVector(double pt, double phi){
+  //No mass
+  double px=pt*cos(phi);
+  double py=pt*sin(phi);
+  double pz=0.;
+  double ee=sqrt(px*px+py*py);
+  TLorentzVector ret;
+  ret.SetPxPyPzE(px,py,pz,ee);
+  return ret;
+}

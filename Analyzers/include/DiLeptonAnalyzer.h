@@ -14,9 +14,8 @@ public:
   bool CheckIsDiElectronChannel();
   void SetIsDimuonChannel();
   void SetIsDielectronChannel();
-  void SetMuonIdx(int _idx1,int _idx2);
+  
   void SetMuon(const Muon& _l1, const Muon& _l2);
-  void SetElectronIdx(int _idx1,int _idx2);  
   void SetElectron(const Electron& _l1, const Electron& _l2);
   TLorentzVector GetDiMuonVector();
   TLorentzVector GetDiElectronVector();

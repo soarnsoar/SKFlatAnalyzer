@@ -142,6 +142,10 @@ class JHAnalyzerBase : public AnalyzerCore {
   TString MuonID;
   TString ElectronID;
 
+  //--For Calc.
+  TLorentzVector GetTransverseVector(const TLorentzVector &v);
+  TLorentzVector GetTransverseVector(double pt, double phi);
+
   //For eff.
   vector<vector<double>> w_ElectronID;
   vector<vector<double>> r_ElectronID;
