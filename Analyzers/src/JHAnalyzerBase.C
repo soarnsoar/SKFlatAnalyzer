@@ -821,6 +821,16 @@ void JHAnalyzerBase::SetIsDoubleLeptonTrigger(){
   }
   cout << "IsDoubleMuonTrigger=" << IsDoubleMuonTrigger << endl; 
   cout << "IsDoubleElectronTrigger=" << IsDoubleElectronTrigger << endl; 
+
+  cout << "---Use Following Muon triggerkeys ---" << endl;
+  for (const auto& name : MuonTriggerSFKeys){
+    cout << name << endl;
+  }
+
+  cout << "---Use Following Electron triggerkeys ---" << endl;
+  for (const auto& name : ElectronTriggerSFKeys){
+    cout << name << endl;
+  }
   
   //----OR Trigger----//
   IsORMuonTrigger=false;
@@ -833,6 +843,8 @@ void JHAnalyzerBase::SetIsDoubleLeptonTrigger(){
     if(ElectronTriggerNames.size()==2  && ElectronTriggerSFKeys.size()==2) IsORElectronTrigger=true;
   }
   
+  cout << "IsORMuonTrigger=" << IsORMuonTrigger << endl; 
+  cout << "IsORElectronTrigger=" << IsORElectronTrigger << endl; 
 }
 
   //---Get Muon index-base. For SingleMuon Channel
