@@ -118,7 +118,7 @@ class JHAnalyzerBase : public AnalyzerCore {
   void SetupSingleLeptonChannel();
   void SetupDiLeptonChannel();
   void SetIsDoubleLeptonTrigger();
-
+  void PrintSFStructure();
   vector<int> GetIdxTightJet(const vector<Lepton> &TightLeptonCollection ,double ptmin, double etacut, TString JetID="tight" );
   vector<Jet> GetTightJet(const vector<Lepton> &TightLeptonCollection ,double ptmin, double etacut, TString JetID="tight" );
   vector<Jet*> GetPointerTightJet(const vector<Lepton*> &TightLeptonCollection ,double ptmin, double etacut, TString JetID="tight" );

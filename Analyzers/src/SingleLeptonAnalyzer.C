@@ -117,7 +117,7 @@ void SingleLeptonAnalyzer::FillHistAll(TString cutname){
   FillHist(cutname+"/MT_lv",vtW.M(),weight,200,0,200);
 
   FillHist(cutname+"/pt_l1",l1.Pt(),weight,200,0,200);
-  FillHist(cutname+"/eta_l1",l1.Eta(),weight,50,3,3);
+  FillHist(cutname+"/eta_l1",l1.Eta(),weight,50,-3,3);
 
   FillHist(cutname+"/njet",njet,weight,10,0,10);
   FillHist(cutname+"/nbjet",nbjet,weight,10,0,10);

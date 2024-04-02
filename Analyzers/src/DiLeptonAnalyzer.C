@@ -24,11 +24,15 @@ void DiLeptonAnalyzer::SetMuon(const Muon& _l1, const Muon& _l2){
   
 }
 
-bool DiLeptonAnalyzer::CheckIsDiMuonChannel(){
+bool DiLeptonAnalyzer::CheckIsDiMuonChannel(double min_mll,double max_mll){
   if (!ev.PassTrigger(MuonTriggerNames)) return 0;
   //vector<int> v_muonidx=GetIdxDiMuReco(TriggerSafeCut_muon1, TriggerSafeCut_muon2);
   vector<Muon> v_muon=GetDiMuReco(TriggerSafeCut_muon1, TriggerSafeCut_muon2);
   if( v_muon.size()<2) return 0;
+  double mll=(v_muon[0]+v_muon[1]).M();
+  if (mll < min_mll) return 0;
+  if (mll > max_mll) return 0;
+
   SetMuon(v_muon[0],v_muon[1]);
 
   return 1;
@@ -41,7 +45,7 @@ void DiLeptonAnalyzer::SetElectron(const Electron& _l1, const Electron& _l2){
 }
 
 
-bool DiLeptonAnalyzer::CheckIsDiElectronChannel(){
+bool DiLeptonAnalyzer::CheckIsDiElectronChannel(double min_mll,double max_mll){
   if (!ev.PassTrigger(ElectronTriggerNames)) return 0;
   bool isElectronData = DataStream.Contains("EG")||DataStream.Contains("Electron");
   if ( IsDATA && isElectronData && ev.PassTrigger(MuonTriggerNames)) return 0; // to avoid double count
@@ -51,6 +55,10 @@ bool DiLeptonAnalyzer::CheckIsDiElectronChannel(){
   if( v_electron.size()<2) return 0;
   //SetElectronIdx(v_electronidx[0],v_electronidx[1]);
   SetElectron(v_electron[0],v_electron[1]);
+  double mll=(v_electron[0]+v_electron[1]).M();
+  if (mll < min_mll) return 0;
+  if (mll > max_mll) return 0;
+
   return 1;
 }  
 
@@ -72,10 +80,11 @@ void DiLeptonAnalyzer::RunBasicZregion(){
 
   IsDiMuonChannel=false;
   IsDiElectronChannel=false;
+  double min_mll = 60;
+  double max_mll = 120;
 
-
-  IsDiMuonChannel=CheckIsDiMuonChannel();
-  if(!IsDiMuonChannel) IsDiElectronChannel=CheckIsDiElectronChannel();
+  IsDiMuonChannel=CheckIsDiMuonChannel(min_mll,max_mll);
+  if(!IsDiMuonChannel) IsDiElectronChannel=CheckIsDiElectronChannel(min_mll,max_mll);
   SetEventWeight();
 
   //--Now Objects are ready--//
@@ -116,6 +125,7 @@ void DiLeptonAnalyzer::RunBasicZregion(){
 
   FillHistAll("ll");
   FillHistAll(LepCh);
+  weight*=btagsf;
   if(nbjet==1){
     FillHistAll("ll__1bjet");
     FillHistAll(LepCh+"__1bjet");
@@ -127,12 +137,12 @@ void DiLeptonAnalyzer::RunBasicZregion(){
   
 }
 void DiLeptonAnalyzer::FillHistAll(TString cutname){
-  FillHist(cutname+"/M_ll",vZ.M(),weight,100,40,140);
+  FillHist(cutname+"/M_ll",vZ.M(),weight,60,60,120);
 
   FillHist(cutname+"/pt_l1",l1.Pt(),weight,200,0,200);
   FillHist(cutname+"/pt_l2",l2.Pt(),weight,200,0,200);
 
-  FillHist(cutname+"/eta_l1",l1.Eta(),weight,50,3,3);
+  FillHist(cutname+"/eta_l1",l1.Eta(),weight,50,-3,3);
   FillHist(cutname+"/eta_l2",l2.Eta(),weight,50,-3,3);
 
   FillHist(cutname+"/njet",njet,weight,10,0,10);

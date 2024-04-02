@@ -10,8 +10,8 @@ public:
   void initializeAnalyzer() override;
   void EventLoop() override;
   
-  bool CheckIsDiMuonChannel();
-  bool CheckIsDiElectronChannel();
+  bool CheckIsDiMuonChannel(double min_mll, double max_mll);
+  bool CheckIsDiElectronChannel(double min_mll, double max_mll);
   void SetIsDimuonChannel();
   void SetIsDielectronChannel();
   

@@ -564,7 +564,7 @@ TLorentzVector JHAnalyzerBase::UpdateMETByMuonScale(const TLorentzVector &met_or
   double px_corrected=0., py_corrected=0.;
   for(const auto& muon : AllMuons_raw){
     px_orig+= muon.Px();
-    py_orig+= muon.Px();
+    py_orig+= muon.Py();
 
     px_corrected += muon.MomentumShift(sys)*TMath::Cos(muon.Phi());
     py_corrected += muon.MomentumShift(sys)*TMath::Sin(muon.Phi());
@@ -589,7 +589,7 @@ TLorentzVector JHAnalyzerBase::UpdateMETByElectronScale(const TLorentzVector &me
   double px_corrected=0., py_corrected=0.;
   for(const auto& electron : AllElectrons_raw){
     px_orig+= electron.Px();
-    py_orig+= electron.Px();
+    py_orig+= electron.Py();
 
     px_corrected += electron.Px()*electron.EnShift(sys);
     py_corrected += electron.Py()*electron.EnShift(sys);
@@ -615,7 +615,7 @@ TLorentzVector JHAnalyzerBase::UpdateMETByJetScale(const TLorentzVector &met_ori
   double px_corrected=0., py_corrected=0.;
   for(const auto& jet : AllJets_raw){
     px_orig+= jet.Px();
-    py_orig+= jet.Px();
+    py_orig+= jet.Py();
 
     px_corrected += jet.Px()*jet.EnShift(sys);
     py_corrected += jet.Py()*jet.EnShift(sys);
@@ -640,7 +640,7 @@ TLorentzVector JHAnalyzerBase::UpdateMETByJetSmear(const TLorentzVector &met_ori
   double px_corrected=0., py_corrected=0.;
   for(const auto& jet : AllJets_raw){
     px_orig+= jet.Px();
-    py_orig+= jet.Px();
+    py_orig+= jet.Py();
 
     px_corrected += jet.Px()*jet.ResShift(sys);
     py_corrected += jet.Py()*jet.ResShift(sys);
@@ -736,6 +736,7 @@ void JHAnalyzerBase::SetupSingleLeptonChannel(){
 
   }
   SetIsDoubleLeptonTrigger();
+  PrintSFStructure();
 }
 
 void JHAnalyzerBase::SetupDiLeptonChannel(){
@@ -807,7 +808,27 @@ void JHAnalyzerBase::SetupDiLeptonChannel(){
 
   SetIsDoubleLeptonTrigger();
   cout << "[SetupDiLeptonChannel] " << DataYear << "  " << endl;
-  
+  PrintSFStructure();
+
+    
+}
+
+void JHAnalyzerBase::PrintSFStructure(){
+  cout << "MuonRecoSFKey" << endl;
+  fEff->PrintStructure(MuonRecoSFKey);
+  cout << "MuonIDSFKey" << endl;
+  fEff->PrintStructure(MuonIDSFKey);
+  cout << "MuonTrkSFKey" << endl;
+  fEff->PrintStructure(MuonTrkSFKey);
+  cout << "MuonTriggerSFKeys[0]" << endl;
+  fEff->PrintStructure(MuonTriggerSFKeys[0]);
+
+  cout << "ElectronRecoSFKey" << endl;
+  fEff->PrintStructure(ElectronRecoSFKey);
+  cout << "ElectronIDSFKey" << endl;
+  fEff->PrintStructure(ElectronIDSFKey);
+  cout << "ElectronTriggerSFKeys[0]" << endl;
+  fEff->PrintStructure(ElectronTriggerSFKeys[0]);
 }
 
 void JHAnalyzerBase::SetIsDoubleLeptonTrigger(){

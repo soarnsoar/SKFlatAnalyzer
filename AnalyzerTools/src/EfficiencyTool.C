@@ -552,7 +552,7 @@ void EfficiencyTool::PrintStructure(TString key) const{
     exit(ENODATA);
   }
   int nset=eff->fDataPlus.size();
-  cout << "[PrintStructure]key=" << key << endl;
+  cout << "[jhchoi][PrintStructure]key=" << key << endl;
   for(int i=0;i<nset;i++){
     //out.push_back(vector<double>(eff->fDataPlus.at(i).size(),1.));
     //fDataPlus = vector<vector<TH2*> >
