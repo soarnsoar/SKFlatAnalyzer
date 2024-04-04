@@ -23,6 +23,7 @@ class JHAnalyzerBase : public AnalyzerCore {
   TString ProcessName;
   Event ev;
   bool runSys;
+  bool checksf;
   double weight;
   double btagcut;
   bool runWeightBase;

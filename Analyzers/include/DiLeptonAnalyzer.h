@@ -21,7 +21,10 @@ public:
   TLorentzVector GetDiElectronVector();
   
   void RunBasicZregion();
+  void RunBasicZregion_CheckSF();
   void FillHistAll(TString cutname);
+  void FillHistAllX(TString cutname, double this_weight);
+  void FillHistAllRegion(TString suffix, double this_weight,double this_btag);
   //void FillHist(TString cutname,TString variablename,double value,double weight,int nbin,double xmin,double xmax);
   
 
@@ -30,6 +33,8 @@ public:
   bool IsDiMuonChannel;
   bool IsDiElectronChannel;
   void SetEventWeight();
+  void SetEventNormWeight();
+  TString LepCh;
   int mu1idx,mu2idx,el1idx,el2idx;
   Lepton mu1, mu2;
   Lepton el1, el2;

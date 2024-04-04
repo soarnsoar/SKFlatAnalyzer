@@ -9,6 +9,7 @@ void JHAnalyzerBase::initializeAnalyzer(){
   AnalyzerCore::SetupEfficiency();
   InitSystematicMomentumVariations();
   runSys=HasFlag("runSys");
+  checksf=HasFlag("checksf");
   SetUpBtag();
   if(IsDATA){
     ProcessName="Data";

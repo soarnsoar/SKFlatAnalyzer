@@ -315,6 +315,14 @@ public:
   TTree *jhchoi_newtree3;
   TTree *jhchoi_newtree4;
 
+  void SetupZptWeight();
+  double GetZptWeight(double mass,double rapidity,double pt,TString opt="GYM");
+  void DeleteZptWeight();
+  TF1* fZptWeightG=NULL;
+  vector<TF1*> fZptWeightY;
+  TAxis* fZptWeightYaxis=NULL;
+  vector<TF1*> fZptWeightM;
+  TAxis* fZptWeightMaxis=NULL;
 
 
   //==== Quick Plotters
