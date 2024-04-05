@@ -14,6 +14,8 @@ void DiLeptonAnalyzer::initializeAnalyzer(){
   cout << "[DiLeptonAnalyzer::initializeAnalyzer]" << endl;
   JHAnalyzerBase::initializeAnalyzer();
   JHAnalyzerBase::SetupDiLeptonChannel();
+  IsDYSample=false;
+  if(MCSample.Contains("DYJets")||MCSample.Contains("ZToEE")||MCSample.Contains("ZToMuMu")||MCSample.Contains(TRegexp("DY[0-9]Jets"))) IsDYSample=true;
 
 }
 
@@ -335,14 +337,33 @@ void DiLeptonAnalyzer::FillHistAllX(TString cutname, double this_weight){
 
 
 void DiLeptonAnalyzer::EventLoop(){
+  //----ZpT weight For DY
+  zptweight=1.;
+  if(!IsDATA){
+    lhes=GetLHEs();
+    gens=GetGens();
+    if(IsDYSample){
+      GetAFBLHEParticles(lhes,lhe_p0,lhe_p1,lhe_l0,lhe_l1,lhe_j0);
+      GetAFBGenParticles(gens,gen_p0,gen_p1,gen_l0,gen_l1,3);//mode==3 -> before FSR
+      //GetAFBGenParticles(gens,gen_p0,gen_p1,gen_l0_dressed,gen_l1_dressed,1);
+      //GetAFBGenParticles(gens,gen_p0,gen_p1,gen_l0_bare,gen_l1_bare,0);
+      if(abs(lhe_l0.ID())==11||abs(lhe_l0.ID())==13){
+	TLorentzVector genZ=(gen_l0+gen_l1);
+	zptweight=GetZptWeight(genZ.M(),genZ.Rapidity(),genZ.Pt());
+      }
+      
+    }
+  }//[end] if !isdata 
+
+
   if(checksf){
     RunBasicZregion_CheckSF();
   }
   else{
     RunBasicZregion();
   }
-}
-
+  
+  
 
 
 

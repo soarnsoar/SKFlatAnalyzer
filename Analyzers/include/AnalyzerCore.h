@@ -323,8 +323,15 @@ public:
   TAxis* fZptWeightYaxis=NULL;
   vector<TF1*> fZptWeightM;
   TAxis* fZptWeightMaxis=NULL;
+  double GetZ0Weight(double valx);
+  void GetAFBLHEParticles(const vector<LHE>& lhes,LHE& p0,LHE& p1,LHE& l0,LHE& l1,LHE& j0);
+  void GetAFBGenParticles(const vector<Gen>& gens,Gen& parton0,Gen& parton1,Gen& l0,Gen& l1,int mode);
+  vector<LHE> lhes;
+  LHE lhe_p0,lhe_p1,lhe_l0,lhe_l1,lhe_j0;
+  vector<Gen> gens;
+  Gen gen_p0,gen_p1,gen_l0,gen_l1,gen_l0_dressed,gen_l1_dressed,gen_l0_bare,gen_l1_bare;
 
-
+  //--[end]jhchoi
   //==== Quick Plotters
   void FillLeptonPlots(std::vector<Lepton *> leps, TString this_region, double weight);
   void FillJetPlots(std::vector<Jet> jets, std::vector<FatJet> fatjets, TString this_region, double weight);

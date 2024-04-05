@@ -11,3 +11,37 @@ Submitting job(s)..................................................
 condor_submit WORKDIR_HADD/run.jds > WORKDIR_HADD/run.jid
 condor_submit WORKDIR_HADD/run.jds > WORKDIR_HADD/run.jid
 condor_submit WORKDIR_HADD/run.jds > WORKDIR_HADD/run.jid
+condor_submit WORKDIR_HADD/run.jds > WORKDIR_HADD/run.jid
+condor_submit WORKDIR_HADD/run.jds > WORKDIR_HADD/run.jid
+##################################################
+Submission Finished
+- JobID = 271099
+- Analyzer = DiLeptonAnalyzer
+- Skim = SkimTree_Dilepton
+- InputSamples = ['TTLL_powheg', 'TTLJ_powheg', 'DYJetsToEE_MiNNLO', 'DYJetsToMuMu_MiNNLO', 'DYJetsToTauTau_MiNNLO']
+- NJobs = 50
+- Era = 2017
+- UserFlags = ['runSys']
+- RunDir = /data6/Users/jhchoi/SKFlatRunlog//2024_04_04_041541__271099__DiLeptonAnalyzer__Era2017__SkimTree_Dilepton__runSys__TAMSA1/DYJetsToTauTau_MiNNLO/
+- output will be send to : /data6/Users/jhchoi/SKFlatOutput//Run2UltraLegacy_v3/DiLeptonAnalyzer/2017/runSys__
+##################################################
+submit hadd
+CheckOutputSize...
+<AFTER hadd fin. please rm remainings..>
+rm /data6/Users/jhchoi/SKFlatRunlog//2024_04_04_041541__271099__DiLeptonAnalyzer__Era2017__SkimTree_Dilepton__runSys__TAMSA1/TTLJ_powheg//output/*.root
+submit hadd
+CheckOutputSize...
+<AFTER hadd fin. please rm remainings..>
+rm /data6/Users/jhchoi/SKFlatRunlog//2024_04_04_041541__271099__DiLeptonAnalyzer__Era2017__SkimTree_Dilepton__runSys__TAMSA1/TTLL_powheg//output/*.root
+submit hadd
+CheckOutputSize...
+<AFTER hadd fin. please rm remainings..>
+rm /data6/Users/jhchoi/SKFlatRunlog//2024_04_04_041541__271099__DiLeptonAnalyzer__Era2017__SkimTree_Dilepton__runSys__TAMSA1/DYJetsToTauTau_MiNNLO//output/*.root
+submit hadd
+CheckOutputSize...
+<AFTER hadd fin. please rm remainings..>
+rm /data6/Users/jhchoi/SKFlatRunlog//2024_04_04_041541__271099__DiLeptonAnalyzer__Era2017__SkimTree_Dilepton__runSys__TAMSA1/DYJetsToEE_MiNNLO//output/*.root
+submit hadd
+CheckOutputSize...
+<AFTER hadd fin. please rm remainings..>
+rm /data6/Users/jhchoi/SKFlatRunlog//2024_04_04_041541__271099__DiLeptonAnalyzer__Era2017__SkimTree_Dilepton__runSys__TAMSA1/DYJetsToMuMu_MiNNLO//output/*.root

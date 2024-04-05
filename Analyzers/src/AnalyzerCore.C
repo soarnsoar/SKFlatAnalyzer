@@ -78,7 +78,7 @@ std::vector<Electron> AnalyzerCore::ElectronEnergyCorrection(const vector<Electr
     }else if(set==-1){ //no energe cor
       electron*=electron.UncorrE()/electron.E();
     }else{
-      cout<<"[SMPAnalyzerCore::ElectronEnergyCorrection] wrong set "<<set<<endl;
+      cout<<"[AnalyzerCore::ElectronEnergyCorrection] wrong set "<<set<<endl;
       exit(ENODATA);
     }
     out.push_back(electron);
@@ -169,8 +169,8 @@ double AnalyzerCore::GetLeptonTriggerORSF(Event &_event,vector<TString> triggers
     exit(EXIT_FAILURE);
   }
 
-  bool newflag=set<0; //temp                                                                                                                                                                                                                                                                                                                                         
-  if(newflag) set=0; //temp                                                                                                                                                                                                                                                                                                                                          
+  bool newflag=set<0; //temp
+  if(newflag) set=0; //temp
   double data_eff0=1.,sim_eff0=1.;
   double data_eff1=1.,sim_eff1=1.;
   for(const auto& lep:leps){
@@ -2888,7 +2888,7 @@ double AnalyzerCore::GetZptWeight(double mass,double rapidity,double pt,TString 
   return sf;
 }
 
-void SMPAnalyzerCore::DeleteZptWeight(){
+void AnalyzerCore::DeleteZptWeight(){
   if(fZptWeightG){
     delete fZptWeightG;
     fZptWeightG=NULL;
@@ -2909,4 +2909,162 @@ void SMPAnalyzerCore::DeleteZptWeight(){
     if(f) delete f;
   }
   fZptWeightM.clear();
+}
+
+
+double AnalyzerCore::GetZ0Weight(double valx){
+  if(IsDATA) return 1.;
+  double rt=1.;
+  if(GetEra()=="2016preVFP"){
+    double data_val=TMath::Gaus(valx,2.46312e-01,3.50458e+00,true);
+    double mc_val=TMath::Gaus(valx,9.28612e-01,3.65203e+00,true);
+    rt=data_val/mc_val;
+  }else if(GetEra()=="2016postVFP"){
+    double data_val=TMath::Gaus(valx,2.41640e-01,3.63717e+00,true);
+    double mc_val=TMath::Gaus(valx,9.30108e-01,3.65454e+00,true);
+    rt=data_val/mc_val;
+  }else if(GetEra()=="2017"){
+    double data_val=TMath::Gaus(valx,3.81830e-01,3.67614e+00,true);
+    double mc_val=TMath::Gaus(valx,8.19642e-01,3.50992e+00,true);
+    rt=data_val/mc_val;
+  }else if(GetEra()=="2018"){
+    double data_val=TMath::Gaus(valx,-1.36030e-01,3.41464e+00,true);
+    double mc_val=TMath::Gaus(valx,3.58575e-02,3.50953e+00,true);
+    rt=data_val/mc_val;
+  }
+  if(rt>2) rt=2;
+  return rt;
+}
+//For Correction, copy AFB functions
+void AnalyzerCore::GetAFBGenParticles(const vector<Gen>& gens,Gen& parton0,Gen& parton1,Gen& l0,Gen& l1,int mode){
+  bool IsDYSample=MCSample.Contains("DYJets")||MCSample.Contains("ZToEE")||MCSample.Contains("ZToMuMu")||MCSample.Contains(TRegexp("DY[0-9]Jets"));
+  //mode 0:bare 1:dressed01 2:dressed04 3:beforeFSR
+  if(!IsDYSample&&!MCSample.Contains("GamGamToLL")&&!MCSample.Contains("TTLL")){
+    cout <<"[AnalyzerCore::GetAFBGenParticles] this is only for dilepton event"<<endl;
+    exit(EXIT_FAILURE);
+  }
+  parton0=Gen();
+  parton1=Gen();
+  l0=Gen();
+  l1=Gen();
+  vector<const Gen*> leptons;
+  vector<const Gen*> photons;
+  int ngen=gens.size();
+  for(int i=0;i<ngen;i++){
+    if(!gens.at(i).isPrompt()) continue;
+    int genpid=gens.at(i).PID();
+    if(gens.at(i).isHardProcess()){
+      if(abs(genpid)<7||genpid==21||genpid==22){
+        if(parton0.IsEmpty()) parton0=gens[i];
+        else if(parton1.IsEmpty()) parton1=gens[i];
+      }
+    }
+    if(gens.at(i).Status()==1){
+      if(abs(genpid)==11||abs(genpid)==13) leptons.push_back(&gens[i]);
+      else if(gens.at(i).PID()==22) photons.push_back(&gens[i]);
+    }
+  }
+  int nlepton=leptons.size();
+  const double maxdr=0.4;
+  for(int i=0;i<nlepton;i++){
+    if(leptons[i]->PID()!=lhe_l0.ID()) continue;
+    if(leptons[i]->DeltaR(lhe_l0)>maxdr) continue;
+    if( fabs(leptons[i]->E()-lhe_l0.E()) < fabs(l0.E()-lhe_l0.E()) ){
+      l0=*leptons[i];
+    }
+  }
+  if(l0.PID()==0){
+    for(int i=0;i<nlepton;i++){
+      if(leptons[i]->PID()!=lhe_l0.ID()) continue;
+      if(l0.PID()==0 || leptons[i]->DeltaR(lhe_l0)<l0.DeltaR(lhe_l0)){
+        l0=*leptons[i];
+      }
+    }
+  }
+  for(int i=0;i<nlepton;i++){
+    if(leptons[i]->PID()!=lhe_l1.ID()) continue;
+    if(leptons[i]->DeltaR(lhe_l1)>maxdr) continue;
+    if( fabs(leptons[i]->E()-lhe_l1.E()) < fabs(l1.E()-lhe_l1.E()) ){
+      l1=*leptons[i];
+    }
+  }
+  if(l1.PID()==0){
+    for(int i=0;i<nlepton;i++){
+      if(leptons[i]->PID()!=lhe_l1.ID()) continue;
+      if(l1.PID()==0 || leptons[i]->DeltaR(lhe_l1)<l1.DeltaR(lhe_l1)){
+        l1=*leptons[i];
+      }
+    }
+  }
+  if(l0.Pt()<l1.Pt()){
+    Gen tmp=l0;
+    l0=l1;
+    l1=tmp;
+  }
+  if(mode>=3){
+    if(nlepton>=4){
+      for(int i=0;i<nlepton;i++){
+        if(leptons[i]->Index()==l0.Index()||leptons[i]->Index()==l1.Index()) continue;
+        for(int j=i+1;j<nlepton;j++){
+          if(leptons[j]->Index()==l0.Index()||leptons[j]->Index()==l1.Index()) continue;
+          if(!(leptons[i]->PID()+leptons[j]->PID()==0)) continue;
+          vector<int> history_i=TrackGenSelfHistory(*leptons[i],gens);
+          vector<int> history_j=TrackGenSelfHistory(*leptons[j],gens);
+          if(history_i.at(1)==history_j.at(1)){
+            photons.push_back(leptons[i]);
+            photons.push_back(leptons[j]);
+          }
+        }
+      }
+    }
+    for(const auto& photon:photons){
+      vector<int> history=TrackGenSelfHistory(*photon,gens);
+      if(gens[history.at(1)].PID()==l0.PID()) l0+=*photon;
+      else if(gens[history.at(1)].PID()==l1.PID()) l1+=*photon;
+      else if(gens[history.at(1)].PID()==23){ // for minnlo+photos
+        if(photon->DeltaR(l0)<photon->DeltaR(l1)) l0+=*photon;
+        else l1+=*photon;
+      }
+    }
+  }else if(mode>=1){
+    double delr=mode==1?0.1:0.4;
+    for(const auto& photon:photons){
+      if(l0.DeltaR(*photon)>delr&&l1.DeltaR(*photon)>delr) continue;
+      if(l0.DeltaR(*photon)<l1.DeltaR(*photon)) l0+=*photon;
+      else l1+=*photon;
+    }
+  }
+}
+
+
+void AnalyzerCore::GetAFBLHEParticles(const vector<LHE>& lhes,LHE& p0,LHE& p1,LHE& l0,LHE& l1,LHE& j0){
+  bool IsDYSample=MCSample.Contains("DYJets")||MCSample.Contains("ZToEE")||MCSample.Contains("ZToMuMu")||MCSample.Contains(TRegexp("DY[0-9]Jets"));
+  if(!IsDYSample&&!MCSample.Contains("GamGamToLL")&&!MCSample.Contains("TTLL")){
+    cout <<"[AFBAnalyzer::GetAFBLHEParticles] this is only for dilepton event"<<endl;
+    exit(EXIT_FAILURE);
+  }
+  p0=LHE();
+  p1=LHE();
+  l0=LHE();
+  l1=LHE();
+  j0=LHE();
+  if(!lhes.size()) return;
+  for(int i=0;i<(int)lhes.size();i++){
+    if(p0.ID()==0&&lhes[i].Status()==-1&&lhes[i].Eta()>0) p0=lhes[i];
+    if(p1.ID()==0&&lhes[i].Status()==-1&&lhes[i].Eta()<0) p1=lhes[i];
+    if(l0.ID()==0&&(abs(lhes[i].ID())==11||abs(lhes[i].ID())==13||abs(lhes[i].ID())==15)) l0=lhes[i];
+    if(l0.ID()&&(abs(lhes[i].ID())==11||abs(lhes[i].ID())==13||abs(lhes[i].ID())==15)) l1=lhes[i];
+    if(lhes[i].Status()==1)
+      if(abs(lhes[i].ID())<=6||lhes[i].ID()==21)
+        if(lhes[i].Pt()>j0.Pt()) j0=lhes[i];
+  }
+  if(p0.ID()==0||p1.ID()==0||l0.ID()==0||l1.ID()==0){
+    cout <<"[AFBAnalyzer::GetLHEParticles] something is wrong"<<endl;
+    exit(EXIT_FAILURE);
+  }
+  if(l0.Pt()<l1.Pt()){
+    LHE temp=l0;
+    l0=l1;
+    l1=temp;
+  }
 }

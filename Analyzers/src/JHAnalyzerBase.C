@@ -7,6 +7,7 @@ JHAnalyzerBase::JHAnalyzerBase(){
 void JHAnalyzerBase::initializeAnalyzer(){
   cout << "[JHAnalyzerBase::initializeAnalyzer]DataEra->" << DataEra << endl;
   AnalyzerCore::SetupEfficiency();
+  if(MCSample.Contains("DY")) AnalyzerCore::SetupZptWeight();
   InitSystematicMomentumVariations();
   runSys=HasFlag("runSys");
   checksf=HasFlag("checksf");
@@ -116,6 +117,8 @@ void JHAnalyzerBase::SetEventBaseSysWeight(){
   else{
     r_Prefire={1.,1.};
   }
+  //zptweight
+
 }
 void JHAnalyzerBase::SetSysStructure(){
   //---WeightBase Systematic sources Only---//
@@ -252,6 +255,10 @@ void JHAnalyzerBase::FillHistPUSys(TString histname, double value, double this_w
   //PU weight//
   FillHistUp("pu",histname,value,this_weight*r_PU[0],n_bin,x_min,x_max);
   FillHistDown("pu",histname,value,this_weight*r_PU[1],n_bin,x_min,x_max);
+}
+void JHAnalyzerBase::FillHistZptWeight(TString histname, double value, double this_weight, int n_bin, double x_min, double x_max){
+  double r_zptweight=zptweight ? 1/zptweight : 1
+  FillHistIdx2("zptweight",0,0,histname,value,this_weight*r_zptweight,n_bin,x_min,x_max);
 }
 void JHAnalyzerBase::FillHistPSSys(TString histname, double value, double this_weight, int n_bin, double x_min, double x_max){
   //PS weight//
@@ -413,7 +420,8 @@ void JHAnalyzerBase::FillReservedHistWeightBase(){
     FillHistPrefireSys(histname,value,this_weight,n_bin,x_min,x_max);
     //btag
     FillHistBtag(histname,value,this_weight,n_bin,x_min,x_max);
-
+    //zptweight
+    FillHistZptWeight(histname,value,this_weight,n_bin,x_min,x_max);
     ///---EffTool--//
     //electronID//
     FillHistElectronID(histname,value,this_weight,n_bin,x_min,x_max);

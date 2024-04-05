@@ -7,6 +7,7 @@ class DiLeptonAnalyzer : public JHAnalyzerBase {
 
 public:
 
+  bool IsDYSample;
   void initializeAnalyzer() override;
   void EventLoop() override;
   
@@ -29,7 +30,7 @@ public:
   
 
 
-
+  double zptweight;
   bool IsDiMuonChannel;
   bool IsDiElectronChannel;
   void SetEventWeight();

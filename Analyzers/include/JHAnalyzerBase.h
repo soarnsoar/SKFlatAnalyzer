@@ -206,7 +206,8 @@ class JHAnalyzerBase : public AnalyzerCore {
   double r_SystUpHTagCorr,r_SystDownHTagCorr;
   double r_SystUpHTagUnCorr,r_SystDownHTagUnCorr;
 
-
+  //zptweight
+  double zptweight;
 
   std::vector<Muon> AllMuons_raw;
   std::vector<Electron> AllElectrons_raw;
