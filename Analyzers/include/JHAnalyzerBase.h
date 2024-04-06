@@ -34,8 +34,11 @@ class JHAnalyzerBase : public AnalyzerCore {
   //->Read all objects and set systematic variations of momenta.
   void InitMET();
   TLorentzVector UpdateMETByMuonRochCorr(const TLorentzVector &met, const vector<Muon> &muons);
+  TLorentzVector UpdateMETByMuonElectronRochCorr(const TLorentzVector &met_orig, const vector<Muon> &muons,const vector<Electron> &electrons);
   TLorentzVector UpdateMETByMuonScale(const TLorentzVector &met, int sys);
+  TLorentzVector UpdateMETByMuonScale(const TLorentzVector &met);
   TLorentzVector UpdateMETByElectronScale(const TLorentzVector &met, int sys);
+  TLorentzVector UpdateMETByElectronScale(const TLorentzVector &met);
   TLorentzVector UpdateMETByJetScale(const TLorentzVector &met, int sys);
   TLorentzVector UpdateMETByJetSmear(const TLorentzVector &met, int sys);
   TLorentzVector GetShiftedMET(int sys);
@@ -70,8 +73,9 @@ class JHAnalyzerBase : public AnalyzerCore {
   
 
   void FillHistBtag(TString histname, double value, double this_weight, int n_bin, double x_min, double x_max);
-  
+  void FillHistZptWeight(TString histname, double value, double this_weight, int n_bin, double x_min, double x_max);
   void FillReservedHistMomentumVariations();
+  void FillReservedHistLeptonMomentumVariations();
   //--For Hist Reservation--//
   struct ArgFillHist{
     TString histname;
@@ -96,12 +100,29 @@ class JHAnalyzerBase : public AnalyzerCore {
     electronscaleUp, electronscaleDown, 
     metUp,metDown;
   vector<MomentumVar> vMomentumVar;
+  //LeptonMomentumVar
+  struct MuonMomentumVar{
+    TString name="muonscale";
+    int idx1=0;
+    int idx2=0;
+  };
+  vector<vector<MuonMomentumVar>> vMuonMomentumVar;
+  struct ElectronMomentumVar{
+    TString name="electronscale";
+    int idx1=0;
+    int idx2=0;
+  };
+  vector<vector<ElectronMomentumVar>> vElectronMomentumVar;
+
   TString sysname_current,sysdir_current;
+  int sysidx1_current,sysidx2_current;
   void SetCurrentSys(MomentumVar sys);
   MomentumVar GetCurrentSys();
   TString GetCurrentSysDir();
   TString GetCurrentSysName();
   void SetSys(MomentumVar _sys);
+  void SetSys(MuonMomentumVar _sys);
+  void SetSys(ElectronMomentumVar _sys);
 
   //--modules and their variables--//
   int GetIdxSingleMuReco(double ptmin, double etacut=2.4, double ptveto=10.);
@@ -208,9 +229,15 @@ class JHAnalyzerBase : public AnalyzerCore {
 
   //zptweight
   double zptweight;
+  //z0weight
+  double z0weight;
+  //weakweight
+  double weakweight;
 
   std::vector<Muon> AllMuons_raw;
+  std::vector<Muon> AllMuons_roch;
   std::vector<Electron> AllElectrons_raw;
+  std::vector<Electron> AllElectrons_roch;
   std::vector<Jet> AllJets_raw;
 
   std::vector<Muon> AllMuons;

@@ -30,8 +30,8 @@
 #include "GEScaleSyst.h"
 #include "PDFReweight.h"
 
-//#include "RoccoR.h"
-//#include "Aepcor.h"
+#include "RoccoR.h"
+#include "Aepcor.h"
 //#include "TH4D.h"
 #include "EfficiencyTool.h"
 //#include "RocPFProb.h"
@@ -298,15 +298,23 @@ public:
 
   //jhchoi
   //RocPFProb* rocpfprob=NULL;
-  //RoccoR* roc=NULL;
-  //Aepcor* rocele=NULL;
+  //--RoccoR
+  RoccoR* roc=NULL; // muon
+  Aepcor* rocele=NULL; //electron
+  map<TString,TH1*> fRoccorResidual;
+  virtual double MuonMomentumCorrection(const Muon& muon,int set=0,int member=0);
+  virtual std::vector<Muon> MuonMomentumCorrection(const vector<Muon>& muons,int set=0,int member=0,bool sort=true);
+  virtual double ElectronEnergyCorrection(const Electron& electron,int set=0,int member=0);
+  virtual std::vector<Electron> ElectronEnergyCorrection(const vector<Electron>& electrons,int set=0,int member=0,bool sort=true);
+  ///----[end]RoccoR
+
   EfficiencyTool* fEff=NULL;
   void FillCutflow(TString histname,TString label,double weight);
   double GetDileptonTriggerSF(TString SFhistkey0,TString SFhistkey1,TString DZSFhistkey,const vector<Lepton*>& leps,int set,int mem,TString option="");
   double GetLeptonTriggerSF(TString triggerSF_key,const vector<Lepton*>& leps,int set,int mem,TString option);
   double GetLeptonTriggerORSF(Event &_event,  vector<TString> triggers, vector<TString> trigSFkeys,const vector<Lepton*>& leps,int set,int mem,TString option);
   //std::vector<Electron> ElectronEnergyCorrection(const vector<Electron>& electrons,int set,int member);
-  //void SetupRoccoR();
+  void SetupRoccoR();
   void SetupEfficiency();
   void DeleteEfficiency();
   static bool IsExists(TString filepath);
@@ -330,6 +338,13 @@ public:
   LHE lhe_p0,lhe_p1,lhe_l0,lhe_l1,lhe_j0;
   vector<Gen> gens;
   Gen gen_p0,gen_p1,gen_l0,gen_l1,gen_l0_dressed,gen_l1_dressed,gen_l0_bare,gen_l1_bare;
+  double GetDYWeakWeight(double mass);
+
+  Gen SMPGetGenMatchedLepton(const Lepton& lep,const std::vector<Gen>& gens,int mode);
+
+  static double GetBinContentUser(TH1* hist,double valx,int sys);
+  static double GetBinContentUser(TH2* hist,double valx,double valy,int sys);
+  static double GetBinContentUser(TH3* hist,double valx,double valy,double valz,int sys);
 
   //--[end]jhchoi
   //==== Quick Plotters

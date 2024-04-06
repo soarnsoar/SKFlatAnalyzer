@@ -286,6 +286,7 @@ AnalyzerCore::~AnalyzerCore(){
   //jhchoi
   DeleteEfficiency();
   DeleteZptWeight();
+  
   //end jhchoi
 
   //=== hist maps
@@ -3040,7 +3041,7 @@ void AnalyzerCore::GetAFBGenParticles(const vector<Gen>& gens,Gen& parton0,Gen& 
 void AnalyzerCore::GetAFBLHEParticles(const vector<LHE>& lhes,LHE& p0,LHE& p1,LHE& l0,LHE& l1,LHE& j0){
   bool IsDYSample=MCSample.Contains("DYJets")||MCSample.Contains("ZToEE")||MCSample.Contains("ZToMuMu")||MCSample.Contains(TRegexp("DY[0-9]Jets"));
   if(!IsDYSample&&!MCSample.Contains("GamGamToLL")&&!MCSample.Contains("TTLL")){
-    cout <<"[AFBAnalyzer::GetAFBLHEParticles] this is only for dilepton event"<<endl;
+    cout <<"[AnalyzerCore::GetAFBLHEParticles] this is only for dilepton event"<<endl;
     exit(EXIT_FAILURE);
   }
   p0=LHE();
@@ -3067,4 +3068,263 @@ void AnalyzerCore::GetAFBLHEParticles(const vector<LHE>& lhes,LHE& p0,LHE& p1,LH
     l0=l1;
     l1=temp;
   }
+}
+//
+double AnalyzerCore::GetDYWeakWeight(double mass){
+  if(IsDATA) return 1.;
+  bool IsDYSample=MCSample.Contains("DYJets")||MCSample.Contains("ZToEE")||MCSample.Contains("ZToMuMu")||MCSample.Contains(TRegexp("DY[0-9]Jets"));
+  if(!IsDYSample) return 1.;
+  if(mass<55) return 0.988939;
+  else if(mass<60) return 0.992556;
+  else if(mass<65) return 0.996362;
+  else if(mass<70) return 1.00086;
+  else if(mass<75) return 1.00593;
+  else if(mass<80) return 1.00989;
+  else if(mass<85) return 1.01263;
+  else if(mass<90) return 1.01373;
+  else if(mass<95) return 1.01338;
+  else if(mass<100) return 1.01242;
+  else if(mass<110) return 1.01078;
+  else if(mass<120) return 1.00839;
+  else if(mass<130) return 1.00628;
+  else if(mass<140) return 1.00461;
+  else if(mass<150) return 1.0033;
+  else if(mass<170) return 1.00201;
+  else if(mass<200) return 0.999256;
+  else if(mass<250) return 0.995825;
+  else if(mass<300) return 0.992451;
+  else if(mass<400) return 0.986289;
+  else if(mass<500) return 0.979024;
+  else if(mass<600) return 0.972292;
+  else if(mass<700) return 0.967596;
+  else if(mass<800) return 0.959725;
+  else if(mass<1000) return 0.953025;
+  else if(mass<1500) return 0.935142;
+  else if(mass<2000) return 0.909548;
+  else if(mass<3000) return 0.8895;
+  else return 0.900657;
+  
+}
+
+//---RoccoR
+void AnalyzerCore::SetupRoccoR(){
+  cout<<"[SMPAnalyzerCore::SetupRoccoR] setting Rocheseter Correction"<<endl;
+  TString erashort=GetEraShort();
+
+  //TString rocpath=datapath+"/"+GetEra()+"/RoccoR/RoccoR"+GetEraShort()+"UL.txt"; //central roccor for amc
+  TString rocpath=TString(getenv("SKFlat_WD"))+"/external/Aepcor/u_"+erashort(2,3)+"UL_1.txt"; //roccor for minnlo
+  if(IsExists(rocpath)) roc=new RoccoR(rocpath.Data());
+  else cout<<"[SMPAnalyzerCore::SetupRoccoR] no "+rocpath<<endl;
+
+  TString rocelepath=TString(getenv("SKFlat_WD"))+"/external/Aepcor/e_"+erashort(2,3)+"UL_1.txt";
+  if(IsExists(rocelepath)){
+    rocele=new Aepcor;
+    rocele->init(rocelepath.Data(),Aepres::CB);
+  }
+  else cout<<"[SMPAnalyzerCore::SetupRoccoR] no "+rocelepath<<endl;
+
+  TString rocresidualpath=TString(getenv("DATA_DIR"))+"/"+GetEra()+"/SMP/RoccorResidual.root";
+  if(IsExists(rocresidualpath)){
+    TFile f(rocresidualpath);
+    for(TString suffix:{"_scale","_centralRes","_leftFrac","_leftRes","_rightFrac","_rightRes"}){
+      fRoccorResidual["electron"+suffix]=(TH1*)f.Get("ee"+GetEraShort()+suffix);
+      fRoccorResidual["muon"+suffix]=(TH1*)f.Get("mm"+GetEraShort()+suffix);
+    }
+    for(auto& [_,h]:fRoccorResidual){
+      if(h){
+        h->SetDirectory(0);
+      }
+    }
+  }
+  else cout<<"[SMPAnalyzerCore::SetupRoccoR] no "+rocresidualpath<<endl;
+}
+
+Gen AnalyzerCore::SMPGetGenMatchedLepton(const Lepton& lep,const std::vector<Gen>& gens,int mode){
+  //0: default
+  //1: dressed 0.1
+  Gen gen_lepton=GetGenMatchedLepton(lep,gens);
+  if(gen_lepton.IsEmpty()) return gen_lepton;
+  if(mode==1){ // dressed 0.1 cone
+    for(const auto& gen: gens){
+      if(gen.Status()!=1) continue;
+      if(gen.PID()!=22) continue;
+      if(gen.DeltaR(gen_lepton)>0.1) continue;
+      gen_lepton+=gen;
+    }
+  }
+
+  return gen_lepton;
+}
+
+double AnalyzerCore::MuonMomentumCorrection(const Muon& muon,int set,int member){
+  double rc=1.;
+  if(IsDATA){
+    rc=roc->kScaleDT(muon.Charge(),muon.MiniAODPt(),muon.Eta(),muon.Phi(),set,member);
+  }else{
+    Gen gen=GetGenMatchedLepton(muon,gens);
+    if(gen.IsEmpty()){
+      gRandom->SetSeed((run<<15)+(lumi<<10)+(event<<5)+muon.Eta()*100);
+      double u=gRandom->Rndm();
+      rc=roc->kSmearMC(muon.Charge(),muon.MiniAODPt(),muon.Eta(),muon.Phi(),muon.TrackerLayers(),u,set,member);
+    }else{
+      rc=roc->kSpreadMC(muon.Charge(),muon.MiniAODPt(),muon.Eta(),muon.Phi(),gen.Pt(),set,member);
+    }
+  }
+  return rc;
+}
+
+std::vector<Muon> AnalyzerCore::MuonMomentumCorrection(const vector<Muon>& muons,int set,int member,bool sort){
+  if(!roc) return std::vector<Muon>(muons);
+  std::vector<Muon> out;
+  for(auto muon:muons){
+    if(set>=0){
+      double rc=MuonMomentumCorrection(muon,set,member);
+      muon.SetPtEtaPhiM(muon.MiniAODPt()*rc,muon.Eta(),muon.Phi(),muon.M());
+    }else if(set==-2){
+      double rc=MuonMomentumCorrection(muon,0,0);
+      if(fRoccorResidual.find("muon_scale")!=fRoccorResidual.end() && fRoccorResidual["muon_scale"]){
+        double eta=fabs(muon.Eta());
+        if(eta>=2.4) eta=2.39;
+        int ibin=fRoccorResidual["muon_scale"]->FindBin(eta);
+        if(IsDATA){
+          double scale=1/(1+fRoccorResidual["muon_scale"]->GetBinContent(ibin));
+          rc*=scale;
+        }
+        gRandom->SetSeed((run<<15)+(lumi<<10)+(event<<5)+muon.Eta()*101);
+        double u=gRandom->Rndm();
+        double centralRes=fRoccorResidual["muon_centralRes"]->GetBinContent(ibin);
+        double leftRes=fRoccorResidual["muon_leftRes"]->GetBinContent(ibin);
+        double rightRes=fRoccorResidual["muon_rightRes"]->GetBinContent(ibin);
+        if(u<fRoccorResidual["muon_leftFrac"]->GetBinContent(ibin) && (leftRes>0)^IsDATA ){
+          rc*=1-fabs(gRandom->Gaus(0,fabs(leftRes)));
+        }else if(1-u<fRoccorResidual["muon_rightFrac"]->GetBinContent(ibin) && (rightRes>0)^IsDATA ){
+          rc*=1+fabs(gRandom->Gaus(0,fabs(rightRes)));
+        }else if((centralRes>0)^IsDATA){
+          rc*=gRandom->Gaus(1,fabs(centralRes));
+        }
+      }
+      muon.SetPtEtaPhiM(muon.MiniAODPt()*rc,muon.Eta(),muon.Phi(),muon.M());
+    }
+    out.push_back(muon);
+  }
+  if(sort) std::sort(out.begin(),out.end(),PtComparing);
+  return out;
+}
+
+double AnalyzerCore::ElectronEnergyCorrection(const Electron& electron,int set,int member){
+  double rc=1.;
+  //double rcerr=0.;
+  double el_eta=electron.Eta();
+  double el_phi=electron.Phi();
+  if(IsDATA){
+    rc=rocele->kScaleDT(electron.UncorrPt(),el_eta,el_phi,electron.R9(),run,set,member);
+  }else{
+    Gen gen;
+    if(!gen_l0_dressed.IsEmpty()&&gen_l0_dressed.DeltaR(electron)<0.1){
+      gen=gen_l0_dressed;
+    }else if(!gen_l1_dressed.IsEmpty()&&gen_l1_dressed.DeltaR(electron)<0.1){
+      gen=gen_l1_dressed;
+    }else{
+      gen=SMPGetGenMatchedLepton(electron,gens,1);
+    }
+    gRandom->SetSeed((run<<15)+(lumi<<10)+(event<<5)+electron.Eta()*100);
+    double u=gRandom->Rndm();
+    if(!gen.IsEmpty()&&fabs(electron.Pt()/gen.Pt()-1.)<0.5){
+      rc=rocele->kSpreadMC(electron.UncorrPt(),el_eta,el_phi,electron.R9(),u,gen.Pt(),set,member);
+      /*
+      if(hcfscale){
+        if(gen.Charge()*electron.Charge()<0){
+          double cfscale=GetBinContentUser(hcfscale,electron.Eta(),electron.Pt()*rc,0);
+          rc*=cfscale;
+        }
+      }
+      */ // ignore CF now[24.04.05jhchoi]
+    }else{
+      rc=rocele->kScaleMC(electron.UncorrPt(),el_eta,el_phi,electron.R9(),set,member);
+    }
+  }
+  if(TMath::IsNaN(rc)) rc=1.;  
+  return rc*electron.UncorrE()/electron.E();
+}
+std::vector<Electron> AnalyzerCore::ElectronEnergyCorrection(const vector<Electron>& electrons,int set,int member,bool sort){
+  if(!rocele) return std::vector<Electron>(electrons);
+  std::vector<Electron> out;
+  for(auto electron:electrons){
+    if(set>=0){
+      electron*=ElectronEnergyCorrection(electron,set,member);
+    }else if(set==-1){ //no energe cor
+      electron*=electron.UncorrE()/electron.E();
+    }else if(set==-2){ //residual energe cor
+      electron*=ElectronEnergyCorrection(electron,0,0);
+      if(fRoccorResidual.find("electron_scale")!=fRoccorResidual.end() && fRoccorResidual["electron_scale"]){
+        double eta=fabs(electron.Eta());
+        if(eta>=2.4) eta=2.39;
+        int ibin=fRoccorResidual["electron_scale"]->FindBin(eta);
+        if(IsDATA){
+          double scale=1/(1+fRoccorResidual["electron_scale"]->GetBinContent(ibin));
+          electron*=scale;
+        }
+        gRandom->SetSeed((run<<15)+(lumi<<10)+(event<<5)+electron.Eta()*101);
+        double u=gRandom->Rndm();
+        double centralRes=fRoccorResidual["electron_centralRes"]->GetBinContent(ibin);
+        double leftRes=fRoccorResidual["electron_leftRes"]->GetBinContent(ibin);
+        double rightRes=fRoccorResidual["electron_rightRes"]->GetBinContent(ibin);
+        if(u<fRoccorResidual["electron_leftFrac"]->GetBinContent(ibin) && (leftRes>0)^IsDATA ){
+          electron*=1-fabs(gRandom->Gaus(0,fabs(leftRes)));
+        }else if(1-u<fRoccorResidual["electron_rightFrac"]->GetBinContent(ibin) && (rightRes>0)^IsDATA ){
+          electron*=1+fabs(gRandom->Gaus(0,fabs(rightRes)));
+        }else if((centralRes>0)^IsDATA){
+          electron*=gRandom->Gaus(1,fabs(centralRes));
+        }
+      }
+    }else{
+      cout<<"[AnalyzerCore::ElectronEnergyCorrection] wrong set "<<set<<endl;
+      exit(ENODATA);
+    }
+    out.push_back(electron);
+  }
+  if(sort){
+    std::sort(out.begin(),out.end(),PtComparing);
+  }
+  return out;
+}
+
+double AnalyzerCore::GetBinContentUser(TH1* hist,double valx,int sys){
+  double xmin=hist->GetXaxis()->GetXmin();
+  double xmax=hist->GetXaxis()->GetXmax();
+  if(xmin>=0) valx=fabs(valx);
+  if(valx<xmin) valx=xmin+0.001;
+  if(valx>=xmax) valx=xmax-0.001;
+  return hist->GetBinContent(hist->FindBin(valx))+sys*hist->GetBinError(hist->FindBin(valx));
+}
+double AnalyzerCore::GetBinContentUser(TH2* hist,double valx,double valy,int sys){
+  double xmin=hist->GetXaxis()->GetXmin();
+  double xmax=hist->GetXaxis()->GetXmax();
+  double ymin=hist->GetYaxis()->GetXmin();
+  double ymax=hist->GetYaxis()->GetXmax();
+  if(xmin>=0) valx=fabs(valx);
+  if(valx<xmin) valx=xmin+0.001;
+  if(valx>=xmax) valx=xmax-0.001;
+  if(ymin>=0) valy=fabs(valy);
+  if(valy<ymin) valy=ymin+0.001;
+  if(valy>=ymax) valy=ymax-0.001;
+  return hist->GetBinContent(hist->FindBin(valx,valy))+sys*hist->GetBinError(hist->FindBin(valx,valy));
+}
+double AnalyzerCore::GetBinContentUser(TH3* hist,double valx,double valy,double valz,int sys){
+  double xmin=hist->GetXaxis()->GetXmin();
+  double xmax=hist->GetXaxis()->GetXmax();
+  double ymin=hist->GetYaxis()->GetXmin();
+  double ymax=hist->GetYaxis()->GetXmax();
+  double zmin=hist->GetZaxis()->GetXmin();
+  double zmax=hist->GetZaxis()->GetXmax();
+  if(xmin>=0) valx=fabs(valx);
+  if(valx<xmin) valx=xmin+0.001;
+  if(valx>xmax) valx=xmax-0.001;
+  if(ymin>=0) valy=fabs(valy);
+  if(valy<ymin) valy=ymin+0.001;
+  if(valy>ymax) valy=ymax-0.001;
+  if(zmin>=0) valz=fabs(valz);
+  if(valz<zmin) valz=zmin+0.001;
+  if(valz>zmax) valz=zmax-0.001;
+  return hist->GetBinContent(hist->FindBin(valx,valy,valz))+sys*hist->GetBinError(hist->FindBin(valx,valy,valz));
 }

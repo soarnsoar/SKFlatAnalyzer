@@ -30,17 +30,18 @@ public:
   
 
 
-  double zptweight;
+
   bool IsDiMuonChannel;
   bool IsDiElectronChannel;
   void SetEventWeight();
   void SetEventNormWeight();
   TString LepCh;
   int mu1idx,mu2idx,el1idx,el2idx;
-  Lepton mu1, mu2;
-  Lepton el1, el2;
+  Muon mu1, mu2;
+  Electron el1, el2;
   TLorentzVector vZ;
   Lepton l1, l2;
+  TLorentzVector l1_uncorr, l2_uncorr;
   unsigned int njet, nbjet;
   vector<Lepton> v_tightlep;
 

@@ -1,68 +1,20 @@
 Submitting job(s)..................................................
-50 job(s) submitted to cluster 2238825.
+50 job(s) submitted to cluster 2241338.
 Submitting job(s)..................................................
-50 job(s) submitted to cluster 2238849.
+50 job(s) submitted to cluster 2241359.
 Submitting job(s)..................................................
-50 job(s) submitted to cluster 2238869.
+50 job(s) submitted to cluster 2241379.
 Submitting job(s)..................................................
-50 job(s) submitted to cluster 2238883.
+50 job(s) submitted to cluster 2241392.
 Submitting job(s)........................
-24 job(s) submitted to cluster 2238894.
+24 job(s) submitted to cluster 2241401.
 Submitting job(s)................................
-32 job(s) submitted to cluster 2238898.
+32 job(s) submitted to cluster 2241407.
 Submitting job(s)...........................................
-43 job(s) submitted to cluster 2238902.
+43 job(s) submitted to cluster 2241410.
 Submitting job(s)..................................................
-50 job(s) submitted to cluster 2238906.
+50 job(s) submitted to cluster 2241413.
 condor_submit WORKDIR_HADD/run.jds > WORKDIR_HADD/run.jid
 condor_submit WORKDIR_HADD/run.jds > WORKDIR_HADD/run.jid
 condor_submit WORKDIR_HADD/run.jds > WORKDIR_HADD/run.jid
 condor_submit WORKDIR_HADD/run.jds > WORKDIR_HADD/run.jid
-condor_submit WORKDIR_HADD/run.jds > WORKDIR_HADD/run.jid
-condor_submit WORKDIR_HADD/run.jds > WORKDIR_HADD/run.jid
-condor_submit WORKDIR_HADD/run.jds > WORKDIR_HADD/run.jid
-condor_submit WORKDIR_HADD/run.jds > WORKDIR_HADD/run.jid
-##################################################
-Submission Finished
-- JobID = 387117
-- Analyzer = DiLeptonAnalyzer
-- Skim = 
-- InputSamples = ['QCD_bEnriched_HT100to200', 'QCD_bEnriched_HT200to300', 'QCD_bEnriched_HT300to500', 'QCD_bEnriched_HT500to700', 'QCD_bEnriched_HT700to1000', 'QCD_bEnriched_HT1000to1500', 'QCD_bEnriched_HT1500to2000', 'WJets_Sherpa']
-- NJobs = 50
-- Era = 2016postVFP
-- UserFlags = []
-- RunDir = /data6/Users/jhchoi/SKFlatRunlog//2024_04_01_232034__387117__DiLeptonAnalyzer__Era2016postVFP__TAMSA1/WJets_Sherpa/
-- output will be send to : /data6/Users/jhchoi/SKFlatOutput//Run2UltraLegacy_v3/DiLeptonAnalyzer/2016postVFP/
-##################################################
-submit hadd
-CheckOutputSize...
-<AFTER hadd fin. please rm remainings..>
-rm /data6/Users/jhchoi/SKFlatRunlog//2024_04_01_232034__387117__DiLeptonAnalyzer__Era2016postVFP__TAMSA1/QCD_bEnriched_HT100to200//output/*.root
-submit hadd
-CheckOutputSize...
-<AFTER hadd fin. please rm remainings..>
-rm /data6/Users/jhchoi/SKFlatRunlog//2024_04_01_232034__387117__DiLeptonAnalyzer__Era2016postVFP__TAMSA1/QCD_bEnriched_HT200to300//output/*.root
-submit hadd
-CheckOutputSize...
-<AFTER hadd fin. please rm remainings..>
-rm /data6/Users/jhchoi/SKFlatRunlog//2024_04_01_232034__387117__DiLeptonAnalyzer__Era2016postVFP__TAMSA1/QCD_bEnriched_HT300to500//output/*.root
-submit hadd
-CheckOutputSize...
-<AFTER hadd fin. please rm remainings..>
-rm /data6/Users/jhchoi/SKFlatRunlog//2024_04_01_232034__387117__DiLeptonAnalyzer__Era2016postVFP__TAMSA1/QCD_bEnriched_HT500to700//output/*.root
-submit hadd
-CheckOutputSize...
-<AFTER hadd fin. please rm remainings..>
-rm /data6/Users/jhchoi/SKFlatRunlog//2024_04_01_232034__387117__DiLeptonAnalyzer__Era2016postVFP__TAMSA1/QCD_bEnriched_HT700to1000//output/*.root
-submit hadd
-CheckOutputSize...
-<AFTER hadd fin. please rm remainings..>
-rm /data6/Users/jhchoi/SKFlatRunlog//2024_04_01_232034__387117__DiLeptonAnalyzer__Era2016postVFP__TAMSA1/QCD_bEnriched_HT1000to1500//output/*.root
-submit hadd
-CheckOutputSize...
-<AFTER hadd fin. please rm remainings..>
-rm /data6/Users/jhchoi/SKFlatRunlog//2024_04_01_232034__387117__DiLeptonAnalyzer__Era2016postVFP__TAMSA1/QCD_bEnriched_HT1500to2000//output/*.root
-submit hadd
-CheckOutputSize...
-<AFTER hadd fin. please rm remainings..>
-rm /data6/Users/jhchoi/SKFlatRunlog//2024_04_01_232034__387117__DiLeptonAnalyzer__Era2016postVFP__TAMSA1/WJets_Sherpa//output/*.root
