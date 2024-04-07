@@ -1,14 +1,13 @@
 Submitting job(s)..................................................
-50 job(s) submitted to cluster 2241337.
+50 job(s) submitted to cluster 2242081.
 Submitting job(s)..................................................
-50 job(s) submitted to cluster 2241358.
+50 job(s) submitted to cluster 2242109.
 Submitting job(s)..................................................
-50 job(s) submitted to cluster 2241378.
+50 job(s) submitted to cluster 2242136.
 Submitting job(s)..................................................
-50 job(s) submitted to cluster 2241391.
+50 job(s) submitted to cluster 2242154.
 Submitting job(s)..................................................
-50 job(s) submitted to cluster 2241403.
-condor_submit WORKDIR_HADD/run.jds > WORKDIR_HADD/run.jid
+50 job(s) submitted to cluster 2242168.
 condor_submit WORKDIR_HADD/run.jds > WORKDIR_HADD/run.jid
 condor_submit WORKDIR_HADD/run.jds > WORKDIR_HADD/run.jid
 condor_submit WORKDIR_HADD/run.jds > WORKDIR_HADD/run.jid

@@ -109,12 +109,12 @@ void JHAnalyzerBase::executeEvent(){
   runWeightBase=true;
   SetSysStructure();
   SetEventBaseSysWeight();
-  //InitClassVariablesPerEvent();
-  //InitBtagSys();
-  //--[END]init variables--//
+
+  InitClassVariablesPerEvent();
+  InitBtagSys();
   EventLoop();
-  FillReservedHistWeightBase();
-  ClearReserveHist();
+  //FillReservedHistWeightBase();
+  //ClearReserveHist();
 
   if(!runSys) return;
   //---Momentum variations--//
@@ -122,26 +122,32 @@ void JHAnalyzerBase::executeEvent(){
   SetSysStructure();//remove sysvariation weights
   for(const auto &sys : vMomentumVar){
     SetSys(sys);
+    InitClassVariablesPerEvent();
+    InitBtagSys();
     EventLoop();
-    FillReservedHistMomentumVariations();
-    ClearReserveHist();
+    //FillReservedHistMomentumVariations();
+    //ClearReserveHist();
   }
 
   for(const auto &_vsys : vMuonMomentumVar){
     for(const auto &sys : _vsys){
       SetSys(sys);
+      InitClassVariablesPerEvent();
+      InitBtagSys();
       EventLoop();
-      FillReservedHistLeptonMomentumVariations();
-      ClearReserveHist();
+      //FillReservedHistLeptonMomentumVariations();
+      //ClearReserveHist();
     }
   }
 
   for(const auto &_vsys : vElectronMomentumVar){
     for(const auto &sys : _vsys){
       SetSys(sys);
+      InitClassVariablesPerEvent();
+      InitBtagSys();
       EventLoop();
-      FillReservedHistLeptonMomentumVariations();
-      ClearReserveHist();
+      //FillReservedHistLeptonMomentumVariations();
+      //ClearReserveHist();
     }
   }
 }
@@ -186,6 +192,7 @@ void JHAnalyzerBase::SetSysStructure(){
     w_MuonTrk=fEff->GetStructure(MuonTrkSFKey);
     r_MuonTrk=fEff->GetStructure(MuonTrkSFKey);
 
+    //----below is to check # of sys histograms
     /*
     unsigned int n_efftool_var=0;
     for(unsigned int i =0 ; i < w_ElectronID.size(); i++){
@@ -264,7 +271,9 @@ void JHAnalyzerBase::InitClassVariablesPerEvent(){
   //--Event variables--//
   weight=1.;
   btagsf=1.;
-
+  zptweight=1.;
+  z0weight=1.;
+  weakweight=1.;
 }
 void JHAnalyzerBase::FillHist(TString histname, double value, double this_weight, int n_bin, double x_min, double x_max){
   //---ArgFillHist structure---//
@@ -276,9 +285,17 @@ void JHAnalyzerBase::FillHist(TString histname, double value, double this_weight
     double x_max;
   };
 
-   */
-  ArgFillHist this_arg={histname,value,this_weight,n_bin,x_min,x_max};
-  vReserveHist.push_back(this_arg);
+  */
+  if(runWeightBase){
+    FillHistWeightBase(histname,value,this_weight,n_bin,x_min,x_max);
+  }  
+  else{
+    //TString histname="SYS/"+arg.histname+"/"+sysname_current+"/0/"+sysdir_current;
+    TString newhistname="SYS/"+histname+"/"+sysname_current+"/"+sysidx1_current+"/"+sysidx2_current;
+    AnalyzerCore::FillHist(newhistname+"/"+ProcessName,value,this_weight,n_bin,x_min,x_max);
+    //ArgFillHist this_arg={histname,value,this_weight,n_bin,x_min,x_max};
+    //vReserveHist.push_back(this_arg);
+  }
   //vReserveHist.push_back(make_tuple(histname,value,this_weight,n_bin,x_min,x_max));
 }
 
@@ -487,6 +504,45 @@ void JHAnalyzerBase::FillReservedHistWeightBase(){
   }
 
 }
+
+void JHAnalyzerBase::FillHistWeightBase(TString histname,double value,double this_weight,int n_bin,double x_min,double x_max){
+  //Nominal//
+  AnalyzerCore::FillHist(histname+"/"+ProcessName,value,this_weight,n_bin,x_min,x_max);
+  
+  if(IsDATA) return;
+  if(!runSys) return;
+  //-PU
+  FillHistPUSys(histname,value,this_weight,n_bin,x_min,x_max);
+  //-PartonShower
+  FillHistPSSys(histname,value,this_weight,n_bin,x_min,x_max);
+  //prefire//
+  FillHistPrefireSys(histname,value,this_weight,n_bin,x_min,x_max);
+  //btag
+  FillHistBtag(histname,value,this_weight,n_bin,x_min,x_max);
+  //zptweight
+  FillHistZptWeight(histname,value,this_weight,n_bin,x_min,x_max);
+  ///---EffTool--//
+  //electronID//
+  FillHistElectronID(histname,value,this_weight,n_bin,x_min,x_max);
+  //electronRECO
+  FillHistElectronRECO(histname,value,this_weight,n_bin,x_min,x_max);
+  //electronTrigger
+  FillHistElectronTrigger(histname,value,this_weight,n_bin,x_min,x_max);
+  
+  //muonID
+  FillHistMuonID(histname,value,this_weight,n_bin,x_min,x_max);
+  //muonRECO
+  FillHistMuonRECO(histname,value,this_weight,n_bin,x_min,x_max);
+  //MuonTrigger
+  FillHistMuonTrigger(histname,value,this_weight,n_bin,x_min,x_max);
+  //MuonTrk
+  FillHistMuonTrk(histname,value,this_weight,n_bin,x_min,x_max);
+}
+
+
+
+
+
 void JHAnalyzerBase::FillReservedHistMomentumVariations(){
  for(const auto &arg : vReserveHist){    
     TString histname="SYS/"+arg.histname+"/"+sysname_current+"/0/"+sysdir_current;
@@ -501,7 +557,7 @@ void JHAnalyzerBase::FillReservedHistMomentumVariations(){
 
 void JHAnalyzerBase::FillReservedHistLeptonMomentumVariations(){
  for(const auto &arg : vReserveHist){    
-   TString histname="SYS/"+arg.histname+"/"+sysname_current+"/"+std::to_string(sysidx1_current)+"/"+std::to_string(sysidx2_current);
+   TString histname="SYS/"+arg.histname+"/"+sysname_current+"/"+sysidx1_current+"/"+sysidx2_current;
     double value=arg.value;
     double this_weight=arg.weight;
     int n_bin=arg.n_bin;
@@ -516,7 +572,9 @@ void JHAnalyzerBase::ClearReserveHist(){
 
 void JHAnalyzerBase::SetSys(MomentumVar _sys){
   sysname_current=_sys.name;
-  sysdir_current=_sys.dir;
+  //sysdir_current=_sys.dir;
+  sysidx1_current="0";
+  sysidx2_current=_sys.dir;
   /*
   if(_sys.muonscale!=0){
     //AllMuons=ScaleMuons(AllMuons_raw,_sys.muonscale);
@@ -573,36 +631,43 @@ void JHAnalyzerBase::SetSys(MomentumVar _sys){
 
 void JHAnalyzerBase::SetSys(MuonMomentumVar _sys){
   sysname_current=_sys.name;
-  sysidx1_current=_sys.idx1;
-  sysidx2_current=_sys.idx2;
+
   
-  AllMuons=MuonMomentumCorrection(AllMuons_raw,sysidx1_current,sysidx2_current);
+  AllMuons=MuonMomentumCorrection(AllMuons_raw,_sys.idx1,_sys.idx2);
+  //std::sort(AllMuons.begin(), AllMuons.end(), PtComparing);
   AllElectrons=AllElectrons_roch;
   AllJets=AllJets_raw;
   PuppiMET=UpdateMETByMuonScale(PuppiMET_roch);
+  sysidx1_current=std::to_string(_sys.idx1);
+  sysidx2_current=std::to_string(_sys.idx2);
 }
 
 void JHAnalyzerBase::SetSys(ElectronMomentumVar _sys){
   sysname_current=_sys.name;
-  sysidx1_current=_sys.idx1;
-  sysidx2_current=_sys.idx2;
-  
-  AllElectrons=ElectronEnergyCorrection(AllElectrons_raw,sysidx1_current,sysidx2_current);
-  AllElectrons=AllElectrons_roch;
+  //sysidx1_current=_sys.idx1;
+  //sysidx2_current=_sys.idx2;
+
+  AllMuons=AllMuons_roch;  
+  AllElectrons=ElectronEnergyCorrection(AllElectrons_raw,_sys.idx1,_sys.idx2);
+  //std::sort(AllElectrons.begin(), AllElectrons.end(), PtComparing);
+
   AllJets=AllJets_raw;
   PuppiMET=UpdateMETByElectronScale(PuppiMET_roch);
+  sysidx1_current=std::to_string(_sys.idx1);
+  sysidx2_current=std::to_string(_sys.idx2);  
 }
 
 
 
 void JHAnalyzerBase::InitAllObjects(){
+  //cout << "[JHAnalyzerBase::InitAllObjects] init to nominal objects" << endl;
   AllMuons_raw=GetAllMuons();
   AllMuons_roch=MuonMomentumCorrection(AllMuons_raw);
   AllMuons=AllMuons_roch;
   std::sort(AllMuons.begin(), AllMuons.end(), PtComparing);
   AllElectrons_raw=GetAllElectrons();
   AllElectrons_roch=ElectronEnergyCorrection(AllElectrons_raw);
-  AllElectrons=AllElectrons_raw;
+  AllElectrons=AllElectrons_roch;
   std::sort(AllElectrons.begin(), AllElectrons.end(), PtComparing);
   AllJets_raw=GetAllJets();
   AllJets=AllJets_raw;
@@ -714,9 +779,9 @@ TLorentzVector JHAnalyzerBase::UpdateMETByMuonScale(const TLorentzVector &met_or
     px_orig+= muon.Px();
     py_orig+= muon.Py();
   }
-  for(const auto& muon : AllMuons){
+  for(const auto& muon : AllMuons){//after shift
     px_corrected += muon.Px();
-    py_corrected += muon.Px();
+    py_corrected += muon.Py();
   }
   met_x = met_x + px_orig - px_corrected;
   met_y = met_y + py_orig - py_corrected;
@@ -765,7 +830,7 @@ TLorentzVector JHAnalyzerBase::UpdateMETByElectronScale(const TLorentzVector &me
   }
   for(const auto& electron : AllElectrons){
     px_corrected += electron.Px();
-    py_corrected += electron.Px();
+    py_corrected += electron.Py();
   }
   met_x = met_x + px_orig - px_corrected;
   met_y = met_y + py_orig - py_corrected;

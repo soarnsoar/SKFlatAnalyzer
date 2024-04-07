@@ -74,6 +74,8 @@ class JHAnalyzerBase : public AnalyzerCore {
 
   void FillHistBtag(TString histname, double value, double this_weight, int n_bin, double x_min, double x_max);
   void FillHistZptWeight(TString histname, double value, double this_weight, int n_bin, double x_min, double x_max);
+
+  void FillHistWeightBase(TString histname,double value,double this_weight,int n_bin,double x_min,double x_max);
   void FillReservedHistMomentumVariations();
   void FillReservedHistLeptonMomentumVariations();
   //--For Hist Reservation--//
@@ -115,7 +117,7 @@ class JHAnalyzerBase : public AnalyzerCore {
   vector<vector<ElectronMomentumVar>> vElectronMomentumVar;
 
   TString sysname_current,sysdir_current;
-  int sysidx1_current,sysidx2_current;
+  TString sysidx1_current,sysidx2_current;
   void SetCurrentSys(MomentumVar sys);
   MomentumVar GetCurrentSys();
   TString GetCurrentSysDir();
