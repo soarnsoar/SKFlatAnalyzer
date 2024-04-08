@@ -1,10 +1,47 @@
 Submitting job(s)..................................................
-50 job(s) submitted to cluster 2242744.
+50 job(s) submitted to cluster 2243494.
 Submitting job(s)..................................................
-50 job(s) submitted to cluster 2242750.
+50 job(s) submitted to cluster 2243522.
 Submitting job(s)..................................................
-50 job(s) submitted to cluster 2242756.
+50 job(s) submitted to cluster 2243544.
 Submitting job(s)..................................................
-50 job(s) submitted to cluster 2242760.
+50 job(s) submitted to cluster 2243561.
 Submitting job(s)..................................................
-50 job(s) submitted to cluster 2242764.
+50 job(s) submitted to cluster 2243572.
+condor_submit WORKDIR_HADD/run.jds > WORKDIR_HADD/run.jid
+condor_submit WORKDIR_HADD/run.jds > WORKDIR_HADD/run.jid
+condor_submit WORKDIR_HADD/run.jds > WORKDIR_HADD/run.jid
+condor_submit WORKDIR_HADD/run.jds > WORKDIR_HADD/run.jid
+condor_submit WORKDIR_HADD/run.jds > WORKDIR_HADD/run.jid
+##################################################
+Submission Finished
+- JobID = 385728
+- Analyzer = DiLeptonAnalyzer
+- Skim = SkimTree_Dilepton
+- InputSamples = ['DoubleMuon:B', 'DoubleMuon:C', 'DoubleMuon:D', 'DoubleMuon:E', 'DoubleMuon:F']
+- NJobs = 50
+- Era = 2017
+- UserFlags = []
+- RunDir = /data6/Users/jhchoi/SKFlatRunlog//2024_04_08_221653__385728__DiLeptonAnalyzer__Era2017__SkimTree_Dilepton__TAMSA1/DoubleMuon_periodF/
+- output will be send to : /data6/Users/jhchoi/SKFlatOutput//Run2UltraLegacy_v3/DiLeptonAnalyzer/2017//DATA/
+##################################################
+submit hadd
+CheckOutputSize...
+<AFTER hadd fin. please rm remainings..>
+rm /data6/Users/jhchoi/SKFlatRunlog//2024_04_08_221653__385728__DiLeptonAnalyzer__Era2017__SkimTree_Dilepton__TAMSA1/DoubleMuon_periodB//output/*.root
+submit hadd
+CheckOutputSize...
+<AFTER hadd fin. please rm remainings..>
+rm /data6/Users/jhchoi/SKFlatRunlog//2024_04_08_221653__385728__DiLeptonAnalyzer__Era2017__SkimTree_Dilepton__TAMSA1/DoubleMuon_periodC//output/*.root
+submit hadd
+CheckOutputSize...
+<AFTER hadd fin. please rm remainings..>
+rm /data6/Users/jhchoi/SKFlatRunlog//2024_04_08_221653__385728__DiLeptonAnalyzer__Era2017__SkimTree_Dilepton__TAMSA1/DoubleMuon_periodD//output/*.root
+submit hadd
+CheckOutputSize...
+<AFTER hadd fin. please rm remainings..>
+rm /data6/Users/jhchoi/SKFlatRunlog//2024_04_08_221653__385728__DiLeptonAnalyzer__Era2017__SkimTree_Dilepton__TAMSA1/DoubleMuon_periodE//output/*.root
+submit hadd
+CheckOutputSize...
+<AFTER hadd fin. please rm remainings..>
+rm /data6/Users/jhchoi/SKFlatRunlog//2024_04_08_221653__385728__DiLeptonAnalyzer__Era2017__SkimTree_Dilepton__TAMSA1/DoubleMuon_periodF//output/*.root

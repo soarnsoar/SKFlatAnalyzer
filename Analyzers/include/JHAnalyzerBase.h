@@ -22,8 +22,11 @@ class JHAnalyzerBase : public AnalyzerCore {
   //Basic Global Object
   TString ProcessName;
   Event ev;
+  //---flags
   bool runSys;
   bool checksf;
+  bool simple_lepscale;
+  //--end flags
   double weight;
   double btagcut;
   bool runWeightBase;
@@ -125,6 +128,12 @@ class JHAnalyzerBase : public AnalyzerCore {
   void SetSys(MomentumVar _sys);
   void SetSys(MuonMomentumVar _sys);
   void SetSys(ElectronMomentumVar _sys);
+
+  void SetSysSimpleMuon(int direction);
+  void SetSysSimpleElectron(int direction);
+  void SetupSimpleMuonMomentumVar();
+  void SetupSimpleElectronMomentumVar();
+
 
   //--modules and their variables--//
   int GetIdxSingleMuReco(double ptmin, double etacut=2.4, double ptveto=10.);
@@ -235,7 +244,8 @@ class JHAnalyzerBase : public AnalyzerCore {
   double z0weight;
   //weakweight
   double weakweight;
-
+  //toppt
+  double topptweight;
   std::vector<Muon> AllMuons_raw;
   std::vector<Muon> AllMuons_roch;
   std::vector<Electron> AllElectrons_raw;
@@ -245,7 +255,11 @@ class JHAnalyzerBase : public AnalyzerCore {
   std::vector<Muon> AllMuons;
   std::vector<Electron> AllElectrons;
   std::vector<Jet> AllJets;
-
+  //for simple momentum
+  std::vector<Muon> AllMuons_plus;
+  std::vector<Muon> AllMuons_minus;  
+  std::vector<Electron> AllElectrons_plus;
+  std::vector<Electron> AllElectrons_minus;
   
  private:
   MomentumVar _CurrentSys;

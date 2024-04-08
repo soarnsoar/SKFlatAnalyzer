@@ -1,19 +1,19 @@
 Submitting job(s)..................................................
-50 job(s) submitted to cluster 2242082.
+50 job(s) submitted to cluster 2243475.
 Submitting job(s)..................................................
-50 job(s) submitted to cluster 2242110.
+50 job(s) submitted to cluster 2243490.
 Submitting job(s)..................................................
-50 job(s) submitted to cluster 2242137.
+50 job(s) submitted to cluster 2243518.
 Submitting job(s)..................................................
-50 job(s) submitted to cluster 2242155.
+50 job(s) submitted to cluster 2243540.
 Submitting job(s)........................
-24 job(s) submitted to cluster 2242169.
+24 job(s) submitted to cluster 2243558.
 Submitting job(s)................................
-32 job(s) submitted to cluster 2242179.
+32 job(s) submitted to cluster 2243570.
 Submitting job(s)...........................................
-43 job(s) submitted to cluster 2242183.
+43 job(s) submitted to cluster 2243577.
 Submitting job(s)..................................................
-50 job(s) submitted to cluster 2242186.
+50 job(s) submitted to cluster 2243581.
 condor_submit WORKDIR_HADD/run.jds > WORKDIR_HADD/run.jid
 condor_submit WORKDIR_HADD/run.jds > WORKDIR_HADD/run.jid
 condor_submit WORKDIR_HADD/run.jds > WORKDIR_HADD/run.jid
@@ -24,45 +24,45 @@ condor_submit WORKDIR_HADD/run.jds > WORKDIR_HADD/run.jid
 condor_submit WORKDIR_HADD/run.jds > WORKDIR_HADD/run.jid
 ##################################################
 Submission Finished
-- JobID = 528695
+- JobID = 333278
 - Analyzer = DiLeptonAnalyzer
 - Skim = 
 - InputSamples = ['QCD_bEnriched_HT100to200', 'QCD_bEnriched_HT200to300', 'QCD_bEnriched_HT300to500', 'QCD_bEnriched_HT500to700', 'QCD_bEnriched_HT700to1000', 'QCD_bEnriched_HT1000to1500', 'QCD_bEnriched_HT1500to2000', 'WJets_Sherpa']
 - NJobs = 50
 - Era = 2016postVFP
 - UserFlags = []
-- RunDir = /data6/Users/jhchoi/SKFlatRunlog//2024_04_07_132512__528695__DiLeptonAnalyzer__Era2016postVFP__TAMSA1/WJets_Sherpa/
+- RunDir = /data6/Users/jhchoi/SKFlatRunlog//2024_04_08_221645__333278__DiLeptonAnalyzer__Era2016postVFP__TAMSA1/WJets_Sherpa/
 - output will be send to : /data6/Users/jhchoi/SKFlatOutput//Run2UltraLegacy_v3/DiLeptonAnalyzer/2016postVFP/
 ##################################################
 submit hadd
 CheckOutputSize...
 <AFTER hadd fin. please rm remainings..>
-rm /data6/Users/jhchoi/SKFlatRunlog//2024_04_07_132512__528695__DiLeptonAnalyzer__Era2016postVFP__TAMSA1/QCD_bEnriched_HT100to200//output/*.root
+rm /data6/Users/jhchoi/SKFlatRunlog//2024_04_08_221645__333278__DiLeptonAnalyzer__Era2016postVFP__TAMSA1/QCD_bEnriched_HT100to200//output/*.root
 submit hadd
 CheckOutputSize...
 <AFTER hadd fin. please rm remainings..>
-rm /data6/Users/jhchoi/SKFlatRunlog//2024_04_07_132512__528695__DiLeptonAnalyzer__Era2016postVFP__TAMSA1/QCD_bEnriched_HT200to300//output/*.root
+rm /data6/Users/jhchoi/SKFlatRunlog//2024_04_08_221645__333278__DiLeptonAnalyzer__Era2016postVFP__TAMSA1/QCD_bEnriched_HT200to300//output/*.root
 submit hadd
 CheckOutputSize...
 <AFTER hadd fin. please rm remainings..>
-rm /data6/Users/jhchoi/SKFlatRunlog//2024_04_07_132512__528695__DiLeptonAnalyzer__Era2016postVFP__TAMSA1/QCD_bEnriched_HT300to500//output/*.root
+rm /data6/Users/jhchoi/SKFlatRunlog//2024_04_08_221645__333278__DiLeptonAnalyzer__Era2016postVFP__TAMSA1/QCD_bEnriched_HT300to500//output/*.root
 submit hadd
 CheckOutputSize...
 <AFTER hadd fin. please rm remainings..>
-rm /data6/Users/jhchoi/SKFlatRunlog//2024_04_07_132512__528695__DiLeptonAnalyzer__Era2016postVFP__TAMSA1/QCD_bEnriched_HT500to700//output/*.root
+rm /data6/Users/jhchoi/SKFlatRunlog//2024_04_08_221645__333278__DiLeptonAnalyzer__Era2016postVFP__TAMSA1/QCD_bEnriched_HT500to700//output/*.root
 submit hadd
 CheckOutputSize...
 <AFTER hadd fin. please rm remainings..>
-rm /data6/Users/jhchoi/SKFlatRunlog//2024_04_07_132512__528695__DiLeptonAnalyzer__Era2016postVFP__TAMSA1/QCD_bEnriched_HT700to1000//output/*.root
+rm /data6/Users/jhchoi/SKFlatRunlog//2024_04_08_221645__333278__DiLeptonAnalyzer__Era2016postVFP__TAMSA1/QCD_bEnriched_HT700to1000//output/*.root
 submit hadd
 CheckOutputSize...
 <AFTER hadd fin. please rm remainings..>
-rm /data6/Users/jhchoi/SKFlatRunlog//2024_04_07_132512__528695__DiLeptonAnalyzer__Era2016postVFP__TAMSA1/QCD_bEnriched_HT1000to1500//output/*.root
+rm /data6/Users/jhchoi/SKFlatRunlog//2024_04_08_221645__333278__DiLeptonAnalyzer__Era2016postVFP__TAMSA1/QCD_bEnriched_HT1000to1500//output/*.root
 submit hadd
 CheckOutputSize...
 <AFTER hadd fin. please rm remainings..>
-rm /data6/Users/jhchoi/SKFlatRunlog//2024_04_07_132512__528695__DiLeptonAnalyzer__Era2016postVFP__TAMSA1/QCD_bEnriched_HT1500to2000//output/*.root
+rm /data6/Users/jhchoi/SKFlatRunlog//2024_04_08_221645__333278__DiLeptonAnalyzer__Era2016postVFP__TAMSA1/QCD_bEnriched_HT1500to2000//output/*.root
 submit hadd
 CheckOutputSize...
 <AFTER hadd fin. please rm remainings..>
-rm /data6/Users/jhchoi/SKFlatRunlog//2024_04_07_132512__528695__DiLeptonAnalyzer__Era2016postVFP__TAMSA1/WJets_Sherpa//output/*.root
+rm /data6/Users/jhchoi/SKFlatRunlog//2024_04_08_221645__333278__DiLeptonAnalyzer__Era2016postVFP__TAMSA1/WJets_Sherpa//output/*.root

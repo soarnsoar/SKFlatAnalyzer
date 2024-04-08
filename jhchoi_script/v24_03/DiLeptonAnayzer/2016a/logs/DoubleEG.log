@@ -1,13 +1,13 @@
 Submitting job(s)..................................................
-50 job(s) submitted to cluster 2242085.
+50 job(s) submitted to cluster 2243472.
 Submitting job(s)..................................................
-50 job(s) submitted to cluster 2242113.
+50 job(s) submitted to cluster 2243492.
 Submitting job(s)..................................................
-50 job(s) submitted to cluster 2242139.
+50 job(s) submitted to cluster 2243520.
 Submitting job(s)..................................................
-50 job(s) submitted to cluster 2242157.
+50 job(s) submitted to cluster 2243542.
 Submitting job(s)..................................................
-50 job(s) submitted to cluster 2242171.
+50 job(s) submitted to cluster 2243560.
 condor_submit WORKDIR_HADD/run.jds > WORKDIR_HADD/run.jid
 condor_submit WORKDIR_HADD/run.jds > WORKDIR_HADD/run.jid
 condor_submit WORKDIR_HADD/run.jds > WORKDIR_HADD/run.jid
@@ -15,33 +15,33 @@ condor_submit WORKDIR_HADD/run.jds > WORKDIR_HADD/run.jid
 condor_submit WORKDIR_HADD/run.jds > WORKDIR_HADD/run.jid
 ##################################################
 Submission Finished
-- JobID = 339866
+- JobID = 290729
 - Analyzer = DiLeptonAnalyzer
 - Skim = SkimTree_Dilepton
 - InputSamples = ['DoubleEG:B_ver2', 'DoubleEG:C', 'DoubleEG:D', 'DoubleEG:E', 'DoubleEG:F']
 - NJobs = 50
 - Era = 2016preVFP
 - UserFlags = []
-- RunDir = /data6/Users/jhchoi/SKFlatRunlog//2024_04_07_132512__339866__DiLeptonAnalyzer__Era2016preVFP__SkimTree_Dilepton__TAMSA1/DoubleEG_periodF/
+- RunDir = /data6/Users/jhchoi/SKFlatRunlog//2024_04_08_221645__290729__DiLeptonAnalyzer__Era2016preVFP__SkimTree_Dilepton__TAMSA1/DoubleEG_periodF/
 - output will be send to : /data6/Users/jhchoi/SKFlatOutput//Run2UltraLegacy_v3/DiLeptonAnalyzer/2016preVFP//DATA/
 ##################################################
 submit hadd
 CheckOutputSize...
 <AFTER hadd fin. please rm remainings..>
-rm /data6/Users/jhchoi/SKFlatRunlog//2024_04_07_132512__339866__DiLeptonAnalyzer__Era2016preVFP__SkimTree_Dilepton__TAMSA1/DoubleEG_periodB_ver2//output/*.root
+rm /data6/Users/jhchoi/SKFlatRunlog//2024_04_08_221645__290729__DiLeptonAnalyzer__Era2016preVFP__SkimTree_Dilepton__TAMSA1/DoubleEG_periodB_ver2//output/*.root
 submit hadd
 CheckOutputSize...
 <AFTER hadd fin. please rm remainings..>
-rm /data6/Users/jhchoi/SKFlatRunlog//2024_04_07_132512__339866__DiLeptonAnalyzer__Era2016preVFP__SkimTree_Dilepton__TAMSA1/DoubleEG_periodC//output/*.root
+rm /data6/Users/jhchoi/SKFlatRunlog//2024_04_08_221645__290729__DiLeptonAnalyzer__Era2016preVFP__SkimTree_Dilepton__TAMSA1/DoubleEG_periodC//output/*.root
 submit hadd
 CheckOutputSize...
 <AFTER hadd fin. please rm remainings..>
-rm /data6/Users/jhchoi/SKFlatRunlog//2024_04_07_132512__339866__DiLeptonAnalyzer__Era2016preVFP__SkimTree_Dilepton__TAMSA1/DoubleEG_periodD//output/*.root
+rm /data6/Users/jhchoi/SKFlatRunlog//2024_04_08_221645__290729__DiLeptonAnalyzer__Era2016preVFP__SkimTree_Dilepton__TAMSA1/DoubleEG_periodD//output/*.root
 submit hadd
 CheckOutputSize...
 <AFTER hadd fin. please rm remainings..>
-rm /data6/Users/jhchoi/SKFlatRunlog//2024_04_07_132512__339866__DiLeptonAnalyzer__Era2016preVFP__SkimTree_Dilepton__TAMSA1/DoubleEG_periodE//output/*.root
+rm /data6/Users/jhchoi/SKFlatRunlog//2024_04_08_221645__290729__DiLeptonAnalyzer__Era2016preVFP__SkimTree_Dilepton__TAMSA1/DoubleEG_periodE//output/*.root
 submit hadd
 CheckOutputSize...
 <AFTER hadd fin. please rm remainings..>
-rm /data6/Users/jhchoi/SKFlatRunlog//2024_04_07_132512__339866__DiLeptonAnalyzer__Era2016preVFP__SkimTree_Dilepton__TAMSA1/DoubleEG_periodF//output/*.root
+rm /data6/Users/jhchoi/SKFlatRunlog//2024_04_08_221645__290729__DiLeptonAnalyzer__Era2016preVFP__SkimTree_Dilepton__TAMSA1/DoubleEG_periodF//output/*.root

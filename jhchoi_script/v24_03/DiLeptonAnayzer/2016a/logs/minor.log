@@ -1,33 +1,33 @@
 Submitting job(s)..................................................
-50 job(s) submitted to cluster 2242078.
+50 job(s) submitted to cluster 2243484.
 Submitting job(s)..................................................
-50 job(s) submitted to cluster 2242106.
+50 job(s) submitted to cluster 2243512.
 Submitting job(s)..................................................
-50 job(s) submitted to cluster 2242133.
+50 job(s) submitted to cluster 2243537.
 condor_submit WORKDIR_HADD/run.jds > WORKDIR_HADD/run.jid
 condor_submit WORKDIR_HADD/run.jds > WORKDIR_HADD/run.jid
 condor_submit WORKDIR_HADD/run.jds > WORKDIR_HADD/run.jid
 ##################################################
 Submission Finished
-- JobID = 576771
+- JobID = 176850
 - Analyzer = DiLeptonAnalyzer
 - Skim = SkimTree_Dilepton
 - InputSamples = ['SingleTop_tch_antitop_Incl', 'SingleTop_tch_top_Incl', 'SingleTop_sch_Lep']
 - NJobs = 50
 - Era = 2016preVFP
 - UserFlags = []
-- RunDir = /data6/Users/jhchoi/SKFlatRunlog//2024_04_07_132512__576771__DiLeptonAnalyzer__Era2016preVFP__SkimTree_Dilepton__TAMSA1/SingleTop_sch_Lep/
+- RunDir = /data6/Users/jhchoi/SKFlatRunlog//2024_04_08_221645__176850__DiLeptonAnalyzer__Era2016preVFP__SkimTree_Dilepton__TAMSA1/SingleTop_sch_Lep/
 - output will be send to : /data6/Users/jhchoi/SKFlatOutput//Run2UltraLegacy_v3/DiLeptonAnalyzer/2016preVFP/
 ##################################################
 submit hadd
 CheckOutputSize...
 <AFTER hadd fin. please rm remainings..>
-rm /data6/Users/jhchoi/SKFlatRunlog//2024_04_07_132512__576771__DiLeptonAnalyzer__Era2016preVFP__SkimTree_Dilepton__TAMSA1/SingleTop_tch_antitop_Incl//output/*.root
+rm /data6/Users/jhchoi/SKFlatRunlog//2024_04_08_221645__176850__DiLeptonAnalyzer__Era2016preVFP__SkimTree_Dilepton__TAMSA1/SingleTop_tch_antitop_Incl//output/*.root
 submit hadd
 CheckOutputSize...
 <AFTER hadd fin. please rm remainings..>
-rm /data6/Users/jhchoi/SKFlatRunlog//2024_04_07_132512__576771__DiLeptonAnalyzer__Era2016preVFP__SkimTree_Dilepton__TAMSA1/SingleTop_tch_top_Incl//output/*.root
+rm /data6/Users/jhchoi/SKFlatRunlog//2024_04_08_221645__176850__DiLeptonAnalyzer__Era2016preVFP__SkimTree_Dilepton__TAMSA1/SingleTop_tch_top_Incl//output/*.root
 submit hadd
 CheckOutputSize...
 <AFTER hadd fin. please rm remainings..>
-rm /data6/Users/jhchoi/SKFlatRunlog//2024_04_07_132512__576771__DiLeptonAnalyzer__Era2016preVFP__SkimTree_Dilepton__TAMSA1/SingleTop_sch_Lep//output/*.root
+rm /data6/Users/jhchoi/SKFlatRunlog//2024_04_08_221645__176850__DiLeptonAnalyzer__Era2016preVFP__SkimTree_Dilepton__TAMSA1/SingleTop_sch_Lep//output/*.root

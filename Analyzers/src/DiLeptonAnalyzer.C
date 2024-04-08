@@ -76,7 +76,6 @@ void DiLeptonAnalyzer::SetEventWeight(){
   //----ZpT weight For DY
   //----DY WEAK NLO
   //---z0 weight
-
   weight=MCweight()*ev.GetTriggerLumi("Full")*GetPileUpWeight(nPileUp,0)*GetPrefireWeight(0)*zptweight*weakweight*z0weight;
 
   if(IsDiMuonChannel){
@@ -143,6 +142,7 @@ void DiLeptonAnalyzer::RunBasicZregion(){
   FillHistAll(LepCh);
   //---Because we loaded btag, need btagsf
   if(!IsDATA) weight*=btagsf;
+  //cout << "btagsf=" << btagsf << endl;
   if(nbjet==0){
     FillHistAll("ll__0bjet");
     FillHistAll(LepCh+"__0bjet");
@@ -164,7 +164,7 @@ void DiLeptonAnalyzer::FillHistAll(TString cutname){
 
   FillHist(cutname+"/nPV",nPV,weight,100,0,100);
   FillHist(cutname+"/M_ll",vZ.M(),weight,60,60,120);
-  if(zptweight&&weakweight&&z0weight)FillHist(cutname+"/M_ll",vZ.M(),weight/(zptweight*weakweight*z0weight),60,60,120);
+  //if(zptweight&&weakweight&&z0weight)FillHist(cutname+"/M_ll",vZ.M(),weight/(zptweight*weakweight*z0weight),60,60,120);
   FillHist(cutname+"/M_ll_uncorr",(l1_uncorr+l2_uncorr).M(),weight,60,60,120);
 
 

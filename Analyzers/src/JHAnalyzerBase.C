@@ -8,11 +8,14 @@ void JHAnalyzerBase::initializeAnalyzer(){
   cout << "[JHAnalyzerBase::initializeAnalyzer]DataEra->" << DataEra << endl;
   IsDYSample=MCSample.Contains("DYJets")||MCSample.Contains("ZToEE")||MCSample.Contains("ZToMuMu")||MCSample.Contains(TRegexp("DY[0-9]Jets"));
   cout << "IsDYSample=" << IsDYSample <<endl;
+  if(MCSample.Contains(TRegexp("TT[LJ][LJ]"))) IsTTSample=true;
+  cout << "IsTTSample=" << IsTTSample <<endl;
   AnalyzerCore::SetupEfficiency();
   AnalyzerCore::SetupRoccoR();
   if(IsDYSample)  AnalyzerCore::SetupZptWeight();
   InitSystematicMomentumVariations();
   runSys=HasFlag("runSys");
+  simple_lepscale=HasFlag("simple_lepscale");
   checksf=HasFlag("checksf");
   SetUpBtag();
   if(IsDATA){
@@ -132,48 +135,64 @@ void JHAnalyzerBase::executeEvent(){
     //FillReservedHistMomentumVariations();
     //ClearReserveHist();
   }
+  if(simple_lepscale){
+    //---Make muon/electron pt up/down collections 
+    SetupSimpleMuonMomentumVar();
+    SetupSimpleElectronMomentumVar();
 
-  for(const auto &_vsys : vMuonMomentumVar){
-    for(const auto &sys : _vsys){
-      SetSys(sys);
-      InitClassVariablesPerEvent();
-      InitBtagSys();
-      EventLoop();
-      //FillReservedHistLeptonMomentumVariations();
-      //ClearReserveHist();
-    }
-  }
+    //--MuonScaleUp
+    SetSysSimpleMuon(1);
+    InitClassVariablesPerEvent();
+    InitBtagSys();
+    EventLoop();
+    //--MuonScaleDown    
+    SetSysSimpleMuon(-1);
+    InitClassVariablesPerEvent();
+    InitBtagSys();
+    EventLoop();
 
-  for(const auto &_vsys : vElectronMomentumVar){
-    for(const auto &sys : _vsys){
-      SetSys(sys);
-      InitClassVariablesPerEvent();
-      InitBtagSys();
-      EventLoop();
-      //FillReservedHistLeptonMomentumVariations();
-      //ClearReserveHist();
-    }
+    //--ElectronScaleUp
+    SetSysSimpleElectron(1);
+    InitClassVariablesPerEvent();
+    InitBtagSys();
+    EventLoop();
+    //--ElectronScaleDown    
+    SetSysSimpleElectron(-1);
+    InitClassVariablesPerEvent();
+    InitBtagSys();
+    EventLoop();
+
   }
+  else{//not simple_lepscale
+
+    for(const auto &_vsys : vMuonMomentumVar){
+      for(const auto &sys : _vsys){
+	SetSys(sys);
+	InitClassVariablesPerEvent();
+	InitBtagSys();
+	EventLoop();
+	//FillReservedHistLeptonMomentumVariations();
+	//ClearReserveHist();
+      }
+    }
+    
+    for(const auto &_vsys : vElectronMomentumVar){
+      for(const auto &sys : _vsys){
+	SetSys(sys);
+	InitClassVariablesPerEvent();
+	InitBtagSys();
+	EventLoop();
+	//FillReservedHistLeptonMomentumVariations();
+	//ClearReserveHist();
+      }
+    }
+  }//[END]not simple_lepscale
 }
-
 void JHAnalyzerBase::SetEventBaseSysWeight(){
-  if(!runSys) return;
+  z0weight=1; weakweight=1;zptweight=1;topptweight=1;
   if(IsDATA) return;
-  //pu,prefire
-  if(GetPileUpWeight(nPileUp,0)){
-    r_PU={GetPileUpWeight(nPileUp,1)/GetPileUpWeight(nPileUp,0),GetPileUpWeight(nPileUp,-1)/GetPileUpWeight(nPileUp,0)};
-  }
-  else{
-    r_PU={1.,1.};
-  }
-  //
-  if(L1PrefireReweight_Central){
-    r_Prefire={L1PrefireReweight_Up/L1PrefireReweight_Central, L1PrefireReweight_Down/L1PrefireReweight_Central };
-  }
-  else{
-    r_Prefire={1.,1.};
-  }
-  //zptweight
+  //zptweight , weakweight, z0weight
+
   lhes=GetLHEs();
   gens=GetGens();
   if(IsDYSample){
@@ -188,8 +207,31 @@ void JHAnalyzerBase::SetEventBaseSysWeight(){
 
       //cout << "gen_l0_dressed is set" << gen_l0_dressed.Pt() << endl;
     }
+    //cout << "---run=" << run << endl;
+    //cout << "gen_l0_dressed is set" << gen_l0_dressed.Pt() << endl;
+    //cout << "gen_l1_dressed is set" << gen_l1_dressed.Pt() << endl;
   }//[end] dysample
   z0weight=GetZ0Weight(vertex_Z);
+  //[END]zptweight , weakweight, z0weight
+  //topptweight
+  if(IsTTSample)topptweight=mcCorr->GetTopPtReweight(gens);
+  //cout << "topptweight=" << topptweight << endl;
+  if(!runSys) return;
+
+  //pu,prefire
+  if(GetPileUpWeight(nPileUp,0)){
+    r_PU={GetPileUpWeight(nPileUp,1)/GetPileUpWeight(nPileUp,0),GetPileUpWeight(nPileUp,-1)/GetPileUpWeight(nPileUp,0)};
+  }
+  else{
+    r_PU={1.,1.};
+  }
+  //
+  if(L1PrefireReweight_Central){
+    r_Prefire={L1PrefireReweight_Up/L1PrefireReweight_Central, L1PrefireReweight_Down/L1PrefireReweight_Central };
+  }
+  else{
+    r_Prefire={1.,1.};
+  }
 
 }
 void JHAnalyzerBase::SetSysStructure(){
@@ -291,9 +333,9 @@ void JHAnalyzerBase::InitClassVariablesPerEvent(){
   //--Event variables--//
   weight=1.;
   btagsf=1.;
-  zptweight=1.;
-  z0weight=1.;
-  weakweight=1.;
+  //zptweight=1.;
+  //z0weight=1.;
+  //weakweight=1.;
 }
 void JHAnalyzerBase::FillHist(TString histname, double value, double this_weight, int n_bin, double x_min, double x_max){
   //---ArgFillHist structure---//
@@ -590,6 +632,51 @@ void JHAnalyzerBase::ClearReserveHist(){
   vReserveHist.clear();
 }
 
+void JHAnalyzerBase::SetSysSimpleMuon(int direction){
+  sysname_current="muonscale";
+  sysidx1_current="0";
+  if(direction>0){
+    sysidx2_current="Up";
+    AllMuons=AllMuons_plus;
+  }
+  else if(direction<0){
+    sysidx2_current="Down";
+    AllMuons=AllMuons_minus;
+  }
+  else{
+    cout << "[JHAnalyzerBase::SetSysSimpleMuon]wrong direction=" << direction << endl;
+    exit(ENODATA);
+
+  }
+  std::sort(AllMuons.begin(), AllMuons.end(), PtComparing);
+  AllElectrons=AllElectrons_roch;
+  AllJets=AllJets_raw;
+  PuppiMET=UpdateMETByMuonScale(PuppiMET_roch);  
+  
+}
+
+void JHAnalyzerBase::SetSysSimpleElectron(int direction){
+  sysname_current="electronscale";
+  sysidx1_current="0";
+  if(direction>0){
+    sysidx2_current="Up";
+    AllElectrons=AllElectrons_plus;
+  }
+  else if(direction<0){
+    sysidx2_current="Down";
+    AllElectrons=AllElectrons_minus;
+  }
+  else{
+    cout << "[JHAnalyzerBase::SetSysSimpleElectron]wrong direction=" << direction << endl;
+    exit(ENODATA);
+
+  }
+  std::sort(AllElectrons.begin(), AllElectrons.end(), PtComparing);
+  AllMuons=AllMuons_roch;
+  AllJets=AllJets_raw;
+  PuppiMET=UpdateMETByElectronScale(PuppiMET_roch);  
+  
+}
 void JHAnalyzerBase::SetSys(MomentumVar _sys){
   sysname_current=_sys.name;
   //sysdir_current=_sys.dir;
@@ -648,6 +735,143 @@ void JHAnalyzerBase::SetSys(MomentumVar _sys){
 
 
 }
+//vMuonMomentumVar
+void JHAnalyzerBase::SetupSimpleMuonMomentumVar(){
+  AllMuons_plus=AllMuons_raw;
+  AllMuons_minus=AllMuons_raw;
+  unsigned int muonsize=AllMuons_raw.size();
+  for(unsigned int i=0;i<muonsize;i++){
+    double rc_nom= MuonMomentumCorrection(AllMuons_raw[i]);//nominal rochester corr
+    double drc_stat=0.;
+    double drc_sys_plus=0.;
+    double drc_sys_minus=0.;
+    //---For variations---//
+    for(const auto& _vsys : vMuonMomentumVar){
+      bool isStat=0;
+      if(_vsys.size() > 10) isStat=1;
+      if(isStat){
+	double sum_rc=0;
+	double sum_rc2=0;
+	for(const auto &_sys : _vsys){//for replica elements
+	  double this_rc = MuonMomentumCorrection(AllMuons_raw[i],_sys.idx1,_sys.idx2);
+	  sum_rc+=this_rc;
+	  sum_rc2+=pow(this_rc,2);
+	}
+	double mean_rc=sum_rc/_vsys.size();
+	double mean_rc2=sum_rc2/_vsys.size();
+	drc_stat=sqrt(mean_rc2-pow(mean_rc,2)); //standard deviation
+      }else{
+	for(const auto &_sys : _vsys){
+	  double this_rc = MuonMomentumCorrection(AllMuons_raw[i],_sys.idx1,_sys.idx2);
+	  if(this_rc>rc_nom){
+	    drc_sys_plus=sqrt(pow(drc_sys_plus,2) + pow(rc_nom-this_rc,2));
+	  }else{
+	    drc_sys_minus=sqrt(pow(drc_sys_minus,2) + pow(rc_nom-this_rc,2));
+	  }	  
+	}//[END] for _sys
+      }//[END] if not isStat
+    }//[END]_vsys
+    //---now drc_stat and drc_sys_plus,drc_sys_minus are set
+    double drc_plus=sqrt( pow(drc_stat,2) + pow(drc_sys_plus,2));
+    double drc_minus=sqrt( pow(drc_stat,2) + pow(drc_sys_minus,2));
+    /*
+    cout << "------muon----" << endl;
+    cout << "pt=" << AllMuons_raw[i].MiniAODPt() << endl;
+    cout << "drc_plus=" << drc_plus << endl;
+    cout << "drc_minus=" << drc_minus << endl;
+    cout << "drc_stat=" << drc_stat << endl;
+    cout << "drc_sys_plus=" << drc_sys_plus << endl;
+    cout << "drc_sys_minus=" << drc_sys_minus << endl;
+    */
+    /*
+    void AnalyzerCore::FillHist(TString histname,
+				double value_x, double value_y,
+				double weight,
+				int n_binx, double x_min, double x_max,
+				int n_biny, double y_min, double y_max){
+    */
+
+    AnalyzerCore::FillHist((TString)"x_muonPt__y_rel_drc_plus",
+	     AllMuons_raw[i].MiniAODPt(),drc_plus/rc_nom,1.,
+	     100,0.,200.,
+	     100,0.,2.);
+
+    AnalyzerCore::FillHist((TString)"x_muonPt__y_rel_drc_minus",
+	     AllMuons_raw[i].MiniAODPt(),drc_minus/rc_nom,1.,
+	     100,0.,200.,
+	     100,0.,2.);
+
+    AllMuons_plus[i].SetPtEtaPhiM(AllMuons_raw[i].MiniAODPt()*(rc_nom+drc_plus), AllMuons_raw[i].Eta(), AllMuons_raw[i].Phi(),AllMuons_raw[i].M());
+    AllMuons_minus[i].SetPtEtaPhiM(AllMuons_raw[i].MiniAODPt()*(max(0.,rc_nom-drc_minus)), AllMuons_raw[i].Eta(), AllMuons_raw[i].Phi(),AllMuons_raw[i].M());
+  }//[END] for ith muon
+  //std::sort(AllMuons.begin(), AllMuons.end(), PtComparing);
+}
+
+
+void JHAnalyzerBase::SetupSimpleElectronMomentumVar(){
+  AllElectrons_plus=AllElectrons_raw;
+  AllElectrons_minus=AllElectrons_raw;
+  unsigned int electronsize=AllElectrons_raw.size();
+  for(unsigned int i=0;i<electronsize;i++){
+    double rc_nom= ElectronEnergyCorrection(AllElectrons_raw[i]);//nominal rochester corr
+    double drc_stat=0.;
+    double drc_sys_plus=0.;
+    double drc_sys_minus=0.;
+    //---For variations---//
+    for(const auto& _vsys : vElectronMomentumVar){
+      bool isStat=0;
+      if(_vsys.size() > 10) isStat=1;
+      if(isStat){
+	double sum_rc=0;
+	double sum_rc2=0;
+	for(const auto &_sys : _vsys){//for replica elements
+	  double this_rc = ElectronEnergyCorrection(AllElectrons_raw[i],_sys.idx1,_sys.idx2);
+	  sum_rc+=this_rc;
+	  sum_rc2+=pow(this_rc,2);
+	}
+	double mean_rc=sum_rc/_vsys.size();
+	double mean_rc2=sum_rc2/_vsys.size();
+	drc_stat=sqrt(mean_rc2-pow(mean_rc,2)); //standard deviation
+      }else{
+	for(const auto &_sys : _vsys){
+	  double this_rc = ElectronEnergyCorrection(AllElectrons_raw[i],_sys.idx1,_sys.idx2);
+	  if(this_rc>rc_nom){
+	    drc_sys_plus=sqrt(pow(drc_sys_plus,2) + pow(rc_nom-this_rc,2));
+	  }else{
+	    drc_sys_minus=sqrt(pow(drc_sys_minus,2) + pow(rc_nom-this_rc,2));
+	  }	  
+	}//[END] for _sys
+      }//[END] if not isStat
+    }//[END]_vsys
+    //---now drc_stat and drc_sys_plus,drc_sys_minus are set
+    double drc_plus=sqrt( pow(drc_stat,2) + pow(drc_sys_plus,2));
+    double drc_minus=sqrt( pow(drc_stat,2) + pow(drc_sys_minus,2));
+    AllElectrons_plus[i]*=(rc_nom+drc_plus);
+    AllElectrons_minus[i]*=(max(0.,rc_nom-drc_minus));
+    /*
+    cout << "------electron----" << endl;
+    cout << "pt=" << AllElectrons_raw[i].UncorrPt() << endl;
+    cout << "drc_plus=" << drc_plus << endl;
+    cout << "drc_minus=" << drc_minus << endl;
+    cout << "drc_stat=" << drc_stat << endl;
+    cout << "drc_sys_plus=" << drc_sys_plus << endl;
+    cout << "drc_sys_minus=" << drc_sys_minus << endl;
+    */
+    AnalyzerCore::FillHist("x_electronPt__y_rel_drc_plus",
+	     AllElectrons_raw[i].UncorrPt(),drc_plus/rc_nom,1.,
+	     100,0.,200.,
+	     100,0.,2.);
+
+    AnalyzerCore::FillHist("x_electronPt__y_rel_drc_minus",
+	     AllElectrons_raw[i].UncorrPt(),drc_minus/rc_nom,1,
+	     100,0,200,
+	     100,0,2);
+
+  }//[END] for ith electron
+  //std::sort(AllElectrons.begin(), AllElectrons.end(), PtComparing);
+}
+
+
 
 void JHAnalyzerBase::SetSys(MuonMomentumVar _sys){
   sysname_current=_sys.name;

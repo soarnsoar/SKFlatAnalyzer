@@ -1,68 +1,16 @@
 Submitting job(s)..................................................
-50 job(s) submitted to cluster 2242574.
+50 job(s) submitted to cluster 2243754.
 Submitting job(s)..................................................
-50 job(s) submitted to cluster 2242579.
+50 job(s) submitted to cluster 2243760.
 Submitting job(s)..................................................
-50 job(s) submitted to cluster 2242582.
+50 job(s) submitted to cluster 2243765.
 Submitting job(s)..................................................
-50 job(s) submitted to cluster 2242586.
+50 job(s) submitted to cluster 2243768.
 Submitting job(s)..................................................
-50 job(s) submitted to cluster 2242589.
+50 job(s) submitted to cluster 2243769.
 Submitting job(s)...........................
-27 job(s) submitted to cluster 2242590.
+27 job(s) submitted to cluster 2243770.
 Submitting job(s).......................
-23 job(s) submitted to cluster 2242591.
+23 job(s) submitted to cluster 2243771.
 Submitting job(s)...............
-15 job(s) submitted to cluster 2242592.
-condor_submit WORKDIR_HADD/run.jds > WORKDIR_HADD/run.jid
-condor_submit WORKDIR_HADD/run.jds > WORKDIR_HADD/run.jid
-condor_submit WORKDIR_HADD/run.jds > WORKDIR_HADD/run.jid
-condor_submit WORKDIR_HADD/run.jds > WORKDIR_HADD/run.jid
-condor_submit WORKDIR_HADD/run.jds > WORKDIR_HADD/run.jid
-condor_submit WORKDIR_HADD/run.jds > WORKDIR_HADD/run.jid
-condor_submit WORKDIR_HADD/run.jds > WORKDIR_HADD/run.jid
-condor_submit WORKDIR_HADD/run.jds > WORKDIR_HADD/run.jid
-##################################################
-Submission Finished
-- JobID = 423237
-- Analyzer = DiLeptonAnalyzer
-- Skim = 
-- InputSamples = ['WJets_Sherpa', 'QCD_bEnriched_HT100to200', 'QCD_bEnriched_HT200to300', 'QCD_bEnriched_HT300to500', 'QCD_bEnriched_HT500to700', 'QCD_bEnriched_HT700to1000', 'QCD_bEnriched_HT1000to1500', 'QCD_bEnriched_HT1500to2000']
-- NJobs = 15
-- Era = 2017
-- UserFlags = ['runSys']
-- RunDir = /data6/Users/jhchoi/SKFlatRunlog//2024_04_07_234440__423237__DiLeptonAnalyzer__Era2017__runSys__TAMSA1/QCD_bEnriched_HT1500to2000/
-- output will be send to : /data6/Users/jhchoi/SKFlatOutput//Run2UltraLegacy_v3/DiLeptonAnalyzer/2017/runSys__
-##################################################
-submit hadd
-CheckOutputSize...
-<AFTER hadd fin. please rm remainings..>
-rm /data6/Users/jhchoi/SKFlatRunlog//2024_04_07_234440__423237__DiLeptonAnalyzer__Era2017__runSys__TAMSA1/QCD_bEnriched_HT100to200//output/*.root
-submit hadd
-CheckOutputSize...
-<AFTER hadd fin. please rm remainings..>
-rm /data6/Users/jhchoi/SKFlatRunlog//2024_04_07_234440__423237__DiLeptonAnalyzer__Era2017__runSys__TAMSA1/QCD_bEnriched_HT200to300//output/*.root
-submit hadd
-CheckOutputSize...
-<AFTER hadd fin. please rm remainings..>
-rm /data6/Users/jhchoi/SKFlatRunlog//2024_04_07_234440__423237__DiLeptonAnalyzer__Era2017__runSys__TAMSA1/QCD_bEnriched_HT300to500//output/*.root
-submit hadd
-CheckOutputSize...
-<AFTER hadd fin. please rm remainings..>
-rm /data6/Users/jhchoi/SKFlatRunlog//2024_04_07_234440__423237__DiLeptonAnalyzer__Era2017__runSys__TAMSA1/QCD_bEnriched_HT500to700//output/*.root
-submit hadd
-CheckOutputSize...
-<AFTER hadd fin. please rm remainings..>
-rm /data6/Users/jhchoi/SKFlatRunlog//2024_04_07_234440__423237__DiLeptonAnalyzer__Era2017__runSys__TAMSA1/QCD_bEnriched_HT700to1000//output/*.root
-submit hadd
-CheckOutputSize...
-<AFTER hadd fin. please rm remainings..>
-rm /data6/Users/jhchoi/SKFlatRunlog//2024_04_07_234440__423237__DiLeptonAnalyzer__Era2017__runSys__TAMSA1/QCD_bEnriched_HT1000to1500//output/*.root
-submit hadd
-CheckOutputSize...
-<AFTER hadd fin. please rm remainings..>
-rm /data6/Users/jhchoi/SKFlatRunlog//2024_04_07_234440__423237__DiLeptonAnalyzer__Era2017__runSys__TAMSA1/QCD_bEnriched_HT1500to2000//output/*.root
-submit hadd
-CheckOutputSize...
-<AFTER hadd fin. please rm remainings..>
-rm /data6/Users/jhchoi/SKFlatRunlog//2024_04_07_234440__423237__DiLeptonAnalyzer__Era2017__runSys__TAMSA1/WJets_Sherpa//output/*.root
+15 job(s) submitted to cluster 2243772.

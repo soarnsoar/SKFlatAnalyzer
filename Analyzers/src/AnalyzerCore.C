@@ -3221,12 +3221,16 @@ double AnalyzerCore::ElectronEnergyCorrection(const Electron& electron,int set,i
   }else{//for MC, we need gen_l0_dressed
     Gen gen;
     //cout << "[EleRoc] gen_l0_dressed is set pt=" << gen_l0_dressed.Pt() << endl;
+    //cout << "[EleRoc] gen_l1_dressed is set pt=" << gen_l1_dressed.Pt() << endl;
     if(!gen_l0_dressed.IsEmpty()&&gen_l0_dressed.DeltaR(electron)<0.1){
       gen=gen_l0_dressed;
+      //cout << "[EleRoc]gen_l0_dressed is matched" << endl;
     }else if(!gen_l1_dressed.IsEmpty()&&gen_l1_dressed.DeltaR(electron)<0.1){
       gen=gen_l1_dressed;
+      //cout << "[EleRoc]gen_l1_dressed is matched" << endl;
     }else{
       gen=SMPGetGenMatchedLepton(electron,gens,1);
+      //cout << "[EleRoc]Run matching due to no matched dressed electron" << endl;
     }
     gRandom->SetSeed((run<<15)+(lumi<<10)+(event<<5)+electron.Eta()*100);
     double u=gRandom->Rndm();
@@ -3329,3 +3333,38 @@ double AnalyzerCore::GetBinContentUser(TH3* hist,double valx,double valy,double 
   if(valz>zmax) valz=zmax-0.001;
   return hist->GetBinContent(hist->FindBin(valx,valy,valz))+sys*hist->GetBinError(hist->FindBin(valx,valy,valz));
 }
+
+double AnalyzerCore::GetTopPtReweight2(const std::vector<Gen>& gens){
+  //==== ref: https://twiki.cern.ch/twiki/bin/viewauth/CMS/TopPtReweighting2017
+  //==== Only top quarks in SM ttbar events must be reweighted,
+  //==== not single tops or tops from BSM production mechanisms.
+  if(!MCSample.Contains("TT") || !MCSample.Contains("powheg")){
+    return 1.;
+  }
+  //==== initialize with large number
+  double toppt1=10000, toppt2=10000;
+  bool found_top = false, found_atop = false;
+
+  for(vector<Gen>::const_iterator genit=gens.begin(); genit!=gens.end(); genit++){
+
+    if(genit->Status() == 22){
+      if(genit->PID() == 6){
+        toppt1= genit->Pt();
+        found_top = true;
+      }
+      else if(genit->PID() == -6){
+        toppt2= genit->Pt();
+        found_atop = true;
+      }
+    }
+    //==== after we found top pair, break the loop
+    if(found_top && found_atop) break;
+  }
+  double pt_reweight = 1.;
+  //==== if top pair is not found, return 1.
+  pt_reweight*=0.103*exp(-0.0118*toppt1)-0.000134*toppt1+0.973;
+  pt_reweight*=0.103*exp(-0.0118*toppt2)-0.000134*toppt2+0.973;
+  pt_reweight = sqrt(pt_reweight);
+  return pt_reweight;
+}
+

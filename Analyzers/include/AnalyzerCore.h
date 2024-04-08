@@ -339,7 +339,7 @@ public:
   vector<Gen> gens;
   Gen gen_p0,gen_p1,gen_l0,gen_l1,gen_l0_dressed,gen_l1_dressed,gen_l0_bare,gen_l1_bare;
   double GetDYWeakWeight(double mass);
-
+  double GetTopPtReweight2(const std::vector<Gen>& gens);
   Gen SMPGetGenMatchedLepton(const Lepton& lep,const std::vector<Gen>& gens,int mode);
 
   static double GetBinContentUser(TH1* hist,double valx,int sys);
@@ -347,7 +347,7 @@ public:
   static double GetBinContentUser(TH3* hist,double valx,double valy,double valz,int sys);
 
   bool IsDYSample;
-
+  bool IsTTSample;
   //--[end]jhchoi
   //==== Quick Plotters
   void FillLeptonPlots(std::vector<Lepton *> leps, TString this_region, double weight);
