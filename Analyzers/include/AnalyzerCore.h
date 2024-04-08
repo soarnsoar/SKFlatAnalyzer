@@ -346,6 +346,8 @@ public:
   static double GetBinContentUser(TH2* hist,double valx,double valy,int sys);
   static double GetBinContentUser(TH3* hist,double valx,double valy,double valz,int sys);
 
+  bool IsDYSample;
+
   //--[end]jhchoi
   //==== Quick Plotters
   void FillLeptonPlots(std::vector<Lepton *> leps, TString this_region, double weight);

@@ -7,7 +7,7 @@ class DiLeptonAnalyzer : public JHAnalyzerBase {
 
 public:
 
-  bool IsDYSample;
+
   void initializeAnalyzer() override;
   void EventLoop() override;
   

@@ -2938,7 +2938,7 @@ double AnalyzerCore::GetZ0Weight(double valx){
 }
 //For Correction, copy AFB functions
 void AnalyzerCore::GetAFBGenParticles(const vector<Gen>& gens,Gen& parton0,Gen& parton1,Gen& l0,Gen& l1,int mode){
-  bool IsDYSample=MCSample.Contains("DYJets")||MCSample.Contains("ZToEE")||MCSample.Contains("ZToMuMu")||MCSample.Contains(TRegexp("DY[0-9]Jets"));
+  
   //mode 0:bare 1:dressed01 2:dressed04 3:beforeFSR
   if(!IsDYSample&&!MCSample.Contains("GamGamToLL")&&!MCSample.Contains("TTLL")){
     cout <<"[AnalyzerCore::GetAFBGenParticles] this is only for dilepton event"<<endl;
@@ -3039,7 +3039,6 @@ void AnalyzerCore::GetAFBGenParticles(const vector<Gen>& gens,Gen& parton0,Gen& 
 
 
 void AnalyzerCore::GetAFBLHEParticles(const vector<LHE>& lhes,LHE& p0,LHE& p1,LHE& l0,LHE& l1,LHE& j0){
-  bool IsDYSample=MCSample.Contains("DYJets")||MCSample.Contains("ZToEE")||MCSample.Contains("ZToMuMu")||MCSample.Contains(TRegexp("DY[0-9]Jets"));
   if(!IsDYSample&&!MCSample.Contains("GamGamToLL")&&!MCSample.Contains("TTLL")){
     cout <<"[AnalyzerCore::GetAFBLHEParticles] this is only for dilepton event"<<endl;
     exit(EXIT_FAILURE);
@@ -3072,7 +3071,6 @@ void AnalyzerCore::GetAFBLHEParticles(const vector<LHE>& lhes,LHE& p0,LHE& p1,LH
 //
 double AnalyzerCore::GetDYWeakWeight(double mass){
   if(IsDATA) return 1.;
-  bool IsDYSample=MCSample.Contains("DYJets")||MCSample.Contains("ZToEE")||MCSample.Contains("ZToMuMu")||MCSample.Contains(TRegexp("DY[0-9]Jets"));
   if(!IsDYSample) return 1.;
   if(mass<55) return 0.988939;
   else if(mass<60) return 0.992556;
@@ -3113,10 +3111,12 @@ void AnalyzerCore::SetupRoccoR(){
 
   //TString rocpath=datapath+"/"+GetEra()+"/RoccoR/RoccoR"+GetEraShort()+"UL.txt"; //central roccor for amc
   TString rocpath=TString(getenv("SKFlat_WD"))+"/external/Aepcor/u_"+erashort(2,3)+"UL_1.txt"; //roccor for minnlo
+  cout << rocpath << endl;
   if(IsExists(rocpath)) roc=new RoccoR(rocpath.Data());
   else cout<<"[SMPAnalyzerCore::SetupRoccoR] no "+rocpath<<endl;
 
   TString rocelepath=TString(getenv("SKFlat_WD"))+"/external/Aepcor/e_"+erashort(2,3)+"UL_1.txt";
+  cout << rocelepath << endl;
   if(IsExists(rocelepath)){
     rocele=new Aepcor;
     rocele->init(rocelepath.Data(),Aepres::CB);
@@ -3218,8 +3218,9 @@ double AnalyzerCore::ElectronEnergyCorrection(const Electron& electron,int set,i
   double el_phi=electron.Phi();
   if(IsDATA){
     rc=rocele->kScaleDT(electron.UncorrPt(),el_eta,el_phi,electron.R9(),run,set,member);
-  }else{
+  }else{//for MC, we need gen_l0_dressed
     Gen gen;
+    //cout << "[EleRoc] gen_l0_dressed is set pt=" << gen_l0_dressed.Pt() << endl;
     if(!gen_l0_dressed.IsEmpty()&&gen_l0_dressed.DeltaR(electron)<0.1){
       gen=gen_l0_dressed;
     }else if(!gen_l1_dressed.IsEmpty()&&gen_l1_dressed.DeltaR(electron)<0.1){

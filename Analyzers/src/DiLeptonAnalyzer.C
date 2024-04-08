@@ -72,33 +72,13 @@ void DiLeptonAnalyzer::SetEventNormWeight(){
 
 void DiLeptonAnalyzer::SetEventWeight(){
   weight=1;
-  zptweight=1.;
-  weakweight=1.;
-  z0weight=1.;
   if(IsDATA) return;
   //----ZpT weight For DY
   //----DY WEAK NLO
   //---z0 weight
 
-  lhes=GetLHEs();
-  gens=GetGens();
-  if(IsDYSample){
-    GetAFBLHEParticles(lhes,lhe_p0,lhe_p1,lhe_l0,lhe_l1,lhe_j0);
-    GetAFBGenParticles(gens,gen_p0,gen_p1,gen_l0,gen_l1,3);//mode==3 -> before FSR
-    //GetAFBGenParticles(gens,gen_p0,gen_p1,gen_l0_dressed,gen_l1_dressed,1);
-    //GetAFBGenParticles(gens,gen_p0,gen_p1,gen_l0_bare,gen_l1_bare,0);
-    if(abs(lhe_l0.ID())==11||abs(lhe_l0.ID())==13){
-      TLorentzVector genZ=(gen_l0+gen_l1);
-      zptweight=GetZptWeight(genZ.M(),genZ.Rapidity(),genZ.Pt());
-      weakweight=GetDYWeakWeight(genZ.M());
-    }
-    //
-    
-  }//[end] dysample
-  z0weight=GetZ0Weight(vertex_Z);
   weight=MCweight()*ev.GetTriggerLumi("Full")*GetPileUpWeight(nPileUp,0)*GetPrefireWeight(0)*zptweight*weakweight*z0weight;
-  //weight=MCweight()*ev.GetTriggerLumi("Full")*GetPileUpWeight(nPileUp,0)*GetPrefireWeight(0);
-  //Muon
+
   if(IsDiMuonChannel){
     weight*=w_MuonID[0][0]*w_MuonRECO[0][0]*w_MuonTrk[0][0]*w_MuonTrigger[0][0];
   }
@@ -129,9 +109,7 @@ void DiLeptonAnalyzer::RunBasicZregion(){
     LepCh="mm";
     l1=mu1;
     l2=mu2;
-    l1_uncorr=TLorentzVector(mu1);
     l1_uncorr.SetPtEtaPhiM(mu1.MiniAODPt(), mu1.Eta(), mu1.Phi(), mu1.M()  );
-    l2_uncorr=TLorentzVector(mu2);
     l2_uncorr.SetPtEtaPhiM(mu2.MiniAODPt(), mu2.Eta(), mu2.Phi(), mu2.M()  );
   }
   else if(IsDiElectronChannel){
@@ -142,9 +120,7 @@ void DiLeptonAnalyzer::RunBasicZregion(){
     //l2=AllElectrons[el2idx];
     l1=el1;
     l2=el2;
-    l1_uncorr=TLorentzVector(el1);
     l1_uncorr.SetPtEtaPhiM(el1.UncorrPt(), el1.Eta(), el1.Phi(), el1.M()  );
-    l2_uncorr=TLorentzVector(el2);
     l2_uncorr.SetPtEtaPhiM(el2.UncorrPt(), el2.Eta(), el2.Phi(), el2.M()  );
   }  
 
@@ -188,7 +164,9 @@ void DiLeptonAnalyzer::FillHistAll(TString cutname){
 
   FillHist(cutname+"/nPV",nPV,weight,100,0,100);
   FillHist(cutname+"/M_ll",vZ.M(),weight,60,60,120);
+  if(zptweight&&weakweight&&z0weight)FillHist(cutname+"/M_ll",vZ.M(),weight/(zptweight*weakweight*z0weight),60,60,120);
   FillHist(cutname+"/M_ll_uncorr",(l1_uncorr+l2_uncorr).M(),weight,60,60,120);
+
 
 
   FillHist(cutname+"/pt_l1",l1.Pt(),weight,200,0,200);

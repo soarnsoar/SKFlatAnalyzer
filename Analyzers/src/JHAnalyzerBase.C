@@ -6,9 +6,11 @@ JHAnalyzerBase::JHAnalyzerBase(){
 }
 void JHAnalyzerBase::initializeAnalyzer(){
   cout << "[JHAnalyzerBase::initializeAnalyzer]DataEra->" << DataEra << endl;
+  IsDYSample=MCSample.Contains("DYJets")||MCSample.Contains("ZToEE")||MCSample.Contains("ZToMuMu")||MCSample.Contains(TRegexp("DY[0-9]Jets"));
+  cout << "IsDYSample=" << IsDYSample <<endl;
   AnalyzerCore::SetupEfficiency();
   AnalyzerCore::SetupRoccoR();
-  if(MCSample.Contains("DY")) AnalyzerCore::SetupZptWeight();
+  if(IsDYSample)  AnalyzerCore::SetupZptWeight();
   InitSystematicMomentumVariations();
   runSys=HasFlag("runSys");
   checksf=HasFlag("checksf");
@@ -102,13 +104,15 @@ JHAnalyzerBase::~JHAnalyzerBase(){
 
 void JHAnalyzerBase::executeEvent(){  
 
+
+  SetEventBaseSysWeight();//this should be done first due to gen info for rochcorr
   InitAllObjects();
   ev=GetEvent();
   //---Nominal and weight-base variations--//
   //--init variables--//
   runWeightBase=true;
   SetSysStructure();
-  SetEventBaseSysWeight();
+  
 
   InitClassVariablesPerEvent();
   InitBtagSys();
@@ -170,6 +174,22 @@ void JHAnalyzerBase::SetEventBaseSysWeight(){
     r_Prefire={1.,1.};
   }
   //zptweight
+  lhes=GetLHEs();
+  gens=GetGens();
+  if(IsDYSample){
+    GetAFBLHEParticles(lhes,lhe_p0,lhe_p1,lhe_l0,lhe_l1,lhe_j0);
+    GetAFBGenParticles(gens,gen_p0,gen_p1,gen_l0,gen_l1,3);//mode==3 -> before FSR
+    GetAFBGenParticles(gens,gen_p0,gen_p1,gen_l0_dressed,gen_l1_dressed,1);//needed for ele rocc
+    GetAFBGenParticles(gens,gen_p0,gen_p1,gen_l0_bare,gen_l1_bare,0);
+    if(abs(lhe_l0.ID())==11||abs(lhe_l0.ID())==13){
+      TLorentzVector genZ=(gen_l0+gen_l1);
+      zptweight=GetZptWeight(genZ.M(),genZ.Rapidity(),genZ.Pt());
+      weakweight=GetDYWeakWeight(genZ.M());
+
+      //cout << "gen_l0_dressed is set" << gen_l0_dressed.Pt() << endl;
+    }
+  }//[end] dysample
+  z0weight=GetZ0Weight(vertex_Z);
 
 }
 void JHAnalyzerBase::SetSysStructure(){
@@ -664,11 +684,11 @@ void JHAnalyzerBase::InitAllObjects(){
   AllMuons_raw=GetAllMuons();
   AllMuons_roch=MuonMomentumCorrection(AllMuons_raw);
   AllMuons=AllMuons_roch;
-  std::sort(AllMuons.begin(), AllMuons.end(), PtComparing);
+  //std::sort(AllMuons.begin(), AllMuons.end(), PtComparing);//no need to sort again
   AllElectrons_raw=GetAllElectrons();
   AllElectrons_roch=ElectronEnergyCorrection(AllElectrons_raw);
   AllElectrons=AllElectrons_roch;
-  std::sort(AllElectrons.begin(), AllElectrons.end(), PtComparing);
+  //std::sort(AllElectrons.begin(), AllElectrons.end(), PtComparing);
   AllJets_raw=GetAllJets();
   AllJets=AllJets_raw;
   std::sort(AllJets.begin(), AllJets.end(), PtComparing);
