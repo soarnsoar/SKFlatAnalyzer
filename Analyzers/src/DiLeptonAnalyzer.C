@@ -76,7 +76,7 @@ void DiLeptonAnalyzer::SetEventWeight(){
   //----ZpT weight For DY
   //----DY WEAK NLO
   //---z0 weight
-  weight=MCweight()*ev.GetTriggerLumi("Full")*GetPileUpWeight(nPileUp,0)*GetPrefireWeight(0)*zptweight*weakweight*z0weight;
+  weight=MCweight()*ev.GetTriggerLumi("Full")*GetPileUpWeight(nPileUp,0)*GetPrefireWeight(0)*zptweight*weakweight*z0weight*topptweight;
 
   if(IsDiMuonChannel){
     weight*=w_MuonID[0][0]*w_MuonRECO[0][0]*w_MuonTrk[0][0]*w_MuonTrigger[0][0];
@@ -84,7 +84,8 @@ void DiLeptonAnalyzer::SetEventWeight(){
   else if(IsDiElectronChannel){
     weight*=w_ElectronID[0][0]*w_ElectronRECO[0][0]*w_ElectronTrigger[0][0];
   }
-  
+
+
 }
 
 void DiLeptonAnalyzer::RunBasicZregion(){
@@ -162,9 +163,10 @@ void DiLeptonAnalyzer::RunBasicZregion(){
 
 void DiLeptonAnalyzer::FillHistAll(TString cutname){
 
+
   FillHist(cutname+"/nPV",nPV,weight,100,0,100);
+  FillHist(cutname+"/vertex_Z",vertex_Z,weight,80,-20,20);
   FillHist(cutname+"/M_ll",vZ.M(),weight,60,60,120);
-  //if(zptweight&&weakweight&&z0weight)FillHist(cutname+"/M_ll",vZ.M(),weight/(zptweight*weakweight*z0weight),60,60,120);
   FillHist(cutname+"/M_ll_uncorr",(l1_uncorr+l2_uncorr).M(),weight,60,60,120);
 
 
@@ -194,7 +196,38 @@ void DiLeptonAnalyzer::FillHistAll(TString cutname){
       FillHist(cutname+"/eta_j2",v_tightjet[1].Eta(),weight,50,-3,3);
     }
   }
+}
+void DiLeptonAnalyzer::FillHist(TString histname, double value, double weight, int n_bin, double x_min, double x_max){
+  JHAnalyzerBase::FillHist(histname,value,weight,n_bin,x_min,x_max);
   
+  if(!runSys){
+    N_1_weightmap["pu"]=GetPileUpWeight(nPileUp,0) ? 1/GetPileUpWeight(nPileUp,0) : 0;
+    N_1_weightmap["prefire"]=GetPileUpWeight(nPileUp,0) ? 1/GetPileUpWeight(nPileUp,0) : 0;
+    N_1_weightmap["zptweight"]=zptweight ? 1/zptweight : 0;
+    N_1_weightmap["z0weight"]=z0weight ? 1/z0weight : 0;
+    N_1_weightmap["weakweight"]=weakweight ? 1/weakweight : 0;
+    N_1_weightmap["topptweight"]=topptweight ? 1/topptweight : 0;
+    
+    N_1_weightmap["w_MuonID"]=w_MuonID[0][0] ? 1/w_MuonID[0][0] : 0;
+    N_1_weightmap["w_MuonRECO"]=w_MuonRECO[0][0] ? 1/w_MuonRECO[0][0] : 0;
+    N_1_weightmap["w_MuonTrk"]=w_MuonTrk[0][0] ? 1/w_MuonTrk[0][0] : 0;
+    N_1_weightmap["w_MuonTrigger"]=w_MuonTrigger[0][0] ? 1/w_MuonTrigger[0][0] : 0;
+    
+    N_1_weightmap["w_ElectronID"]=w_ElectronID[0][0] ? 1/w_ElectronID[0][0] : 0;
+    N_1_weightmap["w_ElectronRECO"]=w_ElectronRECO[0][0] ? 1/w_ElectronRECO[0][0] : 0;
+    N_1_weightmap["w_ElectronTrigger"]=w_ElectronTrigger[0][0] ? 1/w_ElectronTrigger[0][0] : 0;
+    N_1_weightmap["btagsf"]=btagsf ? btagsf : 0;
+    
+    
+    for(const auto& pair : N_1_weightmap){
+      TString suffix="__No_"+pair.first;
+      TString newhistname=histname+suffix;
+      JHAnalyzerBase::FillHist("N-1__"+newhistname,value,weight*pair.second,n_bin,x_min,x_max);
+    }
+  
+  }
+
+
 }
 void DiLeptonAnalyzer::EventLoop(){
   RunBasicZregion();

@@ -24,10 +24,7 @@ public:
   void RunBasicZregion();
   void RunBasicZregion_CheckSF();
   void FillHistAll(TString cutname);
-  void FillHistAllX(TString cutname, double this_weight);
-  void FillHistAllRegion(TString suffix, double this_weight,double this_btag);
-  //void FillHist(TString cutname,TString variablename,double value,double weight,int nbin,double xmin,double xmax);
-  
+  void FillHist(TString histname, double value, double weight, int n_bin, double x_min, double x_max);
 
 
 
@@ -54,7 +51,7 @@ public:
   DiLeptonAnalyzer();
   ~DiLeptonAnalyzer();
 
-
+  std::map<TString,double> N_1_weightmap;
   
 
 };

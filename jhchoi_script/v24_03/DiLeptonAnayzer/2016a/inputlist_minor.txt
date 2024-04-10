@@ -1,3 +1,6 @@
 SingleTop_tch_antitop_Incl
 SingleTop_tch_top_Incl
 SingleTop_sch_Lep
+TTLL_powheg
+TTLJ_powheg
+DYJetsToTauTau_MiNNLO

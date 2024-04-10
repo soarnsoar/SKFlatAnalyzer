@@ -900,7 +900,7 @@ try:
                 _nhadd=10
                 if nFiles>100:
                   #_nhadd=NJobs/10
-                  _nhadd=sqrt(NJobs)
+                  _nhadd=int*sqrt(NJobs))
                 _req_memory=int(__outputsize)*10
                 if _req_memory < 4000: _req_memory=4000
                 os.system("ExportShellCondorSetup_tamsa.py -c \"cd "+base_rundir+"&&hadd -j "+str(_nhadd)+" -f "+outputname+".root output/*.root&&mv "+outputname+".root "+FinalOutputPath+"\" -d WORKDIR_HADD -n hadd_"+outputname+" -m "+str(_nhadd)+" -r \""+str(_req_memory)+"\" -s")
