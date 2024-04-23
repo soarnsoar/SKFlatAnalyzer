@@ -40,6 +40,7 @@
 #pragma link C++ class JHAnalyzerBase+;
 #pragma link C++ class SingleLeptonAnalyzer+;
 #pragma link C++ class DiLeptonAnalyzer+;
+#pragma link C++ class bChargeID_TrainTree+;
 
 
 

@@ -1,26 +1,26 @@
-Submitting job(s).....
-5 job(s) submitted to cluster 2240169.
-Submitting job(s).....
-5 job(s) submitted to cluster 2240180.
+Submitting job(s)..................................................
+50 job(s) submitted to cluster 2252571.
+Submitting job(s)..................................................
+50 job(s) submitted to cluster 2252580.
 condor_submit WORKDIR_HADD/run.jds > WORKDIR_HADD/run.jid
 condor_submit WORKDIR_HADD/run.jds > WORKDIR_HADD/run.jid
 ##################################################
 Submission Finished
-- JobID = 870381
+- JobID = 119713
 - Analyzer = DiLeptonAnalyzer
 - Skim = SkimTree_Dilepton
 - InputSamples = ['SingleTop_tW_antitop_NoFullyHad', 'SingleTop_tW_top_NoFullyHad']
-- NJobs = 5
+- NJobs = 50
 - Era = 2016preVFP
 - UserFlags = ['runSys']
-- RunDir = /data6/Users/jhchoi/SKFlatRunlog//2024_04_04_041535__870381__DiLeptonAnalyzer__Era2016preVFP__SkimTree_Dilepton__runSys__TAMSA1/SingleTop_tW_top_NoFullyHad/
+- RunDir = /data6/Users/jhchoi/SKFlatRunlog//2024_04_19_125551__119713__DiLeptonAnalyzer__Era2016preVFP__SkimTree_Dilepton__runSys__TAMSA1/SingleTop_tW_top_NoFullyHad/
 - output will be send to : /data6/Users/jhchoi/SKFlatOutput//Run2UltraLegacy_v3/DiLeptonAnalyzer/2016preVFP/runSys__
 ##################################################
 submit hadd
 CheckOutputSize...
 <AFTER hadd fin. please rm remainings..>
-rm /data6/Users/jhchoi/SKFlatRunlog//2024_04_04_041535__870381__DiLeptonAnalyzer__Era2016preVFP__SkimTree_Dilepton__runSys__TAMSA1/SingleTop_tW_antitop_NoFullyHad//output/*.root
+rm /data6/Users/jhchoi/SKFlatRunlog//2024_04_19_125551__119713__DiLeptonAnalyzer__Era2016preVFP__SkimTree_Dilepton__runSys__TAMSA1/SingleTop_tW_antitop_NoFullyHad//output/*.root
 submit hadd
 CheckOutputSize...
 <AFTER hadd fin. please rm remainings..>
-rm /data6/Users/jhchoi/SKFlatRunlog//2024_04_04_041535__870381__DiLeptonAnalyzer__Era2016preVFP__SkimTree_Dilepton__runSys__TAMSA1/SingleTop_tW_top_NoFullyHad//output/*.root
+rm /data6/Users/jhchoi/SKFlatRunlog//2024_04_19_125551__119713__DiLeptonAnalyzer__Era2016preVFP__SkimTree_Dilepton__runSys__TAMSA1/SingleTop_tW_top_NoFullyHad//output/*.root

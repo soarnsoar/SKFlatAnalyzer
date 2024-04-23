@@ -50,6 +50,7 @@ class JHAnalyzerBase : public AnalyzerCore {
   
   //--(2) Define EventLoop--//
   virtual void EventLoop(){};//main function making what you want
+  virtual void TruthLoop(){};
   void FillHist(TString histname, double value, double this_weight, int n_bin, double x_min, double x_max);
   void FillHistUp(TString sysname,TString histname,double value,double this_weight,int n_bin,double x_min, double x_max);
   void FillHistDown(TString sysname,TString histname,double value,double this_weight,int n_bin,double x_min, double x_max);
@@ -138,27 +139,27 @@ class JHAnalyzerBase : public AnalyzerCore {
   //--modules and their variables--//
   int GetIdxSingleMuReco(double ptmin, double etacut=2.4, double ptveto=10.);
   vector<Muon> GetSingleMuReco(double ptmin, double etacut=2.4, double ptveto=10.);
-  vector<Lepton*> GetPointerSingleMuReco(double ptmin, double etacut=2.4, double ptveto=10.);
+  //vector<Lepton*> GetPointerSingleMuReco(double ptmin, double etacut=2.4, double ptveto=10.);
   int GetIdxSingleElReco(double ptmin, double etacut=2.5, double ptveto=15.);
   vector<Electron> GetSingleElReco(double ptmin, double etacut=2.5, double ptveto=15.);
-  vector<Lepton*> GetPointerSingleElReco(double ptmin, double etacut=2.5, double ptveto=15.);
-  vector<int> GetIdxDiMuReco(double ptmin1, double ptmin2, double etacut=2.4, double ptveto=10. );
+  //vector<Lepton*> GetPointerSingleElReco(double ptmin, double etacut=2.5, double ptveto=15.);
+  //vector<int> GetIdxDiMuReco(double ptmin1, double ptmin2, double etacut=2.4, double ptveto=10. );
   vector<Muon> GetDiMuReco(double ptmin1, double ptmin2, double etacut=2.4, double ptveto=10. );
-  vector<Lepton*> GetPointerDiMuReco(double ptmin1, double ptmin2, double etacut=2.4, double ptveto=10. );
-  vector<int> GetIdxDiElReco(double ptmin1, double ptmin2, double etacut=2.5, double ptveto=15. );
+  //vector<Lepton*> GetPointerDiMuReco(double ptmin1, double ptmin2, double etacut=2.4, double ptveto=10. );
+  //vector<int> GetIdxDiElReco(double ptmin1, double ptmin2, double etacut=2.5, double ptveto=15. );
   vector<Electron> GetDiElReco(double ptmin1, double ptmin2, double etacut=2.5, double ptveto=15. );
-  vector<Lepton*> GetPointerDiElReco(double ptmin1, double ptmin2, double etacut=2.5, double ptveto=15. );
+  //vector<Lepton*> GetPointerDiElReco(double ptmin1, double ptmin2, double etacut=2.5, double ptveto=15. );
   void SetupSingleLeptonChannel();
   void SetupDiLeptonChannel();
   void SetIsDoubleLeptonTrigger();
   void PrintSFStructure();
-  vector<int> GetIdxTightJet(const vector<Lepton> &TightLeptonCollection ,double ptmin, double etacut, TString JetID="tight" );
+  //vector<int> GetIdxTightJet(const vector<Lepton> &TightLeptonCollection ,double ptmin, double etacut, TString JetID="tight" );
   vector<Jet> GetTightJet(const vector<Lepton> &TightLeptonCollection ,double ptmin, double etacut, TString JetID="tight" );
-  vector<Jet*> GetPointerTightJet(const vector<Lepton*> &TightLeptonCollection ,double ptmin, double etacut, TString JetID="tight" );
-  vector<int> GetIdxBJet(const vector<int> &v_TightjetIdx);
+  //vector<Jet*> GetPointerTightJet(const vector<Lepton*> &TightLeptonCollection ,double ptmin, double etacut, TString JetID="tight" );
+  //vector<int> GetIdxBJet(const vector<int> &v_TightjetIdx);
   vector<Jet> GetBJet(const vector<Jet> &v_Tightjet);
-  vector<Jet*> GetPointerBJet(const vector<Jet*> &v_Tightjet);
-  void SetBtagSF(const vector<int> &v_jetidx);
+  //vector<Jet*> GetPointerBJet(const vector<Jet*> &v_Tightjet);
+  //void SetBtagSF(const vector<int> &v_jetidx);
   void SetBtagSF(const vector<Jet> &v_jet);
   
   
@@ -202,29 +203,29 @@ class JHAnalyzerBase : public AnalyzerCore {
   vector<double> r_Prefire;
 
   //eff scale Factor
-  void SetMuonSFs(const vector<int> &v_muonidx);
+  //void SetMuonSFs(const vector<int> &v_muonidx);
   void SetMuonSFs(const vector<Muon> &v_muon);
-  void SetMuonSFs(const vector<Lepton*> &v_muon);
-  void SetMuonRecoSF(const vector<int> &v_muonidx);
+  //void SetMuonSFs(const vector<Lepton*> &v_muon);
+  //void SetMuonRecoSF(const vector<int> &v_muonidx);
   void SetMuonRecoSF(const vector<Lepton*> &v_muon);
-  void SetMuonIDSF(const vector<int> &v_muonidx);
+  //void SetMuonIDSF(const vector<int> &v_muonidx);
   void SetMuonIDSF(const vector<Lepton*> &v_muon);
-  void SetMuonTrkSF(const vector<int> &v_muonidx);
+  //void SetMuonTrkSF(const vector<int> &v_muonidx);
   void SetMuonTrkSF(const vector<Lepton*> &v_muon);
-  void SetMuonTriggerSF(const vector<int> &v_muonidx);
+  //void SetMuonTriggerSF(const vector<int> &v_muonidx);
   void SetMuonTriggerSF(const vector<Lepton*> &_v_muons);
   void SetSingleMuonTriggerSF(const vector<Lepton*> &v_muon);
   void SetSingleMuonTriggerORSF(const vector<Lepton*> &v_muon);
   void SetDoubleMuonTriggerSF(const vector<Lepton*> &v_muon);
 
-  void SetElectronSFs(const vector<int> &v_electronidx);
+  //void SetElectronSFs(const vector<int> &v_electronidx);
   void SetElectronSFs(const vector<Electron> &v_electron);
-  void SetElectronSFs(const vector<Lepton*> &v_electron);
-  void SetElectronRecoSF(const vector<int> &v_electronidx);
+  //void SetElectronSFs(const vector<Lepton*> &v_electron);
+  //void SetElectronRecoSF(const vector<int> &v_electronidx);
   void SetElectronRecoSF(const vector<Lepton*> &v_electron);
-  void SetElectronIDSF(const vector<int> &v_electronidx);
+  //void SetElectronIDSF(const vector<int> &v_electronidx);
   void SetElectronIDSF(const vector<Lepton*> &v_electron);
-  void SetElectronTriggerSF(const vector<int> &v_electronidx);
+  //void SetElectronTriggerSF(const vector<int> &v_electronidx);
   void SetElectronTriggerSF(const vector<Lepton*> &v_electron);
   void SetSingleElectronTriggerSF(const vector<Lepton*> &v_electron);
   void SetSingleElectronTriggerORSF(const vector<Lepton*> &v_electron);
@@ -260,7 +261,15 @@ class JHAnalyzerBase : public AnalyzerCore {
   std::vector<Muon> AllMuons_minus;  
   std::vector<Electron> AllElectrons_plus;
   std::vector<Electron> AllElectrons_minus;
-  
+
+  //lepton idx
+  int muon1_idx, muon2_idx;
+  int electron1_idx, electron2_idx;
+
+  //----Truth Level---
+  bool TagZbLHE(bool include_tautau=false);
+  int idx_outgoing_b;
+  //bool TagWbLHE();
  private:
   MomentumVar _CurrentSys;
   JetTagging::Parameters jtp;

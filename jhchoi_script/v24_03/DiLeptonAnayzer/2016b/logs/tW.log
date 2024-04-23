@@ -1,26 +1,26 @@
 Submitting job(s)..................................................
-50 job(s) submitted to cluster 2244732.
+50 job(s) submitted to cluster 2251459.
 Submitting job(s)..................................................
-50 job(s) submitted to cluster 2244751.
+50 job(s) submitted to cluster 2251466.
 condor_submit WORKDIR_HADD/run.jds > WORKDIR_HADD/run.jid
 condor_submit WORKDIR_HADD/run.jds > WORKDIR_HADD/run.jid
 ##################################################
 Submission Finished
-- JobID = 699257
+- JobID = 541354
 - Analyzer = DiLeptonAnalyzer
 - Skim = SkimTree_Dilepton
 - InputSamples = ['SingleTop_tW_antitop_NoFullyHad', 'SingleTop_tW_top_NoFullyHad']
 - NJobs = 50
 - Era = 2016postVFP
 - UserFlags = []
-- RunDir = /data6/Users/jhchoi/SKFlatRunlog//2024_04_10_133157__699257__DiLeptonAnalyzer__Era2016postVFP__SkimTree_Dilepton__TAMSA1/SingleTop_tW_top_NoFullyHad/
+- RunDir = /data6/Users/jhchoi/SKFlatRunlog//2024_04_18_214107__541354__DiLeptonAnalyzer__Era2016postVFP__SkimTree_Dilepton__TAMSA1/SingleTop_tW_top_NoFullyHad/
 - output will be send to : /data6/Users/jhchoi/SKFlatOutput//Run2UltraLegacy_v3/DiLeptonAnalyzer/2016postVFP/
 ##################################################
 submit hadd
 CheckOutputSize...
 <AFTER hadd fin. please rm remainings..>
-rm /data6/Users/jhchoi/SKFlatRunlog//2024_04_10_133157__699257__DiLeptonAnalyzer__Era2016postVFP__SkimTree_Dilepton__TAMSA1/SingleTop_tW_antitop_NoFullyHad//output/*.root
+rm /data6/Users/jhchoi/SKFlatRunlog//2024_04_18_214107__541354__DiLeptonAnalyzer__Era2016postVFP__SkimTree_Dilepton__TAMSA1/SingleTop_tW_antitop_NoFullyHad//output/*.root
 submit hadd
 CheckOutputSize...
 <AFTER hadd fin. please rm remainings..>
-rm /data6/Users/jhchoi/SKFlatRunlog//2024_04_10_133157__699257__DiLeptonAnalyzer__Era2016postVFP__SkimTree_Dilepton__TAMSA1/SingleTop_tW_top_NoFullyHad//output/*.root
+rm /data6/Users/jhchoi/SKFlatRunlog//2024_04_18_214107__541354__DiLeptonAnalyzer__Era2016postVFP__SkimTree_Dilepton__TAMSA1/SingleTop_tW_top_NoFullyHad//output/*.root

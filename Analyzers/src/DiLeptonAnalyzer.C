@@ -56,11 +56,11 @@ bool DiLeptonAnalyzer::CheckIsDiElectronChannel(double min_mll,double max_mll){
   vector<Electron> v_electron=GetDiElReco(TriggerSafeCut_electron1, TriggerSafeCut_electron2);
   if( v_electron.size()<2) return 0;
   //SetElectronIdx(v_electronidx[0],v_electronidx[1]);
-  SetElectron(v_electron[0],v_electron[1]);
+  
   double mll=(v_electron[0]+v_electron[1]).M();
   if (mll < min_mll) return 0;
   if (mll > max_mll) return 0;
-
+  SetElectron(v_electron[0],v_electron[1]);
   return 1;
 }  
 
@@ -76,7 +76,7 @@ void DiLeptonAnalyzer::SetEventWeight(){
   //----ZpT weight For DY
   //----DY WEAK NLO
   //---z0 weight
-  weight=MCweight()*ev.GetTriggerLumi("Full")*GetPileUpWeight(nPileUp,0)*GetPrefireWeight(0)*zptweight*weakweight*z0weight*topptweight;
+  weight=MCweight()*ev.GetTriggerLumi("Full")*GetPileUpWeight(nPileUp,0)*GetPrefireWeight(0)*zptweight*weakweight*z0weight*topptweight*btagsf;
 
   if(IsDiMuonChannel){
     weight*=w_MuonID[0][0]*w_MuonRECO[0][0]*w_MuonTrk[0][0]*w_MuonTrigger[0][0];
@@ -97,7 +97,7 @@ void DiLeptonAnalyzer::RunBasicZregion(){
 
   IsDiMuonChannel=CheckIsDiMuonChannel(min_mll,max_mll);
   if(!IsDiMuonChannel) IsDiElectronChannel=CheckIsDiElectronChannel(min_mll,max_mll);
-  SetEventWeight();
+
   
   //--Now Objects are ready--//
 
@@ -123,27 +123,21 @@ void DiLeptonAnalyzer::RunBasicZregion(){
     l1_uncorr.SetPtEtaPhiM(el1.UncorrPt(), el1.Eta(), el1.Phi(), el1.M()  );
     l2_uncorr.SetPtEtaPhiM(el2.UncorrPt(), el2.Eta(), el2.Phi(), el2.M()  );
   }  
-
   else{
     return;
   }
   //----Jet---//
   v_tightlep={l1,l2};
-  //v_jetidx=GetIdxTightJet(v_tightlep,30,2.4);
-  //v_bjetidx=GetIdxBJet(v_jetidx);
-  v_tightjet=GetTightJet(v_tightlep,30,2.4);
+  v_tightjet=GetTightJet(v_tightlep,30,2.4,"tight");
   v_bjet=GetBJet(v_tightjet);
 
-  //njet=v_jetidx.size();
-  //nbjet=v_bjetidx.size();
   njet=v_tightjet.size();
   nbjet=v_bjet.size();
 
+  SetEventWeight();  
   FillHistAll("ll");
   FillHistAll(LepCh);
-  //---Because we loaded btag, need btagsf
-  if(!IsDATA) weight*=btagsf;
-  //cout << "btagsf=" << btagsf << endl;
+
   if(nbjet==0){
     FillHistAll("ll__0bjet");
     FillHistAll(LepCh+"__0bjet");
@@ -188,14 +182,66 @@ void DiLeptonAnalyzer::FillHistAll(TString cutname){
 
   FillHist(cutname+"/puppimet",PuppiMET.Pt(),weight,200,0,200);
 
+  
   if(njet>0){
     FillHist(cutname+"/pt_j1",v_tightjet[0].Pt(),weight,200,0,200);
     FillHist(cutname+"/eta_j1",v_tightjet[0].Eta(),weight,50,-3,3);
+    if(!runSys){
+      FillHist(cutname+"/dR_j1_l1",v_tightjet[0].DeltaR(l1),weight,40,0,4);
+      FillHist(cutname+"/dR_j1_l2",v_tightjet[0].DeltaR(l2),weight,40,0,4);
+      FillHist(cutname+"/dR_j1_Z",v_tightjet[0].DeltaR(vZ),weight,40,0,4);
+    }
     if(njet>1){
       FillHist(cutname+"/pt_j2",v_tightjet[1].Pt(),weight,200,0,200);
       FillHist(cutname+"/eta_j2",v_tightjet[1].Eta(),weight,50,-3,3);
+      if(!runSys){
+	FillHist(cutname+"/dR_j2_l1",v_tightjet[1].DeltaR(l1),weight,40,0,4);
+	FillHist(cutname+"/dR_j2_l2",v_tightjet[1].DeltaR(l2),weight,40,0,4);
+	FillHist(cutname+"/dR_j2_Z",v_tightjet[1].DeltaR(vZ),weight,40,0,4);
+      }
     }
   }
+  if(nbjet>0){
+    FillHist(cutname+"/pt_bj1",v_bjet[0].Pt(),weight,200,0,200);
+    FillHist(cutname+"/eta_bj1",v_bjet[0].Eta(),weight,50,-3,3);
+    if(!runSys){
+      FillHist(cutname+"/dR_bj1_l1",v_bjet[0].DeltaR(l1),weight,40,0,4);
+      FillHist(cutname+"/dR_bj1_l2",v_bjet[0].DeltaR(l2),weight,40,0,4);
+      FillHist(cutname+"/dR_bj1_Z",v_bjet[0].DeltaR(vZ),weight,40,0,4);
+    }
+    if(nbjet>1){
+      FillHist(cutname+"/pt_bj2",v_bjet[1].Pt(),weight,200,0,200);
+      FillHist(cutname+"/eta_bj2",v_bjet[1].Eta(),weight,50,-3,3);
+      if(!runSys){
+	FillHist(cutname+"/dR_bj2_l1",v_bjet[1].DeltaR(l1),weight,40,0,4);
+	FillHist(cutname+"/dR_bj2_l2",v_bjet[1].DeltaR(l2),weight,40,0,4);
+	FillHist(cutname+"/dR_bj2_Z",v_bjet[1].DeltaR(vZ),weight,40,0,4);
+      }
+    }
+  }
+
+
+
+  for( const auto& jet : v_tightjet){
+    FillHist(cutname+"/pt_j",jet.Pt(),weight,200,0,200);
+    FillHist(cutname+"/eta_j",jet.Eta(),weight,50,-3,3);
+    if(!runSys){
+      FillHist(cutname+"/dR_j_l1",jet.DeltaR(l1),weight,40,0,4);
+      FillHist(cutname+"/dR_j_l2",jet.DeltaR(l2),weight,40,0,4);
+      FillHist(cutname+"/dR_j_Z",jet.DeltaR(vZ),weight,40,0,4);
+    }
+  }
+  for( const auto& bjet : v_bjet){
+    FillHist(cutname+"/pt_bj",bjet.Pt(),weight,200,0,200);
+    FillHist(cutname+"/eta_bj",bjet.Eta(),weight,50,-3,3);
+    if(!runSys){
+      FillHist(cutname+"/dR_bj_l1",bjet.DeltaR(l1),weight,40,0,4);
+      FillHist(cutname+"/dR_bj_l2",bjet.DeltaR(l2),weight,40,0,4);
+      FillHist(cutname+"/dR_bj_Z",bjet.DeltaR(vZ),weight,40,0,4);
+    }
+  }
+
+
 }
 void DiLeptonAnalyzer::FillHist(TString histname, double value, double weight, int n_bin, double x_min, double x_max){
   JHAnalyzerBase::FillHist(histname,value,weight,n_bin,x_min,x_max);
@@ -216,7 +262,7 @@ void DiLeptonAnalyzer::FillHist(TString histname, double value, double weight, i
     N_1_weightmap["w_ElectronID"]=w_ElectronID[0][0] ? 1/w_ElectronID[0][0] : 0;
     N_1_weightmap["w_ElectronRECO"]=w_ElectronRECO[0][0] ? 1/w_ElectronRECO[0][0] : 0;
     N_1_weightmap["w_ElectronTrigger"]=w_ElectronTrigger[0][0] ? 1/w_ElectronTrigger[0][0] : 0;
-    N_1_weightmap["btagsf"]=btagsf ? btagsf : 0;
+    N_1_weightmap["btagsf"]=btagsf ? 1/btagsf : 0;
     
     
     for(const auto& pair : N_1_weightmap){
@@ -230,6 +276,8 @@ void DiLeptonAnalyzer::FillHist(TString histname, double value, double weight, i
 
 }
 void DiLeptonAnalyzer::EventLoop(){
+  AnalyzerCore::FillHist("all/nmuons/"+ProcessName,AllMuons.size(),1,100,0.,100.);
+  AnalyzerCore::FillHist("all/nelectrons/"+ProcessName,AllElectrons.size(),1,100,0.,100.);
   RunBasicZregion();
 }  
   

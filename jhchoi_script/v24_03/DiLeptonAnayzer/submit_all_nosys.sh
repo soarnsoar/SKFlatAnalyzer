@@ -4,5 +4,6 @@ for D in ${ARR_DIR[@]};do
     echo ${D}
     cd ${D}
     source batch_submit_all.sh
+    sleep 60
     cd -
 done
