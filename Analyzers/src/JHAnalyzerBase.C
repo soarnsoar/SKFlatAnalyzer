@@ -112,7 +112,7 @@ JHAnalyzerBase::~JHAnalyzerBase(){
 
 void JHAnalyzerBase::executeEvent(){  
 
-
+  if(!PassMETFilter()) return;
   SetEventBaseSysWeight();//this should be done first due to gen info for rochcorr
   InitAllObjects();
   ev=GetEvent();
