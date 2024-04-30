@@ -8,9 +8,10 @@ void JHAnalyzerBase::initializeAnalyzer(){
   cout << "[JHAnalyzerBase::initializeAnalyzer]DataEra->" << DataEra << endl;
   IsDYSample=MCSample.Contains("DYJets")||MCSample.Contains("ZToEE")||MCSample.Contains("ZToMuMu")||MCSample.Contains(TRegexp("DY[0-9]Jets"));
   cout << "IsDYSample=" << IsDYSample <<endl;
-  if(MCSample.Contains(TRegexp("TT[LJ][LJ]"))) IsTTSample=true;
+  IsTTSample=MCSample.Contains(TRegexp("TT[LJ][LJ]"));
   cout << "IsTTSample=" << IsTTSample <<endl;
   AnalyzerCore::SetupEfficiency();
+  AnalyzerCore::SetupJetPUIDTool();
   AnalyzerCore::SetupRoccoR();
   if(IsDYSample)  AnalyzerCore::SetupZptWeight();
   InitSystematicMomentumVariations();
@@ -26,6 +27,10 @@ void JHAnalyzerBase::initializeAnalyzer(){
   }
   cout << "[JHAnalyzerBase::initializeAnalyzer] runSys=" << runSys << endl;
 }
+
+
+
+
 void JHAnalyzerBase::SetUpBtag(){
   std::vector<JetTagging::Parameters> jtps;
   jtps.push_back( JetTagging::Parameters(JetTagging::DeepJet, JetTagging::Tight, JetTagging::incl, JetTagging::comb) );
@@ -197,6 +202,7 @@ void JHAnalyzerBase::SetEventBaseSysWeight(){
 
   lhes=GetLHEs();
   gens=GetGens();
+
   if(IsDYSample){
     GetAFBLHEParticles(lhes,lhe_p0,lhe_p1,lhe_l0,lhe_l1,lhe_j0);
     GetAFBGenParticles(gens,gen_p0,gen_p1,gen_l0,gen_l1,3);//mode==3 -> before FSR
@@ -335,6 +341,7 @@ void JHAnalyzerBase::InitClassVariablesPerEvent(){
   //--Event variables--//
   weight=1.;
   btagsf=1.;
+  jetpuidsf=1.; jetpuidsf_up=1.; jetpuidsf_down=1.;
   //zptweight=1.;
   //z0weight=1.;
   //weakweight=1.;
@@ -385,7 +392,8 @@ void JHAnalyzerBase::FillHistPUSys(TString histname, double value, double this_w
 }
 void JHAnalyzerBase::FillHistZptWeight(TString histname, double value, double this_weight, int n_bin, double x_min, double x_max){
   double r_zptweight=zptweight ? 1/zptweight : 1;
-  FillHistIdx2("zptweight",0,0,histname,value,this_weight*r_zptweight,n_bin,x_min,x_max);
+  FillHistUp("zptweight",histname,value,this_weight*r_zptweight,n_bin,x_min,x_max);
+  FillHistDown("zptweight",histname,value,this_weight,n_bin,x_min,x_max);
 }
 void JHAnalyzerBase::FillHistPSSys(TString histname, double value, double this_weight, int n_bin, double x_min, double x_max){
   //PS weight//
@@ -402,9 +410,15 @@ void JHAnalyzerBase::FillHistPSSys(TString histname, double value, double this_w
   }
 }
 void JHAnalyzerBase::FillHistPrefireSys(TString histname, double value, double this_weight, int n_bin, double x_min, double x_max){
-  //PU weight//
+  //Prefire weight//
   FillHistUp("prefire",histname,value,this_weight*r_Prefire[0],n_bin,x_min,x_max);
   FillHistDown("prefire",histname,value,this_weight*r_Prefire[1],n_bin,x_min,x_max);
+}
+
+void JHAnalyzerBase::FillHistJetPUID(TString histname, double value, double this_weight, int n_bin, double x_min, double x_max){
+  //Prefire weight//
+  FillHistUp("jetpuid",histname,value,this_weight*r_jetpuidsf_up,n_bin,x_min,x_max);
+  FillHistDown("jetpuid",histname,value,this_weight*r_jetpuidsf_down,n_bin,x_min,x_max);
 }
 
 
@@ -513,7 +527,7 @@ void JHAnalyzerBase::FillHistMuonTrk(TString histname, double value, double this
 
 
 
-
+/*
 void JHAnalyzerBase::FillReservedHistWeightBase(){
   for(const auto& arg : vReserveHist){ 
 
@@ -549,6 +563,9 @@ void JHAnalyzerBase::FillReservedHistWeightBase(){
     FillHistBtag(histname,value,this_weight,n_bin,x_min,x_max);
     //zptweight
     FillHistZptWeight(histname,value,this_weight,n_bin,x_min,x_max);
+    //JetPUID
+    FillHistJetPUID(histname,value,this_weight,n_bin,x_min,x_max);
+
     ///---EffTool--//
     //electronID//
     FillHistElectronID(histname,value,this_weight,n_bin,x_min,x_max);
@@ -568,7 +585,7 @@ void JHAnalyzerBase::FillReservedHistWeightBase(){
   }
 
 }
-
+*/
 void JHAnalyzerBase::FillHistWeightBase(TString histname,double value,double this_weight,int n_bin,double x_min,double x_max){
   //Nominal//
   AnalyzerCore::FillHist(histname+"/"+ProcessName,value,this_weight,n_bin,x_min,x_max);
@@ -585,6 +602,8 @@ void JHAnalyzerBase::FillHistWeightBase(TString histname,double value,double thi
   FillHistBtag(histname,value,this_weight,n_bin,x_min,x_max);
   //zptweight
   FillHistZptWeight(histname,value,this_weight,n_bin,x_min,x_max);
+  //jetpuid
+  FillHistJetPUID(histname,value,this_weight,n_bin,x_min,x_max);
   ///---EffTool--//
   //electronID//
   FillHistElectronID(histname,value,this_weight,n_bin,x_min,x_max);
@@ -606,7 +625,7 @@ void JHAnalyzerBase::FillHistWeightBase(TString histname,double value,double thi
 
 
 
-
+/*
 void JHAnalyzerBase::FillReservedHistMomentumVariations(){
  for(const auto &arg : vReserveHist){    
     TString histname="SYS/"+arg.histname+"/"+sysname_current+"/0/"+sysdir_current;
@@ -630,6 +649,7 @@ void JHAnalyzerBase::FillReservedHistLeptonMomentumVariations(){
     AnalyzerCore::FillHist(histname+"/"+ProcessName,value,this_weight,n_bin,x_min,x_max);
  }
 }
+*/
 void JHAnalyzerBase::ClearReserveHist(){
   vReserveHist.clear();
 }
@@ -1779,7 +1799,7 @@ vector<int> JHAnalyzerBase::GetIdxTightJet(const vector<Lepton> &v_tightlep, dou
 }
 */
 //---Get TightJet Object base
-vector<Jet> JHAnalyzerBase::GetTightJet(const vector<Lepton> &v_tightlep, double ptmin, double etacut, TString JetID ){
+vector<Jet> JHAnalyzerBase::GetTightJet(const vector<Lepton> &v_tightlep, double ptmin, double etacut, TString JetID, TString _JetPUID ){
   vector<Jet> v_tightjet;
   for(const auto& jet : AllJets){
     if(jet.Pt() < ptmin) continue;
@@ -1796,6 +1816,11 @@ vector<Jet> JHAnalyzerBase::GetTightJet(const vector<Lepton> &v_tightlep, double
     if(HasCloseLep)continue;
     //--end lepton cleaning--//
     v_tightjet.push_back(jet);
+  }
+  //--puid
+  if(_JetPUID!=""){
+    v_tightjet=map_jetpuid_tool[_JetPUID]->GetJetsPassPUID(v_tightjet);
+    SetJetPUIDSF(_JetPUID);
   }
   SetBtagSF(v_tightjet);
   return v_tightjet;
@@ -1895,7 +1920,15 @@ void JHAnalyzerBase::SetBtagSF(const vector<Jet> &v_tightjet){
     r_SystDownHTagUnCorr     =mcCorr->GetBTaggingReweight_1a(v_tightjet, jtp,"SystDownHTagUnCorr")/btagsf;
   }
 }
-
+void JHAnalyzerBase::SetJetPUIDSF(TString _JetPUID){
+  jetpuidsf=map_jetpuid_tool[_JetPUID]->GetCurrentSF();
+  if(runSys){
+    jetpuidsf_up  =map_jetpuid_tool[_JetPUID]->GetCurrentSF_Up();
+    jetpuidsf_down=map_jetpuid_tool[_JetPUID]->GetCurrentSF_Down();
+    r_jetpuidsf_up= jetpuidsf ? jetpuidsf_up/jetpuidsf : 0;
+    r_jetpuidsf_down= jetpuidsf ? jetpuidsf_down/jetpuidsf : 0;
+  }
+}
 /*
 void JHAnalyzerBase::SetMuonSFs(const vector<int> &v_muonidx){
   SetMuonRecoSF(v_muonidx);
@@ -2438,3 +2471,59 @@ bool JHAnalyzerBase::TagWbLHE(){
 }
 
 */
+
+
+
+double JHAnalyzerBase::GetP_JetRestFrame(TLorentzVector &lep, TLorentzVector &jet){
+  TLorentzVector vl_jetrest(lep);
+  vl_jetrest.Boost(-jet.BoostVector());
+  return vl_jetrest.P();
+}
+double JHAnalyzerBase::GetPt_wrt_Jet(TLorentzVector &lep, TLorentzVector &jet){
+  double ptwrtjet=lep.P()*sin(lep.Angle(jet.Vect()));
+  return ptwrtjet;
+}
+
+JHAnalyzerBase::bmuonvar JHAnalyzerBase::Get_bmuonvars(Muon &this_muon, Jet &this_jet){
+  //bmuon=Get_bmuonvars(AllMuons[i],jet);
+  bmuonvar ret;
+  ret.P_jetrest=min(GetP_JetRestFrame(this_muon,this_jet),10.);                                                                                          
+  ret.ptwrtbjet=min(GetPt_wrt_Jet(this_muon,this_jet),10.);                                                                                          
+  ret.dR_l_j=this_muon.DeltaR(this_jet);
+  ret.nsip3d=min(fabs(this_muon.IP3D()/this_muon.IP3Derr()),15.);                                                                                 
+  ret.reltrkiso=min(this_muon.TrkIso()/this_muon.Pt(),15.);                                                                                       
+  ret.reliso=min(this_muon.RelIso(),15.);                                                                                                           
+  ret.charge=this_muon.Charge();                                                                                                                    
+  return ret;
+}
+
+JHAnalyzerBase::belectronvar JHAnalyzerBase::Get_belectronvars(Electron &this_electron, Jet &this_jet){
+  //belectron=Get_belectronvars(AllElectrons[i],jet);
+  belectronvar ret;
+  ret.P_jetrest=min(GetP_JetRestFrame(this_electron,this_jet),10.);                                                                                          
+  ret.ptwrtbjet=min(GetPt_wrt_Jet(this_electron,this_jet),10.);                                                                                          
+  ret.dR_l_j=this_electron.DeltaR(this_jet);
+  ret.nsip3d=min(fabs(this_electron.IP3D()/this_electron.IP3Derr()),15.);                                                                                 
+  ret.reltrkiso=min(this_electron.TrkIso()/this_electron.Pt(),15.);                                                                                       
+  ret.reliso=min(this_electron.RelIso(),15.);                                                                                                           
+  ret.charge=this_electron.Charge();
+  ret.IsGsfCtfScPixChargeConsistent=this_electron.IsGsfCtfScPixChargeConsistent();
+
+  return ret;
+}
+
+
+JHAnalyzerBase::bjetvar JHAnalyzerBase::Get_bjetvars(Jet &this_jet){
+  //bjet=Get_belectronvars(AllElectrons[i],jet);
+  bjetvar ret;
+  ret.pt=this_jet.Pt();
+  ret.aeta=fabs(this_jet.Eta());
+  ret.ChargedHadronEnergyFraction=this_jet.GetChargedHadronEnergyFraction();
+  ret.NeutralHadronEnergyFraction=this_jet.GetNeutralHadronEnergyFraction();
+  ret.NeutralEmEnergyFraction=this_jet.GetNeutralEmEnergyFraction();
+  ret.ChargedEmEnergyFraction=this_jet.GetChargedEmEnergyFraction();
+  ret.MuonEnergyFraction=this_jet.GetMuonEnergyFraction();
+  ret.charge=this_jet.Charge();
+  ret.partonFlavour=this_jet.partonFlavour();//if is data -> 0
+  return ret;
+}

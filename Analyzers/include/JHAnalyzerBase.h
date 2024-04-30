@@ -78,6 +78,7 @@ class JHAnalyzerBase : public AnalyzerCore {
 
   void FillHistBtag(TString histname, double value, double this_weight, int n_bin, double x_min, double x_max);
   void FillHistZptWeight(TString histname, double value, double this_weight, int n_bin, double x_min, double x_max);
+  void FillHistJetPUID(TString histname, double value, double this_weight, int n_bin, double x_min, double x_max);
 
   void FillHistWeightBase(TString histname,double value,double this_weight,int n_bin,double x_min,double x_max);
   void FillReservedHistMomentumVariations();
@@ -154,14 +155,14 @@ class JHAnalyzerBase : public AnalyzerCore {
   void SetIsDoubleLeptonTrigger();
   void PrintSFStructure();
   //vector<int> GetIdxTightJet(const vector<Lepton> &TightLeptonCollection ,double ptmin, double etacut, TString JetID="tight" );
-  vector<Jet> GetTightJet(const vector<Lepton> &TightLeptonCollection ,double ptmin, double etacut, TString JetID="tight" );
+  vector<Jet> GetTightJet(const vector<Lepton> &TightLeptonCollection ,double ptmin, double etacut, TString JetID="tight", TString _JETPUID="" );
   //vector<Jet*> GetPointerTightJet(const vector<Lepton*> &TightLeptonCollection ,double ptmin, double etacut, TString JetID="tight" );
   //vector<int> GetIdxBJet(const vector<int> &v_TightjetIdx);
   vector<Jet> GetBJet(const vector<Jet> &v_Tightjet);
   //vector<Jet*> GetPointerBJet(const vector<Jet*> &v_Tightjet);
   //void SetBtagSF(const vector<int> &v_jetidx);
   void SetBtagSF(const vector<Jet> &v_jet);
-  
+  void SetJetPUIDSF(TString _JetPUID);
   
   double TriggerSafeCut_muon1, TriggerSafeCut_muon2;
   double TriggerSafeCut_electron1, TriggerSafeCut_electron2;
@@ -238,7 +239,10 @@ class JHAnalyzerBase : public AnalyzerCore {
   double r_SystUpLTagUnCorr,r_SystDownLTagUnCorr;
   double r_SystUpHTagCorr,r_SystDownHTagCorr;
   double r_SystUpHTagUnCorr,r_SystDownHTagUnCorr;
-
+  //puidsf
+  double jetpuidsf;
+  double jetpuidsf_up, jetpuidsf_down;
+  double r_jetpuidsf_up, r_jetpuidsf_down;
   //zptweight
   double zptweight;
   //z0weight
@@ -270,6 +274,50 @@ class JHAnalyzerBase : public AnalyzerCore {
   bool TagZbLHE(bool include_tautau=false);
   int idx_outgoing_b;
   //bool TagWbLHE();
+  //---functions for lep in bjet
+  double GetP_JetRestFrame(TLorentzVector &lep, TLorentzVector &jet);
+  double GetPt_wrt_Jet(TLorentzVector &lep, TLorentzVector &jet);
+
+  struct bmuonvar{
+    double P_jetrest=0;
+    double ptwrtbjet=0;
+    double dR_l_j=0;
+    double nsip3d=0;
+    double reltrkiso=0;
+    double reliso=0;
+    double charge=0;
+
+  };
+
+  struct belectronvar{
+    double P_jetrest=0;
+    double ptwrtbjet=0;
+    double dR_l_j=0;
+    double nsip3d=0;
+    double reltrkiso=0;
+    double reliso=0;
+    double charge=0;
+    double IsGsfCtfScPixChargeConsistent=0;
+  };
+
+  struct bjetvar{
+    double pt=0;
+    double aeta=0;
+    double ChargedHadronEnergyFraction=0;
+    double NeutralHadronEnergyFraction=0;
+    double NeutralEmEnergyFraction=0;
+    double ChargedEmEnergyFraction=0;
+    double MuonEnergyFraction=0;
+    double charge=0;
+    double partonFlavour=0;
+  };
+
+
+
+  JHAnalyzerBase::bmuonvar Get_bmuonvars(Muon &this_muon, Jet &this_jet);
+  JHAnalyzerBase::belectronvar Get_belectronvars(Electron &this_electron, Jet &this_jet);
+  JHAnalyzerBase::bjetvar Get_bjetvars(Jet &this_jet);
+
  private:
   MomentumVar _CurrentSys;
   JetTagging::Parameters jtp;

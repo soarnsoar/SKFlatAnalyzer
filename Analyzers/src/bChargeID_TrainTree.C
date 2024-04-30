@@ -58,6 +58,7 @@ void bChargeID_TrainTree::SetBranches(TTree *this_Tree){
   this_Tree->Branch("lhe_b_pdgid",&lhe_b_pdgid);
   this_Tree->Branch("Has_bMuon",&Has_bMuon);
   this_Tree->Branch("Has_bElectron",&Has_bElectron);
+  this_Tree->Branch("weight",&weight);
 }
 
 void bChargeID_TrainTree::SetMuon(const Muon& _l1, const Muon& _l2){
@@ -191,35 +192,35 @@ void bChargeID_TrainTree::RunBasicZregion(){
   jhchoi_newtree2->Fill();
 }
 void bChargeID_TrainTree::SetTreeValue_bJet(Jet &jet){
-  bjet.pt=jet.Pt();
-  bjet.aeta=jet.Eta();
-  bjet.ChargedHadronEnergyFraction=jet.GetChargedHadronEnergyFraction();
-  bjet.NeutralHadronEnergyFraction=jet.GetNeutralHadronEnergyFraction();
-  bjet.NeutralEmEnergyFraction=jet.GetNeutralEmEnergyFraction();
-  bjet.ChargedEmEnergyFraction=jet.GetChargedEmEnergyFraction();
-  bjet.MuonEnergyFraction=jet.GetMuonEnergyFraction();
-  bjet.charge=jet.Charge();
-  bjet.partonFlavour=jet.partonFlavour();
+  bjet=Get_bjetvars(jet);
+  //bjet.pt=jet.Pt();
+  //bjet.aeta=jet.Eta();
+  //bjet.ChargedHadronEnergyFraction=jet.GetChargedHadronEnergyFraction();
+  //bjet.NeutralHadronEnergyFraction=jet.GetNeutralHadronEnergyFraction();
+  //bjet.NeutralEmEnergyFraction=jet.GetNeutralEmEnergyFraction();
+  //bjet.ChargedEmEnergyFraction=jet.GetChargedEmEnergyFraction();
+  //bjet.MuonEnergyFraction=jet.GetMuonEnergyFraction();
+  //bjet.charge=jet.Charge();
+  //bjet.partonFlavour=jet.partonFlavour();
 }
 bool bChargeID_TrainTree::SetTreeValue_bMuon(Jet &jet){
   Init_bMuonVars();
   unsigned int muonsize=AllMuons.size();
-  int bmuonidx=-1;
   unsigned int nbmuon=0;
   for(unsigned int i = 0 ; i < muonsize ; i++){
-    if(i==muon1_idx) continue;
-    if(i==muon2_idx) continue;
+    if((int)i==muon1_idx) continue;
+    if((int)i==muon2_idx) continue;
     double dR=jet.DeltaR(AllMuons[i]);
     if(dR < 0.4){      
       nbmuon+=1;
-
-      bmuon.P_jetrest=min(GetP_JetRestFrame(AllMuons[i],jet),10.);
-      bmuon.ptwrtbjet=min(GetPt_wrt_Jet(AllElectrons[i],jet),10.);
-      bmuon.dR_l_j=dR;
-      bmuon.nsip3d=min(fabs(AllMuons[i].IP3D()/AllMuons[i].IP3Derr()),15.);
-      bmuon.reltrkiso=min(AllMuons[i].TrkIso()/AllMuons[i].Pt(),15.);
-      bmuon.reliso=min(AllMuons[i].RelIso(),15.);
-      bmuon.charge=AllMuons[i].Charge();
+      bmuon=Get_bmuonvars(AllMuons[i],jet);
+      //bmuon.P_jetrest=min(GetP_JetRestFrame(AllMuons[i],jet),10.);
+      //bmuon.ptwrtbjet=min(GetPt_wrt_Jet(AllElectrons[i],jet),10.);
+      //bmuon.dR_l_j=dR;
+      //bmuon.nsip3d=min(fabs(AllMuons[i].IP3D()/AllMuons[i].IP3Derr()),15.);
+      //bmuon.reltrkiso=min(AllMuons[i].TrkIso()/AllMuons[i].Pt(),15.);
+      //bmuon.reliso=min(AllMuons[i].RelIso(),15.);
+      //bmuon.charge=AllMuons[i].Charge();
     }
     if(nbmuon>1) return false;
     
@@ -240,22 +241,23 @@ void bChargeID_TrainTree::Init_bMuonVars(){
 bool bChargeID_TrainTree::SetTreeValue_bElectron(Jet &jet){
   Init_bElectronVars();
   unsigned int electronsize=AllElectrons.size();
-  int belectronidx=-1;
+  //int belectronidx=-1;
   unsigned int nbelectron=0;
   for(unsigned int i = 0 ; i < electronsize ; i++){
-    if(i==electron1_idx) continue;
-    if(i==electron2_idx) continue;
+    if((int)i==electron1_idx) continue;
+    if((int)i==electron2_idx) continue;
     double dR=jet.DeltaR(AllElectrons[i]);
     if(dR < 0.4){      
       nbelectron+=1;
-      belectron.P_jetrest=min(GetP_JetRestFrame(AllElectrons[i],jet),10.);
-      belectron.ptwrtbjet=min(GetPt_wrt_Jet(AllElectrons[i],jet),10.);
-      belectron.dR_l_j=dR;
-      belectron.nsip3d=min(fabs(AllElectrons[i].IP3D()/AllElectrons[i].IP3Derr()),15.);
-      belectron.reltrkiso=min(AllElectrons[i].TrkIso()/AllElectrons[i].Pt(),15.);
-      belectron.reliso=min(AllElectrons[i].RelIso(),15.);
-      belectron.charge=AllElectrons[i].Charge();
-      belectron.IsGsfCtfScPixChargeConsistent=AllElectrons[i].IsGsfCtfScPixChargeConsistent();
+      belectron=Get_belectronvars(AllElectrons[i],jet);
+      //belectron.P_jetrest=min(GetP_JetRestFrame(AllElectrons[i],jet),10.);
+      //belectron.ptwrtbjet=min(GetPt_wrt_Jet(AllElectrons[i],jet),10.);
+      //belectron.dR_l_j=dR;
+      //belectron.nsip3d=min(fabs(AllElectrons[i].IP3D()/AllElectrons[i].IP3Derr()),15.);
+      //belectron.reltrkiso=min(AllElectrons[i].TrkIso()/AllElectrons[i].Pt(),15.);
+      //belectron.reliso=min(AllElectrons[i].RelIso(),15.);
+      //belectron.charge=AllElectrons[i].Charge();
+      //belectron.IsGsfCtfScPixChargeConsistent=AllElectrons[i].IsGsfCtfScPixChargeConsistent();
     }
     if(nbelectron>1) return false;
     
@@ -277,15 +279,6 @@ void bChargeID_TrainTree::Init_bElectronVars(){
 }
 
 
-double bChargeID_TrainTree::GetP_JetRestFrame(TLorentzVector &lep, TLorentzVector &jet){
-  TLorentzVector vl_jetrest(lep);
-  vl_jetrest.Boost(-jet.BoostVector());
-  return vl_jetrest.P();
-}
-double bChargeID_TrainTree::GetPt_wrt_Jet(TLorentzVector &lep, TLorentzVector &jet){
-  double ptwrtjet=lep.P()*sin(lep.Angle(jet.Vect()));
-  return ptwrtjet;
-}
 
 
 

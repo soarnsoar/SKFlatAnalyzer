@@ -55,7 +55,7 @@ public:
   double GetNeutralEmEnergyFraction() const;
   double GetChargedEmEnergyFraction() const;
   double GetMuonEnergyFraction() const;
-
+  double GetPileupJetId() const;
 private:
 
   double  j_area;

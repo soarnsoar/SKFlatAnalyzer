@@ -139,3 +139,6 @@ double Jet::GetChargedEmEnergyFraction() const {
 double Jet::GetMuonEnergyFraction() const {
   return j_muonEnergyFraction;
 }
+double Jet::GetPileupJetId() const {
+  return j_PileupJetId;
+}

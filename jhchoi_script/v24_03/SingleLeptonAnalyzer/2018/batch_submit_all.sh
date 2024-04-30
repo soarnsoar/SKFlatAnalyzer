@@ -1,6 +1,7 @@
 mkdir -p logs/
 mkdir -p syslogs/
 SKIM="--skim SkimTree_SingleLepton"
+SKIM=""
 FLAG="--userflags runSys"
 FLAG=""
 YEAR=2018
@@ -9,5 +10,5 @@ SKFlat.py -a SingleLeptonAnalyzer  ${SKIM} -l inputlist_minor.txt -n 50 -e ${YEA
 SKFlat.py -a SingleLeptonAnalyzer  ${SKIM} -l inputlist_tW.txt -n 50 -e ${YEAR} $FLAG &> logs/tW.log&
 SKFlat.py -a SingleLeptonAnalyzer  ${SKIM} -i SingleMuon -n 50 -e ${YEAR} $FLAG &> logs/SingleMuon.log&
 SKFlat.py -a SingleLeptonAnalyzer  ${SKIM} -i EGamma -n 50 -e ${YEAR} $FLAG &> logs/EGamma.log&
-SKFlat.py -a SingleLeptonAnalyzer -l inputlist_NoSkim.txt -n 50 -e ${YEAR} $FLAG &> logs/NoSkim.log&
+SKFlat.py -a SingleLeptonAnalyzer -l inputlist_NoSkim.txt -n 10 -e ${YEAR} $FLAG &> logs/NoSkim.log&
 

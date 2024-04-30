@@ -128,7 +128,22 @@ void AnalyzerCore::SetupEfficiency(){
 void AnalyzerCore::DeleteEfficiency(){
   if(fEff) delete fEff;
 }
+void AnalyzerCore::SetupJetPUIDTool(){
+  TString _datadir=getenv("DATA_DIR");
+  TString _era=GetEra();
+  map_jetpuid_tool["T"]=new JetPUIDTool(IsDATA);
+  map_jetpuid_tool["T"]->ReadHist(_datadir,_era,"T");
+  map_jetpuid_tool["M"]=new JetPUIDTool(IsDATA);
+  map_jetpuid_tool["M"]->ReadHist(_datadir,_era,"M");
+  map_jetpuid_tool["L"]=new JetPUIDTool(IsDATA);
+  map_jetpuid_tool["L"]->ReadHist(_datadir,_era,"L");
+}
+void AnalyzerCore::DeleteJetPUIDTool(){
+  if(map_jetpuid_tool["T"]) delete map_jetpuid_tool["T"];
+  if(map_jetpuid_tool["M"]) delete map_jetpuid_tool["M"];
+  if(map_jetpuid_tool["L"]) delete map_jetpuid_tool["L"];
 
+}
 double AnalyzerCore::GetLeptonTriggerSF(TString triggerSF_key,const vector<Lepton*>& leps,int set,int mem,TString option){
   if(IsDATA) return 1;
   if(triggerSF_key=="") return 1;
@@ -286,7 +301,7 @@ AnalyzerCore::~AnalyzerCore(){
   //jhchoi
   DeleteEfficiency();
   DeleteZptWeight();
-  
+  DeleteJetPUIDTool();
   //end jhchoi
 
   //=== hist maps

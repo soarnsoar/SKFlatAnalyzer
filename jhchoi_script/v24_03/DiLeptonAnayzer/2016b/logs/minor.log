@@ -1,15 +1,15 @@
 Submitting job(s)..................................................
-50 job(s) submitted to cluster 2251457.
+50 job(s) submitted to cluster 2264666.
 Submitting job(s)..................................................
-50 job(s) submitted to cluster 2251463.
+50 job(s) submitted to cluster 2264673.
 Submitting job(s)..................................................
-50 job(s) submitted to cluster 2251470.
+50 job(s) submitted to cluster 2264678.
 Submitting job(s)..................................................
-50 job(s) submitted to cluster 2251473.
+50 job(s) submitted to cluster 2264680.
 Submitting job(s)..................................................
-50 job(s) submitted to cluster 2251476.
+50 job(s) submitted to cluster 2264682.
 Submitting job(s)..................................................
-50 job(s) submitted to cluster 2251478.
+50 job(s) submitted to cluster 2264684.
 condor_submit WORKDIR_HADD/run.jds > WORKDIR_HADD/run.jid
 condor_submit WORKDIR_HADD/run.jds > WORKDIR_HADD/run.jid
 condor_submit WORKDIR_HADD/run.jds > WORKDIR_HADD/run.jid
@@ -18,37 +18,37 @@ condor_submit WORKDIR_HADD/run.jds > WORKDIR_HADD/run.jid
 condor_submit WORKDIR_HADD/run.jds > WORKDIR_HADD/run.jid
 ##################################################
 Submission Finished
-- JobID = 514433
+- JobID = 318315
 - Analyzer = DiLeptonAnalyzer
 - Skim = SkimTree_Dilepton
 - InputSamples = ['SingleTop_tch_antitop_Incl', 'SingleTop_tch_top_Incl', 'SingleTop_sch_Lep', 'TTLL_powheg', 'TTLJ_powheg', 'DYJetsToTauTau_MiNNLO']
 - NJobs = 50
 - Era = 2016postVFP
 - UserFlags = []
-- RunDir = /data6/Users/jhchoi/SKFlatRunlog//2024_04_18_214107__514433__DiLeptonAnalyzer__Era2016postVFP__SkimTree_Dilepton__TAMSA1/DYJetsToTauTau_MiNNLO/
+- RunDir = /data6/Users/jhchoi/SKFlatRunlog//2024_04_27_155104__318315__DiLeptonAnalyzer__Era2016postVFP__SkimTree_Dilepton__TAMSA1/DYJetsToTauTau_MiNNLO/
 - output will be send to : /data6/Users/jhchoi/SKFlatOutput//Run2UltraLegacy_v3/DiLeptonAnalyzer/2016postVFP/
 ##################################################
 submit hadd
 CheckOutputSize...
 <AFTER hadd fin. please rm remainings..>
-rm /data6/Users/jhchoi/SKFlatRunlog//2024_04_18_214107__514433__DiLeptonAnalyzer__Era2016postVFP__SkimTree_Dilepton__TAMSA1/SingleTop_tch_antitop_Incl//output/*.root
+rm /data6/Users/jhchoi/SKFlatRunlog//2024_04_27_155104__318315__DiLeptonAnalyzer__Era2016postVFP__SkimTree_Dilepton__TAMSA1/SingleTop_tch_antitop_Incl//output/*.root
 submit hadd
 CheckOutputSize...
 <AFTER hadd fin. please rm remainings..>
-rm /data6/Users/jhchoi/SKFlatRunlog//2024_04_18_214107__514433__DiLeptonAnalyzer__Era2016postVFP__SkimTree_Dilepton__TAMSA1/SingleTop_tch_top_Incl//output/*.root
+rm /data6/Users/jhchoi/SKFlatRunlog//2024_04_27_155104__318315__DiLeptonAnalyzer__Era2016postVFP__SkimTree_Dilepton__TAMSA1/SingleTop_tch_top_Incl//output/*.root
 submit hadd
 CheckOutputSize...
 <AFTER hadd fin. please rm remainings..>
-rm /data6/Users/jhchoi/SKFlatRunlog//2024_04_18_214107__514433__DiLeptonAnalyzer__Era2016postVFP__SkimTree_Dilepton__TAMSA1/SingleTop_sch_Lep//output/*.root
+rm /data6/Users/jhchoi/SKFlatRunlog//2024_04_27_155104__318315__DiLeptonAnalyzer__Era2016postVFP__SkimTree_Dilepton__TAMSA1/SingleTop_sch_Lep//output/*.root
 submit hadd
 CheckOutputSize...
 <AFTER hadd fin. please rm remainings..>
-rm /data6/Users/jhchoi/SKFlatRunlog//2024_04_18_214107__514433__DiLeptonAnalyzer__Era2016postVFP__SkimTree_Dilepton__TAMSA1/DYJetsToTauTau_MiNNLO//output/*.root
+rm /data6/Users/jhchoi/SKFlatRunlog//2024_04_27_155104__318315__DiLeptonAnalyzer__Era2016postVFP__SkimTree_Dilepton__TAMSA1/DYJetsToTauTau_MiNNLO//output/*.root
 submit hadd
 CheckOutputSize...
 <AFTER hadd fin. please rm remainings..>
-rm /data6/Users/jhchoi/SKFlatRunlog//2024_04_18_214107__514433__DiLeptonAnalyzer__Era2016postVFP__SkimTree_Dilepton__TAMSA1/TTLJ_powheg//output/*.root
+rm /data6/Users/jhchoi/SKFlatRunlog//2024_04_27_155104__318315__DiLeptonAnalyzer__Era2016postVFP__SkimTree_Dilepton__TAMSA1/TTLJ_powheg//output/*.root
 submit hadd
 CheckOutputSize...
 <AFTER hadd fin. please rm remainings..>
-rm /data6/Users/jhchoi/SKFlatRunlog//2024_04_18_214107__514433__DiLeptonAnalyzer__Era2016postVFP__SkimTree_Dilepton__TAMSA1/TTLL_powheg//output/*.root
+rm /data6/Users/jhchoi/SKFlatRunlog//2024_04_27_155104__318315__DiLeptonAnalyzer__Era2016postVFP__SkimTree_Dilepton__TAMSA1/TTLL_powheg//output/*.root

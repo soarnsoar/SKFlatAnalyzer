@@ -50,7 +50,7 @@ bool SingleLeptonAnalyzer::CheckIsElectronChannel(){
 void SingleLeptonAnalyzer::SetEventWeight(){
   weight=1;
   if(IsDATA) return;
-  weight=MCweight()*ev.GetTriggerLumi("Full")*GetPileUpWeight(nPileUp,0)*GetPrefireWeight(0);
+  weight=MCweight()*ev.GetTriggerLumi("Full")*GetPileUpWeight(nPileUp,0)*GetPrefireWeight(0)*btagsf;
   //Muon
   if(IsMuonChannel){
     weight*=w_MuonID[0][0]*w_MuonRECO[0][0]*w_MuonTrk[0][0]*w_MuonTrigger[0][0];
@@ -69,9 +69,9 @@ void SingleLeptonAnalyzer::RunBasicWregion(){
 
   IsMuonChannel=CheckIsMuonChannel();
   if(!IsMuonChannel) IsElectronChannel=CheckIsElectronChannel();
-  SetEventWeight();
 
-  //--Now Objects are ready--//
+
+
 
 
   TString LepCh="";
@@ -91,16 +91,17 @@ void SingleLeptonAnalyzer::RunBasicWregion(){
   }
   //----Jet---//
   v_tightlep={l1};
-  //v_jetidx=GetIdxTightJet(v_tightlep,30,2.4);
-  //v_bjetidx=GetIdxBJet(v_jetidx);
   v_tightjet=GetTightJet(v_tightlep,30,2.4);
   v_bjet=GetBJet(v_tightjet);
 
-  //njet=v_jetidx.size();
-  //nbjet=v_bjetidx.size();
   njet=v_tightjet.size();
   nbjet=v_bjet.size();
 
+  //--Now Objects are ready--//
+  SetEventWeight();
+
+  if(PuppiMET.Pt() < 30.) return;
+  if(vtW.M() < 60. ) return;
   FillHistAll("Lepton");
   FillHistAll(LepCh);
   if(nbjet==1){
@@ -114,6 +115,8 @@ void SingleLeptonAnalyzer::RunBasicWregion(){
   
 }
 void SingleLeptonAnalyzer::FillHistAll(TString cutname){
+  FillHist(cutname+"/nPV",nPV,weight,100,0,100);
+
   FillHist(cutname+"/MT_lv",vtW.M(),weight,200,0,200);
 
   FillHist(cutname+"/pt_l1",l1.Pt(),weight,200,0,200);
@@ -123,6 +126,7 @@ void SingleLeptonAnalyzer::FillHistAll(TString cutname){
   FillHist(cutname+"/nbjet",nbjet,weight,10,0,10);
 
   FillHist(cutname+"/puppimet",PuppiMET.Pt(),weight,200,0,200);
+  FillHist(cutname+"/dphi_l_met",PuppiMET.DeltaPhi(l1),weight,200,-4,4);
 
   if(njet>0){
     FillHist(cutname+"/pt_j1",v_tightjet[0].Pt(),weight,200,0,200);
@@ -130,6 +134,15 @@ void SingleLeptonAnalyzer::FillHistAll(TString cutname){
     if(njet>1){
       FillHist(cutname+"/pt_j2",v_tightjet[1].Pt(),weight,200,0,200);
       FillHist(cutname+"/eta_j2",v_tightjet[1].Eta(),weight,50,-3,3);
+    }
+  }
+
+  if(nbjet>0){
+    FillHist(cutname+"/pt_bj1",v_bjet[0].Pt(),weight,200,0,200);
+    FillHist(cutname+"/eta_bj1",v_bjet[0].Eta(),weight,50,-3,3);
+    if(nbjet>1){
+      FillHist(cutname+"/pt_bj2",v_bjet[1].Pt(),weight,200,0,200);
+      FillHist(cutname+"/eta_bj2",v_bjet[1].Eta(),weight,50,-3,3);
     }
   }
   

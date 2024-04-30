@@ -14,44 +14,12 @@ public:
   void Init_bMuonVars();
   bool SetTreeValue_bElectron(Jet &jet);
   void Init_bElectronVars();
-  double GetP_JetRestFrame(TLorentzVector &lep, TLorentzVector &jet);
-  double GetPt_wrt_Jet(TLorentzVector &lep, TLorentzVector &jet);
+
   //
   int Has_bMuon;
   int Has_bElectron;
-  struct bmuonvar{
-    double P_jetrest=0;
-    double ptwrtbjet=0;
-    double dR_l_j=0;
-    double nsip3d=0;
-    double reltrkiso=0;
-    double reliso=0;
-    double charge=0;
-    
-  };
   bmuonvar bmuon;
-  struct belectronvar{
-    double P_jetrest=0;
-    double ptwrtbjet=0;
-    double dR_l_j=0;
-    double nsip3d=0;
-    double reltrkiso=0;
-    double reliso=0;
-    double charge=0;
-    double IsGsfCtfScPixChargeConsistent=0;
-  };
   belectronvar belectron;
-  struct bjetvar{
-    double pt=0;
-    double aeta=0;
-    double ChargedHadronEnergyFraction=0;
-    double NeutralHadronEnergyFraction=0;
-    double NeutralEmEnergyFraction=0;
-    double ChargedEmEnergyFraction=0;
-    double MuonEnergyFraction=0;
-    double charge=0;
-    double partonFlavour=0;
-  };
   bjetvar bjet;
 
 

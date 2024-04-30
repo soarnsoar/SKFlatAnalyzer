@@ -34,6 +34,7 @@
 #include "Aepcor.h"
 //#include "TH4D.h"
 #include "EfficiencyTool.h"
+#include "JetPUIDTool.h"
 //#include "RocPFProb.h"
 #include "TStopwatch.h"
 
@@ -317,6 +318,9 @@ public:
   void SetupRoccoR();
   void SetupEfficiency();
   void DeleteEfficiency();
+  void SetupJetPUIDTool();
+  void DeleteJetPUIDTool();
+  map<TString ,JetPUIDTool*> map_jetpuid_tool;
   static bool IsExists(TString filepath);
   TTree *jhchoi_newtree;
   TTree *jhchoi_newtree2;

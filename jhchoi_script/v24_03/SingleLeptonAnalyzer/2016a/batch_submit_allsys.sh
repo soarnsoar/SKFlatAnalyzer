@@ -1,6 +1,7 @@
 mkdir -p logs/
 mkdir -p syslogs/
 SKIM="--skim SkimTree_SingleLepton"
+SKIM=""
 FLAG="--userflags runSys"
 YEAR=2016a
 SKFlat.py -a SingleLeptonAnalyzer  ${SKIM} -l  inputlist_major.txt -n 50 -e ${YEAR} $FLAG &> syslogs/major.log&
