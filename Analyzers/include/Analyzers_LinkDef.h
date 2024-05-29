@@ -26,7 +26,7 @@
 //#pragma link C++ class TTsemilep_JetAssignScore+;
 //#pragma link C++ class B_In_LHE+;
 //#pragma link C++ class B_In_GEN+;
-//#pragma link C++ class BasicTest+;
+#pragma link C++ class BasicTest+;
 //#pragma link C++ class SysTemplate+;
 //#pragma link C++ class BBbarRecoTMVA+;
 //#pragma link C++ class BBbarRecoTMVA_DEBUG+;
@@ -37,6 +37,7 @@
 //#pragma link C++ class LepJetChargeReliability_RECO_NoDNNcut_Tree+;
 //#pragma link C++ class BBosillation+;
 //#pragma link C++ class HZZ_test+;
+#pragma link C++ class EEMu_MuMuE_Method+;
 #pragma link C++ class JHAnalyzerBase+;
 #pragma link C++ class SingleLeptonAnalyzer+;
 #pragma link C++ class DiLeptonAnalyzer+;

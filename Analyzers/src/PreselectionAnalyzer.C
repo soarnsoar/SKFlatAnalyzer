@@ -17,7 +17,7 @@ void PreselectionAnalyzer::initializeAnalyzer(){
   IsDYSample=false;
   if(MCSample.Contains("DYJets")||MCSample.Contains("ZToEE")||MCSample.Contains("ZToMuMu")||MCSample.Contains(TRegexp("DY[0-9]Jets"))) IsDYSample=true;
   cout << "[IsDYSample]=" << IsDYSample << endl;
-  /*
+
   if(HasFlag("jetpuid_tight")){
     _JETPUID="T";
     cout << "[JETPUID] TIGHT" << endl;
@@ -30,19 +30,28 @@ void PreselectionAnalyzer::initializeAnalyzer(){
     cout << "[JETPUID] LOOSE" << endl;
     _JETPUID="L";
   }
-  else{
+  else if(HasFlag("nojetpuid")){
+    cout << "[JETPUID] NOCUT" << endl;
     _JETPUID="";
   }
-  */
-  _JETPUID="T";
+  else{
+    cout << "[JETPUID] DEFAULT===>" << endl;
+    _JETPUID="";
+  }
+
+  //_JETPUID="T";
   
   check_tmva_input=false;
   if(HasFlag("check_tmva_input")){
     check_tmva_input=true;
     cout << "check_tmva_input -> true" << endl;
   }
-
-  
+  //lepveto
+  lepveto=false;
+  if(HasFlag("lepveto")){
+    lepveto=true;
+    cout << "lepveto -> true" << endl;
+  }
 }
 
 
@@ -55,7 +64,7 @@ void PreselectionAnalyzer::SetMuon(const Muon& _l1, const Muon& _l2){
 bool PreselectionAnalyzer::CheckIsDiMuonChannel(double min_mll,double max_mll){
   if (!ev.PassTrigger(MuonTriggerNames)) return 0;
   //vector<int> v_muonidx=GetIdxDiMuReco(TriggerSafeCut_muon1, TriggerSafeCut_muon2);
-  vector<Muon> v_muon=GetDiMuReco(TriggerSafeCut_muon1, TriggerSafeCut_muon2);
+  vector<Muon> v_muon=lepveto ?  GetDiMuReco(TriggerSafeCut_muon1, TriggerSafeCut_muon2) :  GetDiMuRecoNoVeto(TriggerSafeCut_muon1, TriggerSafeCut_muon2);
   if( v_muon.size()<2) return 0;
   double mll=(v_muon[0]+v_muon[1]).M();
   if (mll < min_mll) return 0;
@@ -79,7 +88,7 @@ bool PreselectionAnalyzer::CheckIsDiElectronChannel(double min_mll,double max_ml
   if ( IsDATA && isElectronData && ev.PassTrigger(MuonTriggerNames)) return 0; // to avoid double count
   
   //vector<int> v_electronidx=GetIdxDiElReco(TriggerSafeCut_electron1, TriggerSafeCut_electron2);
-  vector<Electron> v_electron=GetDiElReco(TriggerSafeCut_electron1, TriggerSafeCut_electron2);
+  vector<Electron> v_electron=lepveto ? GetDiElReco(TriggerSafeCut_electron1, TriggerSafeCut_electron2) :GetDiElRecoNoVeto(TriggerSafeCut_electron1, TriggerSafeCut_electron2); 
   if( v_electron.size()<2) return 0;
   //SetElectronIdx(v_electronidx[0],v_electronidx[1]);
   
@@ -182,22 +191,28 @@ void PreselectionAnalyzer::RunBasicZregion(){
   ///---Let's look into leptons in bjet---//
   if(!check_tmva_input) return;
   for(auto& muon : AllMuons){
+    if(!muon.PassID("POGLoose")) continue;
+    if(muon.Pt() < 5.) continue;
     if(muon.DeltaR(v_bjet[0]) < 0.4){
-	bmuonvar this_bmuon=Get_bmuonvars(muon,v_bjet[0]);
+	bmuonvar this_bmuon=Get_bmuonvar(muon,v_bjet[0]);
 	FillHistAll_bmuon(LepCh+"__Presel",this_bmuon);	
 	FillHistAll_bmuon("ll__Presel",this_bmuon);	
       }
   }//[end muon for loop]
 
   for(auto& electron : AllElectrons){
+    if(!electron.PassID("passVetoID")) continue;
+    if(!electron.IsGsfCtfScPixChargeConsistent()) continue;
+    if(electron.Pt() < 5.) continue;
     if(electron.DeltaR(v_bjet[0]) < 0.4){
-	belectronvar this_belectron=Get_belectronvars(electron,v_bjet[0]);
+      
+	belectronvar this_belectron=Get_belectronvar(electron,v_bjet[0]);
 	FillHistAll_belectron(LepCh+"__Presel",this_belectron);	
 	FillHistAll_belectron("ll__Presel",this_belectron);	
       }
   }//[end electron for loop]
 
-  bjetvar this_bjet=Get_bjetvars(v_bjet[0]);
+  bjetvar this_bjet=Get_bjetvar(v_bjet[0]);
   FillHistAll_bjet(LepCh+"__Presel",this_bjet);	
   FillHistAll_bjet("ll__Presel",this_bjet);	
 }//[end]RunBasic Zregion
@@ -207,28 +222,28 @@ void PreselectionAnalyzer::RunBasicZregion(){
 
 void PreselectionAnalyzer::FillHistAll_bmuon(TString cutname,bmuonvar this_bmuon){
   FillHist(cutname+"/bmuon_P_jetrest",this_bmuon.P_jetrest,weight,10,0,10);
-  FillHist(cutname+"/bmuon_ptwrtbjet",this_bmuon.ptwrtbjet,weight,10,0,10);
+  FillHist(cutname+"/bmuon_ptwrtjet",this_bmuon.ptwrtjet,weight,10,0,10);
   FillHist(cutname+"/bmuon_dR_l_j",this_bmuon.dR_l_j,weight,40,0,0.4);
   FillHist(cutname+"/bmuon_nsip3d",this_bmuon.nsip3d,weight,30,0,15);
   FillHist(cutname+"/bmuon_reltrkiso",this_bmuon.reltrkiso,weight,150,0,15);
   FillHist(cutname+"/bmuon_reliso",this_bmuon.reliso,weight,150,0,15);
-  FillHist(cutname+"/bmuon_charge",this_bmuon.charge,weight,3,-2,1);
+  FillHist(cutname+"/bmuon_charge",this_bmuon.charge,weight,4,-2,2);
 }
 
 void PreselectionAnalyzer::FillHistAll_belectron(TString cutname,belectronvar this_belectron){
   FillHist(cutname+"/belectron_P_jetrest",this_belectron.P_jetrest,weight,10,0,10);
-  FillHist(cutname+"/belectron_ptwrtbjet",this_belectron.ptwrtbjet,weight,10,0,10);
+  FillHist(cutname+"/belectron_ptwrtjet",this_belectron.ptwrtjet,weight,10,0,10);
   FillHist(cutname+"/belectron_dR_l_j",this_belectron.dR_l_j,weight,40,0,0.4);
   FillHist(cutname+"/belectron_nsip3d",this_belectron.nsip3d,weight,30,0,15);
   FillHist(cutname+"/belectron_reltrkiso",this_belectron.reltrkiso,weight,150,0,15);
   FillHist(cutname+"/belectron_reliso",this_belectron.reliso,weight,150,0,15);
-  FillHist(cutname+"/belectron_charge",this_belectron.charge,weight,3,-2,1);
-  FillHist(cutname+"/belectron_IsGsfCtfScPixChargeConsistent",this_belectron.IsGsfCtfScPixChargeConsistent,weight,3,-2,1);
+  FillHist(cutname+"/belectron_charge",this_belectron.charge,weight,4,-2,2);
+  FillHist(cutname+"/belectron_IsGsfCtfScPixChargeConsistent",this_belectron.IsGsfCtfScPixChargeConsistent,weight,4,-2,2);
 }
 
 void PreselectionAnalyzer::FillHistAll_bjet(TString cutname,bjetvar this_bjet){
   FillHist(cutname+"/bjet_pt",this_bjet.pt,weight,100,0,100);
-  FillHist(cutname+"/bjet_aeta",this_bjet.aeta,weight,60,-3,3);
+  FillHist(cutname+"/bjet_aeta",this_bjet.aeta,weight,60,0,3);
   FillHist(cutname+"/bjet_ChargedHadronEnergyFraction",this_bjet.ChargedHadronEnergyFraction,weight,100,0,1);
   FillHist(cutname+"/bjet_NeutralHadronEnergyFraction",this_bjet.NeutralHadronEnergyFraction,weight,100,0,1);
   FillHist(cutname+"/bjet_NeutralEmEnergyFraction",this_bjet.NeutralEmEnergyFraction,weight,100,0,1);

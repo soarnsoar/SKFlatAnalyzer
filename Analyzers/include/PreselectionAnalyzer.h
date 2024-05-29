@@ -59,6 +59,7 @@ public:
   double dphi_z_b, ptzb;
   TString _JETPUID;
   bool check_tmva_input;
+  bool lepveto;
 };
 
 

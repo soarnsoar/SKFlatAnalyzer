@@ -45,7 +45,7 @@ public:
   ~SingleLeptonAnalyzer();
 
 
-  
+  bool noveto;
 
 };
 

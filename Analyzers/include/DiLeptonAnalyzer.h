@@ -52,8 +52,10 @@ public:
   ~DiLeptonAnalyzer();
 
   std::map<TString,double> N_1_weightmap;
-  
 
+
+  bool lepveto;
+  TString _JETPUID;
 };
 
 

@@ -6,6 +6,8 @@
 class bChargeID_TrainTree : public JHAnalyzerBase {
 
 public:
+  //version
+  bool is_cut_v2405_1;
   //--out tree--
   void InitOutputTree();
   void SetBranches(TTree *this_Tree);

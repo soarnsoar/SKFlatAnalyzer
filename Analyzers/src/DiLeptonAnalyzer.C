@@ -17,6 +17,31 @@ void DiLeptonAnalyzer::initializeAnalyzer(){
   IsDYSample=false;
   if(MCSample.Contains("DYJets")||MCSample.Contains("ZToEE")||MCSample.Contains("ZToMuMu")||MCSample.Contains(TRegexp("DY[0-9]Jets"))) IsDYSample=true;
   cout << "[IsDYSample]=" << IsDYSample << endl;
+  lepveto=HasFlag("lepveto");
+
+
+  if(HasFlag("jetpuid_tight")){
+    _JETPUID="T";
+    cout << "[JETPUID] TIGHT" << endl;
+  }
+  else if(HasFlag("jetpuid_medium")){
+    _JETPUID="M";
+    cout << "[JETPUID] MEDIUM" << endl;
+  }
+  else if(HasFlag("jetpuid_loose")){
+    cout << "[JETPUID] LOOSE" << endl;
+    _JETPUID="L";
+  }
+  else if(HasFlag("nojetpuid")){
+    cout << "[JETPUID] NOCUT" << endl;
+    _JETPUID="";
+  }
+  else{
+    cout << "[JETPUID] DEFAULT ==NOCUT" << endl;
+    _JETPUID="";
+  }
+
+
 }
 
 
@@ -29,7 +54,7 @@ void DiLeptonAnalyzer::SetMuon(const Muon& _l1, const Muon& _l2){
 bool DiLeptonAnalyzer::CheckIsDiMuonChannel(double min_mll,double max_mll){
   if (!ev.PassTrigger(MuonTriggerNames)) return 0;
   //vector<int> v_muonidx=GetIdxDiMuReco(TriggerSafeCut_muon1, TriggerSafeCut_muon2);
-  vector<Muon> v_muon=GetDiMuReco(TriggerSafeCut_muon1, TriggerSafeCut_muon2);
+  vector<Muon> v_muon=lepveto ? GetDiMuReco(TriggerSafeCut_muon1, TriggerSafeCut_muon2) : GetDiMuRecoNoVeto(TriggerSafeCut_muon1, TriggerSafeCut_muon2);
   if( v_muon.size()<2) return 0;
   double mll=(v_muon[0]+v_muon[1]).M();
   if (mll < min_mll) return 0;
@@ -53,7 +78,7 @@ bool DiLeptonAnalyzer::CheckIsDiElectronChannel(double min_mll,double max_mll){
   if ( IsDATA && isElectronData && ev.PassTrigger(MuonTriggerNames)) return 0; // to avoid double count
   
   //vector<int> v_electronidx=GetIdxDiElReco(TriggerSafeCut_electron1, TriggerSafeCut_electron2);
-  vector<Electron> v_electron=GetDiElReco(TriggerSafeCut_electron1, TriggerSafeCut_electron2);
+  vector<Electron> v_electron=lepveto ? GetDiElReco(TriggerSafeCut_electron1, TriggerSafeCut_electron2) : GetDiElRecoNoVeto(TriggerSafeCut_electron1, TriggerSafeCut_electron2);
   if( v_electron.size()<2) return 0;
   //SetElectronIdx(v_electronidx[0],v_electronidx[1]);
   
@@ -128,7 +153,7 @@ void DiLeptonAnalyzer::RunBasicZregion(){
   }
   //----Jet---//
   v_tightlep={l1,l2};
-  v_tightjet=GetTightJet(v_tightlep,30,2.4,"tight","T");
+  v_tightjet=GetTightJet(v_tightlep,30,2.4,"tight",_JETPUID);
   v_bjet=GetBJet(v_tightjet);
 
   njet=v_tightjet.size();

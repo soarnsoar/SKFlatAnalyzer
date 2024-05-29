@@ -140,15 +140,19 @@ class JHAnalyzerBase : public AnalyzerCore {
   //--modules and their variables--//
   int GetIdxSingleMuReco(double ptmin, double etacut=2.4, double ptveto=10.);
   vector<Muon> GetSingleMuReco(double ptmin, double etacut=2.4, double ptveto=10.);
+  vector<Muon> GetSingleMuRecoNoVeto(double ptmin, double etacut=2.4);
   //vector<Lepton*> GetPointerSingleMuReco(double ptmin, double etacut=2.4, double ptveto=10.);
   int GetIdxSingleElReco(double ptmin, double etacut=2.5, double ptveto=15.);
   vector<Electron> GetSingleElReco(double ptmin, double etacut=2.5, double ptveto=15.);
+  vector<Electron> GetSingleElRecoNoVeto(double ptmin, double etacut=2.5);
   //vector<Lepton*> GetPointerSingleElReco(double ptmin, double etacut=2.5, double ptveto=15.);
   //vector<int> GetIdxDiMuReco(double ptmin1, double ptmin2, double etacut=2.4, double ptveto=10. );
   vector<Muon> GetDiMuReco(double ptmin1, double ptmin2, double etacut=2.4, double ptveto=10. );
+  vector<Muon> GetDiMuRecoNoVeto(double ptmin1, double ptmin2, double etacut=2.4);
   //vector<Lepton*> GetPointerDiMuReco(double ptmin1, double ptmin2, double etacut=2.4, double ptveto=10. );
   //vector<int> GetIdxDiElReco(double ptmin1, double ptmin2, double etacut=2.5, double ptveto=15. );
   vector<Electron> GetDiElReco(double ptmin1, double ptmin2, double etacut=2.5, double ptveto=15. );
+  vector<Electron> GetDiElRecoNoVeto(double ptmin1, double ptmin2, double etacut=2.5);
   //vector<Lepton*> GetPointerDiElReco(double ptmin1, double ptmin2, double etacut=2.5, double ptveto=15. );
   void SetupSingleLeptonChannel();
   void SetupDiLeptonChannel();
@@ -273,31 +277,60 @@ class JHAnalyzerBase : public AnalyzerCore {
   //----Truth Level---
   bool TagZbLHE(bool include_tautau=false);
   int idx_outgoing_b;
+  bool is_mumu_lhe, is_ee_lhe;
   //bool TagWbLHE();
   //---functions for lep in bjet
   double GetP_JetRestFrame(TLorentzVector &lep, TLorentzVector &jet);
   double GetPt_wrt_Jet(TLorentzVector &lep, TLorentzVector &jet);
+  double GetP_along_Jet(TLorentzVector &lep, TLorentzVector &jet);
 
   struct bmuonvar{
     double P_jetrest=0;
-    double ptwrtbjet=0;
+    double ptwrtjet=0;
     double dR_l_j=0;
     double nsip3d=0;
     double reltrkiso=0;
     double reliso=0;
     double charge=0;
-
+    double palongjet=0;
+    double palongjetratio=0;
+    double pt=0;
+    double aeta=0;
+    double normchi2=0;
+    double ntracklayers=0;
+    double ntrackhits=0;
+    double nvalidmuonhits=0;
+    double nmatchedstations=0;
+    bool isGlobalMuon=0;
+    bool isTrackerMuon=0;
+    bool isStandAloneMuon=0;
+    bool isCaloMuon=0;
+    bool isPFMuon=0;
+    bool isRPCMuon=0;
+    bool isGEMMuon=0;
+    bool isME0Muon=0;
   };
 
   struct belectronvar{
     double P_jetrest=0;
-    double ptwrtbjet=0;
+    double ptwrtjet=0;
+    double palongjet=0;
+    double palongjetratio=0;
     double dR_l_j=0;
     double nsip3d=0;
     double reltrkiso=0;
     double reliso=0;
     double charge=0;
+    double relecalPFClusterIso=0;
     double IsGsfCtfScPixChargeConsistent=0;
+    double pt=0;
+    double aeta=0;
+    double full5x5sigmaietaieta=0;
+    double detaseed=0;
+    double HoverE=0;
+    double InvEminusInvP=0;
+    double nmissinghits=0;
+
   };
 
   struct bjetvar{
@@ -310,13 +343,15 @@ class JHAnalyzerBase : public AnalyzerCore {
     double MuonEnergyFraction=0;
     double charge=0;
     double partonFlavour=0;
+    double ChargedMultiplicity=0;
+    double NeutralMultiplicity=0;
   };
 
 
 
-  JHAnalyzerBase::bmuonvar Get_bmuonvars(Muon &this_muon, Jet &this_jet);
-  JHAnalyzerBase::belectronvar Get_belectronvars(Electron &this_electron, Jet &this_jet);
-  JHAnalyzerBase::bjetvar Get_bjetvars(Jet &this_jet);
+  JHAnalyzerBase::bmuonvar Get_bmuonvar(Muon &this_muon, Jet &this_jet);
+  JHAnalyzerBase::belectronvar Get_belectronvar(Electron &this_electron, Jet &this_jet);
+  JHAnalyzerBase::bjetvar Get_bjetvar(Jet &this_jet);
 
  private:
   MomentumVar _CurrentSys;

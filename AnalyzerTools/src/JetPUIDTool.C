@@ -32,6 +32,16 @@ void JetPUIDTool::ReadHist(TString _datadir,TString _era, TString _WP){
     exit(ENODATA);
   }
   hsys->SetDirectory(0);
+  //---eff mc --//
+  TString histpath_eff="h2_eff_mcUL"+eraInHist+"_"+_WP;
+  heff=(TH2*)f.Get(histpath_eff)->Clone();
+  if(!heff){
+    cout << "[JetPUIDTool::ReadHist] No hist" << histpath_eff << "In file->" << filepath;
+    exit(ENODATA);
+  }
+  heff->SetDirectory(0);
+  
+
   SetEra(_era);
   SetCut(_WP);
 }
@@ -83,9 +93,9 @@ void JetPUIDTool::SetCut(TString _WP){//i will only consider |eta|<2.5
 
 vector<Jet> JetPUIDTool::GetJetsPassPUID(vector<Jet> &jetcoll){
   vector<Jet> jet_pass;
-  SF=1.;
-  SF_up=1.;
-  SF_down=1.;
+  SFtotal=1.;
+  SFtotal_up=1.;
+  SFtotal_down=1.;
   for(const auto& jet : jetcoll){
     double this_score=jet.GetPileupJetId();
     double pt=jet.Pt();
@@ -93,39 +103,74 @@ vector<Jet> JetPUIDTool::GetJetsPassPUID(vector<Jet> &jetcoll){
     if(pt > 50.){
       jet_pass.push_back(jet);
     }
-    else if((pt > 40.) && (this_score > arr_cut[3])){
-      jet_pass.push_back(jet);
-      double _SF=GetSF(pt,eta);
-      double _SFerr=GetSF_err(pt,eta);
-      SF*=_SF;
-      SF_up*=(_SF+_SFerr);
-      SF_down*=(_SF-_SFerr);
+    else if(pt > 40.){
+      if(this_score > arr_cut[3]){
+	jet_pass.push_back(jet);
+	double _SF=GetSF(pt,eta);
+	double _SFerr=GetSF_err(pt,eta);
+	SFtotal*=_SF;
+	SFtotal_up*=(_SF+_SFerr);
+	SFtotal_down*=(_SF-_SFerr);
+      }
+      else{
+	double _SF=GetSF_Fail(pt,eta);
+	//double _SFerr=GetSF_err_Fail(pt,eta);
+	SFtotal*=_SF;
+	SFtotal_up*=GetSF_Fail_Up(pt,eta);
+	SFtotal_down*=GetSF_Fail_Down(pt,eta);
+      }
     }
-    else if( (pt > 30.) && (this_score > arr_cut[2]) ){
-      jet_pass.push_back(jet);
-      double _SF=GetSF(pt,eta);
-      double _SFerr=GetSF_err(pt,eta);
-      SF*=_SF;
-      SF_up*=(_SF+_SFerr);
-      SF_down*=(_SF-_SFerr);
+    
+    else if(pt > 30.){
+      if(this_score > arr_cut[2]){
+	jet_pass.push_back(jet);
+	double _SF=GetSF(pt,eta);
+	double _SFerr=GetSF_err(pt,eta);
+	SFtotal*=_SF;
+	SFtotal_up*=(_SF+_SFerr);
+	SFtotal_down*=(_SF-_SFerr);
+      }
+      else{
+	double _SF=GetSF_Fail(pt,eta);
+	SFtotal*=_SF;
+	SFtotal_up*=GetSF_Fail_Up(pt,eta);
+	SFtotal_down*=GetSF_Fail_Down(pt,eta);
+
+      }
     }
-    else if( (pt > 20.) && (this_score > arr_cut[1])){
-      jet_pass.push_back(jet);
-      double _SF=GetSF(pt,eta);
-      double _SFerr=GetSF_err(pt,eta);
-      SF*=_SF;
-      SF_up*=(_SF+_SFerr);
-      SF_down*=(_SF-_SFerr);
+    else if(pt > 20.){
+      if(this_score > arr_cut[1]){
+	jet_pass.push_back(jet);
+	double _SF=GetSF(pt,eta);
+	double _SFerr=GetSF_err(pt,eta);
+	SFtotal*=_SF;
+	SFtotal_up*=(_SF+_SFerr);
+	SFtotal_down*=(_SF-_SFerr);
+      }
+      else{
+	double _SF=GetSF_Fail(pt,eta);
+	SFtotal*=_SF;
+	SFtotal_up*=GetSF_Fail_Up(pt,eta);
+	SFtotal_down*=GetSF_Fail_Down(pt,eta);
+      }
     }
-    else if( (pt > 10.) && (this_score > arr_cut[0]) ){
-      jet_pass.push_back(jet);
-      double _SF=GetSF(pt,eta);
-      double _SFerr=GetSF_err(pt,eta);
-      SF*=_SF;
-      SF_up*=(_SF+_SFerr);
-      SF_down*=(_SF-_SFerr);
+    else if(pt > 10.){
+      if(this_score > arr_cut[0]){
+	jet_pass.push_back(jet);
+	double _SF=GetSF(pt,eta);
+	double _SFerr=GetSF_err(pt,eta);
+	SFtotal*=_SF;
+	SFtotal_up*=(_SF+_SFerr);
+	SFtotal_down*=(_SF-_SFerr);
+      }
+      else{
+	double _SF=GetSF_Fail(pt,eta);
+	SFtotal*=_SF;
+	SFtotal_up*=GetSF_Fail_Up(pt,eta);
+	SFtotal_down*=GetSF_Fail_Down(pt,eta);
+      }
     }
-    else{
+    else{//pt under 10
       jet_pass.push_back(jet);
     }
   }//[end]jet for loop
@@ -136,19 +181,60 @@ double JetPUIDTool::GetSF(double pt, double eta){
   return h->GetBinContent(h->FindBin(pt,eta));
   
 }
+double JetPUIDTool::GetEff_MC(double pt, double eta){
+  if(isdata) return 1.;
+  return heff->GetBinContent(h->FindBin(pt,eta));
+}
+double JetPUIDTool::GetSF_Fail(double pt, double eta){
+  if(isdata) return 1.;
+  double SF_pass= GetSF(pt,eta);
+  double eff_mc=GetEff_MC(pt,eta);
+  double eff_data=SF_pass*eff_mc;
+  double SF_fail=(1.-eff_data)/(1.-eff_mc);
+  return SF_fail;
+  
+}
 double JetPUIDTool::GetSF_err(double pt, double eta){
   if(isdata) return 0.;
   return hsys->GetBinContent(hsys->FindBin(pt,eta));
   
 }
 
+double JetPUIDTool::GetSF_Fail_Up(double pt, double eta){
+  if(isdata) return 0.;
+  double SF_pass_up= GetSF(pt,eta)+GetSF_err(pt,eta);//h->GetBinContent(h->FindBin(pt,eta))+hsys->GetBinContent(h->FindBin(pt,eta));
+  double SF_pass= GetSF(pt,eta);
+  double eff_mc=GetEff_MC(pt,eta);
+  double eff_mc_up= eff_mc*SF_pass/SF_pass_up;
+  double eff_data=SF_pass*eff_mc;
+  double SF_fail_up=(1.-eff_data)/(1.-eff_mc_up);
+  return SF_fail_up;
+
+  
+}
+
+
+double JetPUIDTool::GetSF_Fail_Down(double pt, double eta){
+  if(isdata) return 0.;
+  double SF_pass_down= GetSF(pt,eta)-GetSF_err(pt,eta);
+  double SF_pass= GetSF(pt,eta);
+  double eff_mc=GetEff_MC(pt,eta);
+  double eff_mc_down=eff_mc*SF_pass/SF_pass_down;//heff->GetBinContent(h->FindBin(pt,eta))*SF_pass/SF_pass_down;
+  double eff_data=SF_pass*eff_mc;
+  double SF_fail_down=(1.-eff_data)/(1.-eff_mc_down);
+  return SF_fail_down;
+
+  
+}
+
+
 double JetPUIDTool::GetCurrentSF(){
-  return SF;  
+  return SFtotal;  
 }
 
 double JetPUIDTool::GetCurrentSF_Up(){
-  return SF_up;  
+  return SFtotal_up;  
 }
 double JetPUIDTool::GetCurrentSF_Down(){
-  return SF_down;  
+  return SFtotal_down;  
 }

@@ -597,6 +597,14 @@ std::vector<Muon> AnalyzerCore::GetAllMuons(){
     mu.SetFilterBits(muon_filterbits->at(i));
     mu.SetPathBits(muon_pathbits->at(i));
 
+    //[jhchoi] Add Muon variables for ID
+    mu.SetTrackerHits(muon_trackerHits->at(i));
+    mu.SetPixelHits(muon_pixelHits->at(i));
+    mu.SetValidMuonHits(muon_validmuonhits->at(i));
+    mu.SetMatchedStations(muon_matchedstations->at(i));
+
+
+
     out.push_back(mu);
 
   }
@@ -921,6 +929,8 @@ std::vector<Jet> AnalyzerCore::GetAllJets(){
     jet.SetPileupJetId(jet_PileupJetId->at(i));
     jet.SetTightJetID(jet_tightJetID->at(i));
     jet.SetTightLepVetoJetID(jet_tightLepVetoJetID->at(i));
+
+    //jet.Set_vtxNtracks(jet_vtxNtracks->at(i));
 
     out.push_back(jet);
   }

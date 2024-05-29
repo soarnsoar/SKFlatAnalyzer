@@ -19,6 +19,11 @@ void bChargeID_TrainTree::initializeAnalyzer(){
   if(MCSample.Contains("DYJets")||MCSample.Contains("ZToEE")||MCSample.Contains("ZToMuMu")||MCSample.Contains(TRegexp("DY[0-9]Jets"))) IsDYSample=true;
   cout << "[IsDYSample]=" << IsDYSample << endl;
 
+  is_cut_v2405_1=false;
+  if(HasFlag("cut_v2405.1")){
+    is_cut_v2405_1=true;
+  }
+
 
 }
 void bChargeID_TrainTree::InitOutputTree(){
@@ -29,21 +34,43 @@ void bChargeID_TrainTree::InitOutputTree(){
 }
 void bChargeID_TrainTree::SetBranches(TTree *this_Tree){
   this_Tree->Branch("bmuon_P_jetrest",&bmuon.P_jetrest);
-  this_Tree->Branch("bmuon_ptwrtbjet",&bmuon.ptwrtbjet);
+  this_Tree->Branch("bmuon_ptwrtbjet",&bmuon.ptwrtjet);
   this_Tree->Branch("bmuon_dR_l_j",&bmuon.dR_l_j);
   this_Tree->Branch("bmuon_nsip3d",&bmuon.nsip3d);
   this_Tree->Branch("bmuon_reltrkiso",&bmuon.reltrkiso);
   this_Tree->Branch("bmuon_reliso",&bmuon.reliso);
   this_Tree->Branch("bmuon_charge",&bmuon.charge);
+  this_Tree->Branch("bmuon_palongjet",&bmuon.palongjet);
+  this_Tree->Branch("bmuon_palongjetratio",&bmuon.palongjetratio);
+  this_Tree->Branch("bmuon_pt",&bmuon.pt);
+  this_Tree->Branch("bmuon_aeta",&bmuon.aeta);
+  this_Tree->Branch("bmuon_normchi2",&bmuon.normchi2);
+  this_Tree->Branch("bmuon_ntracklayers",&bmuon.ntracklayers);
+  this_Tree->Branch("bmuon_ntrackhits",&bmuon.ntrackhits);
+  this_Tree->Branch("bmuon_nvalidmuonhits",&bmuon.nvalidmuonhits);
+  this_Tree->Branch("bmuon_nmatchedstations",&bmuon.nmatchedstations);
+
+
 
   this_Tree->Branch("belectron_P_jetrest",&belectron.P_jetrest);
-  this_Tree->Branch("belectron_ptwrtbjet",&belectron.ptwrtbjet);
+  this_Tree->Branch("belectron_ptwrtbjet",&belectron.ptwrtjet);
   this_Tree->Branch("belectron_dR_l_j",&belectron.dR_l_j);
   this_Tree->Branch("belectron_nsip3d",&belectron.nsip3d);
   this_Tree->Branch("belectron_reltrkiso",&belectron.reltrkiso);
   this_Tree->Branch("belectron_reliso",&belectron.reliso);
   this_Tree->Branch("belectron_charge",&belectron.charge);
+  this_Tree->Branch("belectron_relecalPFClusterIso",&belectron.relecalPFClusterIso);
   this_Tree->Branch("belectron_IsGsfCtfScPixChargeConsistent",&belectron.IsGsfCtfScPixChargeConsistent);
+  this_Tree->Branch("belectron_palongjet",&belectron.palongjet);
+  this_Tree->Branch("belectron_palongjetratio",&belectron.palongjetratio);
+  this_Tree->Branch("belectron_pt",&belectron.pt);
+  this_Tree->Branch("belectron_aeta",&belectron.aeta);
+  this_Tree->Branch("belectron_full5x5sigmaietaieta",&belectron.full5x5sigmaietaieta);
+  this_Tree->Branch("belectron_detaseed",&belectron.detaseed);
+  this_Tree->Branch("belectron_HoverE",&belectron.HoverE);
+  this_Tree->Branch("belectron_InvEminusInvP",&belectron.InvEminusInvP);
+  this_Tree->Branch("belectron_nmissinghits",&belectron.nmissinghits);
+
 
   this_Tree->Branch("bjet_pt",&bjet.pt);
   this_Tree->Branch("bjet_aeta",&bjet.aeta);
@@ -54,6 +81,8 @@ void bChargeID_TrainTree::SetBranches(TTree *this_Tree){
   this_Tree->Branch("bjet_MuonEnergyFraction",&bjet.MuonEnergyFraction);
   this_Tree->Branch("bjet_charge",&bjet.charge);
   this_Tree->Branch("bjet_partonFlavour",&bjet.partonFlavour);
+  this_Tree->Branch("bjet_ChargedMultiplicity",&bjet.ChargedMultiplicity);
+  this_Tree->Branch("bjet_NeutralMultiplicity",&bjet.NeutralMultiplicity);
 
   this_Tree->Branch("lhe_b_pdgid",&lhe_b_pdgid);
   this_Tree->Branch("Has_bMuon",&Has_bMuon);
@@ -110,7 +139,7 @@ void bChargeID_TrainTree::SetEventWeight(){
   //----ZpT weight For DY
   //----DY WEAK NLO
   //---z0 weight
-  weight=MCweight()*ev.GetTriggerLumi("Full")*GetPileUpWeight(nPileUp,0)*GetPrefireWeight(0)*zptweight*weakweight*z0weight*topptweight*btagsf;
+  weight=MCweight()*ev.GetTriggerLumi("Full")*GetPileUpWeight(nPileUp,0)*GetPrefireWeight(0)*zptweight*weakweight*z0weight*topptweight*btagsf*jetpuidsf;
 
   if(IsDiMuonChannel){
     weight*=w_MuonID[0][0]*w_MuonRECO[0][0]*w_MuonTrk[0][0]*w_MuonTrigger[0][0];
@@ -192,7 +221,7 @@ void bChargeID_TrainTree::RunBasicZregion(){
   jhchoi_newtree2->Fill();
 }
 void bChargeID_TrainTree::SetTreeValue_bJet(Jet &jet){
-  bjet=Get_bjetvars(jet);
+  bjet=Get_bjetvar(jet);
   //bjet.pt=jet.Pt();
   //bjet.aeta=jet.Eta();
   //bjet.ChargedHadronEnergyFraction=jet.GetChargedHadronEnergyFraction();
@@ -210,12 +239,14 @@ bool bChargeID_TrainTree::SetTreeValue_bMuon(Jet &jet){
   for(unsigned int i = 0 ; i < muonsize ; i++){
     if((int)i==muon1_idx) continue;
     if((int)i==muon2_idx) continue;
+    if(AllMuons[i].Pt() < 5.) continue;
+    if(!AllMuons[i].PassID("POGLoose")) continue;    
     double dR=jet.DeltaR(AllMuons[i]);
     if(dR < 0.4){      
       nbmuon+=1;
-      bmuon=Get_bmuonvars(AllMuons[i],jet);
+      bmuon=Get_bmuonvar(AllMuons[i],jet);
       //bmuon.P_jetrest=min(GetP_JetRestFrame(AllMuons[i],jet),10.);
-      //bmuon.ptwrtbjet=min(GetPt_wrt_Jet(AllElectrons[i],jet),10.);
+      //bmuon.ptwrtjet=min(GetPt_wrt_Jet(AllElectrons[i],jet),10.);
       //bmuon.dR_l_j=dR;
       //bmuon.nsip3d=min(fabs(AllMuons[i].IP3D()/AllMuons[i].IP3Derr()),15.);
       //bmuon.reltrkiso=min(AllMuons[i].TrkIso()/AllMuons[i].Pt(),15.);
@@ -230,7 +261,7 @@ bool bChargeID_TrainTree::SetTreeValue_bMuon(Jet &jet){
 }
 void bChargeID_TrainTree::Init_bMuonVars(){
   bmuon.P_jetrest=0;
-  bmuon.ptwrtbjet=0;
+  bmuon.ptwrtjet=0;
   bmuon.dR_l_j=0;
   bmuon.nsip3d=0;
   bmuon.reltrkiso=0;
@@ -246,12 +277,15 @@ bool bChargeID_TrainTree::SetTreeValue_bElectron(Jet &jet){
   for(unsigned int i = 0 ; i < electronsize ; i++){
     if((int)i==electron1_idx) continue;
     if((int)i==electron2_idx) continue;
+    if(AllElectrons[i].Pt() < 5) continue;
+    if(!AllElectrons[i].IsGsfCtfScPixChargeConsistent()) continue;
+    if(!AllElectrons[i].PassID("passVetoID")) continue;
     double dR=jet.DeltaR(AllElectrons[i]);
     if(dR < 0.4){      
       nbelectron+=1;
-      belectron=Get_belectronvars(AllElectrons[i],jet);
+      belectron=Get_belectronvar(AllElectrons[i],jet);
       //belectron.P_jetrest=min(GetP_JetRestFrame(AllElectrons[i],jet),10.);
-      //belectron.ptwrtbjet=min(GetPt_wrt_Jet(AllElectrons[i],jet),10.);
+      //belectron.ptwrtjet=min(GetPt_wrt_Jet(AllElectrons[i],jet),10.);
       //belectron.dR_l_j=dR;
       //belectron.nsip3d=min(fabs(AllElectrons[i].IP3D()/AllElectrons[i].IP3Derr()),15.);
       //belectron.reltrkiso=min(AllElectrons[i].TrkIso()/AllElectrons[i].Pt(),15.);
@@ -268,12 +302,13 @@ bool bChargeID_TrainTree::SetTreeValue_bElectron(Jet &jet){
 
 void bChargeID_TrainTree::Init_bElectronVars(){
   belectron.P_jetrest=0;
-  belectron.ptwrtbjet=0;
+  belectron.ptwrtjet=0;
   belectron.dR_l_j=0;
   belectron.nsip3d=0;
   belectron.reltrkiso=0;
   belectron.reliso=0;
   belectron.charge=0;
+  belectron.relecalPFClusterIso=0;
   belectron.IsGsfCtfScPixChargeConsistent=0;
   
 }

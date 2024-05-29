@@ -12,7 +12,10 @@ void SingleLeptonAnalyzer::initializeAnalyzer(){
   cout << "[SingleLeptonAnalyzer::initializeAnalyzer]" << endl;
   JHAnalyzerBase::initializeAnalyzer();
   JHAnalyzerBase::SetupSingleLeptonChannel();
-
+  noveto=false;
+  if(HasFlag("noveto")){
+    noveto=true;
+  }
 }
 
 
@@ -22,7 +25,7 @@ void SingleLeptonAnalyzer::SetMuon(const Muon& _l1){
 
 bool SingleLeptonAnalyzer::CheckIsMuonChannel(){
   if (!ev.PassTrigger(MuonTriggerNames)) return 0;
-  vector<Muon> v_muon=GetSingleMuReco(TriggerSafeCut_muon1);
+  vector<Muon> v_muon=noveto ? GetSingleMuRecoNoVeto(TriggerSafeCut_muon1) : GetSingleMuReco(TriggerSafeCut_muon1);
   if( v_muon.size()!=1) return 0;
   SetMuon(v_muon[0]);
 
@@ -40,7 +43,7 @@ bool SingleLeptonAnalyzer::CheckIsElectronChannel(){
   if ( IsDATA && isElectronData && ev.PassTrigger(MuonTriggerNames)) return 0; // to avoid double count
   
   //vector<int> v_electronidx=GetIdxDiElReco(TriggerSafeCut_electron1, TriggerSafeCut_electron2);
-  vector<Electron> v_electron=GetSingleElReco(TriggerSafeCut_electron1);
+  vector<Electron> v_electron=noveto ? GetSingleElRecoNoVeto(TriggerSafeCut_electron1) : GetSingleElReco(TriggerSafeCut_electron1);
   if( v_electron.size()!=1) return 0;
   //SetElectronIdx(v_electronidx[0],v_electronidx[1]);
   SetElectron(v_electron[0]);

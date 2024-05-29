@@ -4,7 +4,8 @@ SKIM="--skim SkimTree_Dilepton"
 FLAG="--userflags runSys"
 #FLAG=""
 YEAR=2016b
-SKFlat.py -a DiLeptonAnalyzer  ${SKIM} -l  inputlist_major.txt -n 30 -e ${YEAR} $FLAG &> syslogs/major.log&
+SKFlat.py -a DiLeptonAnalyzer  ${SKIM} -i DYJetsToMuMu_MiNNLO -n 26 -e ${YEAR} $FLAG &> syslogs/DYJetsToMuMu_MiNNLO.log&
+SKFlat.py -a DiLeptonAnalyzer  ${SKIM} -i DYJetsToEE_MiNNLO -n 12 -e ${YEAR} $FLAG &> syslogs/DYJetsToEE_MiNNLO.log&
 sleep 120
 SKFlat.py -a DiLeptonAnalyzer  ${SKIM} -l inputlist_minor.txt -n 50 -e ${YEAR} $FLAG &> syslogs/minor.log&
 sleep 5

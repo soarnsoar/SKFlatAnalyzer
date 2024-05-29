@@ -21,6 +21,10 @@ public:
   void SetTaggerResults(std::vector<double> ds);
   void SetEnergyFractions(double cH, double nH, double nEM, double cEM, double muE);
   void SetMultiplicities(double cM, double nM);
+  inline int ChargedMultiplicity() const {return j_chargedMultiplicity;}
+  inline int NeutralMultiplicity() const {return j_neutralMultiplicity;}
+  //void Set_vtxNtracks(int n);
+  //inline int vtxNtracks() const {return j_jet_vtxNtracks;}
   void SetPileupJetId(double v);
 
   void SetEnShift(double en_up, double en_down);
@@ -76,6 +80,7 @@ private:
   double j_muonEnergyFraction;
   int j_chargedMultiplicity;
   int j_neutralMultiplicity;
+  //int j_vtxNtracks;
   double j_PileupJetId;
   double j_En_up;
   double j_En_down;

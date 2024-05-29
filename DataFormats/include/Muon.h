@@ -121,7 +121,16 @@ public:
   bool PassFilterOR(const vector<TString>& filters) const;
   bool PassPath(TString path) const;
   bool PassPathOR(const vector<TString>& paths) const;
-
+  
+  //----jhchoi ->Add Variables for softmuon in bjet
+  void SetTrackerHits(int n);
+  inline int TrackerHits() const { return j_trackerHits; }
+  void SetPixelHits(int n);
+  inline int PixelHits() const { return j_pixelHits; }
+  void SetValidMuonHits(int n);
+  inline int ValidMuonHits() const { return j_validmuonhits; }
+  void SetMatchedStations(int n);
+  inline int MatchedStations() const { return j_matchedstations; }
 
 private:
 
@@ -141,6 +150,10 @@ private:
   ULong64_t j_pathbits;
 
   ClassDef(Muon,1);
+
+  //--jhchoi
+  int j_trackerHits, j_pixelHits, j_validmuonhits, j_matchedstations;
+  
 };
 
 #endif

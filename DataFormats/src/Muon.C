@@ -266,3 +266,18 @@ bool Muon::PassPathOR(const vector<TString>& paths) const{
       return true;
   return false;
 }
+
+
+//[jhchoi]
+void Muon::SetTrackerHits(int n){
+  j_trackerHits=n;
+}
+void Muon::SetPixelHits(int n){
+  j_pixelHits=n;
+}
+void Muon::SetValidMuonHits(int n){
+  j_validmuonhits=n;
+}
+void Muon::SetMatchedStations(int n){
+  j_matchedstations=n;
+}

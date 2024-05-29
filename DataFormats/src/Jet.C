@@ -142,3 +142,8 @@ double Jet::GetMuonEnergyFraction() const {
 double Jet::GetPileupJetId() const {
   return j_PileupJetId;
 }
+
+
+//void Jet::Set_vtxNtracks(int n){
+//  j_vtxNtracks=n;
+//}

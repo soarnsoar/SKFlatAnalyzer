@@ -149,6 +149,7 @@ bool Electron::PassID(TString ID) const{
 
   //==== POG
   if(ID=="passVetoID") return passVetoID();
+  if(ID=="passVetoIDnoIso") return Pass_CutBasedVetoNoIso();
   if(ID=="passLooseID") return passLooseID();
   if(ID=="passMediumID") return passMediumID();
   if(ID=="passTightID") return passTightID();

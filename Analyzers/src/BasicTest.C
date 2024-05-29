@@ -112,6 +112,104 @@ BasicTest::~BasicTest(){
 }
 
 void BasicTest::executeEvent(){
+  /*
+  vector<Electron> this_AllElectrons = GetAllElectrons();
+
+
+  for(auto &electron : this_AllElectrons){
+    cout << "---" << endl;
+    cout << "electron.InvEminusInvP()=" << electron.InvEminusInvP() << endl;
+    double scE=electron.scE();
+    double E=electron.E();
+    double P=electron.P();
+
+    double uncorrE=electron.UncorrE();
+    double uncorrP=electron.P()*uncorrE/E;
+    double uncorrP_bySC=electron.P()*scE/E;
+    TLorentzVector mygsf;
+    //electron_gsfpt = 0;
+    //electron_gsfEta = 0;
+    //electron_gsfPhi
+    
+    cout << "1/E - 1/P=" << (P-E)/(E*P) << endl;
+    cout << "1/E - 1/uncorrP_bySC=" << (uncorrP_bySC-E)/(E*uncorrP_bySC) << endl;
+    cout << "1/E - 1/uncorrP=" << (uncorrP-E)/(E*uncorrP) << endl;
+
+
+    cout << "1/uncorrE - 1/P=" << (P-uncorrE)/(uncorrE*P) << endl;
+    cout << "1/uncorrE - 1/uncorrP=" << (uncorrP-uncorrE)/(uncorrE*uncorrP) << endl;
+    cout << "1/uncorrE - 1/uncorrP_bySC=" << (uncorrP_bySC-uncorrE)/(uncorrE*uncorrP_bySC) << endl;
+
+    cout << "1/scE - 1/uncorrP=" << (uncorrP-scE)/(scE*uncorrP) << endl;
+    cout << "1/scE - 1/uncorrP_bySC=" << (uncorrP_bySC-scE)/(scE*uncorrP_bySC) << endl;
+    cout << "1/scE - 1/P=" << (P-scE)/(scE*P) << endl;
+
+
+  }
+  */
+  for(unsigned int i=0; i<electron_Energy->size(); i++){
+    double InvEminusInvP=electron_InvEminusInvP->at(i);
+    cout << "---" << endl;
+    cout << "InvEminusInvP=" << InvEminusInvP << endl;
+
+    double E=electron_Energy->at(i);
+    TLorentzVector this_gsf;
+    this_gsf.SetPtEtaPhiM(electron_gsfpt->at(i),electron_gsfEta->at(i),electron_gsfPhi->at(i),0);
+    double Pgsf=this_gsf.P();
+
+    TLorentzVector el;
+    el.SetPtEtaPhiE(1., electron_eta->at(i), electron_phi->at(i), electron_Energy->at(i));
+    double el_theta = el.Theta();
+    double el_et = electron_Energy->at(i) * TMath::Sin( el_theta );
+    double el_pt = sqrt(el_et*el_et - 0.512*0.512);
+    el.SetPtEtaPhiE( el_pt, electron_eta->at(i), electron_phi->at(i), electron_Energy->at(i));
+
+    double P=el.P();
+    double scE=electron_scEnergy->at(i);
+    double uncorrE=electron_EnergyUnCorr->at(i);
+    double scRawEnergy=electron_scRawEnergy->at(i);
+    TLorentzVector sc;
+    sc.SetPtEtaPhiE(1,electron_scEta->at(i),electron_scPhi->at(i),scE);
+    double scEt=electron_scEt->at(i);
+    double scPt=sqrt(scEt*scEt - 0.512*0.512);
+    sc.SetPtEtaPhiE(scPt,electron_scEta->at(i),electron_scPhi->at(i),scE);
+    
+
+    cout << "1/E-1/P=" << 1./E-1/P << endl;
+    cout << "1/E-1/Pgsf=" << 1./E-1/Pgsf << endl;
+
+    cout << "1/scE-1/P=" << 1./scE-1/P << endl;
+    cout << "1/scE-1/Pgsf=" << 1./scE-1/Pgsf << endl;
+
+    cout << "1/uncorrE-1/P=" << 1./uncorrE-1/P << endl;
+    cout << "1/uncorrE-1/Pgsf=" << 1./uncorrE-1/Pgsf << endl;
+
+    double eOverP=electron_eOverP->at(i);
+    cout << "eOverP=" << eOverP << endl;
+    cout << "E/P=" << E/P << endl;
+    cout << "E/Pgsf=" << E/Pgsf << endl;
+   
+    cout << "scE/P=" << scE/P << endl;
+    cout << "scE/Pgsf=" << scE/Pgsf << endl;
+
+    cout << "uncorrE/P=" << uncorrE/P << endl;
+    cout << "uncorrE/Pgsf=" << uncorrE/Pgsf << endl;
+
+    //mimic cmssw //https://github.com/cms-sw/cmssw/blob/CMSSW_9_4_X/RecoEgamma/ElectronIdentification/plugins/cuts/GsfEleEInverseMinusPInverseCut.cc#L43-L45
+    double inverse_E=1/E;
+    double inverse_scRawEnergy=1/scRawEnergy;
+    double inverse_scE=1/scE;
+    double inverse_uncorrE=1/uncorrE;
+    cout << "(1-eOverP)*inverse_E=" << (1.0-eOverP)*inverse_E << endl;
+    cout << "(1-eOverP)*inverse_scE=" << (1.0-eOverP)*inverse_scE << endl;
+    cout << "(1-eOverP)*inverse_scRawEnergy=" << (1.0-eOverP)*inverse_scRawEnergy << endl;
+    cout << "(1-eOverP)*inverse_uncorrE=" << (1.0-eOverP)*inverse_uncorrE << endl;
+    double diff = (1.0-eOverP)*inverse_scE - (1.0-eOverP)*inverse_uncorrE;
+    double ratio=diff/((1-eOverP)*inverse_uncorrE);
+    if (ratio > 0.3 && InvEminusInvP < 1000.){
+      cout << "!!diff over 30%!!!!" << endl;
+    } 
+  }
 
   //GetDileptonTriggerSF
   //double AnalyzerCore::GetDileptonTriggerSF(TString triggerSF_key0,TString triggerSF_key1,TString DZSF,const vector<Lepton*>& leps,int set,int mem,TString option)
@@ -119,8 +217,8 @@ void BasicTest::executeEvent(){
   vector<Muon> AllMuons = GetAllMuons();
   if (AllMuons.size()<2) return;
   vector<Lepton*> leps=MakeLeptonPointerVector(AllMuons);
-  double triggersf=GetDileptonTriggerSF("Mu17Leg1_MediumID_trkIsoLoose","Mu8Leg2_MediumID_trkIsoLoose","DZ_MediumID_trkIsoLoose",leps,0,0);
-  cout << "triggersf=" << triggersf << endl;
+  //double triggersf=GetDileptonTriggerSF("Mu17Leg1_MediumID_trkIsoLoose","Mu8Leg2_MediumID_trkIsoLoose","DZ_MediumID_trkIsoLoose",leps,0,0);
+  //cout << "triggersf=" << triggersf << endl;
   //---LHE info---//
   LHEs=GetLHEs();
   unsigned int LHEsize=LHEs.size();
@@ -321,11 +419,9 @@ void BasicTest::executeEventFromParameter(AnalyzerParameter param){
   //======================
   //==== Copy AllObjects
   //======================
-
-  vector<Muon> this_AllMuons = AllMuons;
   vector<Jet> this_AllJets = AllJets;
+  vector<Muon> this_AllMuons = AllMuons;
 
-  //==== Then, for each systematic sources
   //==== 1) Smear or scale them
   //==== 2) Then apply ID selections
   //==== This order should be explicitly followed
