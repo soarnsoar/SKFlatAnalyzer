@@ -10,12 +10,12 @@ export DATA_DIR=$SKFlat_WD/data/$SKFlatV
 #### use cvmfs for root ####
 export CMS_PATH=/cvmfs/cms.cern.ch
 source $CMS_PATH/cmsset_default.sh
-#export SCRAM_ARCH=slc7_amd64_gcc900
-export SCRAM_ARCH=slc7_amd64_gcc820
+export SCRAM_ARCH=slc7_amd64_gcc900
+#export SCRAM_ARCH=slc7_amd64_gcc820
 #export SCRAM_ARCH=slc7_amd64_gcc630
 #export SCRAM_ARCH=slc7_amd64_gcc700
-#export cmsswrel='cmssw/CMSSW_11_2_5'
-export cmsswrel='cmssw/CMSSW_10_6_4' ##current//TMVA is working
+export cmsswrel='cmssw/CMSSW_11_2_5'
+#export cmsswrel='cmssw/CMSSW_10_6_4' ##current//TMVA is working
 #export cmsswrel='cmssw/CMSSW_10_2_0'
 #export cmsswrel='cmssw/CMSSW_10_2_6'
 #export cmsswrel='cmssw/CMSSW_10_2_19'

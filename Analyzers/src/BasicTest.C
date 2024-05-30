@@ -103,6 +103,10 @@ void BasicTest::initializeAnalyzer(){
   RunXSecSyst = HasFlag("RunXSecSyst");
   cout << "[BasicTest::initializeAnalyzer] RunXSecSyst = " << RunXSecSyst << endl;
 
+  //xmlfile test
+  TMVATool *myScoreTool=new TMVATool("/data6/Users/jhchoi/SKFlatAnalyzers/test/ForTMVA/SKFlatAnalyzer/data/Run2UltraLegacy_v3/2017/TMVA/LepJetChargeReliability/aMCatNLO/muon/TMVAClassification_DNN.weights.xml");
+
+
 }
 
 BasicTest::~BasicTest(){
@@ -147,6 +151,7 @@ void BasicTest::executeEvent(){
 
   }
   */
+  /*
   for(unsigned int i=0; i<electron_Energy->size(); i++){
     double InvEminusInvP=electron_InvEminusInvP->at(i);
     cout << "---" << endl;
@@ -210,6 +215,7 @@ void BasicTest::executeEvent(){
       cout << "!!diff over 30%!!!!" << endl;
     } 
   }
+  */
 
   //GetDileptonTriggerSF
   //double AnalyzerCore::GetDileptonTriggerSF(TString triggerSF_key0,TString triggerSF_key1,TString DZSF,const vector<Lepton*>& leps,int set,int mem,TString option)

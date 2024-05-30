@@ -50,7 +50,7 @@ void EEMu_MuMuE_Method::initializeAnalyzer(){
   }
   if(isTreeMode && !is_cut_v2405_1 && !is_cut_v2405_2 && !is_cut_v2405_3){
     cout << "!!!![EEMu_MuMuE_Method::initializeAnalyzer] In basic setup, treemode is not allowed!!!! EXIT!!!" << endl;
-    1/0;
+    exit(1);
   }
 
   cout << "[EEMu_MuMuE_Method::initializeAnalyzer]" << endl;
