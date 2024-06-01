@@ -21,6 +21,7 @@
 #pragma link C++ class EfficiencyTool+;
 #pragma link C++ class JetPUIDTool+;
 #pragma link C++ class TMVATool+;
+#pragma link C++ class ChargeScoreTool+;
 //#pragma link C++ class RocPFProb+;
 
 

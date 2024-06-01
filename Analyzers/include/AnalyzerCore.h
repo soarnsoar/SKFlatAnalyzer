@@ -37,7 +37,7 @@
 #include "JetPUIDTool.h"
 //#include "RocPFProb.h"
 #include "TStopwatch.h"
-#include "TMVATool.h"
+#include "ChargeScoreTool.h"
 
 #define M_Z 91.1876
 #define M_W 80.379

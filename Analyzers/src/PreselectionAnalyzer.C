@@ -52,6 +52,10 @@ void PreselectionAnalyzer::initializeAnalyzer(){
     lepveto=true;
     cout << "lepveto -> true" << endl;
   }
+
+
+  //charge
+  LoadChargeScoreTool();
 }
 
 
@@ -187,34 +191,52 @@ void PreselectionAnalyzer::RunBasicZregion(){
   if(!runSys)FillHistAllChannel("AfterMETUnder75__dphizbOver1p6__ptzOver15");
   if(ptzb>60.) return;
   FillHistAllChannel("AfterMETUnder75__dphizbOver1p6__ptzOver15__ptzbUnber60");
+  
+
+
+
+
 
   ///---Let's look into leptons in bjet---//
   if(!check_tmva_input) return;
   for(auto& muon : AllMuons){
-    if(!muon.PassID("POGLoose")) continue;
     if(muon.Pt() < 5.) continue;
-    if(muon.DeltaR(v_bjet[0]) < 0.4){
-	bmuonvar this_bmuon=Get_bmuonvar(muon,v_bjet[0]);
-	FillHistAll_bmuon(LepCh+"__Presel",this_bmuon);	
-	FillHistAll_bmuon("ll__Presel",this_bmuon);	
-      }
+    if(muon.DeltaR(v_bjet[0]) > 0.4) continue;
+    if(muon.RelIso() > 10.) continue;
+    if(muon.Chi2()>10) continue;
+    if(muon.TrackerLayers()<1) continue;
+    if(muon.MatchedStations() <1) continue;
+
+    bmuonvar this_bmuon=Get_bmuonvar(muon,v_bjet[0]);
+    FillHistAll_bmuon(LepCh+"__Presel",this_bmuon);	
+    FillHistAll_bmuon("ll__Presel",this_bmuon);	
+    FillHist(LepCh+"__Presel/bmuon_chargescore",GetMuonChargeScore(muon,v_bjet[0]),weight,70,-0.2,1.2);
+    FillHist("ll__Presel/bmuon_chargescore",GetMuonChargeScore(muon,v_bjet[0]),weight,70,-0.2,1.2);
+  
   }//[end muon for loop]
 
   for(auto& electron : AllElectrons){
-    if(!electron.PassID("passVetoID")) continue;
     if(!electron.IsGsfCtfScPixChargeConsistent()) continue;
     if(electron.Pt() < 5.) continue;
-    if(electron.DeltaR(v_bjet[0]) < 0.4){
-      
-	belectronvar this_belectron=Get_belectronvar(electron,v_bjet[0]);
-	FillHistAll_belectron(LepCh+"__Presel",this_belectron);	
-	FillHistAll_belectron("ll__Presel",this_belectron);	
-      }
+    if(electron.DeltaR(v_bjet[0]) > 0.4) continue;
+    if(!electron.IsGsfCtfScPixChargeConsistent()) continue;
+    if(!electron.PassConversionVeto()) continue;
+    if(electron.RelIso() > 10.) continue;
+    if(electron.NMissingHits() != 0) continue;
+
+    belectronvar this_belectron=Get_belectronvar(electron,v_bjet[0]);
+    FillHistAll_belectron(LepCh+"__Presel",this_belectron);	
+    FillHistAll_belectron("ll__Presel",this_belectron);	
+    FillHist(LepCh+"__Presel/belectron_chargescore",GetElectronChargeScore(electron,v_bjet[0]),weight,70,-0.2,1.2);
+    FillHist("ll__Presel/belectron_chargescore",GetElectronChargeScore(electron,v_bjet[0]),weight,70,-0.2,1.2);
+
   }//[end electron for loop]
 
   bjetvar this_bjet=Get_bjetvar(v_bjet[0]);
   FillHistAll_bjet(LepCh+"__Presel",this_bjet);	
-  FillHistAll_bjet("ll__Presel",this_bjet);	
+  FillHistAll_bjet("ll__Presel",this_bjet);
+  FillHist("ll__Presel/bjet_chargescore",GetJetChargeScore(v_bjet[0]),weight,70,-0.2,1.2);
+  FillHist(LepCh+"__Presel/bjet_chargescore",GetJetChargeScore(v_bjet[0]),weight,70,-0.2,1.2);
 }//[end]RunBasic Zregion
 
 
@@ -228,6 +250,7 @@ void PreselectionAnalyzer::FillHistAll_bmuon(TString cutname,bmuonvar this_bmuon
   FillHist(cutname+"/bmuon_reltrkiso",this_bmuon.reltrkiso,weight,150,0,15);
   FillHist(cutname+"/bmuon_reliso",this_bmuon.reliso,weight,150,0,15);
   FillHist(cutname+"/bmuon_charge",this_bmuon.charge,weight,4,-2,2);
+
 }
 
 void PreselectionAnalyzer::FillHistAll_belectron(TString cutname,belectronvar this_belectron){
@@ -239,6 +262,7 @@ void PreselectionAnalyzer::FillHistAll_belectron(TString cutname,belectronvar th
   FillHist(cutname+"/belectron_reliso",this_belectron.reliso,weight,150,0,15);
   FillHist(cutname+"/belectron_charge",this_belectron.charge,weight,4,-2,2);
   FillHist(cutname+"/belectron_IsGsfCtfScPixChargeConsistent",this_belectron.IsGsfCtfScPixChargeConsistent,weight,4,-2,2);
+
 }
 
 void PreselectionAnalyzer::FillHistAll_bjet(TString cutname,bjetvar this_bjet){
@@ -302,6 +326,7 @@ void PreselectionAnalyzer::FillHistAll(TString cutname){
     }
   }
   if(nbjet>0){
+
     FillHist(cutname+"/pt_bj1",v_bjet[0].Pt(),weight,200,0,200);
     FillHist(cutname+"/eta_bj1",v_bjet[0].Eta(),weight,50,-3,3);
     if(nbjet>1){

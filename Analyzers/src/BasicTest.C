@@ -102,10 +102,13 @@ void BasicTest::initializeAnalyzer(){
 
   RunXSecSyst = HasFlag("RunXSecSyst");
   cout << "[BasicTest::initializeAnalyzer] RunXSecSyst = " << RunXSecSyst << endl;
-
+  
+  //TString xmlpath=(TString)getenv("DATA_DIR")+"/"+DataEra+"/TMVA/ChargeScore/v2405.2/muon/muon2017__3__50__100__0.1_DNN.weights.xml";
+  //cout << xmlpath << endl;
+  //TString xmlpath=(TString)getenv("DATA_DIR")+"2017/TMVA/old/LepJetChargeReliability/aMCatNLO/muon/TMVAClassification_DNN.weights.xml"
   //xmlfile test
-  TMVATool *myScoreTool=new TMVATool("/data6/Users/jhchoi/SKFlatAnalyzers/test/ForTMVA/SKFlatAnalyzer/data/Run2UltraLegacy_v3/2017/TMVA/LepJetChargeReliability/aMCatNLO/muon/TMVAClassification_DNN.weights.xml");
-
+  //  TMVATool *myScoreTool=new TMVATool(xmlpath);
+  ChargeScoreTool *muonscoretool=new ChargeScoreTool("2405.2","muon",DataEra);
 
 }
 

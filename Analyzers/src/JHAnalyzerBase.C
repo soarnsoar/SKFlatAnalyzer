@@ -2636,6 +2636,7 @@ JHAnalyzerBase::belectronvar JHAnalyzerBase::Get_belectronvar(Electron &this_ele
   ret.aeta=this_electron.Eta();
   ret.full5x5sigmaietaieta=this_electron.Full5x5_sigmaIetaIeta();
   ret.detaseed=this_electron.dEtaSeed();
+  ret.abs_detaseed=fabs(ret.detaseed);
   ret.HoverE=this_electron.HoverE();
   ret.InvEminusInvP=fabs(this_electron.InvEminusInvP());
   ret.nmissinghits=this_electron.NMissingHits();
@@ -2654,8 +2655,100 @@ JHAnalyzerBase::bjetvar JHAnalyzerBase::Get_bjetvar(Jet &this_jet){
   ret.ChargedEmEnergyFraction=this_jet.GetChargedEmEnergyFraction();
   ret.MuonEnergyFraction=this_jet.GetMuonEnergyFraction();
   ret.charge=this_jet.Charge();
+  ret.abs_charge=fabs(ret.charge);
   ret.partonFlavour=this_jet.partonFlavour();//if is data -> 0
   ret.ChargedMultiplicity=this_jet.ChargedMultiplicity();
   ret.NeutralMultiplicity=this_jet.NeutralMultiplicity();
   return ret;
+}
+
+void JHAnalyzerBase::LoadChargeScoreTool(){
+  mChargeTool=new ChargeScoreTool("muon","2405.2",DataEra);
+  eChargeTool=new ChargeScoreTool("electron","2405.2",DataEra);
+  jChargeTool=new ChargeScoreTool("jet","2405.2",DataEra);
+  //Link variables
+  //void TMVATool::AddVariable(TString _formula, float *_this_var_address)
+  ///---Muon---//
+  mChargeTool->AddVariable("bmuon_P_jetrest",&bmuon_ChargeTool.P_jetrest);
+  mChargeTool->AddVariable("bmuon_ptwrtbjet",&bmuon_ChargeTool.ptwrtjet);
+  mChargeTool->AddVariable("bmuon_dR_l_j",&bmuon_ChargeTool.dR_l_j);
+  mChargeTool->AddVariable("bmuon_nsip3d",&bmuon_ChargeTool.nsip3d);
+  mChargeTool->AddVariable("bmuon_reltrkiso",&bmuon_ChargeTool.reltrkiso);
+  mChargeTool->AddVariable("bmuon_reliso",&bmuon_ChargeTool.reliso);
+  mChargeTool->AddVariable("bmuon_palongjet",&bmuon_ChargeTool.palongjet);
+  mChargeTool->AddVariable("bmuon_palongjetratio",&bmuon_ChargeTool.palongjetratio);
+  mChargeTool->AddVariable("bmuon_pt",&bmuon_ChargeTool.pt);
+  mChargeTool->AddVariable("bmuon_aeta",&bmuon_ChargeTool.aeta);
+  mChargeTool->AddVariable("bmuon_normchi2",&bmuon_ChargeTool.normchi2);
+  mChargeTool->AddVariable("bmuon_ntracklayers",&bmuon_ChargeTool.ntracklayers);
+  mChargeTool->AddVariable("bmuon_ntrackhits",&bmuon_ChargeTool.ntrackhits);
+  mChargeTool->AddVariable("bmuon_nvalidmuonhits",&bmuon_ChargeTool.nvalidmuonhits);
+  mChargeTool->AddVariable("bmuon_nmatchedstations",&bmuon_ChargeTool.nmatchedstations);
+  mChargeTool->AddVariable("bjet_pt",&bjet_ChargeTool.pt);
+  mChargeTool->AddVariable("bjet_aeta",&bjet_ChargeTool.aeta);
+  mChargeTool->AddVariable("bjet_ChargedHadronEnergyFraction",&bjet_ChargeTool.ChargedHadronEnergyFraction);
+  mChargeTool->AddVariable("bjet_NeutralHadronEnergyFraction",&bjet_ChargeTool.NeutralHadronEnergyFraction);
+  mChargeTool->AddVariable("bjet_NeutralEmEnergyFraction",&bjet_ChargeTool.NeutralEmEnergyFraction);
+  mChargeTool->AddVariable("bjet_ChargedEmEnergyFraction",&bjet_ChargeTool.ChargedEmEnergyFraction);
+  mChargeTool->AddVariable("bjet_MuonEnergyFraction",&bjet_ChargeTool.MuonEnergyFraction);
+  mChargeTool->AddVariable("fabs(bjet_charge)",&bjet_ChargeTool.abs_charge);
+  mChargeTool->AddVariable("bjet_ChargedMultiplicity",&bjet_ChargeTool.ChargedMultiplicity);
+  mChargeTool->AddVariable("bjet_NeutralMultiplicity",&bjet_ChargeTool.NeutralMultiplicity);
+  mChargeTool->SetupTMVA();
+
+  //---Electron---//
+  eChargeTool->AddVariable("belectron_P_jetrest",&belectron_ChargeTool.P_jetrest);
+  eChargeTool->AddVariable("belectron_ptwrtbjet",&belectron_ChargeTool.ptwrtjet);
+  eChargeTool->AddVariable("belectron_dR_l_j",&belectron_ChargeTool.dR_l_j);
+  eChargeTool->AddVariable("belectron_nsip3d",&belectron_ChargeTool.nsip3d);
+  eChargeTool->AddVariable("belectron_reltrkiso",&belectron_ChargeTool.reltrkiso);
+  eChargeTool->AddVariable("belectron_reliso",&belectron_ChargeTool.reliso);
+  eChargeTool->AddVariable("belectron_palongjet",&belectron_ChargeTool.palongjet);
+  eChargeTool->AddVariable("belectron_palongjetratio",&belectron_ChargeTool.palongjetratio);
+  eChargeTool->AddVariable("belectron_pt",&belectron_ChargeTool.pt);
+  eChargeTool->AddVariable("belectron_aeta",&belectron_ChargeTool.aeta);
+  eChargeTool->AddVariable("belectron_full5x5sigmaietaieta",&belectron_ChargeTool.full5x5sigmaietaieta);
+  eChargeTool->AddVariable("fabs(belectron_detaseed)",&belectron_ChargeTool.abs_detaseed);
+  eChargeTool->AddVariable("belectron_HoverE",&belectron_ChargeTool.HoverE);
+  eChargeTool->AddVariable("belectron_InvEminusInvP",&belectron_ChargeTool.InvEminusInvP);
+  eChargeTool->AddVariable("bjet_pt",&bjet_ChargeTool.pt);
+  eChargeTool->AddVariable("bjet_aeta",&bjet_ChargeTool.aeta);
+  eChargeTool->AddVariable("bjet_ChargedHadronEnergyFraction",&bjet_ChargeTool.ChargedHadronEnergyFraction);
+  eChargeTool->AddVariable("bjet_NeutralHadronEnergyFraction",&bjet_ChargeTool.NeutralHadronEnergyFraction);
+  eChargeTool->AddVariable("bjet_NeutralEmEnergyFraction",&bjet_ChargeTool.NeutralEmEnergyFraction);
+  eChargeTool->AddVariable("bjet_ChargedEmEnergyFraction",&bjet_ChargeTool.ChargedEmEnergyFraction);
+  eChargeTool->AddVariable("bjet_MuonEnergyFraction",&bjet_ChargeTool.MuonEnergyFraction);
+  eChargeTool->AddVariable("fabs(bjet_charge)",&bjet_ChargeTool.abs_charge);
+  eChargeTool->AddVariable("bjet_ChargedMultiplicity",&bjet_ChargeTool.ChargedMultiplicity);
+  eChargeTool->AddVariable("bjet_NeutralMultiplicity",&bjet_ChargeTool.NeutralMultiplicity);
+  eChargeTool->SetupTMVA();
+
+  //---Jet----//
+  jChargeTool->AddVariable("bjet_pt",&bjet_ChargeTool.pt);
+  jChargeTool->AddVariable("bjet_aeta",&bjet_ChargeTool.aeta);
+  jChargeTool->AddVariable("bjet_ChargedHadronEnergyFraction",&bjet_ChargeTool.ChargedHadronEnergyFraction);
+  jChargeTool->AddVariable("bjet_NeutralHadronEnergyFraction",&bjet_ChargeTool.NeutralHadronEnergyFraction);
+  jChargeTool->AddVariable("bjet_NeutralEmEnergyFraction",&bjet_ChargeTool.NeutralEmEnergyFraction);
+  jChargeTool->AddVariable("bjet_ChargedEmEnergyFraction",&bjet_ChargeTool.ChargedEmEnergyFraction);
+  jChargeTool->AddVariable("bjet_MuonEnergyFraction",&bjet_ChargeTool.MuonEnergyFraction);
+  jChargeTool->AddVariable("fabs(bjet_charge)",&bjet_ChargeTool.abs_charge);
+  jChargeTool->AddVariable("bjet_ChargedMultiplicity",&bjet_ChargeTool.ChargedMultiplicity);
+  jChargeTool->AddVariable("bjet_NeutralMultiplicity",&bjet_ChargeTool.NeutralMultiplicity);
+  jChargeTool->SetupTMVA();
+}
+
+double JHAnalyzerBase::GetMuonChargeScore(Muon &_this_bmuon, Jet &_this_bjet){
+  bmuon_ChargeTool=Get_bmuonvar(_this_bmuon,_this_bjet);//Change input variable value 
+  return mChargeTool->GetScore();
+}
+
+
+double JHAnalyzerBase::GetElectronChargeScore(Electron &_this_belectron, Jet &_this_bjet){
+  belectron_ChargeTool=Get_belectronvar(_this_belectron,_this_bjet);//Change input variable value 
+  return mChargeTool->GetScore();
+}
+
+double JHAnalyzerBase::GetJetChargeScore(Jet &_this_bjet){
+  bjet_ChargeTool=Get_bjetvar(_this_bjet);//Change input variable value 
+  return mChargeTool->GetScore();
 }

@@ -285,22 +285,22 @@ class JHAnalyzerBase : public AnalyzerCore {
   double GetP_along_Jet(TLorentzVector &lep, TLorentzVector &jet);
 
   struct bmuonvar{
-    double P_jetrest=0;
-    double ptwrtjet=0;
-    double dR_l_j=0;
-    double nsip3d=0;
-    double reltrkiso=0;
-    double reliso=0;
-    double charge=0;
-    double palongjet=0;
-    double palongjetratio=0;
-    double pt=0;
-    double aeta=0;
-    double normchi2=0;
-    double ntracklayers=0;
-    double ntrackhits=0;
-    double nvalidmuonhits=0;
-    double nmatchedstations=0;
+    float P_jetrest=0;
+    float ptwrtjet=0;
+    float dR_l_j=0;
+    float nsip3d=0;
+    float reltrkiso=0;
+    float reliso=0;
+    float charge=0;
+    float palongjet=0;
+    float palongjetratio=0;
+    float pt=0;
+    float aeta=0;
+    float normchi2=0;
+    float ntracklayers=0;
+    float ntrackhits=0;
+    float nvalidmuonhits=0;
+    float nmatchedstations=0;
     bool isGlobalMuon=0;
     bool isTrackerMuon=0;
     bool isStandAloneMuon=0;
@@ -312,39 +312,41 @@ class JHAnalyzerBase : public AnalyzerCore {
   };
 
   struct belectronvar{
-    double P_jetrest=0;
-    double ptwrtjet=0;
-    double palongjet=0;
-    double palongjetratio=0;
-    double dR_l_j=0;
-    double nsip3d=0;
-    double reltrkiso=0;
-    double reliso=0;
-    double charge=0;
-    double relecalPFClusterIso=0;
-    double IsGsfCtfScPixChargeConsistent=0;
-    double pt=0;
-    double aeta=0;
-    double full5x5sigmaietaieta=0;
-    double detaseed=0;
-    double HoverE=0;
-    double InvEminusInvP=0;
-    double nmissinghits=0;
+    float P_jetrest=0;
+    float ptwrtjet=0;
+    float palongjet=0;
+    float palongjetratio=0;
+    float dR_l_j=0;
+    float nsip3d=0;
+    float reltrkiso=0;
+    float reliso=0;
+    float charge=0;
+    float relecalPFClusterIso=0;
+    float IsGsfCtfScPixChargeConsistent=0;
+    float pt=0;
+    float aeta=0;
+    float full5x5sigmaietaieta=0;
+    float detaseed=0;
+    float abs_detaseed=0;
+    float HoverE=0;
+    float InvEminusInvP=0;
+    float nmissinghits=0;
 
   };
 
   struct bjetvar{
-    double pt=0;
-    double aeta=0;
-    double ChargedHadronEnergyFraction=0;
-    double NeutralHadronEnergyFraction=0;
-    double NeutralEmEnergyFraction=0;
-    double ChargedEmEnergyFraction=0;
-    double MuonEnergyFraction=0;
-    double charge=0;
-    double partonFlavour=0;
-    double ChargedMultiplicity=0;
-    double NeutralMultiplicity=0;
+    float pt=0;
+    float aeta=0;
+    float ChargedHadronEnergyFraction=0;
+    float NeutralHadronEnergyFraction=0;
+    float NeutralEmEnergyFraction=0;
+    float ChargedEmEnergyFraction=0;
+    float MuonEnergyFraction=0;
+    float charge=0;
+    float abs_charge=0;
+    float partonFlavour=0;
+    float ChargedMultiplicity=0;
+    float NeutralMultiplicity=0;
   };
 
 
@@ -353,6 +355,17 @@ class JHAnalyzerBase : public AnalyzerCore {
   JHAnalyzerBase::belectronvar Get_belectronvar(Electron &this_electron, Jet &this_jet);
   JHAnalyzerBase::bjetvar Get_bjetvar(Jet &this_jet);
 
+
+  void LoadChargeScoreTool();
+  double GetMuonChargeScore(Muon &_this_bmuon, Jet &_this_bjet);
+  double GetElectronChargeScore(Electron &_this_belectron, Jet &_this_bjet);
+  double GetJetChargeScore(Jet &_this_bjet);
+  ChargeScoreTool *mChargeTool;
+  bmuonvar bmuon_ChargeTool;
+  ChargeScoreTool *eChargeTool;
+  belectronvar belectron_ChargeTool;
+  ChargeScoreTool *jChargeTool;
+  bjetvar bjet_ChargeTool;
  private:
   MomentumVar _CurrentSys;
   JetTagging::Parameters jtp;
