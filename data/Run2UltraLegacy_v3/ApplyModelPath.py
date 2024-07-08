@@ -39,13 +39,24 @@ class modify:
         fnew.close()
         if not UseBackup :os.system("cp "+self.xml+" "+self.xml+"_backup")
         os.system("mv "+self.xml+"_new "+self.xml)
-objs=["muon","electron","jet"]
-version="2405.2"
+#objs=["muon","electron","jet"]
+objs=["muon","electron"]
+version="2405.4"
 years=["2016preVFP","2016postVFP","2017","2018"]
 #${YEAR}/TMVA/ChargeScore/v${VERSION}/${OBJ}
 
+dict_version={
+    "2405.2":[3,50,100,0.1],
+    "2405.4":[5,64,500,0.2],
+}
+
+nlayer=dict_version[version][0]
+nnode=dict_version[version][1]
+batchsize=dict_version[version][2]
+dropout=dict_version[version][3]
+
 for year in years:
     for obj in objs:
-        job=modify()
+        job=modify(nlayer,nnode,batchsize,dropout)
         job.SetXMLPath(version,year,obj)
         job.FixPath()
