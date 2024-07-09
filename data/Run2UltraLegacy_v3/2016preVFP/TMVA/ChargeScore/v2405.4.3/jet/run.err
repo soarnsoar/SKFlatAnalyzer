@@ -1,0 +1,5 @@
+Using TensorFlow backend.
+Error in <TSystem::ExpandFileName>: input: $HOME/.root.mimes, output: $HOME/.root.mimes
+2024-07-07 17:29:22.097300: I tensorflow/core/platform/cpu_feature_guard.cc:140] Your CPU supports instructions that this TensorFlow binary was not compiled to use: SSE4.1 SSE4.2 AVX AVX2 FMA
+/cvmfs/cms.cern.ch/slc7_amd64_gcc700/external/py2-Keras/2.1.4-gnimlf2/lib/python2.7/site-packages/keras/models.py:942: UserWarning: The `nb_epoch` argument in `fit` has been renamed `epochs`.
+  warnings.warn('The `nb_epoch` argument in `fit` '

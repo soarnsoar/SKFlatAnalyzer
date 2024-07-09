@@ -1,5 +1,5 @@
 import os
-
+SKFlat_WD=os.getenv("SKFlat_WD")
 
 
 class modelpath:
@@ -44,18 +44,45 @@ class modelpath:
         return self.WORKDIR
 
     def CpModel(self):
-        destination=self.year+"/TMVA/ChargeScore/v"+self.version+"/"+self.obj+"/"
-        os.system("mkdir -p "+destination)
-        target=self.WORKDIR+"/*"
-        target2=self.WORKDIR+"/"+self.obj+self.year+"__"+self.nlayer+"__"+self.nnode+"__"+self.batchsize+"__"+self.dropout+"/weights/*"
-        print "destination=",destination
-        print "target=",target
-        print "target2=",target2
+        self.destination=self.year+"/TMVA/ChargeScore/v"+self.version+"/"+self.obj+"/"
+        os.system("mkdir -p "+self.destination)
+        self.target=self.WORKDIR+"/*"
+        self.target2=self.WORKDIR+"/"+self.obj+self.year+"__"+self.nlayer+"__"+self.nnode+"__"+self.batchsize+"__"+self.dropout+"/weights/*"
+        print "destination=",self.destination
+        print "target=",self.target
+        print "target2=",self.target2
 
 
-        os.system("cp "+target+" "+destination)
-        os.system("cp "+target2+" "+destination)
+        os.system("cp "+self.target+" "+self.destination)
+        os.system("cp "+self.target2+" "+self.destination)
 
+        self.ModifyXML()
+
+    def ModifyXML(self):
+        ##
+        self.xmlpath=self.destination+"/"+self.obj+self.year+"__"+self.nlayer+"__"+self.nnode+"__"+self.batchsize+"__"+self.dropout+"_DNN.weights.xml"
+        os.system("cp "+self.xmlpath+" "+self.xmlpath+"_backup")
+        PrefixToFindLine='<Option name="FilenameTrainedModel"'
+
+
+        if os.path.isfile(self.xmlpath+"_backup"):
+            f=open(self.xmlpath+"_backup","r")
+        else:
+            f=open(self.xmlpath,"r")
+        lines=f.readlines()
+        
+        fnew=open(self.xmlpath+"_new","w")
+        for line in lines:
+            if PrefixToFindLine in line:
+                line='    <Option name="FilenameTrainedModel" modified="No">'+SKFlat_WD+"/data/Run2UltraLegacy_v3/"+self.destination+"/TrainedModel_DNN.h5</Option>\n"
+            if "<Spectator" in line or " </Spectator" in line:
+                continue ### skip spectator
+            fnew.write(line)
+
+
+        f.close()
+        fnew.close()
+        os.system("mv "+self.xmlpath+"_new "+self.xmlpath)
 if __name__ == '__main__':
     version="2405.4.3"
     ana="EEMu_MuMuE_Method"

@@ -1,0 +1,9 @@
+executable = /data6/Users/jhchoi/TMVA/TMVA_TOOL/ws/WORKDIR_ntrial/2405.4.3/EEMu_MuMuE_Method/2018/jet/jet2018__5__64__1000__0.2/Trf_G/23/run.sh
+universe = vanilla
+output = /data6/Users/jhchoi/TMVA/TMVA_TOOL/ws/WORKDIR_ntrial/2405.4.3/EEMu_MuMuE_Method/2018/jet/jet2018__5__64__1000__0.2/Trf_G/23/run.out
+error = /data6/Users/jhchoi/TMVA/TMVA_TOOL/ws/WORKDIR_ntrial/2405.4.3/EEMu_MuMuE_Method/2018/jet/jet2018__5__64__1000__0.2/Trf_G/23/run.err
+log = /data6/Users/jhchoi/TMVA/TMVA_TOOL/ws/WORKDIR_ntrial/2405.4.3/EEMu_MuMuE_Method/2018/jet/jet2018__5__64__1000__0.2/Trf_G/23/run.log
+request_cpus = 1
+accounting_group=group_cms
+JobBatchName=dnn_jet_2405.4.3_2018
+queue

@@ -1,0 +1,11 @@
+executable = /data6/Users/jhchoi/TMVA/TMVA_TOOL/ws/WORKDIR/2405.2/EEMu_MuMuE_Method/2016postVFP/jet/jet2016postVFP__3__50__100__0.1/Trf_NUG/run.sh
+universe = vanilla
+output = /data6/Users/jhchoi/TMVA/TMVA_TOOL/ws/WORKDIR/2405.2/EEMu_MuMuE_Method/2016postVFP/jet/jet2016postVFP__3__50__100__0.1/Trf_NUG/run.out
+error = /data6/Users/jhchoi/TMVA/TMVA_TOOL/ws/WORKDIR/2405.2/EEMu_MuMuE_Method/2016postVFP/jet/jet2016postVFP__3__50__100__0.1/Trf_NUG/run.err
+log = /data6/Users/jhchoi/TMVA/TMVA_TOOL/ws/WORKDIR/2405.2/EEMu_MuMuE_Method/2016postVFP/jet/jet2016postVFP__3__50__100__0.1/Trf_NUG/run.log
+request_memory = 10000 MB 
+
+request_cpus = 1
+accounting_group=group_cms
+JobBatchName=dnn_jet_2405.2_2016postVFP
+queue

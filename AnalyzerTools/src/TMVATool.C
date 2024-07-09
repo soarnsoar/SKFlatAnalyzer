@@ -92,6 +92,27 @@ void TMVATool::SetupTMVA(){
   reader->BookMVA("PyKeras::DNN",xmlfile);
   
 }
+void TMVATool::SetScore(){
+  score= reader->EvaluateMVA("PyKeras::DNN");
+}
 float TMVATool::GetScore(){
-  return reader->EvaluateMVA("PyKeras::DNN");
+  return score;
+}
+void TMVATool::SetMinCut(float _mincut){
+  std::cout << "SetMinCut->" << _mincut << std::endl;
+  mincut=_mincut;
+}
+void TMVATool::SetMaxCut(float _maxcut){
+  std::cout << "SetMaxCut->" << _maxcut << std::endl;
+  maxcut=_maxcut;
+}
+float TMVATool::GetCoefficient(){
+  float this_score= GetScore();
+  if(this_score>mincut){
+    return 1.;
+  }
+  else if(this_score<maxcut){
+    return -1.;
+  }
+  return 0.;
 }

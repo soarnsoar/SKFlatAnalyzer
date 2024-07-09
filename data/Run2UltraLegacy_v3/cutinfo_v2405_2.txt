@@ -1,0 +1,142 @@
+----
+2016preVFP muon
+self.FromCutToRight>>> True
+0.660209483978
+this_sigeff= 0.371263621768
+this_bkgeff= 0.0927341573194
+----
+2016preVFP electron
+self.FromCutToRight>>> True
+0.598290797267
+this_sigeff= 0.358878683506
+this_bkgeff= 0.128156062297
+----
+2016preVFP jet
+self.FromCutToRight>>> True
+0.635174398315
+this_sigeff= 0.158706186654
+this_bkgeff= 0.0793403069048
+----
+2016postVFP muon
+self.FromCutToRight>>> True
+0.694131831679
+this_sigeff= 0.370309095311
+this_bkgeff= 0.0924488944514
+----
+2016postVFP electron
+self.FromCutToRight>>> True
+0.670931662668
+this_sigeff= 0.31874750698
+this_bkgeff= 0.106222885033
+----
+2016postVFP jet
+self.FromCutToRight>>> True
+0.608495608926
+this_sigeff= 0.171276866524
+this_bkgeff= 0.0856280757904
+----
+2017 muon
+self.FromCutToRight>>> True
+0.723471136329
+this_sigeff= 0.388473609995
+this_bkgeff= 0.0970837370675
+----
+2017 electron
+self.FromCutToRight>>> True
+0.647077931624
+this_sigeff= 0.397755013575
+this_bkgeff= 0.13250088073
+----
+2017 jet
+self.FromCutToRight>>> True
+0.614638266851
+this_sigeff= 0.199536708539
+this_bkgeff= 0.0997531930647
+----
+2018 muon
+self.FromCutToRight>>> True
+0.685020546824
+this_sigeff= 0.393066734708
+this_bkgeff= 0.0982040777439
+----
+2018 electron
+self.FromCutToRight>>> True
+0.60382286021
+this_sigeff= 0.385483973141
+this_bkgeff= 0.12848090712
+----
+2018 jet
+self.FromCutToRight>>> True
+0.608434804074
+this_sigeff= 0.179421960325
+this_bkgeff= 0.0897050940808
+< 2018 >
+MuonEff_Presel= 0.0747061569094
+ElectronEff_Presel= 0.0577611228008
+----
+2016preVFP muon
+self.FromCutToRight>>> False
+0.222666283702
+this_sigeff= 0.0921626062728
+this_bkgeff= 0.0230246302053
+----
+2016preVFP electron
+self.FromCutToRight>>> False
+0.270221880465
+this_sigeff= 0.00584702067719
+this_bkgeff= 0.00207296849088
+----
+2016preVFP jet
+self.FromCutToRight>>> False
+[FailToFind Cut!!!!!]
+----
+2016postVFP muon
+self.FromCutToRight>>> False
+0.218442946702
+this_sigeff= 0.0542344597413
+this_bkgeff= 0.0135582277459
+----
+2016postVFP electron
+self.FromCutToRight>>> False
+0.214465908129
+this_sigeff= 0.0103036876356
+this_bkgeff= 0.0034303948943
+----
+2016postVFP jet
+self.FromCutToRight>>> False
+[FailToFind Cut!!!!!]
+----
+2017 muon
+self.FromCutToRight>>> False
+0.20753558858
+this_sigeff= 0.128528115525
+this_bkgeff= 0.0320986156809
+----
+2017 electron
+self.FromCutToRight>>> False
+0.249564586498
+this_sigeff= 0.02563901828
+this_bkgeff= 0.00850995870503
+----
+2017 jet
+self.FromCutToRight>>> False
+[FailToFind Cut!!!!!]
+----
+2018 muon
+self.FromCutToRight>>> False
+0.19886673921
+this_sigeff= 0.122594321646
+this_bkgeff= 0.0306418315511
+----
+2018 electron
+self.FromCutToRight>>> False
+0.280162264495
+this_sigeff= 0.025457173031
+this_bkgeff= 0.00847269732674
+----
+2018 jet
+self.FromCutToRight>>> False
+[FailToFind Cut!!!!!]
+< 2018 >
+MuonEff_Presel= 0.0747061569094
+ElectronEff_Presel= 0.0577611228008

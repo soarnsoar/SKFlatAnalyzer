@@ -43,6 +43,7 @@
 #pragma link C++ class DiLeptonAnalyzer+;
 #pragma link C++ class bChargeID_TrainTree+;
 #pragma link C++ class PreselectionAnalyzer+;
+#pragma link C++ class DNNOptimizer+;
 
 
 

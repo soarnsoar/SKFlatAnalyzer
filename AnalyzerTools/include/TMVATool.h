@@ -24,6 +24,12 @@ class TMVATool{
   void AddVariable(TString _formula, float *_this_var_address);
   void SetupTMVA();
   float GetScore();
+  void SetScore();
   TMVA::Reader * reader;
+  void SetMinCut(float _mincut);
+  void SetMaxCut(float _maxcut);
+  float GetCoefficient();
+  float mincut,maxcut;
+  float score;
 };
 #endif

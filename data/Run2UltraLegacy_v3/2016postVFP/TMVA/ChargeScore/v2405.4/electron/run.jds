@@ -1,0 +1,11 @@
+executable = /data6/Users/jhchoi/TMVA/TMVA_TOOL/ws/WORKDIR/2405.4/EEMu_MuMuE_Method/2016postVFP/electron/electron2016postVFP__5__64__500__0.2/Trf_G/run.sh
+universe = vanilla
+output = /data6/Users/jhchoi/TMVA/TMVA_TOOL/ws/WORKDIR/2405.4/EEMu_MuMuE_Method/2016postVFP/electron/electron2016postVFP__5__64__500__0.2/Trf_G/run.out
+error = /data6/Users/jhchoi/TMVA/TMVA_TOOL/ws/WORKDIR/2405.4/EEMu_MuMuE_Method/2016postVFP/electron/electron2016postVFP__5__64__500__0.2/Trf_G/run.err
+log = /data6/Users/jhchoi/TMVA/TMVA_TOOL/ws/WORKDIR/2405.4/EEMu_MuMuE_Method/2016postVFP/electron/electron2016postVFP__5__64__500__0.2/Trf_G/run.log
+request_memory = 10000 MB 
+
+request_cpus = 1
+accounting_group=group_cms
+JobBatchName=dnn_electron_2405.4_2016postVFP
+queue

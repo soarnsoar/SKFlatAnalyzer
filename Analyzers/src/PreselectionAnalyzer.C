@@ -208,10 +208,11 @@ void PreselectionAnalyzer::RunBasicZregion(){
     if(muon.MatchedStations() <1) continue;
 
     bmuonvar this_bmuon=Get_bmuonvar(muon,v_bjet[0]);
+    SetMuonChargeScore(muon,v_bjet[0]);
     FillHistAll_bmuon(LepCh+"__Presel",this_bmuon);	
     FillHistAll_bmuon("ll__Presel",this_bmuon);	
-    FillHist(LepCh+"__Presel/bmuon_chargescore",GetMuonChargeScore(muon,v_bjet[0]),weight,70,-0.2,1.2);
-    FillHist("ll__Presel/bmuon_chargescore",GetMuonChargeScore(muon,v_bjet[0]),weight,70,-0.2,1.2);
+    FillHist(LepCh+"__Presel/bmuon_chargescore",GetMuonChargeScore(),weight,70,-0.2,1.2);
+    FillHist("ll__Presel/bmuon_chargescore",GetMuonChargeScore(),weight,70,-0.2,1.2);
   
   }//[end muon for loop]
 
@@ -225,18 +226,21 @@ void PreselectionAnalyzer::RunBasicZregion(){
     if(electron.NMissingHits() != 0) continue;
 
     belectronvar this_belectron=Get_belectronvar(electron,v_bjet[0]);
+    SetElectronChargeScore(electron,v_bjet[0]);
     FillHistAll_belectron(LepCh+"__Presel",this_belectron);	
     FillHistAll_belectron("ll__Presel",this_belectron);	
-    FillHist(LepCh+"__Presel/belectron_chargescore",GetElectronChargeScore(electron,v_bjet[0]),weight,70,-0.2,1.2);
-    FillHist("ll__Presel/belectron_chargescore",GetElectronChargeScore(electron,v_bjet[0]),weight,70,-0.2,1.2);
+    FillHist(LepCh+"__Presel/belectron_chargescore",GetElectronChargeScore(),weight,70,-0.2,1.2);
+    FillHist("ll__Presel/belectron_chargescore",GetElectronChargeScore(),weight,70,-0.2,1.2);
+
 
   }//[end electron for loop]
 
   bjetvar this_bjet=Get_bjetvar(v_bjet[0]);
+  SetJetChargeScore(v_bjet[0]);
   FillHistAll_bjet(LepCh+"__Presel",this_bjet);	
   FillHistAll_bjet("ll__Presel",this_bjet);
-  FillHist("ll__Presel/bjet_chargescore",GetJetChargeScore(v_bjet[0]),weight,70,-0.2,1.2);
-  FillHist(LepCh+"__Presel/bjet_chargescore",GetJetChargeScore(v_bjet[0]),weight,70,-0.2,1.2);
+  FillHist(LepCh+"__Presel/bjet_chargescore",GetJetChargeScore(),weight,70,-0.2,1.2);
+  FillHist("ll__Presel/bjet_chargescore",GetJetChargeScore(),weight,70,-0.2,1.2);
 }//[end]RunBasic Zregion
 
 
@@ -246,10 +250,22 @@ void PreselectionAnalyzer::FillHistAll_bmuon(TString cutname,bmuonvar this_bmuon
   FillHist(cutname+"/bmuon_P_jetrest",this_bmuon.P_jetrest,weight,10,0,10);
   FillHist(cutname+"/bmuon_ptwrtjet",this_bmuon.ptwrtjet,weight,10,0,10);
   FillHist(cutname+"/bmuon_dR_l_j",this_bmuon.dR_l_j,weight,40,0,0.4);
-  FillHist(cutname+"/bmuon_nsip3d",this_bmuon.nsip3d,weight,30,0,15);
+  FillHist(cutname+"/bmuon_nsip3d",this_bmuon.nsip3d,weight,100,0,100);
   FillHist(cutname+"/bmuon_reltrkiso",this_bmuon.reltrkiso,weight,150,0,15);
   FillHist(cutname+"/bmuon_reliso",this_bmuon.reliso,weight,150,0,15);
   FillHist(cutname+"/bmuon_charge",this_bmuon.charge,weight,4,-2,2);
+  
+
+  FillHist(cutname+"/bmuon_palongjet",this_bmuon.palongjet,weight,50,0,50);
+  FillHist(cutname+"/bmuon_palongjetratio",this_bmuon.palongjetratio,weight,50,0,1);
+  FillHist(cutname+"/bmuon_pt",this_bmuon.pt,weight,50,0,50);
+  FillHist(cutname+"/bmuon_aeta",this_bmuon.aeta,weight,40,-4,4);
+  FillHist(cutname+"/bmuon_normchi2",this_bmuon.normchi2,weight,40,0,12);
+  FillHist(cutname+"/bmuon_ntracklayers",this_bmuon.ntracklayers,weight,20,0,20);
+  FillHist(cutname+"/bmuon_ntrackhits",this_bmuon.ntrackhits,weight,35,0,35);
+  FillHist(cutname+"/bmuon_nvalidmuonhits",this_bmuon.nvalidmuonhits,weight,50,0,50);
+  FillHist(cutname+"/bmuon_nmatchedstations",this_bmuon.nmatchedstations,weight,6,0,6);
+  FillHist(cutname+"/bmuon_bjet_charge_dot_bmuon_charge",this_bmuon.bjet_charge_dot_bmuon_charge,weight,50,-1,1);
 
 }
 
@@ -257,11 +273,22 @@ void PreselectionAnalyzer::FillHistAll_belectron(TString cutname,belectronvar th
   FillHist(cutname+"/belectron_P_jetrest",this_belectron.P_jetrest,weight,10,0,10);
   FillHist(cutname+"/belectron_ptwrtjet",this_belectron.ptwrtjet,weight,10,0,10);
   FillHist(cutname+"/belectron_dR_l_j",this_belectron.dR_l_j,weight,40,0,0.4);
-  FillHist(cutname+"/belectron_nsip3d",this_belectron.nsip3d,weight,30,0,15);
+  FillHist(cutname+"/belectron_nsip3d",this_belectron.nsip3d,weight,100,0,100);
   FillHist(cutname+"/belectron_reltrkiso",this_belectron.reltrkiso,weight,150,0,15);
   FillHist(cutname+"/belectron_reliso",this_belectron.reliso,weight,150,0,15);
   FillHist(cutname+"/belectron_charge",this_belectron.charge,weight,4,-2,2);
   FillHist(cutname+"/belectron_IsGsfCtfScPixChargeConsistent",this_belectron.IsGsfCtfScPixChargeConsistent,weight,4,-2,2);
+  FillHist(cutname+"/belectron_pt",this_belectron.pt,weight,50,0,50);
+  FillHist(cutname+"/belectron_aeta",this_belectron.aeta,weight,40,-4,4);
+  FillHist(cutname+"/belectron_full5x5sigmaietaieta",this_belectron.full5x5sigmaietaieta,weight,100,0,0.1);
+  FillHist(cutname+"/belectron_abs_detaseed",this_belectron.detaseed,weight,100,0,0.1);
+  FillHist(cutname+"/belectron_HoverE",this_belectron.HoverE,weight,100,0,1);
+  FillHist(cutname+"/belectron_InvEminusInvP",this_belectron.InvEminusInvP,weight,100,0,1);
+  FillHist(cutname+"/belectron_nmissinghits",this_belectron.nmissinghits,weight,4,0,4);
+  FillHist(cutname+"/belectron_bjet_charge_dot_belectron_charge",this_belectron.bjet_charge_dot_belectron_charge,weight,50,-1,1);
+
+  FillHist(cutname+"/belectron_palongjet",this_belectron.palongjet,weight,50,0,50);
+  FillHist(cutname+"/belectron_palongjetratio",this_belectron.palongjetratio,weight,50,0,1);
 
 }
 
@@ -273,7 +300,10 @@ void PreselectionAnalyzer::FillHistAll_bjet(TString cutname,bjetvar this_bjet){
   FillHist(cutname+"/bjet_NeutralEmEnergyFraction",this_bjet.NeutralEmEnergyFraction,weight,100,0,1);
   FillHist(cutname+"/bjet_ChargedEmEnergyFraction",this_bjet.ChargedEmEnergyFraction,weight,100,0,1);
   FillHist(cutname+"/bjet_MuonEnergyFraction",this_bjet.MuonEnergyFraction,weight,100,0,1);
+  FillHist(cutname+"/bjet_ChargedMultiplicity",this_bjet.ChargedMultiplicity,weight,60,0,60);
+  FillHist(cutname+"/bjet_NeutralMultiplicity",this_bjet.NeutralMultiplicity,weight,60,0,60);
   FillHist(cutname+"/bjet_charge",this_bjet.charge,weight,50,-1,1);
+  FillHist(cutname+"/bjet_abs_charge",fabs(this_bjet.charge),weight,50,-1,1);
   FillHist(cutname+"/bjet_partonFlavour",this_bjet.partonFlavour,weight,27,-6,21);
 
 }

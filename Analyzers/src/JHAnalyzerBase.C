@@ -2605,6 +2605,7 @@ JHAnalyzerBase::bmuonvar JHAnalyzerBase::Get_bmuonvar(Muon &this_muon, Jet &this
   ret.ntrackhits=this_muon.TrackerHits();
   ret.nvalidmuonhits=this_muon.ValidMuonHits();
   ret.nmatchedstations=this_muon.MatchedStations();
+  ret.bjet_charge_dot_bmuon_charge=this_muon.Charge()*this_jet.Charge();
 
   ret.isGlobalMuon=this_muon.IsType(Muon::GlobalMuon);
   ret.isTrackerMuon=this_muon.IsType(Muon::TrackerMuon);
@@ -2640,7 +2641,7 @@ JHAnalyzerBase::belectronvar JHAnalyzerBase::Get_belectronvar(Electron &this_ele
   ret.HoverE=this_electron.HoverE();
   ret.InvEminusInvP=fabs(this_electron.InvEminusInvP());
   ret.nmissinghits=this_electron.NMissingHits();
-  
+  ret.bjet_charge_dot_belectron_charge=this_electron.Charge()*this_jet.Charge();
   return ret;
 }
 
@@ -2662,12 +2663,14 @@ JHAnalyzerBase::bjetvar JHAnalyzerBase::Get_bjetvar(Jet &this_jet){
   return ret;
 }
 
-void JHAnalyzerBase::LoadChargeScoreTool(){
-  mChargeTool=new ChargeScoreTool("muon","2405.2",DataEra);
-  eChargeTool=new ChargeScoreTool("electron","2405.2",DataEra);
-  jChargeTool=new ChargeScoreTool("jet","2405.2",DataEra);
+void JHAnalyzerBase::LoadChargeScoreTool(TString muon_version,TString electron_version, TString jet_version, bool applycut){
+  
+  mChargeTool=new ChargeScoreTool("muon",muon_version,DataEra);
+  eChargeTool=new ChargeScoreTool("electron",electron_version,DataEra);
+  jChargeTool=new ChargeScoreTool("jet",jet_version,DataEra);
   //Link variables
   //void TMVATool::AddVariable(TString _formula, float *_this_var_address)
+
   ///---Muon---//
   mChargeTool->AddVariable("bmuon_P_jetrest",&bmuon_ChargeTool.P_jetrest);
   mChargeTool->AddVariable("bmuon_ptwrtbjet",&bmuon_ChargeTool.ptwrtjet);
@@ -2684,6 +2687,7 @@ void JHAnalyzerBase::LoadChargeScoreTool(){
   mChargeTool->AddVariable("bmuon_ntrackhits",&bmuon_ChargeTool.ntrackhits);
   mChargeTool->AddVariable("bmuon_nvalidmuonhits",&bmuon_ChargeTool.nvalidmuonhits);
   mChargeTool->AddVariable("bmuon_nmatchedstations",&bmuon_ChargeTool.nmatchedstations);
+  mChargeTool->AddVariable("bjet_charge*bmuon_charge",&bmuon_ChargeTool.bjet_charge_dot_bmuon_charge);
   mChargeTool->AddVariable("bjet_pt",&bjet_ChargeTool.pt);
   mChargeTool->AddVariable("bjet_aeta",&bjet_ChargeTool.aeta);
   mChargeTool->AddVariable("bjet_ChargedHadronEnergyFraction",&bjet_ChargeTool.ChargedHadronEnergyFraction);
@@ -2711,6 +2715,7 @@ void JHAnalyzerBase::LoadChargeScoreTool(){
   eChargeTool->AddVariable("fabs(belectron_detaseed)",&belectron_ChargeTool.abs_detaseed);
   eChargeTool->AddVariable("belectron_HoverE",&belectron_ChargeTool.HoverE);
   eChargeTool->AddVariable("belectron_InvEminusInvP",&belectron_ChargeTool.InvEminusInvP);
+  eChargeTool->AddVariable("bjet_charge*belectron_charge",&belectron_ChargeTool.bjet_charge_dot_belectron_charge);
   eChargeTool->AddVariable("bjet_pt",&bjet_ChargeTool.pt);
   eChargeTool->AddVariable("bjet_aeta",&bjet_ChargeTool.aeta);
   eChargeTool->AddVariable("bjet_ChargedHadronEnergyFraction",&bjet_ChargeTool.ChargedHadronEnergyFraction);
@@ -2735,20 +2740,112 @@ void JHAnalyzerBase::LoadChargeScoreTool(){
   jChargeTool->AddVariable("bjet_ChargedMultiplicity",&bjet_ChargeTool.ChargedMultiplicity);
   jChargeTool->AddVariable("bjet_NeutralMultiplicity",&bjet_ChargeTool.NeutralMultiplicity);
   jChargeTool->SetupTMVA();
+
+
+  if (applycut)SetChargeScoreCut(muon_version);
+
+}
+void JHAnalyzerBase::SetChargeScoreCut(TString version){
+  if(version=="2405.2"){
+    SetChargeScoreCut_2405_2();
+  }
+  else if(version=="2405.4"){
+    SetChargeScoreCut_2405_4();
+  }
+  else{
+    cout << "[JHAnalyzerBase::SetChargeScoreCut]No version->" << version << endl;
+    exit(1);
+  }
+
+}
+void JHAnalyzerBase::SetChargeScoreCut_2405_2(){
+  map<TString,float> map_muon_mincut;
+  map_muon_mincut["2016preVFP"]=0.66021;  map_muon_mincut["2016postVFP"]=0.69413;  map_muon_mincut["2017"]=0.72347; map_muon_mincut["2018"]=0.68502;
+  map<TString,float> map_muon_maxcut;
+  map_muon_maxcut["2016preVFP"]=0.22267;  map_muon_maxcut["2016postVFP"]=0.21844;  map_muon_maxcut["2017"]=0.20754; map_muon_maxcut["2018"]=0.19887;
+  map<TString,float> map_electron_mincut;
+  map_electron_mincut["2016preVFP"]=0.59829;  map_electron_mincut["2016postVFP"]=0.67093;  map_electron_mincut["2017"]=0.64708; map_electron_mincut["2018"]=0.60382;
+  map<TString,float> map_electron_maxcut;
+  map_electron_maxcut["2016preVFP"]=0.27022;  map_electron_maxcut["2016postVFP"]=0.21447;  map_electron_maxcut["2017"]=0.24956; map_electron_maxcut["2018"]=0.28016;
+  map<TString,float> map_jet_mincut;
+  map_jet_mincut["2016preVFP"]=0.63517;  map_jet_mincut["2016postVFP"]=0.60850;  map_jet_mincut["2017"]=0.61464; map_jet_mincut["2018"]=0.60843;
+  map<TString,float> map_jet_maxcut;//Turn off this region
+  map_jet_maxcut["2016preVFP"]=-1.;  map_jet_maxcut["2016postVFP"]=-1.;  map_jet_maxcut["2017"]=-1.; map_jet_maxcut["2018"]=-1.;
+
+
+  
+  mChargeTool->SetMinCut(map_muon_mincut[DataEra]);
+  mChargeTool->SetMaxCut(map_muon_maxcut[DataEra]);
+  eChargeTool->SetMinCut(map_electron_mincut[DataEra]);
+  eChargeTool->SetMaxCut(map_electron_maxcut[DataEra]);
+  jChargeTool->SetMinCut(map_jet_mincut[DataEra]);
+  jChargeTool->SetMaxCut(map_jet_maxcut[DataEra]);
+
+
 }
 
-double JHAnalyzerBase::GetMuonChargeScore(Muon &_this_bmuon, Jet &_this_bjet){
-  bmuon_ChargeTool=Get_bmuonvar(_this_bmuon,_this_bjet);//Change input variable value 
+
+void JHAnalyzerBase::SetChargeScoreCut_2405_4(){
+  map<TString,float> map_muon_mincut;
+  map_muon_mincut["2016preVFP"]=0.431;  map_muon_mincut["2016postVFP"]=0.464;  map_muon_mincut["2017"]=0.427; map_muon_mincut["2018"]=0.442;
+  map<TString,float> map_muon_maxcut;
+  map_muon_maxcut["2016preVFP"]=0.216;  map_muon_maxcut["2016postVFP"]=0.183;  map_muon_maxcut["2017"]=0.223; map_muon_maxcut["2018"]=0.226;
+  map<TString,float> map_electron_mincut;
+  map_electron_mincut["2016preVFP"]=0.489;  map_electron_mincut["2016postVFP"]=0.498;  map_electron_mincut["2017"]=0.445; map_electron_mincut["2018"]=0.506;
+  map<TString,float> map_electron_maxcut;
+  map_electron_maxcut["2016preVFP"]=0.241;  map_electron_maxcut["2016postVFP"]=0.179;  map_electron_maxcut["2017"]=0.215; map_electron_maxcut["2018"]=0.25;
+  map<TString,float> map_jet_mincut;
+  map_jet_mincut["2016preVFP"]=0.446;  map_jet_mincut["2016postVFP"]=0.469;  map_jet_mincut["2017"]=0.478; map_jet_mincut["2018"]=0.473;
+  map<TString,float> map_jet_maxcut;//Turn off this region
+  map_jet_maxcut["2016preVFP"]=0.366;  map_jet_maxcut["2016postVFP"]=0.356;  map_jet_maxcut["2017"]=0.375; map_jet_maxcut["2018"]=0.386;
+
+
+  cout << "[JHAnalyzerBase::SetChargeScoreCut_2405_4] " << endl;
+  cout << "Muon" << endl;
+  mChargeTool->SetMinCut(map_muon_mincut[DataEra]);
+  mChargeTool->SetMaxCut(map_muon_maxcut[DataEra]);
+  cout << "Electron" << endl;
+  eChargeTool->SetMinCut(map_electron_mincut[DataEra]);
+  eChargeTool->SetMaxCut(map_electron_maxcut[DataEra]);
+  cout << "Jet" << endl;
+  jChargeTool->SetMinCut(map_jet_mincut[DataEra]);
+  jChargeTool->SetMaxCut(map_jet_maxcut[DataEra]);
+
+
+}
+
+
+void JHAnalyzerBase::SetMuonChargeScore(Muon &_this_bmuon, Jet &_this_bjet){
+  bmuon_ChargeTool=Get_bmuonvar(_this_bmuon,_this_bjet);//Change input variable value //set inputvariable
+  mChargeTool->SetScore();
+}
+double JHAnalyzerBase::GetMuonChargeScore(){
   return mChargeTool->GetScore();
 }
-
-
-double JHAnalyzerBase::GetElectronChargeScore(Electron &_this_belectron, Jet &_this_bjet){
-  belectron_ChargeTool=Get_belectronvar(_this_belectron,_this_bjet);//Change input variable value 
-  return mChargeTool->GetScore();
+double JHAnalyzerBase::GetMuonChargeScoreCoeff(){
+  return mChargeTool->GetCoefficient();
 }
 
-double JHAnalyzerBase::GetJetChargeScore(Jet &_this_bjet){
+
+void JHAnalyzerBase::SetElectronChargeScore(Electron &_this_belectron, Jet &_this_bjet){
+  belectron_ChargeTool=Get_belectronvar(_this_belectron,_this_bjet);//Change input variable value //set inputvariable
+  eChargeTool->SetScore();
+}
+double JHAnalyzerBase::GetElectronChargeScore(){
+  return eChargeTool->GetScore();
+}
+double JHAnalyzerBase::GetElectronChargeScoreCoeff(){
+  return eChargeTool->GetCoefficient();
+}
+
+
+void JHAnalyzerBase::SetJetChargeScore(Jet &_this_bjet){
   bjet_ChargeTool=Get_bjetvar(_this_bjet);//Change input variable value 
-  return mChargeTool->GetScore();
+  jChargeTool->SetScore();
+}
+double JHAnalyzerBase::GetJetChargeScore(){
+  return jChargeTool->GetScore();
+}
+double JHAnalyzerBase::GetJetChargeScoreCoeff(){
+  return jChargeTool->GetCoefficient();
 }

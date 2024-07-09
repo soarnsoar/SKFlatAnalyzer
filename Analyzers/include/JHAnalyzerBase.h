@@ -301,6 +301,7 @@ class JHAnalyzerBase : public AnalyzerCore {
     float ntrackhits=0;
     float nvalidmuonhits=0;
     float nmatchedstations=0;
+    float bjet_charge_dot_bmuon_charge=0;
     bool isGlobalMuon=0;
     bool isTrackerMuon=0;
     bool isStandAloneMuon=0;
@@ -331,7 +332,7 @@ class JHAnalyzerBase : public AnalyzerCore {
     float HoverE=0;
     float InvEminusInvP=0;
     float nmissinghits=0;
-
+    float bjet_charge_dot_belectron_charge=0;
   };
 
   struct bjetvar{
@@ -356,10 +357,19 @@ class JHAnalyzerBase : public AnalyzerCore {
   JHAnalyzerBase::bjetvar Get_bjetvar(Jet &this_jet);
 
 
-  void LoadChargeScoreTool();
-  double GetMuonChargeScore(Muon &_this_bmuon, Jet &_this_bjet);
-  double GetElectronChargeScore(Electron &_this_belectron, Jet &_this_bjet);
-  double GetJetChargeScore(Jet &_this_bjet);
+  void LoadChargeScoreTool(TString muon_version="2405.2",TString electron_version="2405.2", TString jet_version="2405.2", bool applycut=false);
+  void SetChargeScoreCut(TString version);
+  void SetChargeScoreCut_2405_2();
+  void SetChargeScoreCut_2405_4();
+  void SetMuonChargeScore(Muon &_this_bmuon, Jet &_this_bjet);
+  void SetElectronChargeScore(Electron &_this_belectron, Jet &_this_bjet);
+  void SetJetChargeScore(Jet &_this_bjet);
+  double GetMuonChargeScore();
+  double GetMuonChargeScoreCoeff();
+  double GetElectronChargeScore();
+  double GetElectronChargeScoreCoeff();
+  double GetJetChargeScore();
+  double GetJetChargeScoreCoeff();
   ChargeScoreTool *mChargeTool;
   bmuonvar bmuon_ChargeTool;
   ChargeScoreTool *eChargeTool;
