@@ -1944,8 +1944,9 @@ vector<Jet*> JHAnalyzerBase::GetPointerTightJet(const vector<Lepton*> &v_tightle
 }
 */
 
-/*
+
 //--Get BJet index base
+/*
 vector<int> JHAnalyzerBase::GetIdxBJet(const vector<int> &v_TightjetIdx){
   vector<int> v_bjetidx;
   for(const auto& i : v_TightjetIdx){
@@ -1966,6 +1967,20 @@ vector<Jet> JHAnalyzerBase::GetBJet(const vector<Jet> &v_Tightjet){
   }
   return v_bjet;
 }
+
+//--Get BJet Object base
+vector<int> JHAnalyzerBase::GetBJetIdx(const vector<Jet> &v_Tightjet){
+  vector<int> v_bjetidx;
+  int bidx=-1;
+  for(const auto& jet : v_Tightjet){
+    bidx+=1;
+    double btagscore=jet.GetTaggerResult(JetTagging::DeepJet);
+    if(btagscore < btagcut) continue;
+    v_bjetidx.push_back(bidx);
+  }
+  return v_bjetidx;
+}
+
 /*
 //--Get BJet ObjectPointer base
 vector<Jet*> JHAnalyzerBase::GetPointerBJet(const vector<Jet*> &v_Tightjet){
@@ -2752,6 +2767,9 @@ void JHAnalyzerBase::SetChargeScoreCut(TString version){
   else if(version=="2405.4"){
     SetChargeScoreCut_2405_4();
   }
+  else if(version=="2405.4.3"){
+    SetChargeScoreCut_2405_4_3();
+  }
   else{
     cout << "[JHAnalyzerBase::SetChargeScoreCut]No version->" << version << endl;
     exit(1);
@@ -2815,6 +2833,37 @@ void JHAnalyzerBase::SetChargeScoreCut_2405_4(){
 }
 
 
+
+void JHAnalyzerBase::SetChargeScoreCut_2405_4_3(){
+  map<TString,float> map_muon_mincut;
+  map_muon_mincut["2016preVFP"]=0.47;  map_muon_mincut["2016postVFP"]=0.54;  map_muon_mincut["2017"]=0.50; map_muon_mincut["2018"]=0.53;
+  map<TString,float> map_muon_maxcut;
+  map_muon_maxcut["2016preVFP"]=0.21;  map_muon_maxcut["2016postVFP"]=0.22;  map_muon_maxcut["2017"]=0.24; map_muon_maxcut["2018"]=0.21;
+  map<TString,float> map_electron_mincut;
+  map_electron_mincut["2016preVFP"]=0.52;  map_electron_mincut["2016postVFP"]=0.57;  map_electron_mincut["2017"]=0.55; map_electron_mincut["2018"]=0.55;
+  map<TString,float> map_electron_maxcut;
+  map_electron_maxcut["2016preVFP"]=0.23;  map_electron_maxcut["2016postVFP"]=0.21;  map_electron_maxcut["2017"]=0.20; map_electron_maxcut["2018"]=0.21;
+  map<TString,float> map_jet_mincut;
+  map_jet_mincut["2016preVFP"]=0.47;  map_jet_mincut["2016postVFP"]=0.45;  map_jet_mincut["2017"]=0.45; map_jet_mincut["2018"]=0.46;
+  map<TString,float> map_jet_maxcut;//Turn off this region
+  map_jet_maxcut["2016preVFP"]=0.0;  map_jet_maxcut["2016postVFP"]=0.0;  map_jet_maxcut["2017"]=0.0; map_jet_maxcut["2018"]=0.0;
+
+
+  cout << "[JHAnalyzerBase::SetChargeScoreCut_2405_4_3] " << endl;
+  cout << "Muon" << endl;
+  mChargeTool->SetMinCut(map_muon_mincut[DataEra]);
+  mChargeTool->SetMaxCut(map_muon_maxcut[DataEra]);
+  cout << "Electron" << endl;
+  eChargeTool->SetMinCut(map_electron_mincut[DataEra]);
+  eChargeTool->SetMaxCut(map_electron_maxcut[DataEra]);
+  cout << "Jet" << endl;
+  jChargeTool->SetMinCut(map_jet_mincut[DataEra]);
+  jChargeTool->SetMaxCut(map_jet_maxcut[DataEra]);
+
+
+}
+
+
 void JHAnalyzerBase::SetMuonChargeScore(Muon &_this_bmuon, Jet &_this_bjet){
   bmuon_ChargeTool=Get_bmuonvar(_this_bmuon,_this_bjet);//Change input variable value //set inputvariable
   mChargeTool->SetScore();
@@ -2848,4 +2897,77 @@ double JHAnalyzerBase::GetJetChargeScore(){
 }
 double JHAnalyzerBase::GetJetChargeScoreCoeff(){
   return jChargeTool->GetCoefficient();
+}
+
+double JHAnalyzerBase::Chi2TTSemiLep(double *x, double *par)
+
+//double _lepx, double _lepy, double _lepz, double _lepE,
+//				     double _blepx, double _blepy, double _blepz, double _blepE,
+//				     double _metx, double _mety,
+//				     double _q1x, double _q1y, double _q1z, double _q1E,
+//				     double _q2x, double _q2y, double _q2z, double _q2E,
+//				     double _bhadx, double _bhady, double _bhadz, double _bhadE){
+//(double *x, TLorentzVector _lep, TLorentzVector _MET, TLorentzVector _blep, TLorentzVector _q1, TLorentzVector _q2, TLorentzVector _bhad){
+//x = vz, input variable
+{
+  //set params
+  double _lepx=par[0];
+  double _lepy=par[1];
+  double _lepz=par[2];
+  double _lepE=par[3];
+
+  double _blepx=par[4];
+  double _blepy=par[5];
+  double _blepz=par[6];
+  double _blepE=par[7];
+
+  double _metx=par[8];
+  double _mety=par[9];
+
+  double _q1x=par[10];
+  double _q1y=par[11];
+  double _q1z=par[12];
+  double _q1E=par[13];
+
+  double _q2x=par[14];
+  double _q2y=par[15];
+  double _q2z=par[16];
+  double _q2E=par[17];
+
+  double _bhadx=par[18];
+  double _bhady=par[19];
+  double _bhadz=par[20];
+  double _bhadE=par[21];
+
+
+  double vz = x[0];
+  double E2_neutrino= pow(vz,2) + pow(_metx,2) + pow(_mety,2);
+  double E_neutrino=sqrt(E2_neutrino);
+  TLorentzVector neutrino;
+  neutrino.SetPxPyPzE(_metx,_mety,vz, E_neutrino);
+  //---Wlep part
+  TLorentzVector _Wlep,_lep;
+  _lep.SetPxPyPzE(_lepx,_lepy,_lepz,_lepE);
+  _Wlep=neutrino+_lep;
+  //---Whad part
+  TLorentzVector _Whad, _q1, _q2;
+  _q1.SetPxPyPzE(_q1x,_q1y,_q1z,_q1E);
+  _q2.SetPxPyPzE(_q2x,_q2y,_q2z,_q2E);
+  _Whad=_q1+_q2;
+  //---bjets
+  TLorentzVector _blep,_bhad;
+  _blep.SetPxPyPzE(_blepx,_blepy,_blepz,_blepE);
+  _bhad.SetPxPyPzE(_bhadx,_bhady,_bhadz,_bhadE);
+  //---Toplep part
+  TLorentzVector _Tlep;
+  _Tlep=neutrino+_lep+_blep;
+  //---Top_had part
+  TLorentzVector _Thad;
+  _Thad=_q1+_q2+_bhad;
+
+  //chi2
+  double ret= pow((MW_pdg-_Wlep.M())/Width_W_pdg,2) + pow((MW_pdg-_Whad.M())/Width_W_pdg,2) + pow((MTop_pdg-_Tlep.M())/Width_Top_pdg  ,2) + pow((MTop_pdg-_Thad.M())/Width_Top_pdg  ,2) ;
+  return ret;
+
+
 }

@@ -6,6 +6,11 @@
 class JHAnalyzerBase : public AnalyzerCore {
 
  public:
+  static constexpr double MW_pdg=80.379;
+  static constexpr double Width_W_pdg=2.085;
+  static constexpr double MTop_pdg=172.5;
+  static constexpr double Width_Top_pdg=1.42;
+
 
   void InitSystematicMomentumVariations();
   virtual void initializeAnalyzer();
@@ -163,6 +168,7 @@ class JHAnalyzerBase : public AnalyzerCore {
   //vector<Jet*> GetPointerTightJet(const vector<Lepton*> &TightLeptonCollection ,double ptmin, double etacut, TString JetID="tight" );
   //vector<int> GetIdxBJet(const vector<int> &v_TightjetIdx);
   vector<Jet> GetBJet(const vector<Jet> &v_Tightjet);
+  vector<int> GetBJetIdx(const vector<Jet> &v_Tightjet);
   //vector<Jet*> GetPointerBJet(const vector<Jet*> &v_Tightjet);
   //void SetBtagSF(const vector<int> &v_jetidx);
   void SetBtagSF(const vector<Jet> &v_jet);
@@ -361,6 +367,7 @@ class JHAnalyzerBase : public AnalyzerCore {
   void SetChargeScoreCut(TString version);
   void SetChargeScoreCut_2405_2();
   void SetChargeScoreCut_2405_4();
+  void SetChargeScoreCut_2405_4_3();
   void SetMuonChargeScore(Muon &_this_bmuon, Jet &_this_bjet);
   void SetElectronChargeScore(Electron &_this_belectron, Jet &_this_bjet);
   void SetJetChargeScore(Jet &_this_bjet);
@@ -376,6 +383,10 @@ class JHAnalyzerBase : public AnalyzerCore {
   belectronvar belectron_ChargeTool;
   ChargeScoreTool *jChargeTool;
   bjetvar bjet_ChargeTool;
+
+  //---jet assignment
+  static double Chi2TTSemiLep(double *x, double *par);
+
  private:
   MomentumVar _CurrentSys;
   JetTagging::Parameters jtp;

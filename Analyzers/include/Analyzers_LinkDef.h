@@ -44,6 +44,10 @@
 #pragma link C++ class bChargeID_TrainTree+;
 #pragma link C++ class PreselectionAnalyzer+;
 #pragma link C++ class DNNOptimizer+;
+#pragma link C++ class bbbarAnalyzer+;
+
+#pragma link C++ class TTSemiLepJetAssignment+;
+#pragma link C++ class TTSemiLepJetAssignment_ProduceTrainingTree+;
 
 
 

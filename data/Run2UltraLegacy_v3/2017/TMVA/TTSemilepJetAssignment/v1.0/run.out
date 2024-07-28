@@ -1,0 +1,961 @@
+<sig cut>= 1.
+<bkg cut>= 1.
+_________________________________________________________________
+Layer (type)                 Output Shape              Param #   
+=================================================================
+dense_1 (Dense)              (None, 128)               3328      
+_________________________________________________________________
+batch_normalization_1 (Batch (None, 128)               512       
+_________________________________________________________________
+activation_1 (Activation)    (None, 128)               0         
+_________________________________________________________________
+dropout_1 (Dropout)          (None, 128)               0         
+_________________________________________________________________
+dense_2 (Dense)              (None, 128)               16512     
+_________________________________________________________________
+batch_normalization_2 (Batch (None, 128)               512       
+_________________________________________________________________
+activation_2 (Activation)    (None, 128)               0         
+_________________________________________________________________
+dropout_2 (Dropout)          (None, 128)               0         
+_________________________________________________________________
+dense_3 (Dense)              (None, 128)               16512     
+_________________________________________________________________
+batch_normalization_3 (Batch (None, 128)               512       
+_________________________________________________________________
+activation_3 (Activation)    (None, 128)               0         
+_________________________________________________________________
+dropout_3 (Dropout)          (None, 128)               0         
+_________________________________________________________________
+dense_4 (Dense)              (None, 128)               16512     
+_________________________________________________________________
+batch_normalization_4 (Batch (None, 128)               512       
+_________________________________________________________________
+activation_4 (Activation)    (None, 128)               0         
+_________________________________________________________________
+dropout_4 (Dropout)          (None, 128)               0         
+_________________________________________________________________
+dense_5 (Dense)              (None, 128)               16512     
+_________________________________________________________________
+batch_normalization_5 (Batch (None, 128)               512       
+_________________________________________________________________
+activation_5 (Activation)    (None, 128)               0         
+_________________________________________________________________
+dropout_5 (Dropout)          (None, 128)               0         
+_________________________________________________________________
+dense_6 (Dense)              (None, 2)                 258       
+_________________________________________________________________
+activation_6 (Activation)    (None, 2)                 0         
+=================================================================
+Total params: 72,194
+Trainable params: 70,914
+Non-trainable params: 1,280
+_________________________________________________________________
+---sig_test---
+<self.testtree_sig> OutTree/sig
+/data6/Users/jhchoi/TMVA/TMVA_TOOL/inputs/TTSemiLepJetAssignment_ProduceTrainingTree/2017/reduction_1M__/TTSemiLepJetAssignment_ProduceTrainingTree_TTLJ_powheg.root
+--bkg_test---
+<self.testtree_bkg> OutTree/bkg
+/data6/Users/jhchoi/TMVA/TMVA_TOOL/inputs/TTSemiLepJetAssignment_ProduceTrainingTree/2017/reduction_1M__/TTSemiLepJetAssignment_ProduceTrainingTree_TTLJ_powheg.root
+---sig_train---
+<self.traintree_sig> OutTree/sig
+/data6/Users/jhchoi/TMVA/TMVA_TOOL/inputs/TTSemiLepJetAssignment_ProduceTrainingTree/2017/reduction_1M__/TTSemiLepJetAssignment_ProduceTrainingTree_TTLJ_powheg.root
+---bkg_train---
+<self.traintree_bkg> OutTree/bkg
+/data6/Users/jhchoi/TMVA/TMVA_TOOL/inputs/TTSemiLepJetAssignment_ProduceTrainingTree/2017/reduction_1M__/TTSemiLepJetAssignment_ProduceTrainingTree_TTLJ_powheg.root
+DataSetInfo              : [2017__5__128__500__0.2] : Added class "Signal"
+                         : Add Tree OutTree/sig of type Signal with 1005094 events
+                         : Add Tree OutTree/sig of type Signal with 1005094 events
+DataSetInfo              : [2017__5__128__500__0.2] : Added class "Background"
+                         : Add Tree OutTree/bkg of type Background with 1007120 events
+                         : Add Tree OutTree/bkg of type Background with 1007120 events
+>>>>self.dataloader.PrepareTrainingAndTestTree
+Set sig cut -> 1.
+Set bkg cut -> 1.
+Factory                  : Booking method: [1mDNN[0m
+                         : 
+DNN                      : [2017__5__128__500__0.2] : Create Transformation "G" with events from all classes.
+                         : 
+                         : Transformation, Variable selection : 
+                         : Input : variable 'met_pt' <---> Output : variable 'met_pt'
+                         : Input : variable 'met_phi' <---> Output : variable 'met_phi'
+                         : Input : variable 'lep_pt' <---> Output : variable 'lep_pt'
+                         : Input : variable 'lep_eta' <---> Output : variable 'lep_eta'
+                         : Input : variable 'lep_phi' <---> Output : variable 'lep_phi'
+                         : Input : variable 'blep_pt' <---> Output : variable 'blep_pt'
+                         : Input : variable 'blep_eta' <---> Output : variable 'blep_eta'
+                         : Input : variable 'blep_phi' <---> Output : variable 'blep_phi'
+                         : Input : variable 'blep_E' <---> Output : variable 'blep_E'
+                         : Input : variable 'bhad_pt' <---> Output : variable 'bhad_pt'
+                         : Input : variable 'bhad_eta' <---> Output : variable 'bhad_eta'
+                         : Input : variable 'bhad_phi' <---> Output : variable 'bhad_phi'
+                         : Input : variable 'bhad_E' <---> Output : variable 'bhad_E'
+                         : Input : variable 'q1jet_pt' <---> Output : variable 'q1jet_pt'
+                         : Input : variable 'q1jet_eta' <---> Output : variable 'q1jet_eta'
+                         : Input : variable 'q1jet_phi' <---> Output : variable 'q1jet_phi'
+                         : Input : variable 'q1jet_E' <---> Output : variable 'q1jet_E'
+                         : Input : variable 'q2jet_pt' <---> Output : variable 'q2jet_pt'
+                         : Input : variable 'q2jet_eta' <---> Output : variable 'q2jet_eta'
+                         : Input : variable 'q2jet_phi' <---> Output : variable 'q2jet_phi'
+                         : Input : variable 'q2jet_E' <---> Output : variable 'q2jet_E'
+                         : Input : variable 'WhadCand_mass' <---> Output : variable 'WhadCand_mass'
+                         : Input : variable 'ThadCand_mass' <---> Output : variable 'ThadCand_mass'
+                         : Input : variable 'WlepCand_mt' <---> Output : variable 'WlepCand_mt'
+                         : Input : variable 'TlepCand_mt' <---> Output : variable 'TlepCand_mt'
+                         : Load model from file: model.h5
+Factory                  : [1mTrain all methods[0m
+DataSetFactory           : [2017__5__128__500__0.2] : Number of events in input trees
+                         : Dataset[2017__5__128__500__0.2] :     Signal     requirement: "1."
+                         : Dataset[2017__5__128__500__0.2] :     Signal          -- number of events passed: 2010188  / sum of weights: 70461.7
+                         : Dataset[2017__5__128__500__0.2] :     Signal          -- efficiency             : 1     
+                         : Dataset[2017__5__128__500__0.2] :     Background requirement: "1."
+                         : Dataset[2017__5__128__500__0.2] :     Background      -- number of events passed: 2014240  / sum of weights: 70985.8
+                         : Dataset[2017__5__128__500__0.2] :     Background      -- efficiency             : 1     
+                         : 
+                         : 
+                         : Dataset[2017__5__128__500__0.2] : Weight renormalisation mode: "EqualNumEvents": renormalises all event classes ...
+                         : Dataset[2017__5__128__500__0.2] :  such that the effective (weighted) number of events in each class is the same 
+                         : Dataset[2017__5__128__500__0.2] :  (and equals the number of events (entries) given for class=0 )
+                         : Dataset[2017__5__128__500__0.2] : ... i.e. such that Sum[i=1..N_j]{w_i} = N_classA, j=classA, classB, ...
+                         : Dataset[2017__5__128__500__0.2] : ... (note that N_j is the sum of TRAINING events
+                         : Dataset[2017__5__128__500__0.2] :  ..... Testing events are not renormalised nor included in the renormalisation factor!)
+                         : Number of training and testing events
+                         : ---------------------------------------------------------------------------
+                         : Signal     -- training events            : 1005094
+                         : Signal     -- testing events             : 1005094
+                         : Signal     -- training and testing events: 2010188
+                         : Background -- training events            : 1007120
+                         : Background -- testing events             : 1007120
+                         : Background -- training and testing events: 2014240
+                         : 
+DataSetInfo              : Correlation matrix (Signal):
+                         : --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+                         :                 met_pt met_phi  lep_pt lep_eta lep_phi blep_pt blep_eta blep_phi  blep_E bhad_pt bhad_eta bhad_phi  bhad_E q1jet_pt q1jet_eta q1jet_phi q1jet_E q2jet_pt q2jet_eta q2jet_phi q2jet_E WhadCand_mass ThadCand_mass WlepCand_mt TlepCand_mt
+                         :        met_pt:  +1.000  +0.001  -0.001  +0.001  +0.001  -0.001   +0.002   -0.002  -0.000  +0.000   -0.000   -0.002  -0.000   +0.000    -0.000    +0.001  -0.000   +0.000    -0.000    +0.001  -0.000        +0.000        +0.000      +0.096      +0.609
+                         :       met_phi:  +0.001  +1.000  +0.001  +0.000  +0.095  -0.002   +0.001   +0.073  -0.003  -0.002   +0.000   -0.048  -0.005   -0.001    +0.000    -0.168  -0.003   -0.001    +0.000    -0.168  -0.003        -0.000        -0.000      +0.007      +0.006
+                         :        lep_pt:  -0.001  +0.001  +1.000  -0.001  +0.001  +0.025   -0.000   +0.002  +0.006  +0.220   -0.002   +0.000  +0.148   +0.208    -0.002    +0.001  +0.136   +0.208    -0.002    +0.001  +0.136        +0.041        +0.048      +0.074      +0.041
+                         :       lep_eta:  +0.001  +0.000  -0.001  +1.000  -0.009  +0.002   +0.671   -0.010  -0.002  +0.001   +0.189   +0.001  +0.001   +0.001    +0.182    +0.001  +0.000   +0.001    +0.182    +0.001  +0.000        -0.000        +0.000      +0.003      +0.003
+                         :       lep_phi:  +0.001  +0.095  +0.001  -0.009  +1.000  -0.002   -0.006   +0.080  -0.000  +0.003   -0.001   -0.220  -0.001   +0.001    +0.000    -0.205  +0.000   +0.001    +0.000    -0.205  +0.000        +0.002        +0.002      -0.010      -0.002
+                         :       blep_pt:  -0.001  -0.002  +0.025  +0.002  -0.002  +1.000   +0.003   -0.003  +0.680  +0.244   +0.002   +0.003  +0.165   +0.217    -0.000    +0.003  +0.142   +0.217    -0.000    +0.003  +0.142        +0.038        +0.048      +0.027      +0.123
+                         :      blep_eta:  +0.002  +0.001  -0.000  +0.671  -0.006  +0.003   +1.000   -0.017  -0.006  -0.000   +0.180   +0.001  -0.001   +0.002    +0.177    +0.002  -0.000   +0.002    +0.177    +0.002  -0.000        -0.001        -0.000      +0.003      +0.004
+                         :      blep_phi:  -0.002  +0.073  +0.002  -0.010  +0.080  -0.003   -0.017   +1.000  +0.000  +0.001   -0.001   -0.186  -0.002   +0.003    -0.002    -0.217  +0.001   +0.003    -0.002    -0.217  +0.001        +0.001        +0.001      -0.003      -0.010
+                         :        blep_E:  -0.000  -0.003  +0.006  -0.002  -0.000  +0.680   -0.006   +0.000  +1.000  +0.157   +0.000   +0.002  +0.108   +0.141    -0.002    +0.001  +0.095   +0.141    -0.002    +0.001  +0.095        +0.023        +0.028      +0.026      +0.089
+                         :       bhad_pt:  +0.000  -0.002  +0.220  +0.001  +0.003  +0.244   -0.000   +0.001  +0.157  +1.000   -0.001   -0.001  +0.693   +0.020    -0.003    -0.001  +0.015   +0.020    -0.003    -0.001  +0.015        +0.069        +0.208      -0.034      -0.024
+                         :      bhad_eta:  -0.000  +0.000  -0.002  +0.189  -0.001  +0.002   +0.180   -0.001  +0.000  -0.001   +1.000   -0.017  -0.007   +0.001    +0.596    -0.002  -0.002   +0.001    +0.596    -0.002  -0.002        +0.000        +0.000      +0.001      +0.002
+                         :      bhad_phi:  -0.002  -0.048  +0.000  +0.001  -0.220  +0.003   +0.001   -0.186  +0.002  -0.001   -0.017   +1.000  +0.001   -0.002    -0.010    +0.021  -0.002   -0.002    -0.010    +0.021  -0.002        -0.002        -0.003      +0.004      +0.002
+                         :        bhad_E:  -0.000  -0.005  +0.148  +0.001  -0.001  +0.165   -0.001   -0.002  +0.108  +0.693   -0.007   +0.001  +1.000   +0.008    -0.006    +0.001  +0.129   +0.008    -0.006    +0.001  +0.129        +0.060        +0.183      -0.024      -0.016
+                         :      q1jet_pt:  +0.000  -0.001  +0.208  +0.001  +0.001  +0.217   +0.002   +0.003  +0.141  +0.020   +0.001   -0.002  +0.008   +1.000    -0.000    -0.002  +0.724   +0.077    -0.000    -0.000  +0.054        +0.334        +0.327      -0.029      -0.020
+                         :     q1jet_eta:  -0.000  +0.000  -0.002  +0.182  +0.000  -0.000   +0.177   -0.002  -0.002  -0.003   +0.596   -0.010  -0.006   -0.000    +1.000    -0.004  -0.005   -0.000    +0.654    -0.001  -0.003        -0.001        +0.000      +0.003      +0.002
+                         :     q1jet_phi:  +0.001  -0.168  +0.001  +0.001  -0.205  +0.003   +0.002   -0.217  +0.001  -0.001   -0.002   +0.021  +0.001   -0.002    -0.004    +1.000  +0.000   -0.000    -0.001    +0.129  +0.001        -0.002        -0.002      +0.002      +0.003
+                         :       q1jet_E:  -0.000  -0.003  +0.136  +0.000  +0.000  +0.142   -0.000   +0.001  +0.095  +0.015   -0.002   -0.002  +0.129   +0.724    -0.005    +0.000  +1.000   +0.054    -0.003    +0.001  +0.167        +0.379        +0.374      -0.019      -0.012
+                         :      q2jet_pt:  +0.000  -0.001  +0.208  +0.001  +0.001  +0.217   +0.002   +0.003  +0.141  +0.020   +0.001   -0.002  +0.008   +0.077    -0.000    -0.000  +0.054   +1.000    -0.000    -0.002  +0.724        +0.334        +0.327      -0.029      -0.020
+                         :     q2jet_eta:  -0.000  +0.000  -0.002  +0.182  +0.000  -0.000   +0.177   -0.002  -0.002  -0.003   +0.596   -0.010  -0.006   -0.000    +0.654    -0.001  -0.003   -0.000    +1.000    -0.004  -0.005        -0.001        +0.000      +0.003      +0.002
+                         :     q2jet_phi:  +0.001  -0.168  +0.001  +0.001  -0.205  +0.003   +0.002   -0.217  +0.001  -0.001   -0.002   +0.021  +0.001   -0.000    -0.001    +0.129  +0.001   -0.002    -0.004    +1.000  +0.000        -0.002        -0.002      +0.002      +0.003
+                         :       q2jet_E:  -0.000  -0.003  +0.136  +0.000  +0.000  +0.142   -0.000   +0.001  +0.095  +0.015   -0.002   -0.002  +0.129   +0.054    -0.003    +0.001  +0.167   +0.724    -0.005    +0.000  +1.000        +0.379        +0.374      -0.019      -0.012
+                         : WhadCand_mass:  +0.000  -0.000  +0.041  -0.000  +0.002  +0.038   -0.001   +0.001  +0.023  +0.069   +0.000   -0.002  +0.060   +0.334    -0.001    -0.002  +0.379   +0.334    -0.001    -0.002  +0.379        +1.000        +0.891      -0.002      +0.002
+                         : ThadCand_mass:  +0.000  -0.000  +0.048  +0.000  +0.002  +0.048   -0.000   +0.001  +0.028  +0.208   +0.000   -0.003  +0.183   +0.327    +0.000    -0.002  +0.374   +0.327    +0.000    -0.002  +0.374        +0.891        +1.000      -0.011      -0.004
+                         :   WlepCand_mt:  +0.096  +0.007  +0.074  +0.003  -0.010  +0.027   +0.003   -0.003  +0.026  -0.034   +0.001   +0.004  -0.024   -0.029    +0.003    +0.002  -0.019   -0.029    +0.003    +0.002  -0.019        -0.002        -0.011      +1.000      +0.685
+                         :   TlepCand_mt:  +0.609  +0.006  +0.041  +0.003  -0.002  +0.123   +0.004   -0.010  +0.089  -0.024   +0.002   +0.002  -0.016   -0.020    +0.002    +0.003  -0.012   -0.020    +0.002    +0.003  -0.012        +0.002        -0.004      +0.685      +1.000
+                         : --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+DataSetInfo              : Correlation matrix (Background):
+                         : --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+                         :                 met_pt met_phi  lep_pt lep_eta lep_phi blep_pt blep_eta blep_phi  blep_E bhad_pt bhad_eta bhad_phi  bhad_E q1jet_pt q1jet_eta q1jet_phi q1jet_E q2jet_pt q2jet_eta q2jet_phi q2jet_E WhadCand_mass ThadCand_mass WlepCand_mt TlepCand_mt
+                         :        met_pt:  +1.000  -0.000  +0.003  +0.001  -0.002  +0.008   -0.001   -0.002  +0.007  +0.007   +0.001   -0.003  +0.007   +0.013    +0.000    +0.000  +0.011   +0.013    +0.000    +0.000  +0.011        +0.008        +0.009      +0.597      +0.441
+                         :       met_phi:  -0.000  +1.000  +0.002  +0.001  +0.127  -0.001   +0.000   +0.020  -0.001  -0.000   -0.000   +0.033  +0.000   -0.002    +0.010    -0.110  -0.001   -0.002    +0.010    -0.110  -0.001        -0.001        +0.001      +0.013      -0.000
+                         :        lep_pt:  +0.003  +0.002  +1.000  +0.000  -0.009  +0.120   -0.002   +0.004  +0.079  +0.105   -0.002   +0.004  +0.067   +0.130    +0.004    +0.002  +0.093   +0.130    +0.004    +0.002  +0.093        +0.079        +0.106      +0.092      +0.274
+                         :       lep_eta:  +0.001  +0.001  +0.000  +1.000  -0.018  +0.005   +0.392   -0.011  +0.001  +0.004   +0.443   -0.012  -0.001   -0.004    +0.105    +0.003  -0.001   -0.004    +0.105    +0.003  -0.001        -0.002        +0.001      +0.009      +0.006
+                         :       lep_phi:  -0.002  +0.127  -0.009  -0.018  +1.000  +0.000   -0.003   -0.058  -0.000  -0.001   -0.003   -0.026  -0.001   -0.004    +0.002    -0.141  -0.005   -0.004    +0.002    -0.141  -0.005        -0.006        -0.007      -0.015      -0.007
+                         :       blep_pt:  +0.008  -0.001  +0.120  +0.005  +0.000  +1.000   +0.000   +0.003  +0.723  +0.203   +0.002   +0.004  +0.139   +0.123    -0.002    +0.001  +0.088   +0.123    -0.002    +0.001  +0.088        +0.091        +0.126      +0.001      +0.495
+                         :      blep_eta:  -0.001  +0.000  -0.002  +0.392  -0.003  +0.000   +1.000   -0.020  -0.008  +0.001   +0.186   -0.006  -0.002   -0.003    +0.205    -0.001  -0.003   -0.003    +0.205    -0.001  -0.003        -0.003        -0.002      +0.003      -0.002
+                         :      blep_phi:  -0.002  +0.020  +0.004  -0.011  -0.058  +0.003   -0.020   +1.000  +0.004  +0.004   -0.006   -0.158  +0.003   -0.001    -0.003    -0.066  -0.001   -0.001    -0.003    -0.066  -0.001        -0.001        +0.001      +0.005      +0.002
+                         :        blep_E:  +0.007  -0.001  +0.079  +0.001  -0.000  +0.723   -0.008   +0.004  +1.000  +0.139   -0.001   +0.003  +0.100   +0.084    -0.005    +0.001  +0.084   +0.084    -0.005    +0.001  +0.084        +0.078        +0.096      +0.005      +0.369
+                         :       bhad_pt:  +0.007  -0.000  +0.105  +0.004  -0.001  +0.203   +0.001   +0.004  +0.139  +1.000   -0.000   +0.003  +0.722   +0.134    -0.002    +0.001  +0.094   +0.134    -0.002    +0.001  +0.094        +0.085        +0.433      +0.006      +0.071
+                         :      bhad_eta:  +0.001  -0.000  -0.002  +0.443  -0.003  +0.002   +0.186   -0.006  -0.001  -0.000   +1.000   -0.020  -0.010   -0.003    +0.166    -0.001  -0.003   -0.003    +0.166    -0.001  -0.003        -0.003        -0.003      +0.004      +0.002
+                         :      bhad_phi:  -0.003  +0.033  +0.004  -0.012  -0.026  +0.004   -0.006   -0.158  +0.003  +0.003   -0.020   +1.000  +0.004   -0.001    -0.002    -0.091  -0.001   -0.001    -0.002    -0.091  -0.001        -0.001        +0.001      +0.003      +0.004
+                         :        bhad_E:  +0.007  +0.000  +0.067  -0.001  -0.001  +0.139   -0.002   +0.003  +0.100  +0.722   -0.010   +0.004  +1.000   +0.092    -0.006    +0.000  +0.081   +0.092    -0.006    +0.000  +0.081        +0.072        +0.428      +0.009      +0.044
+                         :      q1jet_pt:  +0.013  -0.002  +0.130  -0.004  -0.004  +0.123   -0.003   -0.001  +0.084  +0.134   -0.003   -0.001  +0.092   +1.000    +0.001    +0.000  +0.754   +0.095    -0.000    -0.001  +0.065        +0.480        +0.503      -0.003      +0.037
+                         :     q1jet_eta:  +0.000  +0.010  +0.004  +0.105  +0.002  -0.002   +0.205   -0.003  -0.005  -0.002   +0.166   -0.002  -0.006   +0.001    +1.000    -0.008  -0.003   -0.000    +0.129    -0.002  -0.001        +0.001        +0.000      -0.002      -0.002
+                         :     q1jet_phi:  +0.000  -0.110  +0.002  +0.003  -0.141  +0.001   -0.001   -0.066  +0.001  +0.001   -0.001   -0.091  +0.000   +0.000    -0.008    +1.000  +0.002   -0.001    -0.002    -0.023  -0.001        -0.000        +0.000      +0.001      -0.000
+                         :       q1jet_E:  +0.011  -0.001  +0.093  -0.001  -0.005  +0.088   -0.003   -0.001  +0.084  +0.094   -0.003   -0.001  +0.081   +0.754    -0.003    +0.002  +1.000   +0.065    -0.001    -0.001  +0.052        +0.517        +0.529      -0.003      +0.023
+                         :      q2jet_pt:  +0.013  -0.002  +0.130  -0.004  -0.004  +0.123   -0.003   -0.001  +0.084  +0.134   -0.003   -0.001  +0.092   +0.095    -0.000    -0.001  +0.065   +1.000    +0.001    +0.000  +0.754        +0.480        +0.503      -0.003      +0.037
+                         :     q2jet_eta:  +0.000  +0.010  +0.004  +0.105  +0.002  -0.002   +0.205   -0.003  -0.005  -0.002   +0.166   -0.002  -0.006   -0.000    +0.129    -0.002  -0.001   +0.001    +1.000    -0.008  -0.003        +0.001        +0.000      -0.002      -0.002
+                         :     q2jet_phi:  +0.000  -0.110  +0.002  +0.003  -0.141  +0.001   -0.001   -0.066  +0.001  +0.001   -0.001   -0.091  +0.000   -0.001    -0.002    -0.023  -0.001   +0.000    -0.008    +1.000  +0.002        -0.000        +0.000      +0.001      -0.000
+                         :       q2jet_E:  +0.011  -0.001  +0.093  -0.001  -0.005  +0.088   -0.003   -0.001  +0.084  +0.094   -0.003   -0.001  +0.081   +0.065    -0.001    -0.001  +0.052   +0.754    -0.003    +0.002  +1.000        +0.517        +0.529      -0.003      +0.023
+                         : WhadCand_mass:  +0.008  -0.001  +0.079  -0.002  -0.006  +0.091   -0.003   -0.001  +0.078  +0.085   -0.003   -0.001  +0.072   +0.480    +0.001    -0.000  +0.517   +0.480    +0.001    -0.000  +0.517        +1.000        +0.784      +0.000      +0.015
+                         : ThadCand_mass:  +0.009  +0.001  +0.106  +0.001  -0.007  +0.126   -0.002   +0.001  +0.096  +0.433   -0.003   +0.001  +0.428   +0.503    +0.000    +0.000  +0.529   +0.503    +0.000    +0.000  +0.529        +0.784        +1.000      +0.002      +0.061
+                         :   WlepCand_mt:  +0.597  +0.013  +0.092  +0.009  -0.015  +0.001   +0.003   +0.005  +0.005  +0.006   +0.004   +0.003  +0.009   -0.003    -0.002    +0.001  -0.003   -0.003    -0.002    +0.001  -0.003        +0.000        +0.002      +1.000      +0.500
+                         :   TlepCand_mt:  +0.441  -0.000  +0.274  +0.006  -0.007  +0.495   -0.002   +0.002  +0.369  +0.071   +0.002   +0.004  +0.044   +0.037    -0.002    -0.000  +0.023   +0.037    -0.002    -0.000  +0.023        +0.015        +0.061      +0.500      +1.000
+                         : --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+DataSetFactory           : [2017__5__128__500__0.2] :  
+                         : 
+Factory                  : [2017__5__128__500__0.2] : Create Transformation "I" with events from all classes.
+                         : 
+                         : Transformation, Variable selection : 
+                         : Input : variable 'met_pt' <---> Output : variable 'met_pt'
+                         : Input : variable 'met_phi' <---> Output : variable 'met_phi'
+                         : Input : variable 'lep_pt' <---> Output : variable 'lep_pt'
+                         : Input : variable 'lep_eta' <---> Output : variable 'lep_eta'
+                         : Input : variable 'lep_phi' <---> Output : variable 'lep_phi'
+                         : Input : variable 'blep_pt' <---> Output : variable 'blep_pt'
+                         : Input : variable 'blep_eta' <---> Output : variable 'blep_eta'
+                         : Input : variable 'blep_phi' <---> Output : variable 'blep_phi'
+                         : Input : variable 'blep_E' <---> Output : variable 'blep_E'
+                         : Input : variable 'bhad_pt' <---> Output : variable 'bhad_pt'
+                         : Input : variable 'bhad_eta' <---> Output : variable 'bhad_eta'
+                         : Input : variable 'bhad_phi' <---> Output : variable 'bhad_phi'
+                         : Input : variable 'bhad_E' <---> Output : variable 'bhad_E'
+                         : Input : variable 'q1jet_pt' <---> Output : variable 'q1jet_pt'
+                         : Input : variable 'q1jet_eta' <---> Output : variable 'q1jet_eta'
+                         : Input : variable 'q1jet_phi' <---> Output : variable 'q1jet_phi'
+                         : Input : variable 'q1jet_E' <---> Output : variable 'q1jet_E'
+                         : Input : variable 'q2jet_pt' <---> Output : variable 'q2jet_pt'
+                         : Input : variable 'q2jet_eta' <---> Output : variable 'q2jet_eta'
+                         : Input : variable 'q2jet_phi' <---> Output : variable 'q2jet_phi'
+                         : Input : variable 'q2jet_E' <---> Output : variable 'q2jet_E'
+                         : Input : variable 'WhadCand_mass' <---> Output : variable 'WhadCand_mass'
+                         : Input : variable 'ThadCand_mass' <---> Output : variable 'ThadCand_mass'
+                         : Input : variable 'WlepCand_mt' <---> Output : variable 'WlepCand_mt'
+                         : Input : variable 'TlepCand_mt' <---> Output : variable 'TlepCand_mt'
+TFHandler_Factory        :      Variable             Mean             RMS     [        Min             Max ]
+                         : ------------------------------------------------------------------------------------
+                         :        met_pt:         92.070         8176.2   [       0.091163     7.8138e+06 ]
+                         :       met_phi:       0.038989         1.8459   [        -3.1416         3.1416 ]
+                         :        lep_pt:         72.783         41.689   [         30.000         706.57 ]
+                         :       lep_eta:      -0.010399         1.0212   [        -2.4997         2.4999 ]
+                         :       lep_phi:      -0.024458         1.8117   [        -3.1416         3.1416 ]
+                         :       blep_pt:         88.458         55.733   [         30.000         1119.1 ]
+                         :      blep_eta:      -0.010213         1.0283   [        -2.4000         2.4000 ]
+                         :      blep_phi:      -0.019925         1.8008   [        -3.1416         3.1416 ]
+                         :        blep_E:         143.08         113.14   [         30.330         2079.6 ]
+                         :       bhad_pt:         86.310         55.344   [         30.000         1119.1 ]
+                         :      bhad_eta:     -0.0084233         1.0222   [        -2.4000         2.3999 ]
+                         :      bhad_phi:      -0.019924         1.8016   [        -3.1416         3.1416 ]
+                         :        bhad_E:         138.97         110.77   [         30.309         2079.6 ]
+                         :      q1jet_pt:         75.575         58.804   [         30.000         1438.5 ]
+                         :     q1jet_eta:     -0.0046048         1.1194   [        -2.4000         2.4000 ]
+                         :     q1jet_phi:     -0.0023298         1.8161   [        -3.1416         3.1416 ]
+                         :       q1jet_E:         134.28         134.89   [         30.195         3884.7 ]
+                         :      q2jet_pt:         75.575         58.804   [         30.000         1438.5 ]
+                         :     q2jet_eta:     -0.0046048         1.1194   [        -2.4000         2.4000 ]
+                         :     q2jet_phi:     -0.0023298         1.8161   [        -3.1416         3.1416 ]
+                         :       q2jet_E:         134.28         134.89   [         30.195         3884.7 ]
+                         : WhadCand_mass:         127.44         111.29   [         16.359         3433.8 ]
+                         : ThadCand_mass:         249.13         162.13   [         34.237         3911.8 ]
+                         :   WlepCand_mt:         68.724         55.860   [     6.1043e-05         11668. ]
+                         :   TlepCand_mt:         158.27         98.964   [         8.9550         34113. ]
+                         : ------------------------------------------------------------------------------------
+                         : [32m
+                         : <PlotVariables> Will not produce scatter plots ==> 
+                         : |  The number of 25 input variables and 0 target values would require 300 two-dimensional
+                         : |  histograms, which would occupy the computer's memory. Note that this
+                         : |  suppression does not have any consequences for your analysis, other
+                         : |  than not disposing of these scatter plots. You can modify the maximum
+                         : |  number of input variables allowed to generate scatter plots in your
+                         : |  script via the command line:
+                         : |  "(TMVA::gConfig().GetVariablePlotting()).fMaxNumOfAllowedVariablesForScatterPlots = <some int>;"[0m
+                         : 
+                         : Some more output
+                         : Ranking input variables (method unspecific)...
+IdTransformation         : Ranking result (top variable is best ranked)
+                         : --------------------------------------
+                         : Rank : Variable      : Separation
+                         : --------------------------------------
+                         :    1 : ThadCand_mass : 3.856e-01
+                         :    2 : WhadCand_mass : 3.046e-01
+                         :    3 : TlepCand_mt   : 5.817e-02
+                         :    4 : q2jet_E       : 1.585e-02
+                         :    5 : q1jet_E       : 1.585e-02
+                         :    6 : q2jet_eta     : 1.298e-02
+                         :    7 : q1jet_eta     : 1.298e-02
+                         :    8 : bhad_pt       : 9.322e-03
+                         :    9 : q2jet_pt      : 9.306e-03
+                         :   10 : q1jet_pt      : 9.306e-03
+                         :   11 : bhad_E        : 7.194e-03
+                         :   12 : blep_pt       : 2.998e-03
+                         :   13 : lep_pt        : 1.726e-03
+                         :   14 : blep_E        : 1.414e-03
+                         :   15 : WlepCand_mt   : 9.894e-04
+                         :   16 : bhad_eta      : 2.420e-04
+                         :   17 : lep_eta       : 2.343e-04
+                         :   18 : met_phi       : 2.266e-04
+                         :   19 : lep_phi       : 1.760e-04
+                         :   20 : blep_phi      : 1.222e-04
+                         :   21 : bhad_phi      : 1.108e-04
+                         :   22 : blep_eta      : 9.753e-05
+                         :   23 : met_pt        : 9.047e-05
+                         :   24 : q2jet_phi     : 6.143e-05
+                         :   25 : q1jet_phi     : 6.143e-05
+                         : --------------------------------------
+Factory                  : Train method: DNN for Classification
+                         : 
+                         : 
+                         : [1m================================================================[0m
+                         : [1mH e l p   f o r   M V A   m e t h o d   [ DNN ] :[0m
+                         : 
+                         : Keras is a high-level API for the Theano and Tensorflow packages.
+                         : This method wraps the training and predictions steps of the Keras
+                         : Python package for TMVA, so that dataloading, preprocessing and
+                         : evaluation can be done within the TMVA system. To use this Keras
+                         : interface, you have to generate a model with Keras first. Then,
+                         : this model can be loaded and trained in TMVA.
+                         : 
+                         : 
+                         : <Suppress this message by specifying "!H" in the booking option>
+                         : [1m================================================================[0m
+                         : 
+                         : Preparing the Gaussian transformation...
+TFHandler_DNN            :      Variable             Mean             RMS     [        Min             Max ]
+                         : ------------------------------------------------------------------------------------
+                         :        met_pt:         2.7134       0.018628   [         2.6972         5.7307 ]
+                         :       met_phi:      0.0026691        0.99738   [        -3.3012         5.7307 ]
+                         :        lep_pt:      0.0026870        0.99628   [        -3.1599         5.7307 ]
+                         :       lep_eta:      0.0019735        0.99686   [        -3.3659         5.7307 ]
+                         :       lep_phi:      0.0025493        0.99670   [        -3.2863         5.7307 ]
+                         :       blep_pt:      0.0026378        0.99593   [        -3.1595         5.7307 ]
+                         :      blep_eta:      0.0023677        0.99703   [        -3.3268         5.7307 ]
+                         :      blep_phi:      0.0027272        0.99660   [        -3.2833         5.7307 ]
+                         :        blep_E:      0.0025385        0.99654   [        -3.3169         5.7307 ]
+                         :       bhad_pt:      0.0024677        0.99591   [        -3.1647         5.7307 ]
+                         :      bhad_eta:      0.0026549        0.99651   [        -3.2905         5.7307 ]
+                         :      bhad_phi:      0.0026041        0.99713   [        -3.3073         5.7307 ]
+                         :        bhad_E:      0.0026322        0.99592   [        -3.2908         5.7307 ]
+                         :      q1jet_pt:      0.0024173        0.99552   [        -3.1403         5.7307 ]
+                         :     q1jet_eta:      0.0025570        0.99677   [        -3.2954         5.7307 ]
+                         :     q1jet_phi:      0.0025349        0.99645   [        -3.2847         5.7307 ]
+                         :       q1jet_E:      0.0023429        0.99515   [        -3.2625         5.7307 ]
+                         :      q2jet_pt:      0.0024074        0.99552   [        -3.1403         5.7307 ]
+                         :     q2jet_eta:      0.0025572        0.99677   [        -3.2954         5.7307 ]
+                         :     q2jet_phi:      0.0025282        0.99645   [        -3.2847         5.7307 ]
+                         :       q2jet_E:      0.0023379        0.99515   [        -3.2625         5.7307 ]
+                         : WhadCand_mass:      0.0022977        0.99513   [        -3.2944         5.7307 ]
+                         : ThadCand_mass:      0.0023496        0.99518   [        -3.2912         5.7307 ]
+                         :   WlepCand_mt:     0.00050255        0.99823   [        -5.7307         5.7307 ]
+                         :   TlepCand_mt:      0.0023443        0.99461   [        -3.2837         5.7307 ]
+                         : ------------------------------------------------------------------------------------
+                         : Option TriesEarlyStopping: Training will stop after 30 number of epochs with no improvement of validation loss
+Train on 2012214 samples, validate on 2012214 samples
+Epoch 1/300
+ - 230s - loss: 0.4155 - acc: 0.8464 - val_loss: 0.0342 - val_acc: 0.8650
+Epoch 2/300
+ - 224s - loss: 0.3741 - acc: 0.8588 - val_loss: 0.0304 - val_acc: 0.8645
+Epoch 3/300
+ - 219s - loss: 0.3679 - acc: 0.8607 - val_loss: 0.0292 - val_acc: 0.8645
+Epoch 4/300
+ - 219s - loss: 0.3651 - acc: 0.8615 - val_loss: 0.0282 - val_acc: 0.8673
+Epoch 5/300
+ - 219s - loss: 0.3634 - acc: 0.8618 - val_loss: 0.0279 - val_acc: 0.8677
+Epoch 6/300
+ - 219s - loss: 0.3623 - acc: 0.8624 - val_loss: 0.0277 - val_acc: 0.8636
+Epoch 7/300
+ - 218s - loss: 0.3615 - acc: 0.8624 - val_loss: 0.0271 - val_acc: 0.8676
+Epoch 8/300
+ - 218s - loss: 0.3610 - acc: 0.8626 - val_loss: 0.0269 - val_acc: 0.8683
+Epoch 9/300
+ - 218s - loss: 0.3606 - acc: 0.8627 - val_loss: 0.0268 - val_acc: 0.8693
+Epoch 10/300
+ - 218s - loss: 0.3599 - acc: 0.8631 - val_loss: 0.0267 - val_acc: 0.8685
+Epoch 11/300
+ - 219s - loss: 0.3594 - acc: 0.8632 - val_loss: 0.0266 - val_acc: 0.8690
+Epoch 12/300
+ - 219s - loss: 0.3592 - acc: 0.8633 - val_loss: 0.0263 - val_acc: 0.8687
+Epoch 13/300
+ - 218s - loss: 0.3587 - acc: 0.8634 - val_loss: 0.0263 - val_acc: 0.8663
+Epoch 14/300
+ - 217s - loss: 0.3584 - acc: 0.8634 - val_loss: 0.0261 - val_acc: 0.8698
+Epoch 15/300
+ - 217s - loss: 0.3583 - acc: 0.8633 - val_loss: 0.0258 - val_acc: 0.8691
+Epoch 16/300
+ - 217s - loss: 0.3579 - acc: 0.8635 - val_loss: 0.0258 - val_acc: 0.8690
+Epoch 17/300
+ - 217s - loss: 0.3577 - acc: 0.8635 - val_loss: 0.0257 - val_acc: 0.8699
+Epoch 18/300
+ - 218s - loss: 0.3576 - acc: 0.8637 - val_loss: 0.0263 - val_acc: 0.8666
+Epoch 19/300
+ - 218s - loss: 0.3574 - acc: 0.8639 - val_loss: 0.0257 - val_acc: 0.8680
+Epoch 20/300
+ - 217s - loss: 0.3571 - acc: 0.8638 - val_loss: 0.0259 - val_acc: 0.8680
+Epoch 21/300
+ - 217s - loss: 0.3571 - acc: 0.8637 - val_loss: 0.0256 - val_acc: 0.8697
+Epoch 22/300
+ - 217s - loss: 0.3569 - acc: 0.8638 - val_loss: 0.0257 - val_acc: 0.8688
+Epoch 23/300
+ - 217s - loss: 0.3566 - acc: 0.8639 - val_loss: 0.0254 - val_acc: 0.8691
+Epoch 24/300
+ - 217s - loss: 0.3568 - acc: 0.8638 - val_loss: 0.0253 - val_acc: 0.8700
+Epoch 25/300
+ - 217s - loss: 0.3561 - acc: 0.8640 - val_loss: 0.0253 - val_acc: 0.8687
+Epoch 26/300
+ - 218s - loss: 0.3564 - acc: 0.8640 - val_loss: 0.0252 - val_acc: 0.8703
+Epoch 27/300
+ - 218s - loss: 0.3563 - acc: 0.8641 - val_loss: 0.0253 - val_acc: 0.8678
+Epoch 28/300
+ - 218s - loss: 0.3559 - acc: 0.8640 - val_loss: 0.0251 - val_acc: 0.8700
+Epoch 29/300
+ - 217s - loss: 0.3562 - acc: 0.8639 - val_loss: 0.0252 - val_acc: 0.8686
+Epoch 30/300
+ - 217s - loss: 0.3559 - acc: 0.8641 - val_loss: 0.0252 - val_acc: 0.8692
+Epoch 31/300
+ - 216s - loss: 0.3558 - acc: 0.8641 - val_loss: 0.0251 - val_acc: 0.8691
+Epoch 32/300
+ - 217s - loss: 0.3557 - acc: 0.8641 - val_loss: 0.0251 - val_acc: 0.8691
+Epoch 33/300
+ - 217s - loss: 0.3555 - acc: 0.8642 - val_loss: 0.0252 - val_acc: 0.8693
+Epoch 34/300
+ - 217s - loss: 0.3557 - acc: 0.8641 - val_loss: 0.0251 - val_acc: 0.8687
+Epoch 35/300
+ - 217s - loss: 0.3556 - acc: 0.8643 - val_loss: 0.0250 - val_acc: 0.8702
+Epoch 36/300
+ - 216s - loss: 0.3555 - acc: 0.8640 - val_loss: 0.0250 - val_acc: 0.8695
+Epoch 37/300
+ - 216s - loss: 0.3554 - acc: 0.8641 - val_loss: 0.0249 - val_acc: 0.8695
+Epoch 38/300
+ - 217s - loss: 0.3553 - acc: 0.8643 - val_loss: 0.0248 - val_acc: 0.8699
+Epoch 39/300
+ - 217s - loss: 0.3552 - acc: 0.8643 - val_loss: 0.0250 - val_acc: 0.8692
+Epoch 40/300
+ - 217s - loss: 0.3552 - acc: 0.8642 - val_loss: 0.0250 - val_acc: 0.8698
+Epoch 41/300
+ - 217s - loss: 0.3550 - acc: 0.8644 - val_loss: 0.0248 - val_acc: 0.8698
+Epoch 42/300
+ - 216s - loss: 0.3550 - acc: 0.8642 - val_loss: 0.0247 - val_acc: 0.8699
+Epoch 43/300
+ - 216s - loss: 0.3549 - acc: 0.8642 - val_loss: 0.0247 - val_acc: 0.8683
+Epoch 44/300
+ - 216s - loss: 0.3550 - acc: 0.8643 - val_loss: 0.0247 - val_acc: 0.8701
+Epoch 45/300
+ - 216s - loss: 0.3549 - acc: 0.8641 - val_loss: 0.0248 - val_acc: 0.8691
+Epoch 46/300
+ - 216s - loss: 0.3546 - acc: 0.8645 - val_loss: 0.0249 - val_acc: 0.8677
+Epoch 47/300
+ - 216s - loss: 0.3543 - acc: 0.8644 - val_loss: 0.0248 - val_acc: 0.8701
+Epoch 48/300
+ - 305s - loss: 0.3546 - acc: 0.8643 - val_loss: 0.0248 - val_acc: 0.8697
+Epoch 49/300
+ - 337s - loss: 0.3543 - acc: 0.8644 - val_loss: 0.0252 - val_acc: 0.8690
+Epoch 50/300
+ - 339s - loss: 0.3544 - acc: 0.8643 - val_loss: 0.0248 - val_acc: 0.8695
+Epoch 51/300
+ - 339s - loss: 0.3543 - acc: 0.8645 - val_loss: 0.0247 - val_acc: 0.8685
+Epoch 52/300
+ - 331s - loss: 0.3543 - acc: 0.8644 - val_loss: 0.0248 - val_acc: 0.8690
+Epoch 53/300
+ - 331s - loss: 0.3539 - acc: 0.8645 - val_loss: 0.0248 - val_acc: 0.8702
+Epoch 54/300
+ - 331s - loss: 0.3532 - acc: 0.8647 - val_loss: 0.0250 - val_acc: 0.8703
+Epoch 55/300
+ - 334s - loss: 0.3534 - acc: 0.8648 - val_loss: 0.0248 - val_acc: 0.8705
+Epoch 56/300
+ - 330s - loss: 0.3533 - acc: 0.8647 - val_loss: 0.0248 - val_acc: 0.8704
+Epoch 57/300
+ - 330s - loss: 0.3535 - acc: 0.8646 - val_loss: 0.0248 - val_acc: 0.8707
+Epoch 58/300
+ - 336s - loss: 0.3535 - acc: 0.8646 - val_loss: 0.0247 - val_acc: 0.8707
+Epoch 59/300
+ - 292s - loss: 0.3528 - acc: 0.8648 - val_loss: 0.0248 - val_acc: 0.8693
+Epoch 60/300
+ - 251s - loss: 0.3530 - acc: 0.8650 - val_loss: 0.0247 - val_acc: 0.8710
+Epoch 61/300
+ - 239s - loss: 0.3529 - acc: 0.8649 - val_loss: 0.0246 - val_acc: 0.8710
+Epoch 62/300
+ - 230s - loss: 0.3529 - acc: 0.8650 - val_loss: 0.0248 - val_acc: 0.8705
+Epoch 63/300
+ - 218s - loss: 0.3529 - acc: 0.8648 - val_loss: 0.0247 - val_acc: 0.8707
+Epoch 64/300
+ - 217s - loss: 0.3529 - acc: 0.8649 - val_loss: 0.0247 - val_acc: 0.8697
+Epoch 65/300
+ - 217s - loss: 0.3530 - acc: 0.8649 - val_loss: 0.0247 - val_acc: 0.8701
+Epoch 66/300
+ - 218s - loss: 0.3528 - acc: 0.8650 - val_loss: 0.0247 - val_acc: 0.8708
+Epoch 67/300
+ - 218s - loss: 0.3530 - acc: 0.8648 - val_loss: 0.0247 - val_acc: 0.8706
+Epoch 68/300
+ - 218s - loss: 0.3529 - acc: 0.8647 - val_loss: 0.0247 - val_acc: 0.8698
+Epoch 69/300
+ - 218s - loss: 0.3529 - acc: 0.8648 - val_loss: 0.0246 - val_acc: 0.8708
+Epoch 70/300
+ - 218s - loss: 0.3529 - acc: 0.8650 - val_loss: 0.0247 - val_acc: 0.8707
+Epoch 71/300
+ - 218s - loss: 0.3527 - acc: 0.8650 - val_loss: 0.0245 - val_acc: 0.8706
+Epoch 72/300
+ - 218s - loss: 0.3530 - acc: 0.8649 - val_loss: 0.0246 - val_acc: 0.8706
+Epoch 73/300
+ - 217s - loss: 0.3526 - acc: 0.8649 - val_loss: 0.0246 - val_acc: 0.8699
+Epoch 74/300
+ - 218s - loss: 0.3526 - acc: 0.8648 - val_loss: 0.0245 - val_acc: 0.8706
+Epoch 75/300
+ - 218s - loss: 0.3526 - acc: 0.8650 - val_loss: 0.0245 - val_acc: 0.8704
+Epoch 76/300
+ - 217s - loss: 0.3524 - acc: 0.8651 - val_loss: 0.0245 - val_acc: 0.8706
+Epoch 77/300
+ - 217s - loss: 0.3525 - acc: 0.8651 - val_loss: 0.0246 - val_acc: 0.8690
+Epoch 78/300
+ - 217s - loss: 0.3528 - acc: 0.8647 - val_loss: 0.0246 - val_acc: 0.8693
+Epoch 79/300
+ - 218s - loss: 0.3524 - acc: 0.8649 - val_loss: 0.0244 - val_acc: 0.8700
+Epoch 80/300
+ - 218s - loss: 0.3522 - acc: 0.8650 - val_loss: 0.0245 - val_acc: 0.8704
+Epoch 81/300
+ - 217s - loss: 0.3525 - acc: 0.8650 - val_loss: 0.0245 - val_acc: 0.8704
+Epoch 82/300
+ - 217s - loss: 0.3525 - acc: 0.8648 - val_loss: 0.0245 - val_acc: 0.8710
+Epoch 83/300
+ - 217s - loss: 0.3524 - acc: 0.8650 - val_loss: 0.0246 - val_acc: 0.8695
+Epoch 84/300
+ - 218s - loss: 0.3524 - acc: 0.8652 - val_loss: 0.0244 - val_acc: 0.8702
+Epoch 85/300
+ - 217s - loss: 0.3524 - acc: 0.8652 - val_loss: 0.0246 - val_acc: 0.8701
+Epoch 86/300
+ - 215s - loss: 0.3522 - acc: 0.8652 - val_loss: 0.0245 - val_acc: 0.8704
+Epoch 87/300
+ - 214s - loss: 0.3523 - acc: 0.8652 - val_loss: 0.0245 - val_acc: 0.8710
+Epoch 88/300
+ - 216s - loss: 0.3525 - acc: 0.8648 - val_loss: 0.0245 - val_acc: 0.8708
+Epoch 89/300
+ - 214s - loss: 0.3526 - acc: 0.8649 - val_loss: 0.0246 - val_acc: 0.8700
+Epoch 90/300
+ - 214s - loss: 0.3522 - acc: 0.8651 - val_loss: 0.0245 - val_acc: 0.8698
+Epoch 91/300
+ - 213s - loss: 0.3525 - acc: 0.8651 - val_loss: 0.0246 - val_acc: 0.8703
+Epoch 92/300
+ - 215s - loss: 0.3520 - acc: 0.8651 - val_loss: 0.0246 - val_acc: 0.8695
+Epoch 93/300
+ - 213s - loss: 0.3520 - acc: 0.8652 - val_loss: 0.0245 - val_acc: 0.8700
+Epoch 94/300
+ - 214s - loss: 0.3523 - acc: 0.8651 - val_loss: 0.0244 - val_acc: 0.8712
+Epoch 95/300
+ - 214s - loss: 0.3521 - acc: 0.8652 - val_loss: 0.0244 - val_acc: 0.8706
+Epoch 96/300
+ - 214s - loss: 0.3523 - acc: 0.8651 - val_loss: 0.0244 - val_acc: 0.8711
+Epoch 97/300
+ - 215s - loss: 0.3521 - acc: 0.8650 - val_loss: 0.0244 - val_acc: 0.8703
+Epoch 98/300
+ - 214s - loss: 0.3521 - acc: 0.8652 - val_loss: 0.0245 - val_acc: 0.8705
+Epoch 99/300
+ - 213s - loss: 0.3522 - acc: 0.8650 - val_loss: 0.0244 - val_acc: 0.8707
+Epoch 100/300
+ - 214s - loss: 0.3522 - acc: 0.8651 - val_loss: 0.0244 - val_acc: 0.8704
+Epoch 101/300
+ - 214s - loss: 0.3521 - acc: 0.8650 - val_loss: 0.0245 - val_acc: 0.8702
+Epoch 102/300
+ - 213s - loss: 0.3522 - acc: 0.8652 - val_loss: 0.0245 - val_acc: 0.8700
+Epoch 103/300
+ - 214s - loss: 0.3520 - acc: 0.8653 - val_loss: 0.0246 - val_acc: 0.8682
+Epoch 104/300
+ - 214s - loss: 0.3522 - acc: 0.8651 - val_loss: 0.0244 - val_acc: 0.8706
+Epoch 105/300
+ - 213s - loss: 0.3524 - acc: 0.8649 - val_loss: 0.0243 - val_acc: 0.8703
+Epoch 106/300
+ - 213s - loss: 0.3521 - acc: 0.8652 - val_loss: 0.0246 - val_acc: 0.8681
+Epoch 107/300
+ - 214s - loss: 0.3520 - acc: 0.8652 - val_loss: 0.0244 - val_acc: 0.8706
+Epoch 108/300
+ - 214s - loss: 0.3519 - acc: 0.8653 - val_loss: 0.0244 - val_acc: 0.8704
+Epoch 109/300
+ - 213s - loss: 0.3521 - acc: 0.8650 - val_loss: 0.0243 - val_acc: 0.8708
+Epoch 110/300
+ - 214s - loss: 0.3518 - acc: 0.8653 - val_loss: 0.0243 - val_acc: 0.8706
+Epoch 111/300
+ - 214s - loss: 0.3520 - acc: 0.8651 - val_loss: 0.0244 - val_acc: 0.8709
+Epoch 112/300
+ - 213s - loss: 0.3521 - acc: 0.8651 - val_loss: 0.0243 - val_acc: 0.8704
+Epoch 113/300
+ - 214s - loss: 0.3518 - acc: 0.8652 - val_loss: 0.0245 - val_acc: 0.8704
+Epoch 114/300
+ - 213s - loss: 0.3521 - acc: 0.8650 - val_loss: 0.0243 - val_acc: 0.8710
+Epoch 115/300
+ - 214s - loss: 0.3519 - acc: 0.8652 - val_loss: 0.0245 - val_acc: 0.8685
+Epoch 116/300
+ - 213s - loss: 0.3521 - acc: 0.8649 - val_loss: 0.0245 - val_acc: 0.8703
+Epoch 117/300
+ - 213s - loss: 0.3517 - acc: 0.8653 - val_loss: 0.0244 - val_acc: 0.8715
+Epoch 118/300
+ - 214s - loss: 0.3519 - acc: 0.8652 - val_loss: 0.0244 - val_acc: 0.8710
+Epoch 119/300
+ - 215s - loss: 0.3518 - acc: 0.8651 - val_loss: 0.0244 - val_acc: 0.8707
+Epoch 120/300
+ - 214s - loss: 0.3518 - acc: 0.8651 - val_loss: 0.0243 - val_acc: 0.8692
+Epoch 121/300
+ - 214s - loss: 0.3519 - acc: 0.8655 - val_loss: 0.0244 - val_acc: 0.8702
+Epoch 122/300
+ - 213s - loss: 0.3520 - acc: 0.8651 - val_loss: 0.0244 - val_acc: 0.8707
+Epoch 123/300
+ - 213s - loss: 0.3519 - acc: 0.8651 - val_loss: 0.0243 - val_acc: 0.8703
+Epoch 124/300
+ - 211s - loss: 0.3522 - acc: 0.8649 - val_loss: 0.0245 - val_acc: 0.8704
+Epoch 125/300
+ - 207s - loss: 0.3518 - acc: 0.8654 - val_loss: 0.0244 - val_acc: 0.8710
+Epoch 126/300
+ - 205s - loss: 0.3520 - acc: 0.8649 - val_loss: 0.0244 - val_acc: 0.8702
+Epoch 127/300
+ - 205s - loss: 0.3516 - acc: 0.8653 - val_loss: 0.0243 - val_acc: 0.8700
+Epoch 128/300
+ - 205s - loss: 0.3519 - acc: 0.8651 - val_loss: 0.0245 - val_acc: 0.8705
+Epoch 129/300
+ - 204s - loss: 0.3517 - acc: 0.8653 - val_loss: 0.0245 - val_acc: 0.8708
+Epoch 130/300
+ - 203s - loss: 0.3521 - acc: 0.8650 - val_loss: 0.0243 - val_acc: 0.8712
+Epoch 131/300
+ - 202s - loss: 0.3518 - acc: 0.8652 - val_loss: 0.0242 - val_acc: 0.8707
+Epoch 132/300
+ - 201s - loss: 0.3520 - acc: 0.8653 - val_loss: 0.0243 - val_acc: 0.8703
+Epoch 133/300
+ - 200s - loss: 0.3517 - acc: 0.8652 - val_loss: 0.0243 - val_acc: 0.8715
+Epoch 134/300
+ - 202s - loss: 0.3516 - acc: 0.8653 - val_loss: 0.0242 - val_acc: 0.8713
+Epoch 135/300
+ - 203s - loss: 0.3517 - acc: 0.8651 - val_loss: 0.0242 - val_acc: 0.8713
+Epoch 136/300
+ - 201s - loss: 0.3517 - acc: 0.8652 - val_loss: 0.0244 - val_acc: 0.8693
+Epoch 137/300
+ - 202s - loss: 0.3516 - acc: 0.8653 - val_loss: 0.0244 - val_acc: 0.8701
+Epoch 138/300
+ - 201s - loss: 0.3519 - acc: 0.8652 - val_loss: 0.0244 - val_acc: 0.8708
+Epoch 139/300
+ - 202s - loss: 0.3519 - acc: 0.8652 - val_loss: 0.0243 - val_acc: 0.8707
+Epoch 140/300
+ - 202s - loss: 0.3516 - acc: 0.8653 - val_loss: 0.0242 - val_acc: 0.8709
+Epoch 141/300
+ - 201s - loss: 0.3516 - acc: 0.8656 - val_loss: 0.0242 - val_acc: 0.8707
+Epoch 142/300
+ - 202s - loss: 0.3517 - acc: 0.8652 - val_loss: 0.0241 - val_acc: 0.8716
+Epoch 143/300
+ - 201s - loss: 0.3517 - acc: 0.8650 - val_loss: 0.0242 - val_acc: 0.8712
+Epoch 144/300
+ - 202s - loss: 0.3516 - acc: 0.8652 - val_loss: 0.0242 - val_acc: 0.8712
+Epoch 145/300
+ - 201s - loss: 0.3518 - acc: 0.8653 - val_loss: 0.0243 - val_acc: 0.8711
+Epoch 146/300
+ - 201s - loss: 0.3516 - acc: 0.8653 - val_loss: 0.0242 - val_acc: 0.8704
+Epoch 147/300
+ - 201s - loss: 0.3514 - acc: 0.8655 - val_loss: 0.0242 - val_acc: 0.8710
+Epoch 148/300
+ - 202s - loss: 0.3516 - acc: 0.8651 - val_loss: 0.0242 - val_acc: 0.8703
+Epoch 149/300
+ - 200s - loss: 0.3515 - acc: 0.8652 - val_loss: 0.0242 - val_acc: 0.8712
+Epoch 150/300
+ - 201s - loss: 0.3515 - acc: 0.8655 - val_loss: 0.0242 - val_acc: 0.8715
+Epoch 151/300
+ - 202s - loss: 0.3517 - acc: 0.8652 - val_loss: 0.0241 - val_acc: 0.8717
+Epoch 152/300
+ - 202s - loss: 0.3515 - acc: 0.8655 - val_loss: 0.0243 - val_acc: 0.8701
+Epoch 153/300
+ - 202s - loss: 0.3513 - acc: 0.8654 - val_loss: 0.0242 - val_acc: 0.8710
+Epoch 154/300
+ - 202s - loss: 0.3514 - acc: 0.8655 - val_loss: 0.0243 - val_acc: 0.8702
+Epoch 155/300
+ - 201s - loss: 0.3517 - acc: 0.8652 - val_loss: 0.0241 - val_acc: 0.8711
+Epoch 156/300
+ - 202s - loss: 0.3515 - acc: 0.8654 - val_loss: 0.0242 - val_acc: 0.8711
+Epoch 157/300
+ - 202s - loss: 0.3517 - acc: 0.8654 - val_loss: 0.0242 - val_acc: 0.8711
+Epoch 158/300
+ - 202s - loss: 0.3515 - acc: 0.8656 - val_loss: 0.0241 - val_acc: 0.8709
+Epoch 159/300
+ - 202s - loss: 0.3514 - acc: 0.8653 - val_loss: 0.0242 - val_acc: 0.8710
+Epoch 160/300
+ - 202s - loss: 0.3516 - acc: 0.8653 - val_loss: 0.0241 - val_acc: 0.8713
+Epoch 161/300
+ - 202s - loss: 0.3515 - acc: 0.8655 - val_loss: 0.0242 - val_acc: 0.8708
+Epoch 162/300
+ - 202s - loss: 0.3513 - acc: 0.8652 - val_loss: 0.0245 - val_acc: 0.8711
+Epoch 163/300
+ - 201s - loss: 0.3515 - acc: 0.8651 - val_loss: 0.0242 - val_acc: 0.8716
+Epoch 164/300
+ - 201s - loss: 0.3515 - acc: 0.8653 - val_loss: 0.0241 - val_acc: 0.8716
+Epoch 165/300
+ - 201s - loss: 0.3514 - acc: 0.8656 - val_loss: 0.0240 - val_acc: 0.8714
+Epoch 166/300
+ - 198s - loss: 0.3514 - acc: 0.8654 - val_loss: 0.0242 - val_acc: 0.8709
+Epoch 167/300
+ - 198s - loss: 0.3513 - acc: 0.8655 - val_loss: 0.0242 - val_acc: 0.8703
+Epoch 168/300
+ - 197s - loss: 0.3515 - acc: 0.8653 - val_loss: 0.0242 - val_acc: 0.8708
+Epoch 169/300
+ - 198s - loss: 0.3513 - acc: 0.8654 - val_loss: 0.0241 - val_acc: 0.8704
+Epoch 170/300
+ - 198s - loss: 0.3512 - acc: 0.8654 - val_loss: 0.0242 - val_acc: 0.8697
+Epoch 171/300
+ - 196s - loss: 0.3515 - acc: 0.8653 - val_loss: 0.0240 - val_acc: 0.8711
+Epoch 172/300
+ - 196s - loss: 0.3513 - acc: 0.8653 - val_loss: 0.0240 - val_acc: 0.8708
+Epoch 173/300
+ - 196s - loss: 0.3511 - acc: 0.8655 - val_loss: 0.0242 - val_acc: 0.8709
+Epoch 174/300
+ - 194s - loss: 0.3513 - acc: 0.8655 - val_loss: 0.0242 - val_acc: 0.8711
+Epoch 175/300
+ - 194s - loss: 0.3513 - acc: 0.8654 - val_loss: 0.0241 - val_acc: 0.8707
+Epoch 176/300
+ - 194s - loss: 0.3513 - acc: 0.8653 - val_loss: 0.0241 - val_acc: 0.8702
+Epoch 177/300
+ - 195s - loss: 0.3516 - acc: 0.8653 - val_loss: 0.0243 - val_acc: 0.8708
+Epoch 178/300
+ - 196s - loss: 0.3515 - acc: 0.8654 - val_loss: 0.0241 - val_acc: 0.8703
+Epoch 179/300
+ - 194s - loss: 0.3513 - acc: 0.8653 - val_loss: 0.0241 - val_acc: 0.8699
+Epoch 180/300
+ - 194s - loss: 0.3515 - acc: 0.8653 - val_loss: 0.0243 - val_acc: 0.8693
+Epoch 181/300
+ - 193s - loss: 0.3513 - acc: 0.8654 - val_loss: 0.0240 - val_acc: 0.8706
+Epoch 182/300
+ - 193s - loss: 0.3513 - acc: 0.8654 - val_loss: 0.0240 - val_acc: 0.8704
+Epoch 183/300
+ - 194s - loss: 0.3513 - acc: 0.8654 - val_loss: 0.0241 - val_acc: 0.8714
+Epoch 184/300
+ - 193s - loss: 0.3513 - acc: 0.8651 - val_loss: 0.0242 - val_acc: 0.8709
+Epoch 185/300
+ - 193s - loss: 0.3512 - acc: 0.8655 - val_loss: 0.0240 - val_acc: 0.8715
+Epoch 186/300
+ - 193s - loss: 0.3512 - acc: 0.8655 - val_loss: 0.0240 - val_acc: 0.8716
+Epoch 187/300
+ - 190s - loss: 0.3514 - acc: 0.8653 - val_loss: 0.0241 - val_acc: 0.8716
+Epoch 188/300
+ - 193s - loss: 0.3512 - acc: 0.8654 - val_loss: 0.0241 - val_acc: 0.8710
+Epoch 189/300
+ - 194s - loss: 0.3513 - acc: 0.8653 - val_loss: 0.0241 - val_acc: 0.8715
+Epoch 190/300
+ - 193s - loss: 0.3511 - acc: 0.8653 - val_loss: 0.0241 - val_acc: 0.8708
+Epoch 191/300
+ - 191s - loss: 0.3510 - acc: 0.8655 - val_loss: 0.0241 - val_acc: 0.8700
+Epoch 192/300
+ - 189s - loss: 0.3513 - acc: 0.8654 - val_loss: 0.0240 - val_acc: 0.8709
+Epoch 193/300
+ - 189s - loss: 0.3511 - acc: 0.8653 - val_loss: 0.0240 - val_acc: 0.8715
+Epoch 194/300
+ - 189s - loss: 0.3512 - acc: 0.8654 - val_loss: 0.0241 - val_acc: 0.8711
+Epoch 195/300
+ - 189s - loss: 0.3512 - acc: 0.8654 - val_loss: 0.0239 - val_acc: 0.8711
+Epoch 196/300
+ - 189s - loss: 0.3512 - acc: 0.8653 - val_loss: 0.0238 - val_acc: 0.8711
+Epoch 197/300
+ - 189s - loss: 0.3509 - acc: 0.8656 - val_loss: 0.0240 - val_acc: 0.8705
+Epoch 198/300
+ - 189s - loss: 0.3511 - acc: 0.8655 - val_loss: 0.0239 - val_acc: 0.8711
+Epoch 199/300
+ - 189s - loss: 0.3513 - acc: 0.8654 - val_loss: 0.0239 - val_acc: 0.8706
+Epoch 200/300
+ - 188s - loss: 0.3513 - acc: 0.8654 - val_loss: 0.0240 - val_acc: 0.8713
+Epoch 201/300
+ - 189s - loss: 0.3512 - acc: 0.8656 - val_loss: 0.0242 - val_acc: 0.8694
+Epoch 202/300
+ - 189s - loss: 0.3511 - acc: 0.8656 - val_loss: 0.0239 - val_acc: 0.8705
+Epoch 203/300
+ - 188s - loss: 0.3511 - acc: 0.8655 - val_loss: 0.0240 - val_acc: 0.8714
+Epoch 204/300
+ - 189s - loss: 0.3510 - acc: 0.8655 - val_loss: 0.0240 - val_acc: 0.8709
+Epoch 205/300
+ - 189s - loss: 0.3510 - acc: 0.8654 - val_loss: 0.0240 - val_acc: 0.8711
+Epoch 206/300
+ - 189s - loss: 0.3508 - acc: 0.8655 - val_loss: 0.0241 - val_acc: 0.8708
+Epoch 207/300
+ - 189s - loss: 0.3511 - acc: 0.8654 - val_loss: 0.0241 - val_acc: 0.8706
+Epoch 208/300
+ - 189s - loss: 0.3511 - acc: 0.8655 - val_loss: 0.0240 - val_acc: 0.8708
+Epoch 209/300
+ - 189s - loss: 0.3510 - acc: 0.8654 - val_loss: 0.0240 - val_acc: 0.8710
+Epoch 210/300
+ - 189s - loss: 0.3512 - acc: 0.8655 - val_loss: 0.0242 - val_acc: 0.8702
+Epoch 211/300
+ - 189s - loss: 0.3509 - acc: 0.8654 - val_loss: 0.0240 - val_acc: 0.8706
+Epoch 212/300
+ - 189s - loss: 0.3511 - acc: 0.8655 - val_loss: 0.0240 - val_acc: 0.8711
+Epoch 213/300
+ - 189s - loss: 0.3510 - acc: 0.8656 - val_loss: 0.0241 - val_acc: 0.8707
+Epoch 214/300
+ - 188s - loss: 0.3510 - acc: 0.8653 - val_loss: 0.0239 - val_acc: 0.8709
+Epoch 215/300
+ - 186s - loss: 0.3511 - acc: 0.8655 - val_loss: 0.0241 - val_acc: 0.8697
+Epoch 216/300
+ - 185s - loss: 0.3513 - acc: 0.8654 - val_loss: 0.0242 - val_acc: 0.8680
+Epoch 217/300
+ - 185s - loss: 0.3510 - acc: 0.8656 - val_loss: 0.0240 - val_acc: 0.8712
+Epoch 218/300
+ - 181s - loss: 0.3509 - acc: 0.8656 - val_loss: 0.0240 - val_acc: 0.8714
+Epoch 219/300
+ - 181s - loss: 0.3511 - acc: 0.8654 - val_loss: 0.0240 - val_acc: 0.8709
+Epoch 220/300
+ - 179s - loss: 0.3509 - acc: 0.8656 - val_loss: 0.0240 - val_acc: 0.8707
+Epoch 221/300
+ - 180s - loss: 0.3508 - acc: 0.8655 - val_loss: 0.0239 - val_acc: 0.8702
+Epoch 222/300
+ - 180s - loss: 0.3510 - acc: 0.8654 - val_loss: 0.0240 - val_acc: 0.8714
+Epoch 223/300
+ - 181s - loss: 0.3510 - acc: 0.8655 - val_loss: 0.0239 - val_acc: 0.8707
+Epoch 224/300
+ - 181s - loss: 0.3510 - acc: 0.8654 - val_loss: 0.0241 - val_acc: 0.8711
+Epoch 225/300
+ - 181s - loss: 0.3510 - acc: 0.8655 - val_loss: 0.0240 - val_acc: 0.8715
+Epoch 226/300
+ - 180s - loss: 0.3510 - acc: 0.8657 - val_loss: 0.0238 - val_acc: 0.8720
+Epoch 227/300
+ - 191s - loss: 0.3509 - acc: 0.8656 - val_loss: 0.0239 - val_acc: 0.8714
+Epoch 228/300
+ - 192s - loss: 0.3511 - acc: 0.8653 - val_loss: 0.0241 - val_acc: 0.8704
+Epoch 229/300
+ - 193s - loss: 0.3509 - acc: 0.8656 - val_loss: 0.0238 - val_acc: 0.8713
+Epoch 230/300
+ - 193s - loss: 0.3508 - acc: 0.8656 - val_loss: 0.0242 - val_acc: 0.8704
+Epoch 231/300
+ - 192s - loss: 0.3511 - acc: 0.8657 - val_loss: 0.0240 - val_acc: 0.8712
+Epoch 232/300
+ - 190s - loss: 0.3509 - acc: 0.8655 - val_loss: 0.0242 - val_acc: 0.8692
+Epoch 233/300
+ - 191s - loss: 0.3508 - acc: 0.8654 - val_loss: 0.0242 - val_acc: 0.8711
+Epoch 234/300
+ - 190s - loss: 0.3511 - acc: 0.8654 - val_loss: 0.0239 - val_acc: 0.8715
+Epoch 235/300
+ - 190s - loss: 0.3510 - acc: 0.8655 - val_loss: 0.0240 - val_acc: 0.8713
+Epoch 236/300
+ - 192s - loss: 0.3507 - acc: 0.8657 - val_loss: 0.0240 - val_acc: 0.8709
+Epoch 237/300
+ - 195s - loss: 0.3510 - acc: 0.8655 - val_loss: 0.0241 - val_acc: 0.8706
+Epoch 238/300
+ - 202s - loss: 0.3507 - acc: 0.8656 - val_loss: 0.0242 - val_acc: 0.8703
+Epoch 239/300
+ - 203s - loss: 0.3510 - acc: 0.8655 - val_loss: 0.0241 - val_acc: 0.8693
+Epoch 240/300
+ - 203s - loss: 0.3508 - acc: 0.8657 - val_loss: 0.0240 - val_acc: 0.8706
+Epoch 241/300
+ - 203s - loss: 0.3506 - acc: 0.8657 - val_loss: 0.0238 - val_acc: 0.8712
+Epoch 242/300
+ - 203s - loss: 0.3507 - acc: 0.8656 - val_loss: 0.0241 - val_acc: 0.8699
+Epoch 243/300
+ - 205s - loss: 0.3508 - acc: 0.8656 - val_loss: 0.0240 - val_acc: 0.8707
+Epoch 244/300
+ - 207s - loss: 0.3507 - acc: 0.8654 - val_loss: 0.0240 - val_acc: 0.8715
+Epoch 245/300
+ - 217s - loss: 0.3507 - acc: 0.8656 - val_loss: 0.0238 - val_acc: 0.8713
+Epoch 246/300
+ - 231s - loss: 0.3505 - acc: 0.8655 - val_loss: 0.0240 - val_acc: 0.8715
+Epoch 247/300
+ - 233s - loss: 0.3504 - acc: 0.8656 - val_loss: 0.0240 - val_acc: 0.8716
+Epoch 248/300
+ - 236s - loss: 0.3507 - acc: 0.8655 - val_loss: 0.0238 - val_acc: 0.8713
+Epoch 249/300
+ - 237s - loss: 0.3507 - acc: 0.8656 - val_loss: 0.0239 - val_acc: 0.8707
+Epoch 250/300
+ - 234s - loss: 0.3507 - acc: 0.8655 - val_loss: 0.0239 - val_acc: 0.8717
+Epoch 251/300
+ - 233s - loss: 0.3506 - acc: 0.8657 - val_loss: 0.0239 - val_acc: 0.8702
+Epoch 252/300
+ - 236s - loss: 0.3507 - acc: 0.8655 - val_loss: 0.0239 - val_acc: 0.8704
+Epoch 253/300
+ - 236s - loss: 0.3506 - acc: 0.8655 - val_loss: 0.0238 - val_acc: 0.8712
+Epoch 254/300
+ - 247s - loss: 0.3507 - acc: 0.8654 - val_loss: 0.0239 - val_acc: 0.8711
+Epoch 255/300
+ - 258s - loss: 0.3506 - acc: 0.8654 - val_loss: 0.0240 - val_acc: 0.8703
+Epoch 256/300
+ - 269s - loss: 0.3506 - acc: 0.8657 - val_loss: 0.0239 - val_acc: 0.8715
+Epoch 00256: early stopping
+                         : Trained model written to file: 2017__5__128__500__0.2/weights/TrainedModel_DNN.h5
+                         : Elapsed time for training with 2012214 events: 5.45e+04 sec         
+                         : Creating xml weight file: [0;36m2017__5__128__500__0.2/weights/2017__5__128__500__0.2_DNN.weights.xml[0m
+                         : Creating standalone class: [0;36m2017__5__128__500__0.2/weights/2017__5__128__500__0.2_DNN.class.C[0m
+Factory                  : Training finished
+                         : 
+                         : Ranking input variables (method specific)...
+                         : No variable ranking supplied by classifier: DNN
+Factory                  : === Destroy and recreate all methods via weight files for testing ===
+                         : 
+Factory                  : [1mTest all methods[0m
+Factory                  : Test method: DNN for Classification performance
+                         : 
+                         : Load model from file: 2017__5__128__500__0.2/weights/TrainedModel_DNN.h5
+Factory                  : [1mEvaluate all methods[0m
+Factory                  : Evaluate classifier: DNN
+                         : 
+TFHandler_DNN            :      Variable             Mean             RMS     [        Min             Max ]
+                         : ------------------------------------------------------------------------------------
+                         :        met_pt:         2.7134       0.018624   [         2.6972         5.7307 ]
+                         :       met_phi:      0.0025698        0.99752   [        -3.3012         5.7307 ]
+                         :        lep_pt:      0.0011021        0.99549   [        -3.1599         5.7307 ]
+                         :       lep_eta:      0.0018158        0.99628   [        -3.3659         5.7307 ]
+                         :       lep_phi:      0.0028156        0.99674   [        -3.2863         5.7307 ]
+                         :       blep_pt:      0.0010125        0.99499   [        -3.1595         5.7307 ]
+                         :      blep_eta:      0.0023228        0.99642   [        -3.3268         5.7307 ]
+                         :      blep_phi:      0.0027521        0.99654   [        -3.2833         5.7307 ]
+                         :        blep_E:     0.00060635        0.99560   [        -3.3169         5.7307 ]
+                         :       bhad_pt:     0.00090676        0.99499   [        -3.1647         5.7307 ]
+                         :      bhad_eta:      0.0026823        0.99593   [        -3.2905         5.7307 ]
+                         :      bhad_phi:      0.0026060        0.99699   [        -3.3073         5.7307 ]
+                         :        bhad_E:     0.00077910        0.99499   [        -3.2908         5.7307 ]
+                         :      q1jet_pt:      0.0016561        0.99547   [        -3.1403         5.7307 ]
+                         :     q1jet_eta:      0.0024209        0.99666   [        -3.2954         5.7307 ]
+                         :     q1jet_phi:      0.0025680        0.99654   [        -3.2847         5.7307 ]
+                         :       q1jet_E:      0.0015828        0.99512   [        -3.2625         5.7307 ]
+                         :      q2jet_pt:      0.0016462        0.99547   [        -3.1403         5.7307 ]
+                         :     q2jet_eta:      0.0024211        0.99666   [        -3.2954         5.7307 ]
+                         :     q2jet_phi:      0.0025613        0.99654   [        -3.2847         5.7307 ]
+                         :       q2jet_E:      0.0015777        0.99512   [        -3.2625         5.7307 ]
+                         : WhadCand_mass:      0.0034347        0.99589   [        -3.2944         5.7307 ]
+                         : ThadCand_mass:      0.0034043        0.99559   [        -3.2912         5.7307 ]
+                         :   WlepCand_mt:     0.00067512        0.99791   [        -5.7307         5.7307 ]
+                         :   TlepCand_mt:      0.0024300        0.99422   [        -3.2837         5.7307 ]
+                         : ------------------------------------------------------------------------------------
+DNN                      : [2017__5__128__500__0.2] : Loop over test events and fill histograms with classifier response...
+                         : 
+TFHandler_DNN            :      Variable             Mean             RMS     [        Min             Max ]
+                         : ------------------------------------------------------------------------------------
+                         :        met_pt:         2.7134       0.018624   [         2.6972         5.7307 ]
+                         :       met_phi:      0.0025698        0.99752   [        -3.3012         5.7307 ]
+                         :        lep_pt:      0.0011021        0.99549   [        -3.1599         5.7307 ]
+                         :       lep_eta:      0.0018158        0.99628   [        -3.3659         5.7307 ]
+                         :       lep_phi:      0.0028156        0.99674   [        -3.2863         5.7307 ]
+                         :       blep_pt:      0.0010125        0.99499   [        -3.1595         5.7307 ]
+                         :      blep_eta:      0.0023228        0.99642   [        -3.3268         5.7307 ]
+                         :      blep_phi:      0.0027521        0.99654   [        -3.2833         5.7307 ]
+                         :        blep_E:     0.00060635        0.99560   [        -3.3169         5.7307 ]
+                         :       bhad_pt:     0.00090676        0.99499   [        -3.1647         5.7307 ]
+                         :      bhad_eta:      0.0026823        0.99593   [        -3.2905         5.7307 ]
+                         :      bhad_phi:      0.0026060        0.99699   [        -3.3073         5.7307 ]
+                         :        bhad_E:     0.00077910        0.99499   [        -3.2908         5.7307 ]
+                         :      q1jet_pt:      0.0016561        0.99547   [        -3.1403         5.7307 ]
+                         :     q1jet_eta:      0.0024209        0.99666   [        -3.2954         5.7307 ]
+                         :     q1jet_phi:      0.0025680        0.99654   [        -3.2847         5.7307 ]
+                         :       q1jet_E:      0.0015828        0.99512   [        -3.2625         5.7307 ]
+                         :      q2jet_pt:      0.0016462        0.99547   [        -3.1403         5.7307 ]
+                         :     q2jet_eta:      0.0024211        0.99666   [        -3.2954         5.7307 ]
+                         :     q2jet_phi:      0.0025613        0.99654   [        -3.2847         5.7307 ]
+                         :       q2jet_E:      0.0015777        0.99512   [        -3.2625         5.7307 ]
+                         : WhadCand_mass:      0.0034347        0.99589   [        -3.2944         5.7307 ]
+                         : ThadCand_mass:      0.0034043        0.99559   [        -3.2912         5.7307 ]
+                         :   WlepCand_mt:     0.00067512        0.99791   [        -5.7307         5.7307 ]
+                         :   TlepCand_mt:      0.0024300        0.99422   [        -3.2837         5.7307 ]
+                         : ------------------------------------------------------------------------------------
+                         : [32m
+                         : <PlotVariables> Will not produce scatter plots ==> 
+                         : |  The number of 25 input variables and 0 target values would require 300 two-dimensional
+                         : |  histograms, which would occupy the computer's memory. Note that this
+                         : |  suppression does not have any consequences for your analysis, other
+                         : |  than not disposing of these scatter plots. You can modify the maximum
+                         : |  number of input variables allowed to generate scatter plots in your
+                         : |  script via the command line:
+                         : |  "(TMVA::gConfig().GetVariablePlotting()).fMaxNumOfAllowedVariablesForScatterPlots = <some int>;"[0m
+                         : 
+                         : Some more output
+                         : 
+                         : Evaluation results ranked by best signal efficiency and purity (area)
+                         : -------------------------------------------------------------------------------------------------------------------
+                         : DataSet       MVA                       
+                         : Name:         Method:          ROC-integ
+                         : 2017__5__128__500__0.2 DNN            : 0.936
+                         : -------------------------------------------------------------------------------------------------------------------
+                         : 
+                         : Testing efficiency compared to training efficiency (overtraining check)
+                         : -------------------------------------------------------------------------------------------------------------------
+                         : DataSet              MVA              Signal efficiency: from test sample (from training sample) 
+                         : Name:                Method:          @B=0.01             @B=0.10            @B=0.30   
+                         : -------------------------------------------------------------------------------------------------------------------
+                         : 2017__5__128__500__0.2 DNN            : 0.333 (0.333)       0.833 (0.833)      0.949 (0.949)
+                         : -------------------------------------------------------------------------------------------------------------------
+                         : 
+Dataset:2017__5__128__...: Created tree 'TestTree' with 2012214 events
+                         : 
+Dataset:2017__5__128__...: Created tree 'TrainTree' with 2012214 events
+                         : 
+Factory                  : [1mThank you for using TMVA![0m
+                         : [1mFor citation information, please visit: http://tmva.sf.net/citeTMVA.html[0m
+ref.cut= DNN 0.53104632991
+auc= 0.935982042738
+myerr=0
+[ntry=1]

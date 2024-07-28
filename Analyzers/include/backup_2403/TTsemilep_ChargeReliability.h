@@ -20,10 +20,10 @@ public:
 
   double MW_pdg=80.379;
   double Width_W_pdg=2.085;
-  double Width_Wqq_pdg=2.085*0.6741;
+  
   double MTop_pdg=172.5;
   double Width_Top_pdg=1.42;
-  double Width_Top_bqq_pdg=1.42*0.665;
+  
   //
 
   //

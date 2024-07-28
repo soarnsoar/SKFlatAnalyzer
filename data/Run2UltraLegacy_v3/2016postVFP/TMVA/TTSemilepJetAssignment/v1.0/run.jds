@@ -1,0 +1,11 @@
+executable = /data6/Users/jhchoi/TMVA/TMVA_TOOL/ws/TTSemiLepJetAssignment_ProduceTrainingTree/WORKDIR_TTSemiLepJetAssignment_ntrial/1.0/TTSemiLepJetAssignment_ProduceTrainingTree/2016postVFP/2016postVFP__5__128__500__0.2/Trf_G/19/run.sh
+universe = vanilla
+output = /data6/Users/jhchoi/TMVA/TMVA_TOOL/ws/TTSemiLepJetAssignment_ProduceTrainingTree/WORKDIR_TTSemiLepJetAssignment_ntrial/1.0/TTSemiLepJetAssignment_ProduceTrainingTree/2016postVFP/2016postVFP__5__128__500__0.2/Trf_G/19/run.out
+error = /data6/Users/jhchoi/TMVA/TMVA_TOOL/ws/TTSemiLepJetAssignment_ProduceTrainingTree/WORKDIR_TTSemiLepJetAssignment_ntrial/1.0/TTSemiLepJetAssignment_ProduceTrainingTree/2016postVFP/2016postVFP__5__128__500__0.2/Trf_G/19/run.err
+log = /data6/Users/jhchoi/TMVA/TMVA_TOOL/ws/TTSemiLepJetAssignment_ProduceTrainingTree/WORKDIR_TTSemiLepJetAssignment_ntrial/1.0/TTSemiLepJetAssignment_ProduceTrainingTree/2016postVFP/2016postVFP__5__128__500__0.2/Trf_G/19/run.log
+request_memory = 10000 MB 
+
+request_cpus = 1
+accounting_group=group_cms
+JobBatchName=dnn_TTSemiLepJetAssignment_1.0_2016postVFP__ntrial
+queue
