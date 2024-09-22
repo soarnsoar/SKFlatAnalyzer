@@ -1,0 +1,6 @@
+TTLL_powheg
+TTLJ_powheg
+DYJetsToEE_MiNNLO
+DYJetsToMuMu_MiNNLO
+DYJetsToTauTau_MiNNLO
+WJets_Sherpa

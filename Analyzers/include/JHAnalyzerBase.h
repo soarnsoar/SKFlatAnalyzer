@@ -144,11 +144,13 @@ class JHAnalyzerBase : public AnalyzerCore {
 
   //--modules and their variables--//
   int GetIdxSingleMuReco(double ptmin, double etacut=2.4, double ptveto=10.);
-  vector<Muon> GetSingleMuReco(double ptmin, double etacut=2.4, double ptveto=10.);
+  //vector<Muon> GetSingleMuReco(double ptmin, double etacut=2.4, double ptveto=10.);
+  vector<Muon> GetSingleMuReco(double ptmin, double etacut=2.4, double ptveto=10, double ptveto2=15., double etacut2=2.5);//ptveto2,etacut2 == for electron
   vector<Muon> GetSingleMuRecoNoVeto(double ptmin, double etacut=2.4);
   //vector<Lepton*> GetPointerSingleMuReco(double ptmin, double etacut=2.4, double ptveto=10.);
   int GetIdxSingleElReco(double ptmin, double etacut=2.5, double ptveto=15.);
-  vector<Electron> GetSingleElReco(double ptmin, double etacut=2.5, double ptveto=15.);
+  //vector<Electron> GetSingleElReco(double ptmin, double etacut=2.5, double ptveto=15.);
+  vector<Electron> GetSingleElReco(double ptmin, double etacut=2.5, double ptveto=15., double ptveto2=10., double etacut2=2.4);//ptveto2 and etacut2 -->for add. muon
   vector<Electron> GetSingleElRecoNoVeto(double ptmin, double etacut=2.5);
   //vector<Lepton*> GetPointerSingleElReco(double ptmin, double etacut=2.5, double ptveto=15.);
   //vector<int> GetIdxDiMuReco(double ptmin1, double ptmin2, double etacut=2.4, double ptveto=10. );
@@ -344,6 +346,7 @@ class JHAnalyzerBase : public AnalyzerCore {
   struct bjetvar{
     float pt=0;
     float aeta=0;
+    float eta=0;
     float ChargedHadronEnergyFraction=0;
     float NeutralHadronEnergyFraction=0;
     float NeutralEmEnergyFraction=0;
@@ -352,6 +355,7 @@ class JHAnalyzerBase : public AnalyzerCore {
     float charge=0;
     float abs_charge=0;
     float partonFlavour=0;
+    float hadronFlavour=0;
     float ChargedMultiplicity=0;
     float NeutralMultiplicity=0;
   };
@@ -363,7 +367,11 @@ class JHAnalyzerBase : public AnalyzerCore {
   JHAnalyzerBase::bjetvar Get_bjetvar(Jet &this_jet);
 
 
-  void LoadChargeScoreTool(TString muon_version="2405.2",TString electron_version="2405.2", TString jet_version="2405.2", bool applycut=false);
+
+
+  //void LoadChargeScoreTool(TString muon_version="2405.2",TString electron_version="2405.2", TString jet_version="2405.2", bool applycut=false);
+  void LoadChargeScoreTool(TString muon_version="2405.4.3",TString electron_version="2405.4.3", TString jet_version="2405.4.3", bool applycut=false);
+  void DeleteChargeScoreTool();
   void SetChargeScoreCut(TString version);
   void SetChargeScoreCut_2405_2();
   void SetChargeScoreCut_2405_4();
@@ -384,9 +392,62 @@ class JHAnalyzerBase : public AnalyzerCore {
   ChargeScoreTool *jChargeTool;
   bjetvar bjet_ChargeTool;
 
-  //---jet assignment
-  static double Chi2TTSemiLep(double *x, double *par);
 
+  tuple<int,double,int,int,double,int> GetBJetMuonScore_v2405_4_3(Jet &_bjet, vector<Muon> &_muoncoll);
+  tuple<int,double,int,int,double,int> GetBJetElectronScore_v2405_4_3(Jet &_bjet, vector<Electron> &_electroncoll);
+  tuple<int,bool,int,int,double> GetBJetCharge_v2405_4_3(Jet &_bjet, vector<Muon> &_muoncoll, vector<Electron> &electroncoll);
+
+  //---jet assignment
+  //---input lins for TTSemilepJetAssignmentTool
+  struct TTSemilepJetAssignmentToolvar{
+    float met_pt=0;
+    float met_phi=0;
+
+    float lep_pt=0;
+    float lep_eta=0;
+    float lep_phi=0;
+
+    float blep_pt=0;
+    float blep_eta=0;
+    float blep_phi=0;
+    float blep_E=0;
+
+    float bhad_pt=0;
+    float bhad_eta=0;
+    float bhad_phi=0;
+    float bhad_E=0;
+
+    float q1jet_pt=0;
+    float q1jet_eta=0;
+    float q1jet_phi=0;
+    float q1jet_E=0;
+
+    float q2jet_pt=0;
+    float q2jet_eta=0;
+    float q2jet_phi=0;
+    float q2jet_E=0;
+    
+    float WhadCand_mass=0;
+    float ThadCand_mass=0;
+
+    float WlepCand_mt=0;
+    float TlepCand_mt=0;
+
+    
+  };
+  JHAnalyzerBase::TTSemilepJetAssignmentToolvar Get_JetAssignmentvar(TLorentzVector &_met, TLorentzVector &_lep, TLorentzVector &_blep, TLorentzVector &_bhad, TLorentzVector &_q1jet, TLorentzVector &_q2jet);
+
+  TTSemilepJetAssignmentToolvar inputvar_TTSemilepJetAssignmentTool;
+  void LoadTTSemilepJetAssignmentTool(TString version);
+  TTSemilepJetAssignmentTool *TTLJJetAssignmentTool;
+  double GetTTSemilepJetAssignmentScore();
+  void SetTTSemilepJetAssignmentScore(TLorentzVector &_met, TLorentzVector &_lep, TLorentzVector &_blep, TLorentzVector &_bhad, TLorentzVector &_q1jet, TLorentzVector &_q2jet);
+  static double Chi2TTSemiLep(double *x, double *par);
+  void InitJetAssigenChi2Fitter();
+  void DeleteJetAssigenChi2Fitter();
+  TF1 *f1;
+  pair<vector<int>,double> GetJetIndexSet_Chi2(Lepton &_l1, TLorentzVector &_met,vector<Jet> &_v_tightjet, vector<int> &_v_bjetidx, bool _kincut);
+  pair<double,double> GetChi2_and_vz(TLorentzVector &_lep, TLorentzVector &_MET, TLorentzVector &_blep, TLorentzVector &_q1, TLorentzVector &_q2, TLorentzVector &_bhad);
  private:
   MomentumVar _CurrentSys;
   JetTagging::Parameters jtp;

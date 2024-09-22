@@ -21,6 +21,8 @@ void TTSemiLepJetAssignment::initializeAnalyzer(){
     HcbCR=true;
   }
 
+  LoadTTSemilepJetAssignmentTool("1.0");
+
 }
 
 
@@ -58,7 +60,8 @@ bool TTSemiLepJetAssignment::CheckIsElectronChannel(){
 void TTSemiLepJetAssignment::SetEventWeight(){
   weight=1;
   if(IsDATA) return;
-  weight=MCweight()*ev.GetTriggerLumi("Full")*GetPileUpWeight(nPileUp,0)*GetPrefireWeight(0)*btagsf;
+  //weight=MCweight()*ev.GetTriggerLumi("Full")*GetPileUpWeight(nPileUp,0)*GetPrefireWeight(0)*btagsf;
+  weight=MCweight()*ev.GetTriggerLumi("Full")*GetPileUpWeight(nPileUp,0)*GetPrefireWeight(0)*zptweight*weakweight*z0weight*topptweight*btagsf*jetpuidsf;  
   //Muon
   if(IsMuonChannel){
     weight*=w_MuonID[0][0]*w_MuonRECO[0][0]*w_MuonTrk[0][0]*w_MuonTrigger[0][0];
@@ -116,8 +119,8 @@ void TTSemiLepJetAssignment::RunReco(){
   bool flavourmatch1=false;
   bool flavourmatch2=false;
 
-  int i_LightJet1=-1;
-  int i_LightJet2=-1;
+  i_LightJet1=-1;
+  i_LightJet2=-1;
   int i_jet=-1;
 
   for(auto &jet: v_tightjet){
@@ -167,26 +170,68 @@ void TTSemiLepJetAssignment::RunReco(){
     bLep_True_genidx=idx_bbarquark_GEN;
   }
 
-
-
+  Run("Chi2");
+  Run("DNN");
+}
+void TTSemiLepJetAssignment::Run(TString _type){
+  int iblep=-1;
+  int ibhad=-1;
+  int iq1=-1;
+  int iq2=-1;
+  double vz_fit=0.0;
   ////Minimal Chi2 Method - kin fitter
-  vector<int> v_jetidxset_chi2=GetJetIndexSet_Chi2();
-  //[0]=ib1 = bLep cand's v_bjet index
-  //[1]=ib2 = bHad cand's v_bjet index
-  //[2]=iq1 = one of light quark candiate v_tightjet index
-  //[3]=iq2 = one of light quark candiate v_tightjet index
+  if (_type=="Chi2"){
+    pair<vector<int>,double> v_jetidxset_and_vz_chi2=GetJetIndexSet_Chi2();
+    
+    //vector<int> v_jetidxset_dnn=GetJetIndexSet_DNN();
+    //[0]=ib1 = bLep cand's v_bjet index
+    //[1]=ib2 = bHad cand's v_bjet index
+    //[2]=iq1 = one of light quark candiate v_tightjet index
+    //[3]=iq2 = one of light quark candiate v_tightjet index
+    iblep=v_jetidxset_and_vz_chi2.first[0];
+    ibhad=v_jetidxset_and_vz_chi2.first[1];
+    iq1=v_jetidxset_and_vz_chi2.first[2];
+    iq2=v_jetidxset_and_vz_chi2.first[3];
+    vz_fit=v_jetidxset_and_vz_chi2.second;
+    
+  }
+  else if(_type=="DNN"){
 
+    
+    vector<int> v_jetidxset_dnn=GetJetIndexSet_DNN();
+    //[0]=ib1 = bLep cand's v_bjet index
+    //[1]=ib2 = bHad cand's v_bjet index
+    //[2]=iq1 = one of light quark candiate v_tightjet index
+    //[3]=iq2 = one of light quark candiate v_tightjet index
+    iblep=v_jetidxset_dnn[0];
+    ibhad=v_jetidxset_dnn[1];
+    iq1=v_jetidxset_dnn[2];
+    iq2=v_jetidxset_dnn[3];
+  }
+  else{
+    cout << "No type for jet assignement->" << _type << endl;
+  }
 
-  int iblep=v_jetidxset_chi2[0];
-  int ibhad=v_jetidxset_chi2[1];
-  int iq1=v_jetidxset_chi2[2];
-  int iq2=v_jetidxset_chi2[3];
   
   if(iblep<0) return;
   if(ibhad<0) return;
   if(iq1<0) return;
   if(iq2<0) return;
   
+  
+  if (_type=="Chi2"){//check vz fit to truth
+    FillHist(_type+"/all/vz_fit",vz_fit,weight,150,-300,300);
+    FillHist(_type+"/all/vz_GEN",gens[i_neutrino_GEN].Pz(),weight,150,-300,300);
+    if(gens[i_neutrino_GEN].Pz()!=0)FillHist(_type+"/all/vz_fit-vz_GEN_div_vz_GEN",(vz_fit-gens[i_neutrino_GEN].Pz())/gens[i_neutrino_GEN].Pz(),weight,200,-4,4);    
+  }
+
+  TLorentzVector Whad,Wlep,Thad,Tlep,neutrino;
+  Whad=v_tightjet[iq1]+v_tightjet[iq2];
+  Thad=Whad+v_tightjet[ibhad];
+  neutrino.SetPxPyPzE(PuppiMET.Px(), PuppiMET.Py(), vz_fit, sqrt(pow(PuppiMET.Pt(),2)+pow(vz_fit,2)));
+  Wlep=l1+neutrino;
+  Tlep=Wlep+v_tightjet[iblep];
+
   //---bLep flavour match
   int bLep_FlavourMatched= v_tightjet[iblep].partonFlavour()==bLep_True_PID;
   int bLep_FlavourMatched_Opposite= v_tightjet[iblep].partonFlavour()==-bLep_True_PID;
@@ -221,56 +266,126 @@ void TTSemiLepJetAssignment::RunReco(){
   if(q11_FlavourMatched&&q11_dRMatched && q22_FlavourMatched&&q22_dRMatched) qq_Flavour_AND_dRMatched=1;
   if(q12_FlavourMatched&&q12_dRMatched && q21_FlavourMatched&&q21_dRMatched) qq_Flavour_AND_dRMatched=1;
 
-  FillHist("all/bHadCand_FlavourMatched",bHad_FlavourMatched,weight,4,-1,3);
-  FillHist("all/bHadCand_FlavourMatched_Opposite",bHad_FlavourMatched_Opposite,weight,4,-1,3);
-  FillHist("all/bHadCand_FlavourMatched__dRMatched",bHad_FlavourMatched*bHad_dRMatched,weight,4,-1,3);
-  FillHist("all/WhadCand_FlavourMatched",qq_FlavourMatched,weight,4,-1,3);
-  FillHist("all/WhadCand_FlavourMatched__dRMatched",qq_Flavour_AND_dRMatched,weight,4,-1,3);
-  FillHist("all/ThadCand_FlavourMatched",bHad_FlavourMatched*qq_FlavourMatched,weight,4,-1,3);
-  FillHist("all/ThadCand_FlavourMatched__dRMatched",bHad_FlavourMatched*bHad_dRMatched*qq_Flavour_AND_dRMatched,weight,4,-1,3);
+  //---Mass distribution shapes
+  FillHist(_type+"/all/Wlep_M",Wlep.M(),weight,100,30,130);
+  if(qq_FlavourMatched){
+    FillHist(_type+"/WhadCand_FlavourMatched/Whad_M",Whad.M(),weight,100,30,130);
+  }
+  if(qq_Flavour_AND_dRMatched){
+    FillHist(_type+"/WhadCand_FlavourMatched__dRMatched/Whad_M",Whad.M(),weight,100,30,130);
+  }
+
+  if(bLep_FlavourMatched){
+    FillHist(_type+"/bLepCand_FlavourMatched/Tlep_M",Tlep.M(),weight,200,100,300);
+  }
+  if(bool(bLep_FlavourMatched*bLep_dRMatched)){
+    FillHist(_type+"/bLepCand_FlavourMatched__dRMatched/Tlep_M",Tlep.M(),weight,200,100,300);
+  }
+
+  if(bool(bHad_FlavourMatched*qq_FlavourMatched)){
+    FillHist(_type+"/ThadCand_FlavourMatched/Thad_M",Thad.M(),weight,200,100,300);
+  }
+  if(bool(bHad_FlavourMatched*qq_FlavourMatched*bHad_dRMatched)){
+    FillHist(_type+"/ThadCand_FlavourMatched__dRMatched/Thad_M",Thad.M(),weight,200,100,300);
+  }
+
+  //---Booleans
+  FillHist(_type+"/all/bHadCand_FlavourMatched",bHad_FlavourMatched,weight,4,-1,3);
+  FillHist(_type+"/all/bHadCand_FlavourMatched_Opposite",bHad_FlavourMatched_Opposite,weight,4,-1,3);
+  FillHist(_type+"/all/bHadCand_FlavourMatched__dRMatched",bHad_FlavourMatched*bHad_dRMatched,weight,4,-1,3);
+  FillHist(_type+"/all/WhadCand_FlavourMatched",qq_FlavourMatched,weight,4,-1,3);
+  FillHist(_type+"/all/WhadCand_FlavourMatched__dRMatched",qq_Flavour_AND_dRMatched,weight,4,-1,3);
+  FillHist(_type+"/all/ThadCand_FlavourMatched",bHad_FlavourMatched*qq_FlavourMatched,weight,4,-1,3);
+  FillHist(_type+"/all/ThadCand_FlavourMatched__dRMatched",bHad_FlavourMatched*bHad_dRMatched*qq_Flavour_AND_dRMatched,weight,4,-1,3);
 
 
-  FillHist("all/bLepCand_FlavourMatched",bLep_FlavourMatched,weight,4,-1,3);
-  FillHist("all/bLepCand_FlavourMatched_Opposite",bLep_FlavourMatched_Opposite,weight,4,-1,3);
-  FillHist("all/bLepCand_FlavourMatched__dRMatched",bLep_FlavourMatched*bLep_dRMatched,weight,4,-1,3);
+  FillHist(_type+"/all/bLepCand_FlavourMatched",bLep_FlavourMatched,weight,4,-1,3);
+  FillHist(_type+"/all/bLepCand_FlavourMatched_Opposite",bLep_FlavourMatched_Opposite,weight,4,-1,3);
+  FillHist(_type+"/all/bLepCand_FlavourMatched__dRMatched",bLep_FlavourMatched*bLep_dRMatched,weight,4,-1,3);
 
   bool bHadGen_Has_dRMatchedJet=HasMatchedRecoJet(bHad_True_genidx);
   if(bHadGen_Has_dRMatchedJet){
-    FillHist("if_bHadGen_Has_dRMatchedJet/bHadCand_FlavourMatched",bHad_FlavourMatched,weight,4,-1,3);
-    FillHist("if_bHadGen_Has_dRMatchedJet/bHad_FlavourMatched_Opposite",bHad_FlavourMatched_Opposite,weight,4,-1,3);
-    FillHist("if_bHadGen_Has_dRMatchedJet/bHad_dRMatched",bHad_dRMatched,weight,4,-1,3);
-    FillHist("if_bHadGen_Has_dRMatchedJet/bHadCand_FlavourMatched__dRMatched",bHad_FlavourMatched*bHad_dRMatched,weight,4,-1,3);
-    FillHist("if_bHadGen_Has_dRMatchedJet/bHadCand_partonFlavour",v_tightjet[ibhad].partonFlavour(),weight,32,-6,25);
+    FillHist(_type+"/if_bHadGen_Has_dRMatchedJet/bHadCand_FlavourMatched",bHad_FlavourMatched,weight,4,-1,3);
+    FillHist(_type+"/if_bHadGen_Has_dRMatchedJet/bHadCand_FlavourMatched_Opposite",bHad_FlavourMatched_Opposite,weight,4,-1,3);
+    FillHist(_type+"/if_bHadGen_Has_dRMatchedJet/bHadCand_dRMatched",bHad_dRMatched,weight,4,-1,3);
+    FillHist(_type+"/if_bHadGen_Has_dRMatchedJet/bHadCand_FlavourMatched__dRMatched",bHad_FlavourMatched*bHad_dRMatched,weight,4,-1,3);
+    FillHist(_type+"/if_bHadGen_Has_dRMatchedJet/bHadCand_partonFlavour",v_tightjet[ibhad].partonFlavour(),weight,32,-6,25);
   }
-  FillHist("all/bHadGen_Has_dRMatchedJet",bHadGen_Has_dRMatchedJet,weight,4,-1,3);
+  FillHist(_type+"/all/bHadGen_Has_dRMatchedJet",bHadGen_Has_dRMatchedJet,weight,4,-1,3);
+
+
+  bool bHadGen_Has_FlavourMatchedJet=HasFlavourMatchedRecoJet(bHad_True_genidx);
+  if(bHadGen_Has_FlavourMatchedJet){
+    FillHist(_type+"/if_bHadGen_Has_FlavourMatchedJet/bHadCand_FlavourMatched",bHad_FlavourMatched,weight,4,-1,3);
+    FillHist(_type+"/if_bHadGen_Has_FlavourMatchedJet/bHadCand_FlavourMatched_Opposite",bHad_FlavourMatched_Opposite,weight,4,-1,3);
+    FillHist(_type+"/if_bHadGen_Has_FlavourMatchedJet/bHadCand_dRMatched",bHad_dRMatched,weight,4,-1,3);
+    FillHist(_type+"/if_bHadGen_Has_FlavourMatchedJet/bHadCand_FlavourMatched__dRMatched",bHad_FlavourMatched*bHad_dRMatched,weight,4,-1,3);
+    FillHist(_type+"/if_bHadGen_Has_FlavourMatchedJet/bHadCand_partonFlavour",v_tightjet[ibhad].partonFlavour(),weight,32,-6,25);
+
+  }
+  FillHist(_type+"/all/bHadGen_Has_FlavourMatchedJet",bHadGen_Has_FlavourMatchedJet,weight,4,-1,3);
+
 
 
   bool bLepGen_Has_dRMatchedJet=HasMatchedRecoJet(bLep_True_genidx);
   if(bLepGen_Has_dRMatchedJet){
-    FillHist("if_bLepGen_Has_dRMatchedJet/bLepCand_FlavourMatched",bLep_FlavourMatched,weight,4,-1,3);
-    FillHist("if_bLepGen_Has_dRMatchedJet/bLep_FlavourMatched_Opposite",bLep_FlavourMatched_Opposite,weight,4,-1,3);
-    FillHist("if_bLepGen_Has_dRMatchedJet/bLep_dRMatched",bLep_dRMatched,weight,4,-1,3);
-    FillHist("if_bLepGen_Has_dRMatchedJet/bLepCand_FlavourMatched__dRMatched",bLep_FlavourMatched*bLep_dRMatched,weight,4,-1,3);
-    FillHist("if_bLepGen_Has_dRMatchedJet/bLepCand_partonFlavour",v_tightjet[iblep].partonFlavour(),weight,32,-6,25);
+    FillHist(_type+"/if_bLepGen_Has_dRMatchedJet/bLepCand_FlavourMatched",bLep_FlavourMatched,weight,4,-1,3);
+    FillHist(_type+"/if_bLepGen_Has_dRMatchedJet/bLep_FlavourMatched_Opposite",bLep_FlavourMatched_Opposite,weight,4,-1,3);
+    FillHist(_type+"/if_bLepGen_Has_dRMatchedJet/bLep_dRMatched",bLep_dRMatched,weight,4,-1,3);
+    FillHist(_type+"/if_bLepGen_Has_dRMatchedJet/bLepCand_FlavourMatched__dRMatched",bLep_FlavourMatched*bLep_dRMatched,weight,4,-1,3);
+    FillHist(_type+"/if_bLepGen_Has_dRMatchedJet/bLepCand_partonFlavour",v_tightjet[iblep].partonFlavour(),weight,32,-6,25);
   }
+  FillHist(_type+"/all/bLepGen_Has_dRMatchedJet",bLepGen_Has_dRMatchedJet,weight,4,-1,3);
+
+  bool bLepGen_Has_FlavourMatchedJet=HasFlavourMatchedRecoJet(bLep_True_genidx);
+  if(bLepGen_Has_FlavourMatchedJet){
+    FillHist(_type+"/if_bLepGen_Has_FlavourMatchedJet/bLepCand_FlavourMatched",bLep_FlavourMatched,weight,4,-1,3);
+    FillHist(_type+"/if_bLepGen_Has_FlavourMatchedJet/bLep_FlavourMatched_Opposite",bLep_FlavourMatched_Opposite,weight,4,-1,3);
+    FillHist(_type+"/if_bLepGen_Has_FlavourMatchedJet/bLep_dRMatched",bLep_dRMatched,weight,4,-1,3);
+    FillHist(_type+"/if_bLepGen_Has_FlavourMatchedJet/bLepCand_FlavourMatched__dRMatched",bLep_FlavourMatched*bLep_dRMatched,weight,4,-1,3);
+    FillHist(_type+"/if_bLepGen_Has_FlavourMatchedJet/bLepCand_partonFlavour",v_tightjet[iblep].partonFlavour(),weight,32,-6,25);
+  }
+  FillHist(_type+"/all/bLepGen_Has_FlavourMatchedJet",bLepGen_Has_FlavourMatchedJet,weight,4,-1,3);
+
+
 
 
   bool q1Gen_Has_dRMatchedJet=HasMatchedRecoJet(v_idx_lightquark_GEN[0]);
   bool q2Gen_Has_dRMatchedJet=HasMatchedRecoJet(v_idx_lightquark_GEN[1]);
   bool q1q2Gen_Has_dRMatchedJet=q1Gen_Has_dRMatchedJet&&q2Gen_Has_dRMatchedJet;
   if(q1q2Gen_Has_dRMatchedJet){
-    FillHist("if_q1q2Gen_Has_dRMatchedJet/qq_FlavourMatched",qq_FlavourMatched,weight,4,-1,3);
-    FillHist("if_q1q2Gen_Has_dRMatchedJet/qq_FlavourMatched__dRMatched",qq_Flavour_AND_dRMatched,weight,4,-1,3);
+    FillHist(_type+"/if_q1q2Gen_Has_dRMatchedJet/qq_FlavourMatched",qq_FlavourMatched,weight,4,-1,3);
+    FillHist(_type+"/if_q1q2Gen_Has_dRMatchedJet/qq_FlavourMatched__dRMatched",qq_Flavour_AND_dRMatched,weight,4,-1,3);
     
   }
-  FillHist("all/q1q2Gen_Has_dRMatchedJet",q1q2Gen_Has_dRMatchedJet,weight,4,-1,3);
+  FillHist(_type+"/all/q1q2Gen_Has_dRMatchedJet",q1q2Gen_Has_dRMatchedJet,weight,4,-1,3);
+
+
+  bool q1Gen_Has_FlavourMatchedJet=HasFlavourMatchedRecoJet(v_idx_lightquark_GEN[0]);
+  bool q2Gen_Has_FlavourMatchedJet=HasFlavourMatchedRecoJet(v_idx_lightquark_GEN[1]);
+  bool q1q2Gen_Has_FlavourMatchedJet=q1Gen_Has_FlavourMatchedJet&&q2Gen_Has_FlavourMatchedJet;
+  if(q1q2Gen_Has_FlavourMatchedJet){
+    FillHist(_type+"/if_q1q2Gen_Has_FlavourMatchedJet/qq_FlavourMatched",qq_FlavourMatched,weight,4,-1,3);
+    FillHist(_type+"/if_q1q2Gen_Has_FlavourMatchedJet/qq_FlavourMatched__dRMatched",qq_Flavour_AND_dRMatched,weight,4,-1,3);
+    
+  }
+  FillHist(_type+"/all/q1q2Gen_Has_FlavourMatchedJet",q1q2Gen_Has_FlavourMatchedJet,weight,4,-1,3);
+
 
   bool THad_Has_dRMatchedJet=q1q2Gen_Has_dRMatchedJet&&bHadGen_Has_dRMatchedJet;
   if(THad_Has_dRMatchedJet){
-    FillHist("if_THad_Has_dRMatchedJet/Thad_FlavourMatched",bHad_FlavourMatched*qq_FlavourMatched,weight,4,-1,3);
-    FillHist("if_THad_Has_dRMatchedJet/THad_FlavourMatched__dRMatched",bHad_FlavourMatched*bHad_dRMatched*qq_Flavour_AND_dRMatched,weight,4,-1,3);
+    FillHist(_type+"/if_THad_Has_dRMatchedJet/Thad_FlavourMatched",bHad_FlavourMatched*qq_FlavourMatched,weight,4,-1,3);
+    FillHist(_type+"/if_THad_Has_dRMatchedJet/THad_FlavourMatched__dRMatched",bHad_FlavourMatched*bHad_dRMatched*qq_Flavour_AND_dRMatched,weight,4,-1,3);
   }
-  FillHist("all/THad_Has_dRMatchedJet",THad_Has_dRMatchedJet,weight,4,-1,3);
+  FillHist(_type+"/all/THad_Has_dRMatchedJet",THad_Has_dRMatchedJet,weight,4,-1,3);
+
+
+  bool THad_Has_FlavourMatchedJet=q1q2Gen_Has_FlavourMatchedJet&&bHadGen_Has_FlavourMatchedJet;
+  if(THad_Has_FlavourMatchedJet){
+    FillHist(_type+"/if_THad_Has_FlavourMatchedJet/Thad_FlavourMatched",bHad_FlavourMatched*qq_FlavourMatched,weight,4,-1,3);
+    FillHist(_type+"/if_THad_Has_FlavourMatchedJet/THad_FlavourMatched__dRMatched",bHad_FlavourMatched*bHad_dRMatched*qq_Flavour_AND_dRMatched,weight,4,-1,3);
+  }
+  FillHist(_type+"/all/THad_Has_FlavourMatchedJet",THad_Has_FlavourMatchedJet,weight,4,-1,3);
 
 
 
@@ -282,10 +397,23 @@ bool TTSemiLepJetAssignment::HasMatchedRecoJet(int genidx,double dRcut){
   }
   return 0;
 }
-vector<int> TTSemiLepJetAssignment::GetJetIndexSet_Chi2(){
+
+
+bool TTSemiLepJetAssignment::HasFlavourMatchedRecoJet(int genidx){
+  //TLorentzVector this_genptl=gens[genidx];
+  int true_pid=gens[genidx].PID();
+  for(auto &jet : v_tightjet){
+    if(jet.partonFlavour() == true_pid) return 1;
+  }
+  return 0;
+}
+
+
+
+pair<vector<int>,double> TTSemiLepJetAssignment::GetJetIndexSet_Chi2(){
   unsigned int v_tightjetsize=v_tightjet.size();
   double minchi2=99999999999999.;
-  vector<int> ret ={-1,-1,-1,-1};
+  pair<vector<int>,double> ret({-1,-1,-1,-1},0.0);
   
 
   for(auto &ib1 : v_bjetidx){
@@ -347,6 +475,78 @@ vector<int> TTSemiLepJetAssignment::GetJetIndexSet_Chi2(){
 
 	  if(this_chi2 < minchi2){
 	    minchi2=this_chi2;
+	    ret.first[0]=ib1; ret.first[1]=ib2; ret.first[2]=iq1, ret.first[3]=iq2;
+	    ret.second=this_vz;
+
+	  }
+	}//[END of iq2]
+      }//[END of iq1]
+    }//[END of ib2]
+
+  }//[END of ib1 loop]
+  return ret;
+}
+
+
+vector<int> TTSemiLepJetAssignment::GetJetIndexSet_DNN(){
+  unsigned int v_tightjetsize=v_tightjet.size();
+  double maxdnn=-1;
+  vector<int> ret ={-1,-1,-1,-1};
+  
+
+  for(auto &ib1 : v_bjetidx){
+    for(auto &ib2 : v_bjetidx){
+      if(ib1==ib2)continue;
+      for(unsigned int iq1=0; iq1 < v_tightjetsize; iq1++){
+	if(ib1==iq1) continue;
+	if(ib2==iq1) continue;//skip bquark
+	for(unsigned int iq2=0; iq2 < v_tightjetsize; iq2++){
+	  if(iq1==iq2) continue;
+	 
+	  if(ib1==iq2) continue;
+	  if(ib2==iq2) continue;//skip bquark
+	  
+	  ///-----NOW we have ib1,ib2,iq1,iq2
+	  // let ib2 "bHad" candidate
+	  //TLorentzVector this_Whad, this_Thad;
+	  //this_Whad=v_tightjet[iq1]+v_tightjet[iq2];
+	  //this_Thad=this_Whad+v_tightjet[ib2];
+	  //double this_Whad_mass=this_Whad.M();
+	  //double this_Thad_mass=this_Thad.M();
+
+
+	  TLorentzVector this_Thad, this_Whad;
+	  this_Whad=v_tightjet[iq1]+v_tightjet[iq2];
+	  this_Thad=this_Whad+v_tightjet[ib2];
+	  if(HcbCR){
+	    ///1) ThadCand mass : [100,240]
+	    ///2) M(blep,l) < 170
+
+	    double this_Thad_mass=this_Thad.M();
+	    if(this_Thad_mass < 100.) continue;
+	    if(this_Thad_mass > 240.) continue;
+	    TLorentzVector this_blep_lep;
+	    this_blep_lep=l1+v_tightjet[ib1];
+	    double this_blep_lep_mass=this_blep_lep.M();
+	    if(this_blep_lep_mass > 170.) continue;
+	  }
+
+	  double this_dnn=GetDNN(l1,PuppiMET,v_tightjet[ib1],v_tightjet[iq1],v_tightjet[iq2],v_tightjet[ib2]);
+	  if(HcbCR){
+	    //(3)|dphi(Tlep,Thad)|> 1.5
+	    TLorentzVector this_Tlep, this_neutrino;
+	    this_neutrino.SetPxPyPzE(PuppiMET.Px(),PuppiMET.Py(),0,PuppiMET.Pt());
+	    this_Tlep=this_neutrino+v_tightjet[ib1]+l1;
+	    
+	    //this_Thad,this_Tlep
+	    double this_dphi=this_Thad.DeltaPhi(this_Tlep);
+	    
+	    if(fabs(this_dphi) < 1.5) continue;
+	  }
+
+
+	  if(this_dnn > maxdnn){
+	    maxdnn=this_dnn;
 	    ret[0]=ib1; ret[1]=ib2; ret[2]=iq1, ret[3]=iq2;
 	  }
 	}//[END of iq2]
@@ -356,6 +556,7 @@ vector<int> TTSemiLepJetAssignment::GetJetIndexSet_Chi2(){
   }//[END of ib1 loop]
   return ret;
 }
+
 
 void TTSemiLepJetAssignment::FillHistAll(TString cutname){
   FillHist(cutname+"/nPV",nPV,weight,100,0,100);
@@ -456,7 +657,8 @@ void TTSemiLepJetAssignment::RunGENinfo(){
   idx_bquark_GEN=-1, idx_bbarquark_GEN=-1;
   v_idx_lightquark_GEN.clear();
   
-  
+  i_lepton_GEN=-1;
+  i_neutrino_GEN=-1;
   for(unsigned int i = 0 ; i < gensize ; i++){
     int pid=gens[i].PID();
     int status=gens[i].Status();
@@ -475,37 +677,65 @@ void TTSemiLepJetAssignment::RunGENinfo(){
       else if(pid==-5){
         idx_bbarquark_GEN=i;
       }
+      if(abs(pid)>10 && abs(pid)<17){
+	if(abs(pid)==11 || abs(pid)==13 || abs(pid)==15){
+	  i_lepton_GEN=i;
+	}
+	else{
+	  i_neutrino_GEN=i;
+	}
+      }
     }
+
+
   }
   //----GEN-LEVEL W_had and T_had
-  TLorentzVector vWhad,vThad;
+  TLorentzVector vWhad,vThad,vWlep,vTlep;
   //---Add outgoing light quarks' momenta to whad,thad
   //for(unsigned int i = 0 ; i < v_idx_lightquark_GEN.size(); i++){
   for(auto& i_light : v_idx_lightquark_GEN){
     vWhad+=gens[i_light];
     vThad+=gens[i_light];
   }
-  //---add bquark momentum to Top(had)
+
+
+  vWlep=gens[i_lepton_GEN]+gens[i_neutrino_GEN];
+  vTlep=vWlep;
+
+  //---add bquark momentum to Top
   if(bHadCharge_LHE>0){// bHadCharge >0 means bbar
     vThad+=gens[idx_bbarquark_GEN];
+    vTlep+=gens[idx_bquark_GEN];
   }
   else{
     vThad+=gens[idx_bquark_GEN];
+    vTlep+=gens[idx_bbarquark_GEN];
   }
 
   Whad_q1_pid=gens[v_idx_lightquark_GEN[0]].PID();
   Whad_q2_pid=gens[v_idx_lightquark_GEN[1]].PID();
-  FillHist("Whad_quark_pid_GEN/all/"+ProcessName,Whad_q1_pid, weight, 32, -7, 25);
-  FillHist("Whad_quark_pid_GEN/all/"+ProcessName,Whad_q2_pid, weight, 32, -7, 25);
 
 
+
+  
+  FillHist("GEN/Whad_mass/"+ProcessName,vWhad.M(), weight, 80, 50, 130);
+  FillHist("GEN/Thad_mass/"+ProcessName,vThad.M(), weight, 60, 140, 200);
+
+  FillHist("GEN/Wlep_mass/"+ProcessName,vWlep.M(), weight, 80, 50, 130);
+  FillHist("GEN/Tlep_mass/"+ProcessName,vTlep.M(), weight, 60, 140, 200);
 
 
 
   
 
 }
-pair<double,double> TTSemiLepJetAssignment::GetChi2_and_vz(TLorentzVector _lep, TLorentzVector _MET, TLorentzVector _blep, TLorentzVector _q1, TLorentzVector _q2, TLorentzVector _bhad){
+
+double TTSemiLepJetAssignment::GetDNN(TLorentzVector &_lep, TLorentzVector &_MET, TLorentzVector &_blep, TLorentzVector &_q1, TLorentzVector &_q2, TLorentzVector &_bhad){
+  SetTTSemilepJetAssignmentScore(_lep,_MET,_blep,_bhad,_q1,_q2);
+  return TTLJJetAssignmentTool->GetScore();
+}
+
+pair<double,double> TTSemiLepJetAssignment::GetChi2_and_vz(TLorentzVector &_lep, TLorentzVector &_MET, TLorentzVector &_blep, TLorentzVector &_q1, TLorentzVector &_q2, TLorentzVector &_bhad){
   /*
 double JHAnalyzerBase::Chi2TTSemiLep(double *x, double _lepx, double _lepy, double _lepz, double _lepE,
                                      double _blepx, double _blepy, double _blepz, double _blepE,

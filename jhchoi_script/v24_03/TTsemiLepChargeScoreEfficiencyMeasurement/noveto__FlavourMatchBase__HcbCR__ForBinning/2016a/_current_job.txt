@@ -1,0 +1,50 @@
+
+
+-- Schedd: tamsa1.snu.ac.kr : <172.30.1.100:9618?... @ 08/09/24 01:08:40
+OWNER  BATCH_NAME                                                                                                                 SUBMITTED   DONE   RUN    IDLE  TOTAL JOB_IDS
+jhchoi TTSemiLepAnalyzer_2018_TTLJ_powheg__HcbCR                                                                                 8/8  20:50     16     34      _     50 2468255.0-49
+jhchoi TTSemiLepAnalyzer_2018_DYJetsToEE_MiNNLO__HcbCR                                                                           8/8  20:50     39     11      _     50 2468260.4-49
+jhchoi TTSemiLepAnalyzer_2018_EGamma_D__HcbCR                                                                                    8/8  20:50     32     18      _     50 2468261.1-46
+jhchoi TTSemiLepAnalyzer_2018_DYJetsToMuMu_MiNNLO__HcbCR                                                                         8/8  20:50     48      2      _     50 2468263.32-45
+jhchoi TTSemiLepAnalyzer_2018_WJets_Sherpa__HcbCR                                                                                8/8  20:50     41      9      _     50 2468268.27-47
+jhchoi TTSemiLepAnalyzer_2018_QCD_Pt-1000_MuEnriched__HcbCR                                                                      8/8  20:50      8      2      _     10 2468269.3-7
+jhchoi TTSemiLepAnalyzer_2018_QCD_Pt-800To1000_MuEnriched__HcbCR                                                                 8/8  20:50      _     10      _     10 2468270.0-9
+jhchoi TTSemiLepAnalyzer_2018_QCD_Pt-600To800_MuEnriched__HcbCR                                                                  8/8  20:50      _     10      _     10 2468271.0-9
+jhchoi TTSemiLepAnalyzer_2018_QCD_Pt-470To600_MuEnriched__HcbCR                                                                  8/8  20:50      1      9      _     10 2468272.0-9
+jhchoi TTSemiLepAnalyzer_2018_QCD_Pt-300To470_MuEnriched__HcbCR                                                                  8/8  20:50      _     10      _     10 2468273.0-9
+jhchoi TTSemiLepAnalyzer_2018_QCD_Pt-170To300_MuEnriched__HcbCR                                                                  8/8  20:50      _     10      _     10 2468274.0-9
+jhchoi TTSemiLepAnalyzer_2018_QCD_Pt-120To170_MuEnriched__HcbCR                                                                  8/8  20:50      3      7      _     10 2468275.0-9
+jhchoi TTSemiLepAnalyzer_2018_QCD_Pt-80To120_MuEnriched__HcbCR                                                                   8/8  20:50      2      8      _     10 2468276.0-8
+jhchoi TTSemiLepAnalyzer_2018_QCD_Pt-50To80_MuEnriched__HcbCR                                                                    8/8  20:50      8      2      _     10 2468277.7-8
+jhchoi TTSemiLepAnalyzer_2018_QCD_Pt-30To50_MuEnriched__HcbCR                                                                    8/8  20:50      1      9      _     10 2468278.0-9
+jhchoi TTSemiLepAnalyzer_2018_QCD_Pt-20To30_MuEnriched__HcbCR                                                                    8/8  20:50      _     10      _     10 2468279.0-9
+jhchoi TTsemiLepChargeScoreEfficiencyMeasurement_2017_SingleElectron_B__noveto__FlavourMatchBase__HcbCR__ForBinning              8/9  01:05      1     49      _     50 2468330.0-49
+jhchoi TTsemiLepChargeScoreEfficiencyMeasurement_2017_SingleMuon_B__noveto__FlavourMatchBase__HcbCR__ForBinning                  8/9  01:05      _     50      _     50 2468331.0-49
+jhchoi TTsemiLepChargeScoreEfficiencyMeasurement_2017_SingleElectron_C__noveto__FlavourMatchBase__HcbCR__ForBinning              8/9  01:05      _     39     11     50 2468332.0-49
+jhchoi TTsemiLepChargeScoreEfficiencyMeasurement_2017_SingleMuon_C__noveto__FlavourMatchBase__HcbCR__ForBinning                  8/9  01:05      _      _     50     50 2468333.0-49
+jhchoi TTsemiLepChargeScoreEfficiencyMeasurement_2017_SingleElectron_D__noveto__FlavourMatchBase__HcbCR__ForBinning              8/9  01:05      _      _     50     50 2468334.0-49
+jhchoi TTsemiLepChargeScoreEfficiencyMeasurement_2017_SingleMuon_D__noveto__FlavourMatchBase__HcbCR__ForBinning                  8/9  01:05      _      _     50     50 2468335.0-49
+jhchoi TTsemiLepChargeScoreEfficiencyMeasurement_2017_SingleElectron_E__noveto__FlavourMatchBase__HcbCR__ForBinning              8/9  01:05      _      _     50     50 2468336.0-49
+jhchoi TTsemiLepChargeScoreEfficiencyMeasurement_2017_SingleMuon_E__noveto__FlavourMatchBase__HcbCR__ForBinning                  8/9  01:05      _      _     50     50 2468337.0-49
+jhchoi TTsemiLepChargeScoreEfficiencyMeasurement_2017_SingleElectron_F__noveto__FlavourMatchBase__HcbCR__ForBinning              8/9  01:05      _      _     50     50 2468338.0-49
+jhchoi TTsemiLepChargeScoreEfficiencyMeasurement_2017_SingleMuon_F__noveto__FlavourMatchBase__HcbCR__ForBinning                  8/9  01:05      _      _     50     50 2468339.0-49
+jhchoi TTsemiLepChargeScoreEfficiencyMeasurement_2016postVFP_SingleMuon_F__noveto__FlavourMatchBase__HcbCR__ForBinning           8/9  01:06      _      _     32     32 2468340.0-31
+jhchoi TTsemiLepChargeScoreEfficiencyMeasurement_2016postVFP_SingleElectron_F__noveto__FlavourMatchBase__HcbCR__ForBinning       8/9  01:06      _      _     50     50 2468341.0-49
+jhchoi TTsemiLepChargeScoreEfficiencyMeasurement_2016postVFP_SingleMuon_G__noveto__FlavourMatchBase__HcbCR__ForBinning           8/9  01:06      _      _     50     50 2468342.0-49
+jhchoi TTsemiLepChargeScoreEfficiencyMeasurement_2016postVFP_SingleElectron_G__noveto__FlavourMatchBase__HcbCR__ForBinning       8/9  01:06      _      _     50     50 2468343.0-49
+jhchoi TTsemiLepChargeScoreEfficiencyMeasurement_2016postVFP_SingleMuon_H__noveto__FlavourMatchBase__HcbCR__ForBinning           8/9  01:06      _      _     50     50 2468344.0-49
+jhchoi TTsemiLepChargeScoreEfficiencyMeasurement_2016postVFP_SingleElectron_H__noveto__FlavourMatchBase__HcbCR__ForBinning       8/9  01:06      _      _     50     50 2468345.0-49
+jhchoi TTsemiLepChargeScoreEfficiencyMeasurement_2016preVFP_SingleMuon_B_ver2__noveto__FlavourMatchBase__HcbCR__ForBinning       8/9  01:07      _      _     50     50 2468346.0-49
+jhchoi TTsemiLepChargeScoreEfficiencyMeasurement_2016preVFP_SingleElectron_B_ver2__noveto__FlavourMatchBase__HcbCR__ForBinning   8/9  01:07      _      _     50     50 2468347.0-49
+jhchoi TTsemiLepChargeScoreEfficiencyMeasurement_2016preVFP_SingleMuon_C__noveto__FlavourMatchBase__HcbCR__ForBinning            8/9  01:07      _      _     50     50 2468348.0-49
+jhchoi TTsemiLepChargeScoreEfficiencyMeasurement_2016preVFP_SingleElectron_C__noveto__FlavourMatchBase__HcbCR__ForBinning        8/9  01:07      _      _     50     50 2468349.0-49
+jhchoi TTsemiLepChargeScoreEfficiencyMeasurement_2016preVFP_SingleMuon_D__noveto__FlavourMatchBase__HcbCR__ForBinning            8/9  01:07      _      _     50     50 2468350.0-49
+jhchoi TTsemiLepChargeScoreEfficiencyMeasurement_2016preVFP_SingleElectron_D__noveto__FlavourMatchBase__HcbCR__ForBinning        8/9  01:07      _      _     50     50 2468351.0-49
+jhchoi TTsemiLepChargeScoreEfficiencyMeasurement_2016preVFP_SingleMuon_E__noveto__FlavourMatchBase__HcbCR__ForBinning            8/9  01:07      _      _     50     50 2468352.0-49
+jhchoi TTsemiLepChargeScoreEfficiencyMeasurement_2016preVFP_SingleElectron_E__noveto__FlavourMatchBase__HcbCR__ForBinning        8/9  01:07      _      _     50     50 2468353.0-49
+jhchoi TTsemiLepChargeScoreEfficiencyMeasurement_2016preVFP_SingleMuon_F__noveto__FlavourMatchBase__HcbCR__ForBinning            8/9  01:07      _      _     50     50 2468354.0-49
+jhchoi TTsemiLepChargeScoreEfficiencyMeasurement_2016preVFP_SingleElectron_F__noveto__FlavourMatchBase__HcbCR__ForBinning        8/9  01:07      _      _     50     50 2468355.0-49
+
+Total for query: 1442 jobs; 0 completed, 0 removed, 1143 idle, 299 running, 0 held, 0 suspended 
+Total for all users: 14305 jobs; 0 completed, 0 removed, 13656 idle, 649 running, 0 held, 0 suspended
+

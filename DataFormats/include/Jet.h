@@ -53,6 +53,7 @@ public:
 
   bool PassID(TString ID) const;
 
+  //---jhchoi
   double GetTaggerResult(JetTagging::Tagger tg) const;
   double GetChargedHadronEnergyFraction() const;
   double GetNeutralHadronEnergyFraction() const;
@@ -60,6 +61,18 @@ public:
   double GetChargedEmEnergyFraction() const;
   double GetMuonEnergyFraction() const;
   double GetPileupJetId() const;
+  
+  //----BCharge
+  int GetBCharge() const;
+  void SetBCharge(int _charge);
+  bool GetNotUsingOppositeCharge() const;
+  void SetNotUsingOppositeCharge(bool _isUsing);
+  int GetMuonIdxInBjet() const;
+  void SetMuonIdxInBjet(int _im);
+  int GetElectronIdxInBjet() const;
+  void SetElectronIdxInBjet(int _ie);
+  double GetBChargeScore() const;
+  void SetBChargeScore(double _score);
 private:
 
   double  j_area;
@@ -91,6 +104,14 @@ private:
   double j_cJetNN_corr;
   double j_cJetNN_res;
   bool j_tightJetID, j_tightLepVetoJetID;
+
+
+  //---jhchoi
+  int j_BCharge;
+  bool j_NotUsingOppositeCharge;
+  int j_MuonIdxInBjet;
+  int j_ElectronIdxInBjet;
+  double j_BChargeScore;
 
   ClassDef(Jet,1)
 };

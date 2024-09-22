@@ -23,8 +23,11 @@ public:
   void SetElectron(const Electron& _l1);
   
   void RunReco();
-  vector<int> GetJetIndexSet_Chi2();
-  pair<double,double> GetChi2_and_vz(TLorentzVector _lep, TLorentzVector _MET, TLorentzVector _blep, TLorentzVector _q1, TLorentzVector _q2, TLorentzVector _bhad);
+  pair<vector<int>,double> GetJetIndexSet_Chi2();
+  vector<int> GetJetIndexSet_DNN();
+  pair<double,double> GetChi2_and_vz(TLorentzVector &_lep, TLorentzVector &_MET, TLorentzVector &_blep, TLorentzVector &_q1, TLorentzVector &_q2, TLorentzVector &_bhad);
+  double GetDNN(TLorentzVector &_lep, TLorentzVector &_MET, TLorentzVector &_blep, TLorentzVector &_q1, TLorentzVector &_q2, TLorentzVector &_bhad);
+  void Run(TString _type);
   void FillHistAll(TString cutname);
   
 
@@ -49,10 +52,11 @@ public:
   int Whad_q1_pid, Whad_q2_pid;
   vector<int> v_idx_lightquark_GEN;
   int idx_bquark_GEN, idx_bbarquark_GEN;
+  int i_lepton_GEN,i_neutrino_GEN;
   void SetEventWeight();
   
   bool HasMatchedRecoJet(int genidx, double dRcut=0.4);
-  
+  bool HasFlavourMatchedRecoJet(int genidx);
 
 
   Lepton mu1;
@@ -74,6 +78,8 @@ public:
 
   bool noveto;
   bool HcbCR;
+
+  int i_LightJet1,i_LightJet2;
 
 };
 

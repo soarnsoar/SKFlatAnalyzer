@@ -25,8 +25,7 @@ public:
   void SetElectron(const Electron& _l1);
   
   void RunReco();
-  vector<int> GetJetIndexSet_Chi2();
-  pair<double,double> GetChi2_and_vz(TLorentzVector _lep, TLorentzVector _MET, TLorentzVector _blep, TLorentzVector _q1, TLorentzVector _q2, TLorentzVector _bhad);
+
   void FillHistAll(TString cutname);
   
   void SetBranches(TTree *this_Tree);

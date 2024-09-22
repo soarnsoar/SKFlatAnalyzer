@@ -33,6 +33,14 @@ Jet::Jet() : Particle() {
   
   j_tightJetID=false;
   j_tightLepVetoJetID=false;
+
+  j_BCharge=0;
+  j_NotUsingOppositeCharge=false;
+  j_MuonIdxInBjet=-1;
+  j_ElectronIdxInBjet=-1;
+  j_BChargeScore=-999;
+  
+
 }
 
 Jet::~Jet(){
@@ -123,7 +131,7 @@ double Jet::GetTaggerResult(JetTagging::Tagger tg) const {
   }
 }
 
-
+//--jhchoi
 double Jet::GetChargedHadronEnergyFraction() const {
   return j_chargedHadronEnergyFraction;
 }
@@ -144,6 +152,40 @@ double Jet::GetPileupJetId() const {
 }
 
 
+int Jet::GetBCharge() const {
+  return j_BCharge;
+}
+void Jet::SetBCharge(int _charge){
+  j_BCharge=_charge;
+}
+
+bool Jet::GetNotUsingOppositeCharge() const{
+  return j_NotUsingOppositeCharge;
+}
+void Jet::SetNotUsingOppositeCharge(bool _isUsing){
+  j_NotUsingOppositeCharge=_isUsing;
+}
+
+int Jet::GetMuonIdxInBjet() const{
+  return j_MuonIdxInBjet;
+}
+void Jet::SetMuonIdxInBjet(int _im){
+  j_MuonIdxInBjet=_im;
+}
+
+int Jet::GetElectronIdxInBjet() const{
+  return j_ElectronIdxInBjet;
+}
+void Jet::SetElectronIdxInBjet(int _ie){
+  j_ElectronIdxInBjet=_ie;
+}
+
+double Jet::GetBChargeScore() const{
+  return j_BChargeScore;
+}
+void Jet::SetBChargeScore(double _score){
+  j_BChargeScore=_score;
+}
 //void Jet::Set_vtxNtracks(int n){
 //  j_vtxNtracks=n;
 //}

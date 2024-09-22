@@ -320,6 +320,14 @@ AnalyzerCore::~AnalyzerCore(){
     delete mapit->second;
   }
   maphist_TH3D.clear();
+
+
+
+  delete jhchoi_newtree;
+  delete jhchoi_newtree2;
+  delete jhchoi_newtree3;
+  delete jhchoi_newtree4;
+
   
   //==== output rootfile
 
@@ -343,7 +351,10 @@ AnalyzerCore::~AnalyzerCore(){
   AK8CHSJECUncMap.clear();
   AK8PUPPIJECUncMap.clear();
   
+
     
+
+
 }
 
 //==== Attach the historams to ai different direcotry, not outfile

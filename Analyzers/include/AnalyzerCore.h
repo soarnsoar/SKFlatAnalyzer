@@ -38,7 +38,7 @@
 //#include "RocPFProb.h"
 #include "TStopwatch.h"
 #include "ChargeScoreTool.h"
-
+#include "TTSemilepJetAssignmentTool.h"
 #define M_Z 91.1876
 #define M_W 80.379
 
@@ -353,6 +353,7 @@ public:
 
   bool IsDYSample;
   bool IsTTSample;
+  bool IsTTLJSample;
   //--[end]jhchoi
   //==== Quick Plotters
   void FillLeptonPlots(std::vector<Lepton *> leps, TString this_region, double weight);

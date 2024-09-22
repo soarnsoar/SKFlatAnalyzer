@@ -49,6 +49,10 @@
 #pragma link C++ class TTSemiLepJetAssignment+;
 #pragma link C++ class TTSemiLepJetAssignment_ProduceTrainingTree+;
 
-
+#pragma link C++ class TTSemiLepAnalyzer+;
+#pragma link C++ class TTsemiLepChargeScoreEfficiencyMeasurement+;
+#pragma link C++ class TTdiLepChargeScoreEfficiencyMeasurement+;
+#pragma link C++ class TwoBjets+;
+#pragma link C++ class OneBjet+;
 
 #endif

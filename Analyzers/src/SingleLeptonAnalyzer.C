@@ -53,7 +53,7 @@ bool SingleLeptonAnalyzer::CheckIsElectronChannel(){
 void SingleLeptonAnalyzer::SetEventWeight(){
   weight=1;
   if(IsDATA) return;
-  weight=MCweight()*ev.GetTriggerLumi("Full")*GetPileUpWeight(nPileUp,0)*GetPrefireWeight(0)*btagsf;
+  weight=MCweight()*ev.GetTriggerLumi("Full")*GetPileUpWeight(nPileUp,0)*GetPrefireWeight(0)*zptweight*weakweight*z0weight*topptweight*btagsf*jetpuidsf;
   //Muon
   if(IsMuonChannel){
     weight*=w_MuonID[0][0]*w_MuonRECO[0][0]*w_MuonTrk[0][0]*w_MuonTrigger[0][0];
