@@ -79,12 +79,12 @@ void SingleLeptonAnalyzer::RunBasicWregion(){
 
   TString LepCh="";
   if(IsMuonChannel){
-    vtW=GetTransverseVector(mu1)+PuppiMET;
+    vtW=GetTransverseVector(mu1)+CurrentMET;
     LepCh="Muon";
     l1=mu1;
   }
   else if(IsElectronChannel){
-    vtW=GetTransverseVector(el1)+PuppiMET;
+    vtW=GetTransverseVector(el1)+CurrentMET;
     LepCh="Electron";
     l1=el1;
   }  
@@ -103,7 +103,7 @@ void SingleLeptonAnalyzer::RunBasicWregion(){
   //--Now Objects are ready--//
   SetEventWeight();
 
-  if(PuppiMET.Pt() < 30.) return;
+  if(CurrentMET.Pt() < 30.) return;
   if(vtW.M() < 60. ) return;
   FillHistAll("Lepton");
   FillHistAll(LepCh);
@@ -128,8 +128,8 @@ void SingleLeptonAnalyzer::FillHistAll(TString cutname){
   FillHist(cutname+"/njet",njet,weight,10,0,10);
   FillHist(cutname+"/nbjet",nbjet,weight,10,0,10);
 
-  FillHist(cutname+"/puppimet",PuppiMET.Pt(),weight,200,0,200);
-  FillHist(cutname+"/dphi_l_met",PuppiMET.DeltaPhi(l1),weight,200,-4,4);
+  FillHist(cutname+"/met",CurrentMET.Pt(),weight,200,0,200);
+  FillHist(cutname+"/dphi_l_met",CurrentMET.DeltaPhi(l1),weight,200,-4,4);
 
   if(njet>0){
     FillHist(cutname+"/pt_j1",v_tightjet[0].Pt(),weight,200,0,200);

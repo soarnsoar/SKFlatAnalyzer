@@ -154,12 +154,12 @@ void TTSemiLepJetAssignment_ProduceTrainingTree::RunReco(){
 
   TString LepCh="";
   if(IsMuonChannel){
-    vtW=GetTransverseVector(mu1)+PuppiMET;
+    vtW=GetTransverseVector(mu1)+CurrentMET;
     LepCh="Muon";
     l1=mu1;
   }
   else if(IsElectronChannel){
-    vtW=GetTransverseVector(el1)+PuppiMET;
+    vtW=GetTransverseVector(el1)+CurrentMET;
     LepCh="Electron";
     l1=el1;
   }  
@@ -267,8 +267,8 @@ void TTSemiLepJetAssignment_ProduceTrainingTree::RunReco(){
 
 
 	  //---Setting tree inputs
-	  met_pt=PuppiMET.Pt();
-	  met_phi=PuppiMET.Phi();
+	  met_pt=CurrentMET.Pt();
+	  met_phi=CurrentMET.Phi();
 
 	  lep_pt=l1.Pt();
 	  lep_eta=l1.Eta();
@@ -297,8 +297,8 @@ void TTSemiLepJetAssignment_ProduceTrainingTree::RunReco(){
 	  WhadCand_mass=this_Whad.M();
 	  ThadCand_mass=this_Thad.M();
 
-	  TLorentzVector vt_Wlep=GetTransverseVector(l1)+PuppiMET;
-	  TLorentzVector vt_Tlep=GetTransverseVector(l1)+PuppiMET+GetTransverseVector(v_tightjet[ib1]);
+	  TLorentzVector vt_Wlep=GetTransverseVector(l1)+CurrentMET;
+	  TLorentzVector vt_Tlep=GetTransverseVector(l1)+CurrentMET+GetTransverseVector(v_tightjet[ib1]);
 	  
 	  WlepCand_mt=vt_Wlep.M();
 	  TlepCand_mt=vt_Tlep.M();

@@ -299,18 +299,34 @@ double AnalyzerCore::GetDileptonTriggerSF(TString triggerSF_key0,TString trigger
 ////---END jhchoi---///
 AnalyzerCore::~AnalyzerCore(){
   //jhchoi
-  DeleteEfficiency();
+  cout << "DeleteEfficiency" << endl;
+  cout << printcurrunttime() << endl;
+  cout << "Skip DeleteEfficiency step. Let ROOT do this" << endl;
+  //DeleteEfficiency();
+  cout << printcurrunttime() << endl;
+  cout << "DeleteZptWeight" << endl;
+  cout << printcurrunttime() << endl;
   DeleteZptWeight();
+  cout << printcurrunttime() << endl;
+  cout << "DeleteJetPUIDTool" << endl;
   DeleteJetPUIDTool();
+  cout << printcurrunttime() << endl;
   //end jhchoi
 
   //=== hist maps
+  cout << "Delete HistMaps" << endl;
+  cout << " maphist_TH1D.size()=" << maphist_TH1D.size() << endl;
+  //cout << " vhist_TH1D.size()=" << vhist_TH1D.size() << endl;
 
-  for(std::unordered_map< TString, TH1D* >::iterator mapit = maphist_TH1D.begin(); mapit!=maphist_TH1D.end(); mapit++){
+  //let's skip this 
+  cout << "skip delete TH objects. Let ROOT release each memory. It's much faster way in ROOT 6.14" << endl;
+  /*
+  for(std::map< TString, TH1D* >::iterator mapit = maphist_TH1D.begin(); mapit!=maphist_TH1D.end(); mapit++){
+    //cout<<"mapit->second->GetDirectory() =>" <<mapit->second->GetDirectory() << endl;
     delete mapit->second;
   }
   maphist_TH1D.clear();
-
+  
   for(std::map< TString, TH2D* >::iterator mapit = maphist_TH2D.begin(); mapit!=maphist_TH2D.end(); mapit++){
     delete mapit->second;
   }
@@ -320,38 +336,69 @@ AnalyzerCore::~AnalyzerCore(){
     delete mapit->second;
   }
   maphist_TH3D.clear();
+  */
 
 
+  /*
+  int ih=0;
+  for (TH1D* this_hist : vhist_TH1D) {
+    if(ih%1000==0) cout << "ih=" << ih << endl;
+    delete this_hist;
+    ih+=1;
+  }
+  maphist_TH1D.clear();
 
+  for (TH2D* this_hist : vhist_TH2D) {
+    delete this_hist;
+  }
+  maphist_TH2D.clear();
+
+  for (TH3D* this_hist : vhist_TH3D) {
+    delete this_hist;
+  }
+  maphist_TH3D.clear();
+  */
+
+
+  cout << "[END]Delete HistMaps" << endl;
+  cout << printcurrunttime() << endl;
   delete jhchoi_newtree;
   delete jhchoi_newtree2;
   delete jhchoi_newtree3;
   delete jhchoi_newtree4;
-
+  cout << printcurrunttime() << endl;
   
   //==== output rootfile
 
   if(outfile){
+    cout << "Delete outfile" << endl;
+    cout << printcurrunttime() << endl;
     outfile->Close();
     delete outfile;
+    cout << "[DONE]Delete outfile" << endl;
+    cout << printcurrunttime() << endl;
   }
 
   //==== Tools
-
+  cout << "Delete mccor" << endl;
+  cout << printcurrunttime() << endl;
   if(mcCorr) delete mcCorr;
+  cout << printcurrunttime() << endl;
+  cout << "Delete puppiCorr" << endl;
   if(puppiCorr) delete puppiCorr;
   if(fakeEst) delete fakeEst;
   if(cfEst) delete cfEst;
   if(pdfReweight) delete pdfReweight;
   if(muonGE) delete muonGE;
   if(muonGEScaleSyst) delete muonGEScaleSyst;
-
+  cout << printcurrunttime() << endl;
+  cout << "clear JECMap" << endl;
   AK4CHSJECUncMap.clear();
   AK4PUPPIJECUncMap.clear();
   AK8CHSJECUncMap.clear();
   AK8PUPPIJECUncMap.clear();
-  
-
+  cout << "[DONE]clear JECMap" << endl;
+  cout << printcurrunttime() << endl;
     
 
 
@@ -1507,7 +1554,9 @@ bool AnalyzerCore::PassMETFilter(){
   return true;
 
 }
-
+void AnalyzerCore::SetBTagMCEff_Filename(TString _btagmceff_filename){
+  btagmceff_filename=_btagmceff_filename;
+}
 void AnalyzerCore::initializeAnalyzerTools(){
   //==== MCCorrection
   mcCorr->SetMCSample(MCSample);
@@ -1517,7 +1566,7 @@ void AnalyzerCore::initializeAnalyzerTools(){
   mcCorr->SetIsFastSim(IsFastSim);
   if(!IsDATA){
     mcCorr->ReadHistograms();
-    mcCorr->SetupJetTagging();
+    mcCorr->SetupJetTagging(btagmceff_filename);
   }
 
   puppiCorr->SetEra(GetEra());
@@ -2411,7 +2460,7 @@ bool AnalyzerCore::IsSignalPID(int pid){
 TH1D* AnalyzerCore::GetHist1D(TString histname){
 
   TH1D *h = NULL;
-  std::unordered_map<TString, TH1D*>::iterator mapit = maphist_TH1D.find(histname);
+  std::map<TString, TH1D*>::iterator mapit = maphist_TH1D.find(histname);
   if(mapit != maphist_TH1D.end()) return mapit->second;
 
   return h;
@@ -2449,6 +2498,7 @@ void AnalyzerCore::FillHistUnderAndOverFlow(TString histname, double value, doub
     this_hist = new TH1D(histname, "", n_bin, x_min, x_max);
     this_hist->SetDirectory(NULL);
     maphist_TH1D[histname] = this_hist;
+    //vhist_TH1D.push_back(this_hist);
   }
   //jhchoi
   if(value>=x_max){
@@ -2473,6 +2523,7 @@ void AnalyzerCore::FillHist(TString histname, double value, double weight, int n
     this_hist = new TH1D(histname, "", n_bin, x_min, x_max);
     this_hist->SetDirectory(NULL);
     maphist_TH1D[histname] = this_hist;
+    //vhist_TH1D.push_back(this_hist);
   }
 
   this_hist->Fill(value, weight);
@@ -2486,6 +2537,7 @@ void AnalyzerCore::FillHist(TString histname, double value, double weight, int n
     this_hist = new TH1D(histname, "", n_bin, xbins);
     this_hist->SetDirectory(NULL);
     maphist_TH1D[histname] = this_hist;
+    //vhist_TH1D.push_back(this_hist);
   }
 
   this_hist->Fill(value, weight);
@@ -2503,6 +2555,7 @@ void AnalyzerCore::FillHist(TString histname,
     this_hist = new TH2D(histname, "", n_binx, x_min, x_max, n_biny, y_min, y_max);
     this_hist->SetDirectory(NULL);
     maphist_TH2D[histname] = this_hist;
+    //vhist_TH2D.push_back(this_hist);
   }
 
   this_hist->Fill(value_x, value_y, weight);
@@ -2520,6 +2573,7 @@ void AnalyzerCore::FillHist(TString histname,
     this_hist = new TH2D(histname, "", n_binx, xbins, n_biny, ybins);
     this_hist->SetDirectory(NULL);
     maphist_TH2D[histname] = this_hist;
+    //vhist_TH2D.push_back(this_hist);
   }
 
   this_hist->Fill(value_x, value_y, weight);
@@ -2538,6 +2592,7 @@ void AnalyzerCore::FillHist(TString histname,
     this_hist = new TH3D(histname, "", n_binx, x_min, x_max, n_biny, y_min, y_max, n_binz, z_min, z_max);
     this_hist->SetDirectory(NULL);
     maphist_TH3D[histname] = this_hist;
+    //vhist_TH3D.push_back(this_hist);
   }
   
   this_hist->Fill(value_x, value_y, value_z, weight);
@@ -2556,6 +2611,7 @@ void AnalyzerCore::FillHist(TString histname,
     this_hist = new TH3D(histname, "", n_binx, xbins, n_biny, ybins, n_binz, zbins);
     this_hist->SetDirectory(NULL);
     maphist_TH3D[histname] = this_hist;
+    //vhist_TH3D.push_back(this_hist);
   }
   
   this_hist->Fill(value_x, value_y, value_z, weight);
@@ -2653,9 +2709,11 @@ void AnalyzerCore::JSFillHist(TString suffix, TString histname,
 }
 
 void AnalyzerCore::WriteHist(){
-  
+  cout << "[AnalyzerCore::WriteHist] Start" << endl;
+  cout << printcurrunttime() << endl;
+
   outfile->cd();
-  for(std::unordered_map< TString, TH1D* >::iterator mapit = maphist_TH1D.begin(); mapit!=maphist_TH1D.end(); mapit++){
+  for(std::map< TString, TH1D* >::iterator mapit = maphist_TH1D.begin(); mapit!=maphist_TH1D.end(); mapit++){
     TString this_fullname=mapit->second->GetName();
     TString this_name=this_fullname(this_fullname.Last('/')+1,this_fullname.Length());
     TString this_suffix=this_fullname(0,this_fullname.Last('/'));
@@ -2741,6 +2799,8 @@ void AnalyzerCore::WriteHist(){
   jhchoi_newtree3->Write();
   jhchoi_newtree4->Write();
   outfile->cd();
+  cout << "[AnalyzerCore::WriteHist] End" << endl;
+  cout << printcurrunttime() << endl;
 
 }
 //----jhchoi---- Systematics---//

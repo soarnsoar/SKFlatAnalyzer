@@ -96,12 +96,12 @@ void OneBjet::RunReco(){
 
   LepCh="";
   if(IsMuonChannel){
-    //vtW=GetTransverseVector(mu1)+PuppiMET;
+    //vtW=GetTransverseVector(mu1)+CurrentMET;
     LepCh="Muon";
     l1=mu1;
   }
   else if(IsElectronChannel){
-    //vtW=GetTransverseVector(el1)+PuppiMET;
+    //vtW=GetTransverseVector(el1)+CurrentMET;
     LepCh="Electron";
     l1=el1;
   }  
@@ -122,7 +122,7 @@ void OneBjet::RunReco(){
   SetEventWeight();
 
   for(auto &i_bjet : v_bjetidx){
-
+    /*
     tuple<int,bool,int,int,double> bCand_Charge_info=GetBJetCharge_v2405_4_3(v_tightjet[i_bjet],AllMuons,AllElectrons);
     int bCand_Charge=std::get<0>(bCand_Charge_info);
     bool bCand_NotUseOppositeCharge=std::get<1>(bCand_Charge_info);
@@ -135,6 +135,30 @@ void OneBjet::RunReco(){
     v_tightjet[i_bjet].SetMuonIdxInBjet(bCand_im);
     v_tightjet[i_bjet].SetElectronIdxInBjet(bCand_ie);
     v_tightjet[i_bjet].SetBChargeScore(bCnad_ChargeScore);
+    */
+
+    FillHist("AllLep/pt_b",v_tightjet[i_bjet].Pt(),weight,100,0,300);
+    FillHist("AllLep/eta_b",v_tightjet[i_bjet].Eta(),weight,50,-3,3);
+    //---Has SoftMuon
+    tuple<int,double,double,int,double,double> ret=JHAnalyzerBase::GetBJetMuonScore_v2409_2(v_tightjet[i_bjet], AllMuons);
+    //{im_max,bmuon_score_max,bmuon_charge_max,im_min,bmuon_score_min,bmuon_charge_min
+    int im_max=std::get<0>(ret);
+    double bmuon_score_max=std::get<1>(ret);
+    double bmuon_charge_max=std::get<2>(ret);
+
+    int im_min=std::get<3>(ret);
+    double bmuon_score_min=std::get<4>(ret);
+    double bmuon_charge_min=std::get<5>(ret);
+
+
+    bool HasSoftMuon=false;
+
+    if(bmuon_charge_max!=0)      HasSoftMuon=true;
+    //---SLTMuonPassCutToMax
+    bool SLTMuonPassCutToMax=false;
+    if(bmuon_score_max > mChargeTool->mincut) SLTMuonPassCutToMax=true;
+    //--SLTMuonPassCutToMin
+    bool SLTMuonPassCutToMin=false;
 
 
   }
@@ -156,7 +180,7 @@ void OneBjet::FillHistCommon(TString cutname){
   FillHist(cutname+"/pt_l1",l1.Pt(),weight,200,0,200);
   FillHist(cutname+"/eta_l1",l1.Eta(),weight,50,-3,3);
 
-  FillHist(cutname+"/puppimet",PuppiMET.Pt(),weight,150,0,300);
+  FillHist(cutname+"/met",CurrentMET.Pt(),weight,150,0,300);
   FillHist(cutname+"/njet",njet,weight,10,0,10);
   FillHist(cutname+"/nbjet",nbjet,weight,10,0,10);
   

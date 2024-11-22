@@ -12,13 +12,25 @@ void JHAnalyzerBase::initializeAnalyzer(){
   cout << "IsTTSample=" << IsTTSample <<endl;
   IsTTLJSample=MCSample.Contains("TTLJ");
   AnalyzerCore::SetupEfficiency();
-  AnalyzerCore::SetupJetPUIDTool();
+  //AnalyzerCore::SetupJetPUIDTool();
   AnalyzerCore::SetupRoccoR();
   if(IsDYSample)  AnalyzerCore::SetupZptWeight();
   InitSystematicMomentumVariations();
   runSys=HasFlag("runSys");
+  //weightonly=HasFlag("weightonly");
+  pusysonly=HasFlag("pusysonly");
+  runMomSys=HasFlag("runMomSys");
   simple_lepscale=HasFlag("simple_lepscale");
   checksf=HasFlag("checksf");
+  measure_btageff=HasFlag("measure_btageff");
+  UsePfMET=HasFlag("pfmet");
+  if(UsePfMET){
+    cout << "[jhchoi] UsePfMET!!" << endl;
+  }
+  UsePhiCorrMET=HasFlag("phicorrmet");
+  if(UsePhiCorrMET){
+    cout << "[jhchoi] UsePhiCorrMET!!" << endl;
+  }
   SetUpBtag();
   if(IsDATA){
     ProcessName="Data";
@@ -27,9 +39,46 @@ void JHAnalyzerBase::initializeAnalyzer(){
     ProcessName=MCSample;
   }
   cout << "[JHAnalyzerBase::initializeAnalyzer] runSys=" << runSys << endl;
+
+  //------PDF sys setup-----//
+  PDFalias="";
+  int pdfidcode=GetPDFSetIDCode();
+  //Note that e.g. 325300 (325500) and 306000 (320900) are considered equivalent at the SM regions. 
+  //https://cms-pdmv.gitbook.io/project/mccontact/info-for-mc-production-for-ultra-legacy-campaigns-2016-2017-2018
+  if(pdfidcode==306000 || pdfidcode==325300){
+    PDFalias="NNPDF31_NNLO_5f";
+  }
+  else if(pdfidcode==325500){
+    PDFalias="NNPDF31_NNLO_4f";
+  }
+  else{
+    PDFalias="PDF";
+  }
+  cout << "PDFalias=" << PDFalias << endl;
+
+
+  //---SetUp MC btag Eff Measurement--..
+  if(measure_btageff) SetUpBtagEffMeasurement();
+
 }
 
-
+int JHAnalyzerBase::GetPDFSetIDCode(){
+  //id=325500
+  //NNPDF31_nnlo_as_0118_nf_4_mc_hessian
+  if(MCSample.Contains("SingleTop_tch_antitop_Incl") || MCSample.Contains("SingleTop_tch_top_Incl") || MCSample.Contains("SingleTop_sch_Lep") ){
+    return 325500;
+  }
+  //id=325300
+  //NNPDF31_nnlo_as_0118_mc_hessian_pdfas
+  else if(MCSample.Contains("WJets_MG")){
+    return 325300;
+  }
+  //id=306000
+  //NNPDF31_nnlo_hessian_pdfas
+  else{
+    return 306000;
+  }
+}
 
 
 void JHAnalyzerBase::SetUpBtag(){
@@ -44,16 +93,16 @@ void JHAnalyzerBase::SetUpBtag(){
 void JHAnalyzerBase::InitSystematicMomentumVariations(){
   //--Define--//
   jesUp.jes=1;                         
-  jesUp.name="jes";jesUp.dir="Up";
+  jesUp.name="jes"+DataEra;jesUp.dir="Up";
 
   jesDown.jes=-1;                      
-  jesDown.name="jes";jesDown.dir="Down";   
+  jesDown.name="jes"+DataEra;jesDown.dir="Down";   
 
   jerUp.jer=1;                         
-  jerUp.name="jer";jerUp.dir="Up";
+  jerUp.name="jer"+DataEra;jerUp.dir="Up";
 
   jerDown.jer=-1;                      
-  jerDown.name="jer";jerDown.dir="Down";   
+  jerDown.name="jer"+DataEra;jerDown.dir="Down";   
   
   /*
   muonscaleUp.muonscale=1;       
@@ -69,9 +118,9 @@ void JHAnalyzerBase::InitSystematicMomentumVariations(){
   electronscaleDown.name="electronscale"; electronscaleDown.dir="Down";
   */
   metUp.met=1;   
-  metUp.name="met";   metUp.dir="Up";
+  metUp.name="met"+DataEra;   metUp.dir="Up";
   metDown.met=-1;
-  metDown.name="met"; metDown.dir="Down";
+  metDown.name="met"+DataEra; metDown.dir="Down";
   //--Variation To Run--//
   //vMomentumVar={jesUp,jesDown,jerUp,jerDown,muonscaleUp,muonscaleDown,
   //		electronscaleUp,electronscaleDown,metUp,metDown};
@@ -85,7 +134,7 @@ void JHAnalyzerBase::InitSystematicMomentumVariations(){
     vector<MuonMomentumVar> this_v;
     for(int idx2=0; idx2 < nmem;idx2++){
       MuonMomentumVar thisvar;
-      thisvar.idx1=idx1; thisvar.idx2=idx2; thisvar.name="muonscale";
+      thisvar.idx1=idx1; thisvar.idx2=idx2; thisvar.name="muonscale"+DataEra;
       this_v.push_back(thisvar);
     }
     vMuonMomentumVar.push_back(this_v);
@@ -98,7 +147,7 @@ void JHAnalyzerBase::InitSystematicMomentumVariations(){
     vector<ElectronMomentumVar> this_v;
     for(int idx2=0; idx2 < nmem;idx2++){
       ElectronMomentumVar thisvar;
-      thisvar.idx1=idx1; thisvar.idx2=idx2; thisvar.name="electronscale";
+      thisvar.idx1=idx1; thisvar.idx2=idx2; thisvar.name="electronscale"+DataEra;
       this_v.push_back(thisvar);
     }
     vElectronMomentumVar.push_back(this_v);
@@ -108,7 +157,17 @@ void JHAnalyzerBase::InitSystematicMomentumVariations(){
 JHAnalyzerBase::~JHAnalyzerBase(){
 
   //==== Destructor of this Analyzer
-  
+  cout << printcurrunttime() << endl;
+  cout << "DeleteChargeScoreTool" << endl;
+  if(IsChargeScoreToolOn) DeleteChargeScoreTool();
+  cout << printcurrunttime() << endl;
+  cout << "delete TTLJJetAssignmentTool" << endl;
+  if(IsTTLJJetAssignmentToolOn) delete TTLJJetAssignmentTool;
+  cout << printcurrunttime() << endl;
+  cout << "DeleteJetAssigenChi2Fitter" << endl;
+  DeleteJetAssigenChi2Fitter();
+  cout << printcurrunttime() << endl;
+  cout << "[END]~JHAnalyzerBase" << endl;
 }
 
 void JHAnalyzerBase::executeEvent(){  
@@ -130,7 +189,9 @@ void JHAnalyzerBase::executeEvent(){
   //FillReservedHistWeightBase();
   //ClearReserveHist();
 
-  if(!runSys) return;
+  if(!runSys && !runMomSys) return;
+  //if(weightonly) return;
+  if(pusysonly) return;
   //---Momentum variations--//
   runWeightBase=false;
   SetSysStructure();//remove sysvariation weights
@@ -292,6 +353,7 @@ void JHAnalyzerBase::SetSysStructure(){
 
 
   }
+
   else{//if not weightbase
     //--Electron--//
     w_ElectronID.clear();
@@ -347,6 +409,7 @@ void JHAnalyzerBase::InitClassVariablesPerEvent(){
   //z0weight=1.;
   //weakweight=1.;
 }
+
 void JHAnalyzerBase::FillHist(TString histname, double value, double this_weight, int n_bin, double x_min, double x_max){
   //---ArgFillHist structure---//
   /*
@@ -371,31 +434,101 @@ void JHAnalyzerBase::FillHist(TString histname, double value, double this_weight
   //vReserveHist.push_back(make_tuple(histname,value,this_weight,n_bin,x_min,x_max));
 }
 
+void JHAnalyzerBase::FillHist(TString histname, double value, double this_weight, int n_bin, double *xbins){
+  //---ArgFillHist structure---//
+  /*
+  struct ArgFillHist{
+    TString histname;
+    double value; double weight;
+    int n_bin; double x_min;
+    double x_max;
+  };
+
+  */
+  if(runWeightBase){
+    FillHistWeightBase(histname,value,this_weight,n_bin,xbins);
+  }  
+  else{
+    //TString histname="SYS/"+arg.histname+"/"+sysname_current+"/0/"+sysdir_current;
+    TString newhistname="SYS/"+histname+"/"+sysname_current+"/"+sysidx1_current+"/"+sysidx2_current;
+    AnalyzerCore::FillHist(newhistname+"/"+ProcessName,value,this_weight,n_bin,xbins);
+    //ArgFillHist this_arg={histname,value,this_weight,n_bin,x_min,x_max};
+    //vReserveHist.push_back(this_arg);
+  }
+  //vReserveHist.push_back(make_tuple(histname,value,this_weight,n_bin,x_min,x_max));
+}
+
+
+
 
 ///----FillHistForSystematic---//
 void JHAnalyzerBase::FillHistUp(TString sysname,TString histname,double value,double this_weight,int n_bin,double x_min, double x_max){
   AnalyzerCore::FillHist("SYS/"+histname+"/"+sysname+"/0/Up/"+ProcessName,value,this_weight,n_bin,x_min,x_max);
 }
+void JHAnalyzerBase::FillHistUp(TString sysname,TString histname,double value,double this_weight,int n_bin,double *xbins){
+  AnalyzerCore::FillHist("SYS/"+histname+"/"+sysname+"/0/Up/"+ProcessName,value,this_weight,n_bin,xbins);
+}
+
 void JHAnalyzerBase::FillHistDown(TString sysname,TString histname,double value,double this_weight,int n_bin,double x_min, double x_max){
   AnalyzerCore::FillHist("SYS/"+histname+"/"+sysname+"/0/Down/"+ProcessName,value,this_weight,n_bin,x_min,x_max);
 }
+void JHAnalyzerBase::FillHistDown(TString sysname,TString histname,double value,double this_weight,int n_bin,double *xbins){
+  AnalyzerCore::FillHist("SYS/"+histname+"/"+sysname+"/0/Down/"+ProcessName,value,this_weight,n_bin, xbins);
+}
+
+
 void JHAnalyzerBase::FillHistIdx2(TString sysname, int idx1, int idx2, TString histname,double value,double this_weight,int n_bin,double x_min, double x_max){
   AnalyzerCore::FillHist("SYS/"+histname+"/"+sysname+"/"+std::to_string(idx1)+"/"+std::to_string(idx2)+"/"+ProcessName,value,this_weight,n_bin,x_min,x_max);
 }
+void JHAnalyzerBase::FillHistIdx2(TString sysname, int idx1, int idx2, TString histname,double value,double this_weight,int n_bin,double *xbins){
+  AnalyzerCore::FillHist("SYS/"+histname+"/"+sysname+"/"+std::to_string(idx1)+"/"+std::to_string(idx2)+"/"+ProcessName,value,this_weight,n_bin, xbins);
+}
+
+
 void JHAnalyzerBase::FillHistIdx2(TString sysname, TString idx1, TString idx2, TString histname,double value,double this_weight,int n_bin,double x_min, double x_max){
   AnalyzerCore::FillHist("SYS/"+histname+"/"+sysname+"/"+idx1+"/"+idx2+"/"+ProcessName,value,this_weight,n_bin,x_min,x_max);
 }
+void JHAnalyzerBase::FillHistIdx2(TString sysname, TString idx1, TString idx2, TString histname,double value,double this_weight,int n_bin,double *xbins){
+  AnalyzerCore::FillHist("SYS/"+histname+"/"+sysname+"/"+idx1+"/"+idx2+"/"+ProcessName,value,this_weight,n_bin, xbins);
+}
+
 
 void JHAnalyzerBase::FillHistPUSys(TString histname, double value, double this_weight, int n_bin, double x_min, double x_max){
   //PU weight//
-  FillHistUp("pu",histname,value,this_weight*r_PU[0],n_bin,x_min,x_max);
-  FillHistDown("pu",histname,value,this_weight*r_PU[1],n_bin,x_min,x_max);
+  FillHistUp("pu"+DataEra,histname,value,this_weight*r_PU[0],n_bin,x_min,x_max);
+  FillHistDown("pu"+DataEra,histname,value,this_weight*r_PU[1],n_bin,x_min,x_max);
 }
+void JHAnalyzerBase::FillHistPUSys(TString histname, double value, double this_weight, int n_bin, double *xbins){
+  //PU weight//
+  FillHistUp("pu"+DataEra,histname,value,this_weight*r_PU[0],n_bin,xbins);
+  FillHistDown("pu"+DataEra,histname,value,this_weight*r_PU[1],n_bin,xbins);
+}
+
+
 void JHAnalyzerBase::FillHistZptWeight(TString histname, double value, double this_weight, int n_bin, double x_min, double x_max){
   double r_zptweight=zptweight ? 1/zptweight : 1;
   FillHistUp("zptweight",histname,value,this_weight*r_zptweight,n_bin,x_min,x_max);
   FillHistDown("zptweight",histname,value,this_weight,n_bin,x_min,x_max);
 }
+void JHAnalyzerBase::FillHistZptWeight(TString histname, double value, double this_weight, int n_bin, double *xbins){
+  double r_zptweight=zptweight ? 1/zptweight : 1;
+  FillHistUp("zptweight",histname,value,this_weight*r_zptweight,n_bin,xbins);
+  FillHistDown("zptweight",histname,value,this_weight,n_bin,xbins);
+}
+
+
+void JHAnalyzerBase::FillHistTopPtReweight(TString histname, double value, double this_weight, int n_bin, double x_min, double x_max){
+  double r_topptweight= topptweight ? 1/topptweight : 1;
+  FillHistUp("topptweight",histname,value,this_weight*r_topptweight,n_bin,x_min,x_max);
+  FillHistDown("topptweight",histname,value,this_weight,n_bin,x_min,x_max);
+}
+void JHAnalyzerBase::FillHistTopPtReweight(TString histname, double value, double this_weight, int n_bin, double *xbins){
+  double r_topptweight= topptweight ? 1/topptweight : 1;
+  FillHistUp("topptweight",histname,value,this_weight*r_topptweight,n_bin,xbins);
+  FillHistDown("topptweight",histname,value,this_weight,n_bin,xbins);
+}
+
+
 void JHAnalyzerBase::FillHistPSSys(TString histname, double value, double this_weight, int n_bin, double x_min, double x_max){
   //PS weight//
   //https://twiki.cern.ch/twiki/bin/viewauth/CMS/HowToPDF#Parton_shower_weights
@@ -404,39 +537,141 @@ void JHAnalyzerBase::FillHistPSSys(TString histname, double value, double this_w
   //   1:{"name":"fsrUp","type":"group","group":"fsr"},
   //   2:{"name":"isrDown","type":"group","group":"isr"},
   //   3:{"name":"isrUp","type":"group","group":"isr"},
+
+
   int idx=0;
   for(const auto& _pssyst : *weight_PSSyst){
     FillHistIdx2("ps",0,idx,histname,value,this_weight*_pssyst,n_bin,x_min,x_max);
     idx+=1;
   }
+
 }
-void JHAnalyzerBase::FillHistPrefireSys(TString histname, double value, double this_weight, int n_bin, double x_min, double x_max){
-  //Prefire weight//
-  FillHistUp("prefire",histname,value,this_weight*r_Prefire[0],n_bin,x_min,x_max);
-  FillHistDown("prefire",histname,value,this_weight*r_Prefire[1],n_bin,x_min,x_max);
+void JHAnalyzerBase::FillHistPSSys(TString histname, double value, double this_weight, int n_bin, double *xbins){
+  //PS weight//
+  //https://twiki.cern.ch/twiki/bin/viewauth/CMS/HowToPDF#Parton_shower_weights
+  //"structure":{
+  //   0:{"name":"fsrDown","type":"group","group":"fsr"},
+  //   1:{"name":"fsrUp","type":"group","group":"fsr"},
+  //   2:{"name":"isrDown","type":"group","group":"isr"},
+  //   3:{"name":"isrUp","type":"group","group":"isr"},
+
+
+  int idx=0;
+  for(const auto& _pssyst : *weight_PSSyst){
+    FillHistIdx2("ps",0,idx,histname,value,this_weight*_pssyst,n_bin,xbins);
+    idx+=1;
+  }
+
 }
 
+
+void JHAnalyzerBase::FillHistPDF(TString histname, double value, double this_weight, int n_bin, double x_min, double x_max){
+  int idx=0;
+  int _size=weight_PDF->size();
+  for(const auto& _wsyst : *weight_PDF){
+    FillHistIdx2(PDFalias,_size,idx,histname,value,this_weight*_wsyst,n_bin,x_min,x_max);
+    idx+=1;
+  }
+}
+void JHAnalyzerBase::FillHistPDF(TString histname, double value, double this_weight, int n_bin, double *xbins){
+  int idx=0;
+  int _size=weight_PDF->size();
+  for(const auto& _wsyst : *weight_PDF){
+    FillHistIdx2(PDFalias,_size,idx,histname,value,this_weight*_wsyst,n_bin,xbins);
+    idx+=1;
+  }
+}
+
+
+void JHAnalyzerBase::FillHistScale(TString histname, double value, double this_weight, int n_bin, double x_min, double x_max){
+  int idx=0;
+  int _size=weight_Scale->size();
+  for(const auto& _wsyst : *weight_Scale){
+    FillHistIdx2("QCDScale",_size,idx,histname,value,this_weight*_wsyst,n_bin,x_min,x_max);
+    idx+=1;
+  }
+}
+void JHAnalyzerBase::FillHistScale(TString histname, double value, double this_weight, int n_bin, double *xbins){
+  int idx=0;
+  int _size=weight_Scale->size();
+  for(const auto& _wsyst : *weight_Scale){
+    FillHistIdx2("QCDScale",_size,idx,histname,value,this_weight*_wsyst,n_bin,xbins);
+    idx+=1;
+  }
+}
+
+
+void JHAnalyzerBase::FillHistAlphaS(TString histname, double value, double this_weight, int n_bin, double x_min, double x_max){
+  int idx=0;
+  int _size=weight_AlphaS->size();
+  for(const auto& _wsyst : *weight_AlphaS){
+    FillHistIdx2(PDFalias+"_AlphaS",_size,idx,histname,value,this_weight*_wsyst,n_bin,x_min,x_max);
+    idx+=1;
+  }
+}
+void JHAnalyzerBase::FillHistAlphaS(TString histname, double value, double this_weight, int n_bin, double *xbins){
+  int idx=0;
+  int _size=weight_AlphaS->size();
+  for(const auto& _wsyst : *weight_AlphaS){
+    FillHistIdx2(PDFalias+"_AlphaS",_size,idx,histname,value,this_weight*_wsyst,n_bin,xbins);
+    idx+=1;
+  }
+}
+
+
+void JHAnalyzerBase::FillHistPrefireSys(TString histname, double value, double this_weight, int n_bin, double x_min, double x_max){
+  //Prefire weight//
+  FillHistUp("prefire"+DataEra,histname,value,this_weight*r_Prefire[0],n_bin,x_min,x_max);
+  FillHistDown("prefire"+DataEra,histname,value,this_weight*r_Prefire[1],n_bin,x_min,x_max);
+}
+void JHAnalyzerBase::FillHistPrefireSys(TString histname, double value, double this_weight, int n_bin, double *xbins){
+  //Prefire weight//
+  FillHistUp("prefire"+DataEra,histname,value,this_weight*r_Prefire[0],n_bin,xbins);
+  FillHistDown("prefire"+DataEra,histname,value,this_weight*r_Prefire[1],n_bin,xbins);
+}
+/*
 void JHAnalyzerBase::FillHistJetPUID(TString histname, double value, double this_weight, int n_bin, double x_min, double x_max){
   //Prefire weight//
   FillHistUp("jetpuid",histname,value,this_weight*r_jetpuidsf_up,n_bin,x_min,x_max);
   FillHistDown("jetpuid",histname,value,this_weight*r_jetpuidsf_down,n_bin,x_min,x_max);
 }
-
+void JHAnalyzerBase::FillHistJetPUID(TString histname, double value, double this_weight, int n_bin, double *xbins){
+  //Prefire weight//
+  FillHistUp("jetpuid",histname,value,this_weight*r_jetpuidsf_up,n_bin,xbins);
+  FillHistDown("jetpuid",histname,value,this_weight*r_jetpuidsf_down,n_bin,xbins);
+}
+*/
 
 void JHAnalyzerBase::FillHistBtag(TString histname, double value, double this_weight, int n_bin, double x_min, double x_max){
   //btag weight//  
   FillHistIdx2("btag","LTagCorr","Up",   histname, value,this_weight*r_SystUpLTagCorr,  n_bin,x_min,x_max);
   FillHistIdx2("btag","LTagCorr","Down", histname, value,this_weight*r_SystDownLTagCorr,n_bin,x_min,x_max);
 
-  FillHistIdx2("btag","LTagUnCorr","Up",  histname, value,this_weight*r_SystUpLTagUnCorr,  n_bin,x_min,x_max);
-  FillHistIdx2("btag","LTagUnCorr","Down",histname, value,this_weight*r_SystDownLTagUnCorr,n_bin,x_min,x_max);
+  FillHistIdx2("btag","LTagUnCorr"+DataEra,"Up",  histname, value,this_weight*r_SystUpLTagUnCorr,  n_bin,x_min,x_max);
+  FillHistIdx2("btag","LTagUnCorr"+DataEra,"Down",histname, value,this_weight*r_SystDownLTagUnCorr,n_bin,x_min,x_max);
 
   FillHistIdx2("btag","HTagCorr","Up",    histname, value,this_weight*r_SystUpHTagCorr,  n_bin,x_min,x_max);
   FillHistIdx2("btag","HTagCorr","Down",  histname, value,this_weight*r_SystDownHTagCorr,n_bin,x_min,x_max);
 
-  FillHistIdx2("btag","HTagUnCorr","Up",   histname, value,this_weight*r_SystUpHTagUnCorr,  n_bin,x_min,x_max);
-  FillHistIdx2("btag","HTagUnCorr","Down", histname, value,this_weight*r_SystDownHTagUnCorr,n_bin,x_min,x_max);
+  FillHistIdx2("btag","HTagUnCorr"+DataEra,"Up",   histname, value,this_weight*r_SystUpHTagUnCorr,  n_bin,x_min,x_max);
+  FillHistIdx2("btag","HTagUnCorr"+DataEra,"Down", histname, value,this_weight*r_SystDownHTagUnCorr,n_bin,x_min,x_max);
 }
+void JHAnalyzerBase::FillHistBtag(TString histname, double value, double this_weight, int n_bin, double *xbins){
+  //btag weight//  
+  FillHistIdx2("btag","LTagCorr","Up",   histname, value,this_weight*r_SystUpLTagCorr,  n_bin,xbins);
+  FillHistIdx2("btag","LTagCorr","Down", histname, value,this_weight*r_SystDownLTagCorr,n_bin,xbins);
+
+  FillHistIdx2("btag","LTagUnCorr"+DataEra,"Up",  histname, value,this_weight*r_SystUpLTagUnCorr,  n_bin,xbins);
+  FillHistIdx2("btag","LTagUnCorr"+DataEra,"Down",histname, value,this_weight*r_SystDownLTagUnCorr,n_bin,xbins);
+
+  FillHistIdx2("btag","HTagCorr","Up",    histname, value,this_weight*r_SystUpHTagCorr,  n_bin,xbins);
+  FillHistIdx2("btag","HTagCorr","Down",  histname, value,this_weight*r_SystDownHTagCorr,n_bin,xbins);
+
+  FillHistIdx2("btag","HTagUnCorr"+DataEra,"Up",   histname, value,this_weight*r_SystUpHTagUnCorr,  n_bin,xbins);
+  FillHistIdx2("btag","HTagUnCorr"+DataEra,"Down", histname, value,this_weight*r_SystDownHTagUnCorr,n_bin,xbins);
+}
+
+
 
 
 //----EffTool----//
@@ -447,7 +682,18 @@ void JHAnalyzerBase::FillHistElectronID(TString histname, double value, double t
   for(unsigned int iset=0;iset<setsize;iset++){
     unsigned int memsize = w_ElectronID[iset].size();
     for(unsigned int imem=0;imem<memsize;imem++){
-      FillHistIdx2("electronID",iset,imem,histname,value,this_weight*r_ElectronID[iset][imem],n_bin,x_min,x_max);
+      FillHistIdx2("electronID"+DataEra,iset,imem,histname,value,this_weight*r_ElectronID[iset][imem],n_bin,x_min,x_max);
+    }
+  }
+}
+void JHAnalyzerBase::FillHistElectronID(TString histname, double value, double this_weight, int n_bin, double *xbins){
+  //ElectronID weight//
+  //vector<vector<double>> w_ElectronID
+  unsigned int setsize = w_ElectronID.size();
+  for(unsigned int iset=0;iset<setsize;iset++){
+    unsigned int memsize = w_ElectronID[iset].size();
+    for(unsigned int imem=0;imem<memsize;imem++){
+      FillHistIdx2("electronID"+DataEra,iset,imem,histname,value,this_weight*r_ElectronID[iset][imem],n_bin,xbins);
     }
   }
 }
@@ -459,7 +705,18 @@ void JHAnalyzerBase::FillHistElectronRECO(TString histname, double value, double
   for(unsigned int iset=0;iset<setsize;iset++){
     unsigned int memsize = w_ElectronRECO[iset].size();
     for(unsigned int imem=0;imem<memsize;imem++){
-      FillHistIdx2("electronRECO",iset,imem,histname,value,this_weight*r_ElectronRECO[iset][imem],n_bin,x_min,x_max);
+      FillHistIdx2("electronRECO"+DataEra,iset,imem,histname,value,this_weight*r_ElectronRECO[iset][imem],n_bin,x_min,x_max);
+    }
+  }
+}
+void JHAnalyzerBase::FillHistElectronRECO(TString histname, double value, double this_weight, int n_bin, double *xbins){
+  //ElectronRECO weight//
+  //vector<vector<double>> w_ElectronRECO
+  unsigned int setsize = w_ElectronRECO.size();
+  for(unsigned int iset=0;iset<setsize;iset++){
+    unsigned int memsize = w_ElectronRECO[iset].size();
+    for(unsigned int imem=0;imem<memsize;imem++){
+      FillHistIdx2("electronRECO"+DataEra,iset,imem,histname,value,this_weight*r_ElectronRECO[iset][imem],n_bin,xbins);
     }
   }
 }
@@ -472,7 +729,18 @@ void JHAnalyzerBase::FillHistElectronTrigger(TString histname, double value, dou
   for(unsigned int iset=0;iset<setsize;iset++){
     unsigned int memsize = w_ElectronTrigger[iset].size();
     for(unsigned int imem=0;imem<memsize;imem++){
-      FillHistIdx2("electronTrigger",iset,imem,histname,value,this_weight*r_ElectronTrigger[iset][imem],n_bin,x_min,x_max);
+      FillHistIdx2("electronTrigger"+DataEra,iset,imem,histname,value,this_weight*r_ElectronTrigger[iset][imem],n_bin,x_min,x_max);
+    }
+  }
+}
+void JHAnalyzerBase::FillHistElectronTrigger(TString histname, double value, double this_weight, int n_bin, double *xbins){
+  //ElectronTrigger weight//
+  //vector<vector<double>> w_ElectronTrigger
+  unsigned int setsize = w_ElectronTrigger.size();
+  for(unsigned int iset=0;iset<setsize;iset++){
+    unsigned int memsize = w_ElectronTrigger[iset].size();
+    for(unsigned int imem=0;imem<memsize;imem++){
+      FillHistIdx2("electronTrigger"+DataEra,iset,imem,histname,value,this_weight*r_ElectronTrigger[iset][imem],n_bin,xbins);
     }
   }
 }
@@ -485,10 +753,23 @@ void JHAnalyzerBase::FillHistMuonID(TString histname, double value, double this_
   for(unsigned int iset=0;iset<setsize;iset++){
     unsigned int memsize = w_MuonID[iset].size();
     for(unsigned int imem=0;imem<memsize;imem++){
-      FillHistIdx2("muonID",iset,imem,histname,value,this_weight*r_MuonID[iset][imem],n_bin,x_min,x_max);
+      FillHistIdx2("muonID"+DataEra,iset,imem,histname,value,this_weight*r_MuonID[iset][imem],n_bin,x_min,x_max);
     }
   }
 }
+void JHAnalyzerBase::FillHistMuonID(TString histname, double value, double this_weight, int n_bin, double *xbins){
+  //MuonID weight//
+  //vector<vector<double>> w_MuonID
+  unsigned int setsize = w_MuonID.size();
+  for(unsigned int iset=0;iset<setsize;iset++){
+    unsigned int memsize = w_MuonID[iset].size();
+    for(unsigned int imem=0;imem<memsize;imem++){
+      FillHistIdx2("muonID"+DataEra,iset,imem,histname,value,this_weight*r_MuonID[iset][imem],n_bin,xbins);
+    }
+  }
+}
+
+
 
 void JHAnalyzerBase::FillHistMuonRECO(TString histname, double value, double this_weight, int n_bin, double x_min, double x_max){
   //MuonRECO weight//
@@ -497,7 +778,18 @@ void JHAnalyzerBase::FillHistMuonRECO(TString histname, double value, double thi
   for(unsigned int iset=0;iset<setsize;iset++){
     unsigned int memsize = w_MuonRECO[iset].size();
     for(unsigned int imem=0;imem<memsize;imem++){
-      FillHistIdx2("muonRECO",iset,imem,histname,value,this_weight*r_MuonRECO[iset][imem],n_bin,x_min,x_max);
+      FillHistIdx2("muonRECO"+DataEra,iset,imem,histname,value,this_weight*r_MuonRECO[iset][imem],n_bin,x_min,x_max);
+    }
+  }
+}
+void JHAnalyzerBase::FillHistMuonRECO(TString histname, double value, double this_weight, int n_bin, double *xbins){
+  //MuonRECO weight//
+  //vector<vector<double>> w_MuonRECO
+  unsigned int setsize = w_MuonRECO.size();
+  for(unsigned int iset=0;iset<setsize;iset++){
+    unsigned int memsize = w_MuonRECO[iset].size();
+    for(unsigned int imem=0;imem<memsize;imem++){
+      FillHistIdx2("muonRECO"+DataEra,iset,imem,histname,value,this_weight*r_MuonRECO[iset][imem],n_bin,xbins);
     }
   }
 }
@@ -509,7 +801,18 @@ void JHAnalyzerBase::FillHistMuonTrigger(TString histname, double value, double 
   for(unsigned int iset=0;iset<setsize;iset++){
     unsigned int memsize = w_MuonTrigger[iset].size();
     for(unsigned int imem=0;imem<memsize;imem++){
-      FillHistIdx2("muonTrigger",iset,imem,histname,value,this_weight*r_MuonTrigger[iset][imem],n_bin,x_min,x_max);
+      FillHistIdx2("muonTrigger"+DataEra,iset,imem,histname,value,this_weight*r_MuonTrigger[iset][imem],n_bin,x_min,x_max);
+    }
+  }
+}
+void JHAnalyzerBase::FillHistMuonTrigger(TString histname, double value, double this_weight, int n_bin, double *xbins){
+  //MuonTrigger weight//
+  //vector<vector<double>> w_MuonTrigger
+  unsigned int setsize = w_MuonTrigger.size();
+  for(unsigned int iset=0;iset<setsize;iset++){
+    unsigned int memsize = w_MuonTrigger[iset].size();
+    for(unsigned int imem=0;imem<memsize;imem++){
+      FillHistIdx2("muonTrigger"+DataEra,iset,imem,histname,value,this_weight*r_MuonTrigger[iset][imem],n_bin,xbins);
     }
   }
 }
@@ -521,72 +824,25 @@ void JHAnalyzerBase::FillHistMuonTrk(TString histname, double value, double this
   for(unsigned int iset=0;iset<setsize;iset++){
     unsigned int memsize = w_MuonTrk[iset].size();
     for(unsigned int imem=0;imem<memsize;imem++){
-      FillHistIdx2("muonTrk",iset,imem,histname,value,this_weight*r_MuonTrk[iset][imem],n_bin,x_min,x_max);
+      FillHistIdx2("muonTrk"+DataEra,iset,imem,histname,value,this_weight*r_MuonTrk[iset][imem],n_bin,x_min,x_max);
+    }
+  }
+}
+void JHAnalyzerBase::FillHistMuonTrk(TString histname, double value, double this_weight, int n_bin, double *xbins){
+  //MuonTrk weight//
+  //vector<vector<double>> w_MuonTrk
+  unsigned int setsize = w_MuonTrk.size();
+  for(unsigned int iset=0;iset<setsize;iset++){
+    unsigned int memsize = w_MuonTrk[iset].size();
+    for(unsigned int imem=0;imem<memsize;imem++){
+      FillHistIdx2("muonTrk"+DataEra,iset,imem,histname,value,this_weight*r_MuonTrk[iset][imem],n_bin,xbins);
     }
   }
 }
 
 
 
-/*
-void JHAnalyzerBase::FillReservedHistWeightBase(){
-  for(const auto& arg : vReserveHist){ 
 
-    TString histname=arg.histname;
-    double value=arg.value;
-    double this_weight=arg.weight;
-    int n_bin=arg.n_bin;
-    double x_min=arg.x_min;
-    double x_max=arg.x_max;
-
-    
-    //Nominal//
-    AnalyzerCore::FillHist(histname+"/"+ProcessName,value,this_weight,n_bin,x_min,x_max);
-  }
-  if(IsDATA) return;
-  if(!runSys) return;
-  if(!runWeightBase) return;
-  //---Here, weightbase sys varation only--//
-  for(const auto& arg : vReserveHist){ 
-    TString histname=arg.histname;
-    double value=arg.value;
-    double this_weight=arg.weight;
-    int n_bin=arg.n_bin;
-    double x_min=arg.x_min;
-    double x_max=arg.x_max;
-    //-PU
-    FillHistPUSys(histname,value,this_weight,n_bin,x_min,x_max);
-    //-PartonShower
-    FillHistPSSys(histname,value,this_weight,n_bin,x_min,x_max);
-    //prefire//
-    FillHistPrefireSys(histname,value,this_weight,n_bin,x_min,x_max);
-    //btag
-    FillHistBtag(histname,value,this_weight,n_bin,x_min,x_max);
-    //zptweight
-    FillHistZptWeight(histname,value,this_weight,n_bin,x_min,x_max);
-    //JetPUID
-    FillHistJetPUID(histname,value,this_weight,n_bin,x_min,x_max);
-
-    ///---EffTool--//
-    //electronID//
-    FillHistElectronID(histname,value,this_weight,n_bin,x_min,x_max);
-    //electronRECO
-    FillHistElectronRECO(histname,value,this_weight,n_bin,x_min,x_max);
-    //electronTrigger
-    FillHistElectronTrigger(histname,value,this_weight,n_bin,x_min,x_max);
-
-    //muonID
-    FillHistMuonID(histname,value,this_weight,n_bin,x_min,x_max);
-    //muonRECO
-    FillHistMuonRECO(histname,value,this_weight,n_bin,x_min,x_max);
-    //MuonTrigger
-    FillHistMuonTrigger(histname,value,this_weight,n_bin,x_min,x_max);
-    //MuonTrk
-    FillHistMuonTrk(histname,value,this_weight,n_bin,x_min,x_max);
-  }
-
-}
-*/
 void JHAnalyzerBase::FillHistWeightBase(TString histname,double value,double this_weight,int n_bin,double x_min,double x_max){
   //Nominal//
   AnalyzerCore::FillHist(histname+"/"+ProcessName,value,this_weight,n_bin,x_min,x_max);
@@ -595,6 +851,8 @@ void JHAnalyzerBase::FillHistWeightBase(TString histname,double value,double thi
   if(!runSys) return;
   //-PU
   FillHistPUSys(histname,value,this_weight,n_bin,x_min,x_max);
+  if(pusysonly) return;
+
   //-PartonShower
   FillHistPSSys(histname,value,this_weight,n_bin,x_min,x_max);
   //prefire//
@@ -604,7 +862,7 @@ void JHAnalyzerBase::FillHistWeightBase(TString histname,double value,double thi
   //zptweight
   FillHistZptWeight(histname,value,this_weight,n_bin,x_min,x_max);
   //jetpuid
-  FillHistJetPUID(histname,value,this_weight,n_bin,x_min,x_max);
+  //FillHistJetPUID(histname,value,this_weight,n_bin,x_min,x_max);
   ///---EffTool--//
   //electronID//
   FillHistElectronID(histname,value,this_weight,n_bin,x_min,x_max);
@@ -621,39 +879,70 @@ void JHAnalyzerBase::FillHistWeightBase(TString histname,double value,double thi
   FillHistMuonTrigger(histname,value,this_weight,n_bin,x_min,x_max);
   //MuonTrk
   FillHistMuonTrk(histname,value,this_weight,n_bin,x_min,x_max);
+
+  //PDF syst
+  FillHistPDF(histname,value,this_weight,n_bin,x_min,x_max);
+  //AlphaS
+  FillHistAlphaS(histname,value,this_weight,n_bin,x_min,x_max);
+  //muF,muR
+  FillHistScale(histname,value,this_weight,n_bin,x_min,x_max);
+  //topptweight
+  FillHistTopPtReweight(histname,value,this_weight,n_bin,x_min,x_max);
+
 }
 
 
 
+void JHAnalyzerBase::FillHistWeightBase(TString histname,double value,double this_weight,int n_bin,double *xbins){
+  //Nominal//
+  AnalyzerCore::FillHist(histname+"/"+ProcessName,value,this_weight,n_bin,xbins);
+  
+  if(IsDATA) return;
+  if(!runSys) return;
+  //-PU
+  FillHistPUSys(histname,value,this_weight,n_bin,xbins);
+  if(pusysonly) return;
 
-/*
-void JHAnalyzerBase::FillReservedHistMomentumVariations(){
- for(const auto &arg : vReserveHist){    
-    TString histname="SYS/"+arg.histname+"/"+sysname_current+"/0/"+sysdir_current;
-    double value=arg.value;
-    double this_weight=arg.weight;
-    int n_bin=arg.n_bin;
-    double x_min=arg.x_min;
-    double x_max=arg.x_max;   
-    AnalyzerCore::FillHist(histname+"/"+ProcessName,value,this_weight,n_bin,x_min,x_max);
- }
+  //-PartonShower
+  FillHistPSSys(histname,value,this_weight,n_bin,xbins);
+  //prefire//
+  FillHistPrefireSys(histname,value,this_weight,n_bin,xbins);
+  //btag
+  FillHistBtag(histname,value,this_weight,n_bin,xbins);
+  //zptweight
+  FillHistZptWeight(histname,value,this_weight,n_bin,xbins);
+  //jetpuid
+  //FillHistJetPUID(histname,value,this_weight,n_bin,xbins);
+  ///---EffTool--//
+  //electronID//
+  FillHistElectronID(histname,value,this_weight,n_bin,xbins);
+  //electronRECO
+  FillHistElectronRECO(histname,value,this_weight,n_bin,xbins);
+  //electronTrigger
+  FillHistElectronTrigger(histname,value,this_weight,n_bin,xbins);
+  
+  //muonID
+  FillHistMuonID(histname,value,this_weight,n_bin,xbins);
+  //muonRECO
+  FillHistMuonRECO(histname,value,this_weight,n_bin,xbins);
+  //MuonTrigger
+  FillHistMuonTrigger(histname,value,this_weight,n_bin,xbins);
+  //MuonTrk
+  FillHistMuonTrk(histname,value,this_weight,n_bin,xbins);
+
+  //PDF syst
+  FillHistPDF(histname,value,this_weight,n_bin,xbins);
+  //AlphaS
+  FillHistAlphaS(histname,value,this_weight,n_bin,xbins);
+  //muF,muR
+  FillHistScale(histname,value,this_weight,n_bin,xbins);
+  //topptweight
+  FillHistTopPtReweight(histname,value,this_weight,n_bin,xbins);
+
 }
 
-void JHAnalyzerBase::FillReservedHistLeptonMomentumVariations(){
- for(const auto &arg : vReserveHist){    
-   TString histname="SYS/"+arg.histname+"/"+sysname_current+"/"+sysidx1_current+"/"+sysidx2_current;
-    double value=arg.value;
-    double this_weight=arg.weight;
-    int n_bin=arg.n_bin;
-    double x_min=arg.x_min;
-    double x_max=arg.x_max;   
-    AnalyzerCore::FillHist(histname+"/"+ProcessName,value,this_weight,n_bin,x_min,x_max);
- }
-}
-*/
-void JHAnalyzerBase::ClearReserveHist(){
-  vReserveHist.clear();
-}
+
+
 
 void JHAnalyzerBase::SetSysSimpleMuon(int direction){
   sysname_current="muonscale";
@@ -674,7 +963,7 @@ void JHAnalyzerBase::SetSysSimpleMuon(int direction){
   std::sort(AllMuons.begin(), AllMuons.end(), PtComparing);
   AllElectrons=AllElectrons_roch;
   AllJets=AllJets_raw;
-  PuppiMET=UpdateMETByMuonScale(PuppiMET_roch);  
+  CurrentMET=UpdateMETByMuonScale(CurrentMET_roch);  
   
 }
 
@@ -697,35 +986,17 @@ void JHAnalyzerBase::SetSysSimpleElectron(int direction){
   std::sort(AllElectrons.begin(), AllElectrons.end(), PtComparing);
   AllMuons=AllMuons_roch;
   AllJets=AllJets_raw;
-  PuppiMET=UpdateMETByElectronScale(PuppiMET_roch);  
+  CurrentMET=UpdateMETByElectronScale(CurrentMET_roch);  
   
 }
 void JHAnalyzerBase::SetSys(MomentumVar _sys){
   sysname_current=_sys.name;
+
   //sysdir_current=_sys.dir;
   sysidx1_current="0";
+
   sysidx2_current=_sys.dir;
-  /*
-  if(_sys.muonscale!=0){
-    //AllMuons=ScaleMuons(AllMuons_raw,_sys.muonscale);
-    AllMuons=ScaleMuons(AllMuons_roch,_sys.muonscale);
-    std::sort(AllMuons.begin(), AllMuons.end(), PtComparing);
-    PuppiMET=UpdateMETByMuonScale(PuppiMET_roch,_sys.muonscale); 
-    //AllElectrons=AllElectrons_raw;//Collection with nominal 
-    AllElectrons=AllElectrons_roch;//Collection with nominal 
-    AllJets=AllJets_raw;
-  }
-  else if(_sys.electronscale!=0){ 
-    //AllMuons=AllMuons_raw;
-    AllMuons=AllMuons_roch;
-    PuppiMET=UpdateMETByElectronScale(PuppiMET_roch,_sys.electronscale); 
-    // AllElectrons=ScaleElectrons(AllElectrons_raw,_sys.electronscale);
-    AllElectrons=ScaleElectrons(AllElectrons_roch,_sys.electronscale);
-    std::sort(AllElectrons.begin(), AllElectrons.end(), PtComparing);
-    AllJets=AllJets_raw;
-  }
-  else if(_sys.jes!=0){
-  */
+
   if(_sys.jes!=0){
     //AllMuons=AllMuons_raw;
     AllMuons=AllMuons_roch;
@@ -733,7 +1004,7 @@ void JHAnalyzerBase::SetSys(MomentumVar _sys){
     AllElectrons=AllElectrons_roch;
     AllJets=ScaleJets(AllJets_raw,_sys.jes);
     std::sort(AllJets.begin(), AllJets.end(), PtComparing);
-    PuppiMET=UpdateMETByJetScale(PuppiMET_roch,_sys.jes); 
+    CurrentMET=UpdateMETByJetScale(CurrentMET_roch,_sys.jes); 
   }
   else if(_sys.jer!=0){
     //AllMuons=AllMuons_raw;
@@ -742,7 +1013,7 @@ void JHAnalyzerBase::SetSys(MomentumVar _sys){
     AllElectrons=AllElectrons_roch;
     AllJets=SmearJets(AllJets_raw,_sys.jer);
     std::sort(AllJets.begin(), AllJets.end(), PtComparing);
-    PuppiMET=UpdateMETByJetSmear(PuppiMET_roch,_sys.jer);
+    CurrentMET=UpdateMETByJetSmear(CurrentMET_roch,_sys.jer);
   }
   else if(_sys.met!=0){
     //AllMuons=AllMuons_raw;
@@ -750,7 +1021,7 @@ void JHAnalyzerBase::SetSys(MomentumVar _sys){
     //AllElectrons=AllElectrons_raw;
     AllElectrons=AllElectrons_roch;
     AllJets=AllJets_raw;
-    PuppiMET=GetShiftedMET(_sys.met);
+    CurrentMET=GetShiftedMET(_sys.met);
   }
   else{
     cout << "[JHAnalyzerBase::SetSyst] No systematic shift for ->" << sysname_current << endl;
@@ -904,7 +1175,7 @@ void JHAnalyzerBase::SetSys(MuonMomentumVar _sys){
   //std::sort(AllMuons.begin(), AllMuons.end(), PtComparing);
   AllElectrons=AllElectrons_roch;
   AllJets=AllJets_raw;
-  PuppiMET=UpdateMETByMuonScale(PuppiMET_roch);
+  CurrentMET=UpdateMETByMuonScale(CurrentMET_roch);
   sysidx1_current=std::to_string(_sys.idx1);
   sysidx2_current=std::to_string(_sys.idx2);
 }
@@ -919,7 +1190,7 @@ void JHAnalyzerBase::SetSys(ElectronMomentumVar _sys){
   //std::sort(AllElectrons.begin(), AllElectrons.end(), PtComparing);
 
   AllJets=AllJets_raw;
-  PuppiMET=UpdateMETByElectronScale(PuppiMET_roch);
+  CurrentMET=UpdateMETByElectronScale(CurrentMET_roch);
   sysidx1_current=std::to_string(_sys.idx1);
   sysidx2_current=std::to_string(_sys.idx2);  
 }
@@ -944,10 +1215,24 @@ void JHAnalyzerBase::InitAllObjects(){
 }
 
 void JHAnalyzerBase::InitMET(){
-  TLorentzVector PuppiMET_raw;
-  PuppiMET_raw.SetPtEtaPhiM(PuppiMET_Type1_pt,0.,PuppiMET_Type1_phi,0.);
-  PuppiMET_roch = UpdateMETByMuonRochCorr(PuppiMET_raw,AllMuons_raw);
-  PuppiMET=PuppiMET_roch;
+  TLorentzVector CurrentMET_raw;
+  if(UsePfMET){
+    if(UsePhiCorrMET){
+      CurrentMET_raw.SetPtEtaPhiM(pfMET_Type1_PhiCor_pt,0.,pfMET_Type1_PhiCor_phi,0.);
+    }
+    else{
+      CurrentMET_raw.SetPtEtaPhiM(pfMET_Type1_pt,0.,pfMET_Type1_phi,0.);
+    }
+  }
+  else{
+    if(UsePhiCorrMET){
+      CurrentMET_raw.SetPtEtaPhiM(PuppiMET_Type1_PhiCor_pt,0.,PuppiMET_Type1_PhiCor_phi,0.);
+    }else{
+      CurrentMET_raw.SetPtEtaPhiM(PuppiMET_Type1_pt,0.,PuppiMET_Type1_phi,0.);
+    }
+  }
+  CurrentMET_roch = UpdateMETByMuonRochCorr(CurrentMET_raw,AllMuons_raw);
+  CurrentMET=CurrentMET_roch;
 }
 
 
@@ -1172,11 +1457,39 @@ TLorentzVector JHAnalyzerBase::GetShiftedMET(int sys){
   else{
     cout << "no MET shift for sys==" << sys << endl;
   }
-  double pt=PuppiMET_Type1_pt_shifts->at(idx);
-  double phi=PuppiMET_Type1_phi_shifts->at(idx);
-  TLorentzVector this_met;
-  this_met.SetPtEtaPhiM(pt,0,phi,0);
+  
+  double pt=0;
+  double phi=0;
+  TLorentzVector this_met;  
+  if(UsePfMET){
+    if(UsePhiCorrMET){
+      pt=pfMET_Type1_PhiCor_pt_shifts->at(idx);
+      phi=pfMET_Type1_PhiCor_phi_shifts->at(idx);
+      this_met.SetPtEtaPhiM(pt,0,phi,0);
+    }
+    else{
+      pt=pfMET_Type1_pt_shifts->at(idx);
+      phi=pfMET_Type1_phi_shifts->at(idx);
+      this_met.SetPtEtaPhiM(pt,0,phi,0);
+    }
+  } 
+  else{//puppi
+    if(UsePhiCorrMET){
+      //----No sys yet!!!
+      pt=PuppiMET_Type1_PhiCor_pt;
+      phi=PuppiMET_Type1_PhiCor_phi;
+      this_met.SetPtEtaPhiM(pt,0,phi,0);
+    }
+    else{
+      pt=PuppiMET_Type1_pt_shifts->at(idx);
+      phi=PuppiMET_Type1_phi_shifts->at(idx);
+      this_met.SetPtEtaPhiM(pt,0,phi,0);
+      
+    }
+  }
   return this_met;
+
+
 }
 
 
@@ -1417,7 +1730,7 @@ vector<Muon> JHAnalyzerBase::GetSingleMuReco(double ptmin, double etacut, double
     if(fabs(electron.Eta()) > etacut2) continue;
     //bool passID=AllElectrons[i].PassID("passLooseID");
     if(!electron.PassID("passVetoID")) continue;
-    return _v_muons;
+    return {};
   }
   //unsigned int muonsize = AllMuons.size();
 
@@ -1542,7 +1855,8 @@ vector<Electron> JHAnalyzerBase::GetSingleElReco(double ptmin, double etacut, do
     if(muon.Pt() < ptveto2) continue;
     if (!muon.PassID("POGLoose")) continue;
     if (!muon.PassSelector(Muon::Selector::TkIsoLoose)) continue;
-    return _v_electrons;
+    //if at list one muon passing all of the above conditions, return empty  
+    return {};
   }
 
 
@@ -1927,15 +2241,15 @@ vector<Jet> JHAnalyzerBase::GetTightJet(const vector<Lepton> &v_tightlep, double
 	break;
       }
     }
-    if(HasCloseLep)continue;
+    if(HasCloseLep) continue;
     //--end lepton cleaning--//
     v_tightjet.push_back(jet);
   }
   //--puid
-  if(_JetPUID!=""){
-    v_tightjet=map_jetpuid_tool[_JetPUID]->GetJetsPassPUID(v_tightjet);
-    SetJetPUIDSF(_JetPUID);
-  }
+  //if(_JetPUID!=""){
+  //  v_tightjet=map_jetpuid_tool[_JetPUID]->GetJetsPassPUID(v_tightjet);
+  //  SetJetPUIDSF(_JetPUID);
+  //}
   SetBtagSF(v_tightjet);
   return v_tightjet;
 }
@@ -2049,6 +2363,7 @@ void JHAnalyzerBase::SetBtagSF(const vector<Jet> &v_tightjet){
     r_SystDownHTagUnCorr     =mcCorr->GetBTaggingReweight_1a(v_tightjet, jtp,"SystDownHTagUnCorr")/btagsf;
   }
 }
+/*
 void JHAnalyzerBase::SetJetPUIDSF(TString _JetPUID){
   jetpuidsf=map_jetpuid_tool[_JetPUID]->GetCurrentSF();
   if(runSys){
@@ -2058,6 +2373,7 @@ void JHAnalyzerBase::SetJetPUIDSF(TString _JetPUID){
     r_jetpuidsf_down= jetpuidsf ? jetpuidsf_down/jetpuidsf : 0;
   }
 }
+*/
 /*
 void JHAnalyzerBase::SetMuonSFs(const vector<int> &v_muonidx){
   SetMuonRecoSF(v_muonidx);
@@ -2626,13 +2942,19 @@ double JHAnalyzerBase::GetP_along_Jet(TLorentzVector &lep, TLorentzVector &jet){
 JHAnalyzerBase::bmuonvar JHAnalyzerBase::Get_bmuonvar(Muon &this_muon, Jet &this_jet){
   //bmuon=Get_bmuonvars(AllMuons[i],jet);
   bmuonvar ret;
-  ret.P_jetrest=GetP_JetRestFrame(this_muon,this_jet);
-  ret.ptwrtjet=GetPt_wrt_Jet(this_muon,this_jet);
-  ret.dR_l_j=this_muon.DeltaR(this_jet);
   ret.nsip3d=fabs(this_muon.IP3D()/this_muon.IP3Derr());
-  ret.reltrkiso=this_muon.TrkIso()/this_muon.Pt();
   ret.reliso=this_muon.RelIso();
+  ret.ptwrtjet=GetPt_wrt_Jet(this_muon,this_jet);
+  ret.P_jetrest=GetP_JetRestFrame(this_muon,this_jet);
+  ret.bjet_charge_dot_bmuon_charge=this_muon.Charge()*this_jet.Charge();
+
+  //--remove 2409.2
+  
+  /*
   ret.charge=this_muon.Charge();
+  ret.dR_l_j=this_muon.DeltaR(this_jet);
+  ret.reltrkiso=this_muon.TrkIso()/this_muon.Pt();
+
   ret.palongjet=GetP_along_Jet(this_muon,this_jet);
   ret.palongjetratio=ret.palongjet/this_jet.P();
   ret.pt=this_muon.Pt();
@@ -2642,7 +2964,7 @@ JHAnalyzerBase::bmuonvar JHAnalyzerBase::Get_bmuonvar(Muon &this_muon, Jet &this
   ret.ntrackhits=this_muon.TrackerHits();
   ret.nvalidmuonhits=this_muon.ValidMuonHits();
   ret.nmatchedstations=this_muon.MatchedStations();
-  ret.bjet_charge_dot_bmuon_charge=this_muon.Charge()*this_jet.Charge();
+
 
   ret.isGlobalMuon=this_muon.IsType(Muon::GlobalMuon);
   ret.isTrackerMuon=this_muon.IsType(Muon::TrackerMuon);
@@ -2652,20 +2974,27 @@ JHAnalyzerBase::bmuonvar JHAnalyzerBase::Get_bmuonvar(Muon &this_muon, Jet &this
   ret.isRPCMuon=this_muon.IsType(Muon::RPCMuon);
   ret.isGEMMuon=this_muon.IsType(Muon::GEMMuon);
   ret.isME0Muon=this_muon.IsType(Muon::ME0Muon);
-
+  */
   return ret;
 }
 
 JHAnalyzerBase::belectronvar JHAnalyzerBase::Get_belectronvar(Electron &this_electron, Jet &this_jet){
   //belectron=Get_belectronvars(AllElectrons[i],jet);
   belectronvar ret;
-  ret.P_jetrest=GetP_JetRestFrame(this_electron,this_jet);
-  ret.ptwrtjet=GetPt_wrt_Jet(this_electron,this_jet);
-  ret.dR_l_j=this_electron.DeltaR(this_jet);
   ret.nsip3d=fabs(this_electron.IP3D()/this_electron.IP3Derr());
+  ret.reliso=this_electron.RelIso();
+  ret.ptwrtjet=GetPt_wrt_Jet(this_electron,this_jet);
+  ret.P_jetrest=GetP_JetRestFrame(this_electron,this_jet);
+  ret.bjet_charge_dot_belectron_charge=this_electron.Charge()*this_jet.Charge();
+
+
+
+
+  /*
+    --rm for v2409.2
+  ret.dR_l_j=this_electron.DeltaR(this_jet);  
   ret.reltrkiso=this_electron.TrkIso()/this_electron.Pt();                                                                                       
   ret.relecalPFClusterIso=this_electron.ecalPFClusterIso()/this_electron.Pt();
-  ret.reliso=this_electron.RelIso();
   ret.charge=this_electron.Charge();
   ret.IsGsfCtfScPixChargeConsistent=this_electron.IsGsfCtfScPixChargeConsistent();
   ret.palongjet=GetP_along_Jet(this_electron,this_jet);
@@ -2678,38 +3007,49 @@ JHAnalyzerBase::belectronvar JHAnalyzerBase::Get_belectronvar(Electron &this_ele
   ret.HoverE=this_electron.HoverE();
   ret.InvEminusInvP=fabs(this_electron.InvEminusInvP());
   ret.nmissinghits=this_electron.NMissingHits();
-  ret.bjet_charge_dot_belectron_charge=this_electron.Charge()*this_jet.Charge();
+    
+   */
+
   return ret;
 }
 
 
 JHAnalyzerBase::bjetvar JHAnalyzerBase::Get_bjetvar(Jet &this_jet){
   bjetvar ret;
-  ret.pt=this_jet.Pt();
-  ret.aeta=fabs(this_jet.Eta());
-  ret.eta=this_jet.Eta();
+
   ret.ChargedHadronEnergyFraction=this_jet.GetChargedHadronEnergyFraction();
   ret.NeutralHadronEnergyFraction=this_jet.GetNeutralHadronEnergyFraction();
   ret.NeutralEmEnergyFraction=this_jet.GetNeutralEmEnergyFraction();
   ret.ChargedEmEnergyFraction=this_jet.GetChargedEmEnergyFraction();
   ret.MuonEnergyFraction=this_jet.GetMuonEnergyFraction();
-  ret.charge=this_jet.Charge();
-  ret.abs_charge=fabs(ret.charge);
-  ret.partonFlavour=this_jet.partonFlavour();//if is data -> 0
-  ret.hadronFlavour=this_jet.hadronFlavour();//if is data -> 0
   ret.ChargedMultiplicity=this_jet.ChargedMultiplicity();
   ret.NeutralMultiplicity=this_jet.NeutralMultiplicity();
+  ret.abs_charge=fabs(ret.charge);
+  /*
+  ret.pt=this_jet.Pt();
+  ret.aeta=fabs(this_jet.Eta());
+  ret.eta=this_jet.Eta();
+
+  ret.charge=this_jet.Charge();
+
+  ret.partonFlavour=this_jet.partonFlavour();//if is data -> 0
+  ret.hadronFlavour=this_jet.hadronFlavour();//if is data -> 0
+
+  */
   return ret;
 }
 
 void JHAnalyzerBase::DeleteChargeScoreTool(){
+  cout << "delete mChargeTool" << endl;
   delete mChargeTool;
+  cout << "delete eChargeTool" << endl;
   delete eChargeTool;
+  cout << "delete jChargeTool" << endl;
   delete jChargeTool;
 }
 
 void JHAnalyzerBase::LoadChargeScoreTool(TString muon_version,TString electron_version, TString jet_version, bool applycut){
-  
+  IsChargeScoreToolOn=1;
   mChargeTool=new ChargeScoreTool("muon",muon_version,DataEra);
   eChargeTool=new ChargeScoreTool("electron",electron_version,DataEra);
   jChargeTool=new ChargeScoreTool("jet",jet_version,DataEra);
@@ -2788,24 +3128,20 @@ void JHAnalyzerBase::LoadChargeScoreTool(TString muon_version,TString electron_v
 
 
   if (applycut)SetChargeScoreCut(muon_version);
-
+  mChargeTool->SetScore();
+  eChargeTool->SetScore();
+  jChargeTool->SetScore();
 }
 void JHAnalyzerBase::SetChargeScoreCut(TString version){
-  if(version=="2405.2"){
-    SetChargeScoreCut_2405_2();
-  }
-  else if(version=="2405.4"){
-    SetChargeScoreCut_2405_4();
-  }
-  else if(version=="2405.4.3"){
-    SetChargeScoreCut_2405_4_3();
+  if(version=="2409.2"){
+    SetChargeScoreCut_2409_2();
   }
   else{
     cout << "[JHAnalyzerBase::SetChargeScoreCut]No version->" << version << endl;
     exit(1);
   }
 
-}
+}/*
 void JHAnalyzerBase::SetChargeScoreCut_2405_2(){
   map<TString,float> map_muon_mincut;
   map_muon_mincut["2016preVFP"]=0.66021;  map_muon_mincut["2016postVFP"]=0.69413;  map_muon_mincut["2017"]=0.72347; map_muon_mincut["2018"]=0.68502;
@@ -2892,9 +3228,40 @@ void JHAnalyzerBase::SetChargeScoreCut_2405_4_3(){
 
 
 }
+ */
+
+void JHAnalyzerBase::SetChargeScoreCut_2409_2(){
+  map<TString,float> map_muon_mincut;
+  map_muon_mincut["2016preVFP"]=0.49;  map_muon_mincut["2016postVFP"]=0.55;  map_muon_mincut["2017"]=0.49; map_muon_mincut["2018"]=0.52;
+  map<TString,float> map_muon_maxcut;
+  map_muon_maxcut["2016preVFP"]=0.22;  map_muon_maxcut["2016postVFP"]=0.15;  map_muon_maxcut["2017"]=0.19; map_muon_maxcut["2018"]=0.21;
+  map<TString,float> map_electron_mincut;
+  map_electron_mincut["2016preVFP"]=0.48;  map_electron_mincut["2016postVFP"]=0.51;  map_electron_mincut["2017"]=0.53; map_electron_mincut["2018"]=0.48;
+  map<TString,float> map_electron_maxcut;
+  map_electron_maxcut["2016preVFP"]=0.22;  map_electron_maxcut["2016postVFP"]=0.25;  map_electron_maxcut["2017"]=0.22; map_electron_maxcut["2018"]=0.22;
+  map<TString,float> map_jet_mincut;
+  map_jet_mincut["2016preVFP"]=0.5;  map_jet_mincut["2016postVFP"]=0.48;  map_jet_mincut["2017"]=0.38; map_jet_mincut["2018"]=0.45;
+  map<TString,float> map_jet_maxcut;//Turn off this region
+  map_jet_maxcut["2016preVFP"]=0.0;  map_jet_maxcut["2016postVFP"]=0.0;  map_jet_maxcut["2017"]=0.0; map_jet_maxcut["2018"]=0.0;
+
+
+  cout << "[JHAnalyzerBase::SetChargeScoreCut_2409_2] " << endl;
+  cout << "Muon" << endl;
+  mChargeTool->SetMinCut(map_muon_mincut[DataEra]);
+  mChargeTool->SetMaxCut(map_muon_maxcut[DataEra]);
+  cout << "Electron" << endl;
+  eChargeTool->SetMinCut(map_electron_mincut[DataEra]);
+  eChargeTool->SetMaxCut(map_electron_maxcut[DataEra]);
+  cout << "Jet" << endl;
+  jChargeTool->SetMinCut(map_jet_mincut[DataEra]);
+  jChargeTool->SetMaxCut(map_jet_maxcut[DataEra]);
+
+
+}
 
 
 void JHAnalyzerBase::SetMuonChargeScore(Muon &_this_bmuon, Jet &_this_bjet){
+  //bjet_ChargeTool=Get_bjetvar(_this_bjet);
   bmuon_ChargeTool=Get_bmuonvar(_this_bmuon,_this_bjet);//Change input variable value //set inputvariable
   mChargeTool->SetScore();
 }
@@ -2907,6 +3274,7 @@ double JHAnalyzerBase::GetMuonChargeScoreCoeff(){
 
 
 void JHAnalyzerBase::SetElectronChargeScore(Electron &_this_belectron, Jet &_this_bjet){
+  //bjet_ChargeTool=Get_bjetvar(_this_bjet);
   belectron_ChargeTool=Get_belectronvar(_this_belectron,_this_bjet);//Change input variable value //set inputvariable
   eChargeTool->SetScore();
 }
@@ -2928,10 +3296,11 @@ double JHAnalyzerBase::GetJetChargeScore(){
 double JHAnalyzerBase::GetJetChargeScoreCoeff(){
   return jChargeTool->GetCoefficient();
 }
-
+/*
 tuple<int,double,int,int,double,int> JHAnalyzerBase::GetBJetMuonScore_v2405_4_3(Jet &_bjet, vector<Muon> &_muoncoll){
   ///return max and min of the muon charge score
   //{im_max,bmuon_score_max,bmuon_charge_max,im_min,bmuon_score_min,bmuon_charge_min
+  bjet_ChargeTool=Get_bjetvar(_bjet);
   ///----Run Muon----//
   double bmuon_score_max=-999.;
   int bmuon_charge_max=0;
@@ -2970,12 +3339,138 @@ tuple<int,double,int,int,double,int> JHAnalyzerBase::GetBJetMuonScore_v2405_4_3(
   return {im_max,bmuon_score_max,bmuon_charge_max,im_min,bmuon_score_min,bmuon_charge_min};
 }
 
+*/
 
+vector<int> JHAnalyzerBase::GetMuonIdxInBJet(Jet &_bjet, vector<Muon> &_muoncoll){
+  vector<int> ret;
+  int im=-1;
+  for(auto& muon : _muoncoll){
+    im+=1;
+    if(muon.Pt() < 5.) continue;
+    if(muon.DeltaR(_bjet) > 0.4) continue;
+    if(muon.RelIso() > 10.) continue;
+    if(muon.Chi2()>10) continue;
+    if(muon.TrackerLayers()<1) continue;
+    if(muon.MatchedStations() <1) continue;
+    ret.push_back(im);
+  }
+  return ret;
+}
+
+tuple<int,double,int,int,double,int> JHAnalyzerBase::GetBJetMuonScore_v2409_2(Jet &_bjet, vector<Muon> &_muoncoll){
+  ///return max and min of the muon charge score
+  //{im_max,bmuon_score_max,bmuon_charge_max,im_min,bmuon_score_min,bmuon_charge_min
+  ///----Run Muon----//
+  bjet_ChargeTool=Get_bjetvar(_bjet);
+
+  double bmuon_score_max=-999.;
+  int bmuon_charge_max=0;
+
+  double bmuon_score_min=999.;
+  int bmuon_charge_min=0;
+  int im=-1, im_min=-1,im_max=-1;
+
+  for(auto& muon : _muoncoll){
+    im+=1;
+    if(muon.Pt() < 5.) continue;
+    if(muon.DeltaR(_bjet) > 0.4) continue;
+    if(muon.RelIso() > 10.) continue;
+    if(muon.Chi2()>10) continue;
+    if(muon.TrackerLayers()<1) continue;
+    if(muon.MatchedStations() <1) continue;
+
+
+    SetMuonChargeScore(muon,_bjet);
+    double this_muonscore=GetMuonChargeScore();
+    if(this_muonscore>bmuon_charge_max){
+      //BestMuon_max=&muon;
+      bmuon_score_max=this_muonscore;
+      bmuon_charge_max=muon.Charge();
+      im_max=im;
+    }
+    if(this_muonscore < bmuon_score_min ){
+
+      bmuon_score_min=this_muonscore;
+      bmuon_charge_min=muon.Charge();
+      im_min=im;
+    }
+
+
+  }//[end muon for loop]
+  return {im_max,bmuon_score_max,bmuon_charge_max,im_min,bmuon_score_min,bmuon_charge_min};
+}
+
+
+/*
 tuple<int,double,int,int,double,int> JHAnalyzerBase::GetBJetElectronScore_v2405_4_3(Jet &_bjet, vector<Electron> &_electroncoll){
   ///return max and min of the electron charge score
   //{ie_max,belectron_score_max,belectron_charge_max,ie_min,belectron_score_min,belectron_charge_min
   //----RunElectron
+  bjet_ChargeTool=Get_bjetvar(_bjet);
 
+  double belectron_score_max=-999.;
+  double belectron_charge_max=0;
+
+  double belectron_score_min=999.;
+  double belectron_charge_min=0;
+
+  int ie=-1,ie_min=-1,ie_max=-1;
+
+  for(auto& electron : _electroncoll){
+    ie+=1;
+    if(!electron.IsGsfCtfScPixChargeConsistent()) continue;
+    if(electron.Pt() < 5.) continue;
+    if(electron.DeltaR(_bjet) > 0.4) continue;
+    if(!electron.IsGsfCtfScPixChargeConsistent()) continue;
+    if(!electron.PassConversionVeto()) continue;
+    if(electron.RelIso() > 10.) continue;
+    if(electron.NMissingHits() != 0) continue;
+
+
+    SetElectronChargeScore(electron,_bjet);
+    double this_electronscore=GetElectronChargeScore();
+    if(this_electronscore>belectron_score_max){
+      belectron_score_max=this_electronscore;
+      belectron_charge_max=electron.Charge();
+      ie_max=ie;
+    }
+    if(this_electronscore<belectron_score_min){
+      belectron_score_min=this_electronscore;
+      belectron_charge_min=electron.Charge();
+      ie_min=ie;
+    }
+
+
+  }//[end electron for loop]
+
+
+  return {ie_max,belectron_score_max,belectron_charge_max,ie_min,belectron_score_min,belectron_charge_min};
+}
+*/
+
+vector<int> JHAnalyzerBase::GetElectronIdxInBJet(Jet &_bjet, vector<Electron> &_electroncoll){
+  vector<int> ret;
+  int ie=-1;
+  for(auto& electron : _electroncoll){
+    ie+=1;
+    if(!electron.IsGsfCtfScPixChargeConsistent()) continue;
+    if(electron.Pt() < 5.) continue;
+    if(electron.DeltaR(_bjet) > 0.4) continue;
+    if(!electron.IsGsfCtfScPixChargeConsistent()) continue;
+    if(!electron.PassConversionVeto()) continue;
+    if(electron.RelIso() > 10.) continue;
+    if(electron.NMissingHits() != 0) continue;
+    ret.push_back(ie);
+  }
+  return ret;
+}
+
+
+tuple<int,double,int,int,double,int> JHAnalyzerBase::GetBJetElectronScore_v2409_2(Jet &_bjet, vector<Electron> &_electroncoll){
+  ///return max and min of the electron charge score
+  //{ie_max,belectron_score_max,belectron_charge_max,ie_min,belectron_score_min,belectron_charge_min
+  //----RunElectron
+  bjet_ChargeTool=Get_bjetvar(_bjet);
 
   double belectron_score_max=-999.;
   double belectron_charge_max=0;
@@ -3019,6 +3514,7 @@ tuple<int,double,int,int,double,int> JHAnalyzerBase::GetBJetElectronScore_v2405_
 
 
 //---Get Good SoftMuonJet/SoftElectronJet. JetWithGoodChargeScore. JetWithPoorChargeScore
+/*
 tuple<int,bool,int,int,double> JHAnalyzerBase::GetBJetCharge_v2405_4_3(Jet &_bjet, vector<Muon> &_muoncoll, vector<Electron> &_electroncoll){
   //pair<charge,IsNotOpposite,leptonidx>
   
@@ -3100,11 +3596,97 @@ tuple<int,bool,int,int,double> JHAnalyzerBase::GetBJetCharge_v2405_4_3(Jet &_bje
 
 }
 
+*/
+
+
+
+//---Get Good SoftMuonJet/SoftElectronJet. JetWithGoodChargeScore. JetWithPoorChargeScore
+tuple<int,bool,int,int,double> JHAnalyzerBase::GetBJetCharge_v2409_2(Jet &_bjet, vector<Muon> &_muoncoll, vector<Electron> &_electroncoll){
+  //pair<charge,IsNotOpposite,leptonidx>
+  
+  ///----Run Muon----//
+  double bmuon_score_max=-999.;
+  int bmuon_charge_max=0;
+
+  double bmuon_score_min=999.;
+  int bmuon_charge_min=0;
+  int im_min=-1,im_max=-1;
+  
+  tuple<int,double,double,int,double,double> ret_muon=JHAnalyzerBase::GetBJetMuonScore_v2409_2(_bjet, _muoncoll);
+  //{im_max,bmuon_score_max,bmuon_charge_max,im_min,bmuon_score_min,bmuon_charge_min};
+  im_max=std::get<0>(ret_muon);
+  bmuon_score_max=std::get<1>(ret_muon);
+  bmuon_charge_max=std::get<2>(ret_muon);
+
+  im_min=std::get<3>(ret_muon);
+  bmuon_score_min=std::get<4>(ret_muon);
+  bmuon_charge_min=std::get<5>(ret_muon);
+
+
+  //---if a good muon exists, return charge
+  if(bmuon_score_max > mChargeTool->mincut){ //mincut == CutToMax
+    return {bmuon_charge_max,true,im_max,-1,bmuon_score_max};
+  }
+  else if(bmuon_score_min < mChargeTool->maxcut){ //maxcut == CutToMin
+    return {-bmuon_charge_min,false,im_min,-1,bmuon_score_min};
+  }
+
+  ///[END RunMuon]
+
+  //----RunElectron
+
+
+  double belectron_score_max=-999.;
+  double belectron_charge_max=0;
+
+  double belectron_score_min=999.;
+  double belectron_charge_min=0;
+
+  int ie_min=-1,ie_max=-1;
+
+  tuple<int,double,double,int,double,double> ret_electron=JHAnalyzerBase::GetBJetElectronScore_v2409_2(_bjet, _electroncoll);
+  //{ie_max,belectron_score_max,belectron_charge_max,ie_min,belectron_score_min,belectron_charge_min};
+  ie_max=std::get<0>(ret_electron);
+  belectron_score_max=std::get<1>(ret_electron);
+  belectron_charge_max=std::get<2>(ret_electron);
+
+  ie_min=std::get<3>(ret_electron);
+  belectron_score_min=std::get<4>(ret_electron);
+  belectron_charge_min=std::get<5>(ret_electron);
+
+
+
+  if(belectron_score_max > eChargeTool->mincut){ //mincut == CutToMax
+    return {2*belectron_charge_max,true,-1,ie_max,belectron_score_max};
+  }
+  else if(belectron_score_min < eChargeTool->maxcut){ //maxcut == CutToMin
+    return {-2*belectron_charge_min,false,-1,ie_min,belectron_score_min};
+  }
+
+
+  ///[END of RunElectron]
+
+  //---now check good jet
+
+  SetJetChargeScore(_bjet);
+  double bjet_score=GetJetChargeScore();
+  int bjet_charge=_bjet.Charge() > 0 ? +1 : -1;
+  if(bjet_score>jChargeTool->mincut){
+    return {3*bjet_charge,true,-1,-1,bjet_score}; 
+  }
+  else if(bjet_score < jChargeTool->maxcut){
+    return {-3*bjet_charge,false,-1,-1,bjet_score};
+  }
+  //Now reminaings are bjets with poor scores.
+  return {4*bjet_charge,true,-1,-1,bjet_score};
+
+}
+
 
 
 ///----TTSemilepJetAssignment Tool
 void JHAnalyzerBase::LoadTTSemilepJetAssignmentTool(TString version){
-  
+  IsTTLJJetAssignmentToolOn=1;
   TTLJJetAssignmentTool=new TTSemilepJetAssignmentTool(version,DataEra);
 
   //Link variables
@@ -3326,10 +3908,14 @@ pair<vector<int>,double> JHAnalyzerBase::GetJetIndexSet_Chi2(Lepton &_l1, TLoren
 
 void JHAnalyzerBase::InitJetAssigenChi2Fitter(){
   f1 = new TF1("f1", JHAnalyzerBase::Chi2TTSemiLep, -10000, 10000, 22);
+  IsJetAssigenChi2FitterOn=1;
 }
 
 void JHAnalyzerBase::DeleteJetAssigenChi2Fitter(){
-  delete f1;
+  if(IsJetAssigenChi2FitterOn){
+    cout << "delete f1" << endl;
+    delete f1;
+  }
 }
 
 pair<double,double> JHAnalyzerBase::GetChi2_and_vz(TLorentzVector &_lep, TLorentzVector &_MET, TLorentzVector &_blep, TLorentzVector &_q1, TLorentzVector &_q2, TLorentzVector &_bhad){
@@ -3379,3 +3965,98 @@ pair<double,double> JHAnalyzerBase::GetChi2_and_vz(TLorentzVector &_lep, TLorent
 
 
 
+////----Jet to GEN ptl match----//
+
+
+bool JHAnalyzerBase::IsGENMatched_Flavour_dR(Jet& this_jet, int genidx){
+  if(genidx < 0) return 0;
+  if( this_jet.partonFlavour() != gens[genidx].PID() ) return 0;
+  if( this_jet.DeltaR(gens[genidx]) > 0.4 ) return 0;
+  return 1;
+
+}
+
+
+//---btag eff mc ---//
+void JHAnalyzerBase::SetUpBtagEffMeasurement(){
+  TString datapath = getenv("DATA_DIR");
+  TString btagpath = datapath+"/"+DataEra+"/BTag/";
+  TaggersToMeasure.clear();
+  WPsToMeasure.clear();
+  CutValuesToMeasure.clear();
+  ifstream in_tagger(btagpath+"/CutValues.txt");
+  string btaggerline;
+  while(getline(in_tagger,btaggerline)){
+    std::istringstream is_tag( btaggerline );
+    TString tstring_taggerline = btaggerline;
+    if(tstring_taggerline.Contains("#")) continue;
+    TString a;
+    string b,c;
+    float d;
+
+    is_tag >> a; // ERA
+    is_tag >> b; // TAGGER
+    is_tag >> c; // WP
+    is_tag >> d; // cut value
+
+    if(a == DataEra){
+      TaggersToMeasure.push_back(b);
+      WPsToMeasure.push_back(c);
+      CutValuesToMeasure.push_back(d);
+    }
+  }// end of taggermap loop
+
+  cout << "[JHAnalyzerBase::SetUpBtagEffMeasurement] What to measure :" << endl;
+  cout << "[JHAnalyzerBase::SetUpBtagEffMeasurement] Tagger\tWP\tCutValue" << endl;
+  for(unsigned i_m=0; i_m<TaggersToMeasure.size(); i_m++){
+
+    string Tagger = TaggersToMeasure.at(i_m);
+    string WP = WPsToMeasure.at(i_m);
+    double CutValue = CutValuesToMeasure.at(i_m);
+
+    cout << "[JHAnalyzerBase::SetUpBtagEffMeasurement] " << Tagger << "\t" << WP << "\t" << CutValue << endl;
+  }
+
+
+}
+
+void JHAnalyzerBase::Measure_MCbtagEff(){
+  //AllJets_raw
+  vector<double> vec_etabins = {0.0, 0.8, 1.6, 2., 2.5};
+  vector<double> vec_ptbins = {20., 30., 50., 70., 100., 140., 200., 300., 600., 1000.};//PT bins used in POG SF measurements
+
+  double PtMax = vec_ptbins.at( vec_ptbins.size()-1 );
+  const int NEtaBin = vec_etabins.size()-1;
+  const int NPtBin = vec_ptbins.size()-1;
+
+  double etabins[NEtaBin+1];
+  for(int i=0; i<NEtaBin+1; i++) etabins[i] = vec_etabins.at(i);
+  double ptbins[NPtBin+1];
+  for(int i=0; i<NPtBin+1; i++) ptbins[i] = vec_ptbins.at(i);
+  for(unsigned int ij = 0 ; ij < AllJets_raw.size(); ij++){
+
+    TString flav= "B";
+    if(fabs(AllJets_raw.at(ij).hadronFlavour()) == 4) flav= "C";
+    if(fabs(AllJets_raw.at(ij).hadronFlavour()) == 0) flav= "Light";
+    double this_Eta = fabs(AllJets_raw.at(ij).Eta());//POG recommendation is to use |eta|
+    double this_Pt = AllJets_raw.at(ij).Pt()<PtMax ? AllJets_raw.at(ij).Pt() : PtMax-1; // put overflows in the last bin
+    //==== First, fill the denominator
+    AnalyzerCore::FillHist("Jet_"+DataEra+"_eff_"+flav+"_denom", this_Eta, this_Pt, weight, NEtaBin, etabins, NPtBin, ptbins);
+
+    //==== Now looping over (tagger,working point)
+    for(unsigned i_m=0; i_m<TaggersToMeasure.size(); i_m++){
+
+      string Tagger = TaggersToMeasure.at(i_m);
+      string WP = WPsToMeasure.at(i_m);
+      double CutValue = CutValuesToMeasure.at(i_m);
+
+      double this_taggerresult = AllJets_raw.at(ij).GetTaggerResult( JetTagging::StringToTagger(Tagger) );
+
+      if(this_taggerresult>CutValue){
+	AnalyzerCore::FillHist("Jet_"+DataEra+"_"+Tagger+"_"+WP+"_eff_"+flav+"_num", this_Eta, this_Pt, weight, NEtaBin, etabins, NPtBin, ptbins);
+      }
+    } // END Loop (tagger,working point)
+  } // END Loop jet
+
+
+}

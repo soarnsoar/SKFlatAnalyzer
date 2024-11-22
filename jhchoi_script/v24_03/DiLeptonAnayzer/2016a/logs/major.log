@@ -1,26 +1,4 @@
 Submitting job(s)..................................................
-50 job(s) submitted to cluster 2314348.
+50 job(s) submitted to cluster 2532654.
 Submitting job(s)..................................................
-50 job(s) submitted to cluster 2314349.
-condor_submit WORKDIR_HADD/run.jds > WORKDIR_HADD/run.jid
-condor_submit WORKDIR_HADD/run.jds > WORKDIR_HADD/run.jid
-##################################################
-Submission Finished
-- JobID = 191227
-- Analyzer = DiLeptonAnalyzer
-- Skim = SkimTree_Dilepton
-- InputSamples = ['DYJetsToEE_MiNNLO', 'DYJetsToMuMu_MiNNLO']
-- NJobs = 50
-- Era = 2016preVFP
-- UserFlags = []
-- RunDir = /data6/Users/jhchoi/SKFlatRunlog//2024_05_20_220436__191227__DiLeptonAnalyzer__Era2016preVFP__SkimTree_Dilepton__TAMSA1/DYJetsToMuMu_MiNNLO/
-- output will be send to : /data6/Users/jhchoi/SKFlatOutput//Run2UltraLegacy_v3/DiLeptonAnalyzer/2016preVFP/
-##################################################
-submit hadd
-CheckOutputSize...
-<AFTER hadd fin. please rm remainings..>
-rm /data6/Users/jhchoi/SKFlatRunlog//2024_05_20_220436__191227__DiLeptonAnalyzer__Era2016preVFP__SkimTree_Dilepton__TAMSA1/DYJetsToEE_MiNNLO//output/*.root
-submit hadd
-CheckOutputSize...
-<AFTER hadd fin. please rm remainings..>
-rm /data6/Users/jhchoi/SKFlatRunlog//2024_05_20_220436__191227__DiLeptonAnalyzer__Era2016preVFP__SkimTree_Dilepton__TAMSA1/DYJetsToMuMu_MiNNLO//output/*.root
+50 job(s) submitted to cluster 2532655.

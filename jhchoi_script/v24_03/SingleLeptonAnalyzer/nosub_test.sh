@@ -1,7 +1,7 @@
 #SKIM="--skim SkimTree_SingleLepton"
 SKIM=""
 FLAG=""
-#FLAG="--userflags runSys"
+FLAG="--userflags runSys"
 REDUCTION="--reduction 100"
 #YEAR=2016a
 #YEAR=2016b

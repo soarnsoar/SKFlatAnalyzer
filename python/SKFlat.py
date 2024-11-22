@@ -425,7 +425,7 @@ queue {0}
         concurrency_limits='concurrency_limits = n'+str(args.NMax)+'.'+os.getenv("USER")
       request_memory=''
       if args.Memory:
-        request_memory='request_memory = '+str(args.Memory)
+        request_memory='request_memory = '+str(args.Memory)+"MB"
       print>>submit_command,'''executable = {1}.sh
 jobbatchname = {1}
 universe   = vanilla
@@ -894,16 +894,26 @@ try:
                 #  time.sleep(60)
                 print "submit hadd"
                 print "CheckOutputSize..."
-                __outputsize=os.path.getsize("output")
+                #__outputsize=os.path.getsize("output")
+                #__outputsize = sum(os.path.getsize(os.path.join(dp, __f)) for dp, dn, filenames in os.walk('output') for __f in filenames)
+                #__outputsize=__outputsize/1024./1024.
+                
+                ##---max outputsize
+                __outputsize = max(os.path.getsize(os.path.join(dp, __f)) for dp, dn, filenames in os.walk('output') for __f in filenames)
+                __outputsize=__outputsize/1024./1024.
+
                 #os.chdir("output")
                 #ExportShellCondorSetup_snu.py -c "cd $PWD&&hadd -j 10 -f combine.root *.root" -d "WORKDIR_HADD" -n "hadd" -m 10 -r "10000" -s
                 _nhadd=10
                 if nFiles>100:
                   #_nhadd=NJobs/10
                   _nhadd=int(sqrt(NJobs))
-                _req_memory=int(__outputsize)*10
-                if _req_memory < 4000: _req_memory=4000
-                os.system("ExportShellCondorSetup_tamsa.py -c \"cd "+base_rundir+"&&hadd -j "+str(_nhadd)+" -f "+outputname+".root output/*.root&&mv "+outputname+".root "+FinalOutputPath+"\" -d WORKDIR_HADD -n hadd_"+outputname+" -m "+str(_nhadd)+" -r \""+str(_req_memory)+"\" -s")
+                #_req_memory=int(float(__outputsize)*(_nhadd+1))
+                #_req_memory=int(float(__outputsize)*5.*float(_nhadd))
+                _req_memory=int(float(__outputsize)*nFiles)
+                if _req_memory < 10000: _req_memory=10000
+                if _req_memory > 200000 : _req_memory=200000
+                os.system("ExportShellCondorSetup_tamsa.py -c \"cd "+base_rundir+"&&hadd -j "+str(_nhadd)+" -f "+outputname+".root output/*.root&&mv "+outputname+".root "+FinalOutputPath+"\" -d WORKDIR_HADD -n hadd_"+outputname+str(args.Era)+" -m "+str(_nhadd)+" -r \""+str(_req_memory)+"\" -s")
                 #os.system("submit_hadd.sh")
                 #os.system('hadd -f '+outputname+'.root output/*.root >> JobStatus.log')
                 #os.system('rm output/*.root')

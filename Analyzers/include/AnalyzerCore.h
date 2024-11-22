@@ -166,6 +166,9 @@ public:
   FakeBackgroundEstimator *fakeEst=NULL;
   CFBackgroundEstimator *cfEst=NULL;
   void initializeAnalyzerTools();
+  //-----btag mc eff filename
+  void SetBTagMCEff_Filename(TString _btagmceff_filename);
+  TString btagmceff_filename="";
 
   //==== MCweight
   double MCweight(bool usesign=true, bool norm_1invpb=true) const;
@@ -235,9 +238,17 @@ public:
 
   //==== Plotting
 
-  std::unordered_map<TString, TH1D*> maphist_TH1D;
+  //std::unordered_map<TString, TH1D*> maphist_TH1D;
+  std::map<TString, TH1D*> maphist_TH1D;
   std::map<TString, TH2D*> maphist_TH2D;
   std::map<TString, TH3D*> maphist_TH3D;
+
+  //Try vector object to delete the Hists faster
+  std::vector<TH1D*> vhist_TH1D;
+  std::vector<TH2D*> vhist_TH2D;
+  std::vector<TH3D*> vhist_TH3D;
+
+
 
   // Map for JEC
   std::map<TString, std::vector<std::map<float, std::vector<float> > > > AK4CHSJECUncMap;

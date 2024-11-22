@@ -1,68 +1,13 @@
 Submitting job(s)..................................................
-50 job(s) submitted to cluster 2314396.
+50 job(s) submitted to cluster 2532703.
 Submitting job(s)..................................................
-50 job(s) submitted to cluster 2314397.
+50 job(s) submitted to cluster 2532704.
 Submitting job(s)..................................................
-50 job(s) submitted to cluster 2314398.
+50 job(s) submitted to cluster 2532705.
 Submitting job(s)..................................................
-50 job(s) submitted to cluster 2314399.
+50 job(s) submitted to cluster 2532706.
 Submitting job(s)..................................................
-50 job(s) submitted to cluster 2314400.
+50 job(s) submitted to cluster 2532707.
 Submitting job(s)........................
-24 job(s) submitted to cluster 2314401.
-Submitting job(s)................................
-32 job(s) submitted to cluster 2314402.
-Submitting job(s)...........................................
-43 job(s) submitted to cluster 2314403.
-condor_submit WORKDIR_HADD/run.jds > WORKDIR_HADD/run.jid
-condor_submit WORKDIR_HADD/run.jds > WORKDIR_HADD/run.jid
-condor_submit WORKDIR_HADD/run.jds > WORKDIR_HADD/run.jid
-condor_submit WORKDIR_HADD/run.jds > WORKDIR_HADD/run.jid
-condor_submit WORKDIR_HADD/run.jds > WORKDIR_HADD/run.jid
-condor_submit WORKDIR_HADD/run.jds > WORKDIR_HADD/run.jid
-condor_submit WORKDIR_HADD/run.jds > WORKDIR_HADD/run.jid
-condor_submit WORKDIR_HADD/run.jds > WORKDIR_HADD/run.jid
-##################################################
-Submission Finished
-- JobID = 885614
-- Analyzer = DiLeptonAnalyzer
-- Skim = 
-- InputSamples = ['WJets_Sherpa', 'QCD_bEnriched_HT100to200', 'QCD_bEnriched_HT200to300', 'QCD_bEnriched_HT300to500', 'QCD_bEnriched_HT500to700', 'QCD_bEnriched_HT700to1000', 'QCD_bEnriched_HT1000to1500', 'QCD_bEnriched_HT1500to2000']
-- NJobs = 43
-- Era = 2016postVFP
-- UserFlags = []
-- RunDir = /data6/Users/jhchoi/SKFlatRunlog//2024_05_20_220819__885614__DiLeptonAnalyzer__Era2016postVFP__TAMSA1/QCD_bEnriched_HT1500to2000/
-- output will be send to : /data6/Users/jhchoi/SKFlatOutput//Run2UltraLegacy_v3/DiLeptonAnalyzer/2016postVFP/
-##################################################
-submit hadd
-CheckOutputSize...
-<AFTER hadd fin. please rm remainings..>
-rm /data6/Users/jhchoi/SKFlatRunlog//2024_05_20_220819__885614__DiLeptonAnalyzer__Era2016postVFP__TAMSA1/QCD_bEnriched_HT700to1000//output/*.root
-submit hadd
-CheckOutputSize...
-<AFTER hadd fin. please rm remainings..>
-rm /data6/Users/jhchoi/SKFlatRunlog//2024_05_20_220819__885614__DiLeptonAnalyzer__Era2016postVFP__TAMSA1/QCD_bEnriched_HT1000to1500//output/*.root
-submit hadd
-CheckOutputSize...
-<AFTER hadd fin. please rm remainings..>
-rm /data6/Users/jhchoi/SKFlatRunlog//2024_05_20_220819__885614__DiLeptonAnalyzer__Era2016postVFP__TAMSA1/QCD_bEnriched_HT1500to2000//output/*.root
-submit hadd
-CheckOutputSize...
-<AFTER hadd fin. please rm remainings..>
-rm /data6/Users/jhchoi/SKFlatRunlog//2024_05_20_220819__885614__DiLeptonAnalyzer__Era2016postVFP__TAMSA1/QCD_bEnriched_HT300to500//output/*.root
-submit hadd
-CheckOutputSize...
-<AFTER hadd fin. please rm remainings..>
-rm /data6/Users/jhchoi/SKFlatRunlog//2024_05_20_220819__885614__DiLeptonAnalyzer__Era2016postVFP__TAMSA1/QCD_bEnriched_HT500to700//output/*.root
-submit hadd
-CheckOutputSize...
-<AFTER hadd fin. please rm remainings..>
-rm /data6/Users/jhchoi/SKFlatRunlog//2024_05_20_220819__885614__DiLeptonAnalyzer__Era2016postVFP__TAMSA1/QCD_bEnriched_HT200to300//output/*.root
-submit hadd
-CheckOutputSize...
-<AFTER hadd fin. please rm remainings..>
-rm /data6/Users/jhchoi/SKFlatRunlog//2024_05_20_220819__885614__DiLeptonAnalyzer__Era2016postVFP__TAMSA1/QCD_bEnriched_HT100to200//output/*.root
-submit hadd
-CheckOutputSize...
-<AFTER hadd fin. please rm remainings..>
-rm /data6/Users/jhchoi/SKFlatRunlog//2024_05_20_220819__885614__DiLeptonAnalyzer__Era2016postVFP__TAMSA1/WJets_Sherpa//output/*.root
+24 job(s) submitted to cluster 2532708.
+Submitting job(s)..

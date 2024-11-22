@@ -87,12 +87,12 @@ void TTSemiLepJetAssignment::RunReco(){
 
   TString LepCh="";
   if(IsMuonChannel){
-    vtW=GetTransverseVector(mu1)+PuppiMET;
+    vtW=GetTransverseVector(mu1)+CurrentMET;
     LepCh="Muon";
     l1=mu1;
   }
   else if(IsElectronChannel){
-    vtW=GetTransverseVector(el1)+PuppiMET;
+    vtW=GetTransverseVector(el1)+CurrentMET;
     LepCh="Electron";
     l1=el1;
   }  
@@ -228,7 +228,7 @@ void TTSemiLepJetAssignment::Run(TString _type){
   TLorentzVector Whad,Wlep,Thad,Tlep,neutrino;
   Whad=v_tightjet[iq1]+v_tightjet[iq2];
   Thad=Whad+v_tightjet[ibhad];
-  neutrino.SetPxPyPzE(PuppiMET.Px(), PuppiMET.Py(), vz_fit, sqrt(pow(PuppiMET.Pt(),2)+pow(vz_fit,2)));
+  neutrino.SetPxPyPzE(CurrentMET.Px(), CurrentMET.Py(), vz_fit, sqrt(pow(CurrentMET.Pt(),2)+pow(vz_fit,2)));
   Wlep=l1+neutrino;
   Tlep=Wlep+v_tightjet[iblep];
 
@@ -455,15 +455,15 @@ pair<vector<int>,double> TTSemiLepJetAssignment::GetJetIndexSet_Chi2(){
 	    if(this_blep_lep_mass > 170.) continue;
 	  }
 
-	  pair<double,double> this_chi2ret=GetChi2_and_vz(l1,PuppiMET,v_tightjet[ib1],v_tightjet[iq1],v_tightjet[iq2],v_tightjet[ib2]);
+	  pair<double,double> this_chi2ret=GetChi2_and_vz(l1,CurrentMET,v_tightjet[ib1],v_tightjet[iq1],v_tightjet[iq2],v_tightjet[ib2]);
 	  double this_chi2=this_chi2ret.first;
 	  double this_vz=this_chi2ret.second;
 	  if(HcbCR){
 	    //(3)|dphi(Tlep,Thad)|> 1.5
 	    TLorentzVector this_Tlep, this_neutrino;
-	    double this_Ev2= pow(PuppiMET.Pt(),2) + pow(this_vz,2);
+	    double this_Ev2= pow(CurrentMET.Pt(),2) + pow(this_vz,2);
 	    double this_Ev=sqrt(this_Ev2);
-	    this_neutrino.SetPxPyPzE(PuppiMET.Px(),PuppiMET.Py(),this_vz,this_Ev);
+	    this_neutrino.SetPxPyPzE(CurrentMET.Px(),CurrentMET.Py(),this_vz,this_Ev);
 	    this_Tlep=this_neutrino+v_tightjet[ib1]+l1;
 	    
 	    //this_Thad,this_Tlep
@@ -531,11 +531,11 @@ vector<int> TTSemiLepJetAssignment::GetJetIndexSet_DNN(){
 	    if(this_blep_lep_mass > 170.) continue;
 	  }
 
-	  double this_dnn=GetDNN(l1,PuppiMET,v_tightjet[ib1],v_tightjet[iq1],v_tightjet[iq2],v_tightjet[ib2]);
+	  double this_dnn=GetDNN(l1,CurrentMET,v_tightjet[ib1],v_tightjet[iq1],v_tightjet[iq2],v_tightjet[ib2]);
 	  if(HcbCR){
 	    //(3)|dphi(Tlep,Thad)|> 1.5
 	    TLorentzVector this_Tlep, this_neutrino;
-	    this_neutrino.SetPxPyPzE(PuppiMET.Px(),PuppiMET.Py(),0,PuppiMET.Pt());
+	    this_neutrino.SetPxPyPzE(CurrentMET.Px(),CurrentMET.Py(),0,CurrentMET.Pt());
 	    this_Tlep=this_neutrino+v_tightjet[ib1]+l1;
 	    
 	    //this_Thad,this_Tlep
@@ -569,8 +569,8 @@ void TTSemiLepJetAssignment::FillHistAll(TString cutname){
   FillHist(cutname+"/njet",njet,weight,10,0,10);
   FillHist(cutname+"/nbjet",nbjet,weight,10,0,10);
 
-  FillHist(cutname+"/puppimet",PuppiMET.Pt(),weight,200,0,200);
-  FillHist(cutname+"/dphi_l_met",PuppiMET.DeltaPhi(l1),weight,200,-4,4);
+  FillHist(cutname+"/met",CurrentMET.Pt(),weight,200,0,200);
+  FillHist(cutname+"/dphi_l_met",CurrentMET.DeltaPhi(l1),weight,200,-4,4);
 
   if(njet>0){
     FillHist(cutname+"/pt_j1",v_tightjet[0].Pt(),weight,200,0,200);

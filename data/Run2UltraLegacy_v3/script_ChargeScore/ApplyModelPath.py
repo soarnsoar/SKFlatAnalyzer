@@ -39,24 +39,117 @@ class modify:
         fnew.close()
         if not UseBackup :os.system("cp "+self.xml+" "+self.xml+"_backup")
         os.system("mv "+self.xml+"_new "+self.xml)
-#objs=["muon","electron","jet"]
-objs=["muon","electron"]
-version="2405.4"
+objs=["muon","electron","jet"]
+#objs=["muon","electron"]
+version="2409.2"
 years=["2016preVFP","2016postVFP","2017","2018"]
 #${YEAR}/TMVA/ChargeScore/v${VERSION}/${OBJ}
 
-dict_version={
-    "2405.2":[3,50,100,0.1],
-    "2405.4":[5,64,500,0.2],
+#dict_version={
+#    "2405.2":[3,50,100,0.1],
+#    "2405.4":[5,64,500,0.2],
+#}
+
+
+dict_models={
+    "muon":{
+        "2016preVFP":{
+            "params":["2409.2",5, 64, 100, 0.2, 'U',-1],
+            ##version,nlayer,nnode,batch,dropout,trf,index(if==-1, Use original)
+            "FromSNU":1,
+        },
+
+        "2016postVFP":{
+            "params":['2409.2', 5, 128, 1000, 0.4, 'U',15],
+           "FromSNU":1,
+        },
+
+
+        "2017":{
+            "params":['2409.2', 10, 64, 1000, 0.2, 'G',87],
+           "FromSNU":1,
+        },
+
+        "2018":{
+            "params":['2409.2', 10, 256, 500, 0.4, 'G',-1],
+           "FromSNU":1,
+        }
+
+    },
+
+    "electron":{
+
+        "2016preVFP":{
+            "params":['2409.2', 5, 256, 1000, 0.4, 'G',61],
+            ##version,nlayer,nnode,batch,dropout,trf,index(if==-1, Use original)
+            "FromSNU":1,
+        },
+
+        "2016postVFP":{
+            "params":['2409.2', 5, 128, 1000, 0.4, 'G',71],
+           "FromSNU":1,
+        },
+
+
+        "2017":{
+            "params":['2409.2', 5, 64, 1000, 0.2, 'G',-1],
+           "FromSNU":1,
+        },
+
+        "2018":{
+            "params":['2409.2', 20, 256, 100, 0.2, 'G',-1],
+           "FromSNU":1,
+        }
+
+    },
+
+
+
+    "jet":{
+
+        "2016preVFP":{
+            "params":['2409.2', 5, 64, 1000, 0.2, 'N',86],
+            ##version,nlayer,nnode,batch,dropout,trf,index(if==-1, Use original)
+            "FromSNU":0,
+        },
+
+        "2016postVFP":{
+            "params":['2409.2', 10, 256, 1000, 0.2, 'N',-1],
+            "FromSNU":0,
+        },
+
+
+        "2017":{
+            "params":['2409.2', 10, 128, 100, 0.2, 'N',64],
+            "FromSNU":0,
+        },
+
+        "2018":{
+            "params":['2409.2', 5, 256, 1000, 0.2, 'N',67],
+            "FromSNU":0,
+        }
+
+    },
+
 }
 
-nlayer=dict_version[version][0]
-nnode=dict_version[version][1]
-batchsize=dict_version[version][2]
-dropout=dict_version[version][3]
+
+
+#nlayer=dict_version[version][0]
+#nnode=dict_version[version][1]
+#batchsize=dict_version[version][2]
+#dropout=dict_version[version][3]
 
 for year in years:
     for obj in objs:
+        params=dict_models[obj][year]["params"]
+
+        version=params[0]
+        nlayer=params[1]
+        nnode=params[2]
+        batchsize=params[3]
+        dropout=params[4]
+
         job=modify(nlayer,nnode,batchsize,dropout)
         job.SetXMLPath(version,year,obj)
         job.FixPath()

@@ -69,9 +69,9 @@ def Export(WORKDIR,command,jobname,submit,ncpu,memory=False,nretry=3):
     lines.append('log = '+os.getcwd()+'/'+WORKDIR+'/run.log')
     if memory:
         lines.append('request_memory = '+str(int(memory))+' MB \n')
-    ncpu_criteria=int(memory/4096)+1
-    if int(ncpu) < int(ncpu_criteria):
-        ncpu=ncpu_criteria
+    #ncpu_criteria=int(memory/4096)+1
+    #if int(ncpu) < int(ncpu_criteria):
+    #    ncpu=ncpu_criteria
 
     lines.append('request_cpus = '+str(ncpu))
     lines.append('accounting_group=group_cms')

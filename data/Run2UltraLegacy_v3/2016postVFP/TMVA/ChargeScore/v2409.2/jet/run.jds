@@ -1,0 +1,11 @@
+executable = /d0/scratch/jhchoi/v2409.2/WORKDIR/2409.2/EEMu_MuMuE_Method/2016postVFP/jet/jet2016postVFP__10__256__1000__0.2/Trf_N/run.sh
+universe = vanilla
+output = /d0/scratch/jhchoi/v2409.2/WORKDIR/2409.2/EEMu_MuMuE_Method/2016postVFP/jet/jet2016postVFP__10__256__1000__0.2/Trf_N/run.out
+error = /d0/scratch/jhchoi/v2409.2/WORKDIR/2409.2/EEMu_MuMuE_Method/2016postVFP/jet/jet2016postVFP__10__256__1000__0.2/Trf_N/run.err
+log = /d0/scratch/jhchoi/v2409.2/WORKDIR/2409.2/EEMu_MuMuE_Method/2016postVFP/jet/jet2016postVFP__10__256__1000__0.2/Trf_N/run.log
+request_memory = 10000 MB 
+
+request_cpus = 1
+accounting_group=group_cms
+JobBatchName=dnn_jet_2409.2_2016postVFP
+queue

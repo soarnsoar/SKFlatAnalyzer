@@ -151,7 +151,7 @@ double Jet::GetPileupJetId() const {
   return j_PileupJetId;
 }
 
-
+//---bJetCharge info
 int Jet::GetBCharge() const {
   return j_BCharge;
 }
@@ -186,6 +186,3 @@ double Jet::GetBChargeScore() const{
 void Jet::SetBChargeScore(double _score){
   j_BChargeScore=_score;
 }
-//void Jet::Set_vtxNtracks(int n){
-//  j_vtxNtracks=n;
-//}

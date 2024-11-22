@@ -7,12 +7,15 @@ TMVATool::TMVATool(TString _xmlfile){
   
 }
 TMVATool::~TMVATool(){
-  delete reader;
+  std::cout << "[TMVATool] Delete reader" << std::endl;
+  delete reader;  
+  //std::cout << "[TMVATool] SKIP Delete reader" << std::endl;
 
-  //for(auto exp : map_InputVariables){
-  //  delete map_InputVariables[exp];
-  // }
-  
+  std::cout << "[TMVATool] clear inpuvariable map" << std::endl;
+
+  map_InputVariables.clear();
+
+  std::cout << "[TMVATool DONE] clear inpuvariable map" << std::endl;
 }
 
 void TMVATool::ReadXML(){

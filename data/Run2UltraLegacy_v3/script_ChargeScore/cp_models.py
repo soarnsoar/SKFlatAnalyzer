@@ -1,146 +1,226 @@
+# 2017/TMVA/ChargeScore/v2405.4.3/muon
 import os
-SKFlat_WD=os.getenv("SKFlat_WD")
+def GetDestination(version,year,obj):
+    path=year+"/TMVA/ChargeScore/v"+version+"/"+obj
+    os.system("mkdir -p "+path)
+    return path
 
 
-class modelpath:
-    def __init__(self):
-        self.UseNtrial=1
-        self.version="2405.4.3"
-        self.Ana="EEMu_MuMuE_Method"
-        self.suffix_WORKDIR=""
-        self.UseNtrial=1
-        self.TMVADIR="/data6/Users/jhchoi/TMVA/TMVA_TOOL/ws/"
-         
-    def SetYear(self,year):
-        self.year=str(year)
-    def SetVersion(self,version):
-        self.version=version
-    def SetAna(self,ana):
-        self.Ana=ana
-    def SetObj(self,obj):
-        self.obj=obj
-    def SetNlayer(self,nlayer):
-        self.nlayer=str(nlayer)
-    def SetNnode(self,nnode):
-        self.nnode=str(nnode)
-    def SetBatchsize(self,batchsize):
-        self.batchsize=str(batchsize)
-    def SetDropout(self,dropout):
-        self.dropout=str(dropout)
-    def SetTransform(self,transform):
-        self.transform=transform
-    def SetIndex(self,index):
-        self.index=str(index)
-    def GetTransformForPath(self):
-        return self.transform.replace(",","")
+def GetPathReplicaSNU(version,year,obj,nlayer,nnode,batch,dropout,trf,index):
+    version=str(version)
+    year=str(year)
+    nlayer=str(nlayer)
+    nnode=str(nnode)
+    batch=str(batch)
+    dropout=str(dropout)
+    index=str(index)
+
+    #/data6/Users/jhchoi/TMVA/TMVA_TOOL/ws/WORKDIR_ntrial/2409.2/EEMu_MuMuE_Method/2017/muon/muon2017__10__64__1000__0.2/Trf_G
+    path="/data6/Users/jhchoi/TMVA/TMVA_TOOL/ws/WORKDIR_ntrial/"
+    path+="/"+version
+    path+="/EEMu_MuMuE_Method"
+    path+="/"+year
+    path+="/"+obj
+    path+="/"+obj+year+"__"
+    path+= "__".join([nlayer,nnode,batch,dropout])
+    path+="/Trf_"+trf
+    path+="/"+index
+    return path
 
 
-    def SetWorkdirPath(self):
-        if self.UseNtrial:
-            self.suffix_WORKDIR="_ntrial"
-        self.WORKDIR=self.TMVADIR+"/WORKDIR"+self.suffix_WORKDIR+"/"+self.version+"/"+self.Ana+"/"+self.year+"/"+self.obj+"/"+self.obj+self.year+"__"+self.nlayer+"__"+self.nnode+"__"+self.batchsize+"__"+self.dropout+"/Trf_"+self.GetTransformForPath()+"/"+self.index
+def GetPathOriginalSNU(version,year,obj,nlayer,nnode,batch,dropout,trf):
+    version=str(version)
+    year=str(year)
+    nlayer=str(nlayer)
+    nnode=str(nnode)
+    batch=str(batch)
+    dropout=str(dropout)
 
-    def GetWorkdirPath(self):
-        return self.WORKDIR
+    path="/data6/Users/jhchoi/TMVA/TMVA_TOOL/ws/WORKDIR/"
+    path+="/"+version
+    path+="/EEMu_MuMuE_Method"
+    path+="/"+year
+    path+="/"+obj
+    path+="/"+obj+year+"__"
+    path+= "__".join([nlayer,nnode,batch,dropout])
+    path+="/Trf_"+trf
 
-    def CpModel(self):
-        self.destination=self.year+"/TMVA/ChargeScore/v"+self.version+"/"+self.obj+"/"
-        os.system("mkdir -p "+self.destination)
-        self.target=self.WORKDIR+"/*"
-        self.target2=self.WORKDIR+"/"+self.obj+self.year+"__"+self.nlayer+"__"+self.nnode+"__"+self.batchsize+"__"+self.dropout+"/weights/*"
-        print "destination=",self.destination
-        print "target=",self.target
-        print "target2=",self.target2
-
-
-        os.system("cp "+self.target+" "+self.destination)
-        os.system("cp "+self.target2+" "+self.destination)
-
-        self.ModifyXML()
-
-    def ModifyXML(self):
-        ##
-        self.xmlpath=self.destination+"/"+self.obj+self.year+"__"+self.nlayer+"__"+self.nnode+"__"+self.batchsize+"__"+self.dropout+"_DNN.weights.xml"
-        os.system("cp "+self.xmlpath+" "+self.xmlpath+"_backup")
-        PrefixToFindLine='<Option name="FilenameTrainedModel"'
+    return path
 
 
-        if os.path.isfile(self.xmlpath+"_backup"):
-            f=open(self.xmlpath+"_backup","r")
+
+
+def GetPathReplicaKNU(version,year,obj,nlayer,nnode,batch,dropout,trf,index):
+    version=str(version)
+    year=str(year)
+    nlayer=str(nlayer)
+    nnode=str(nnode)
+    batch=str(batch)
+    dropout=str(dropout)
+    index=str(index)
+
+    #/data6/Users/jhchoi/TMVA/TMVA_TOOL/ws/WORKDIR_ntrial/2409.2/EEMu_MuMuE_Method/2017/muon/muon2017__10__64__1000__0.2/Trf_G
+    path="/u/user/jhchoi/scratch/v"+version+"/WORKDIR_ntrial"
+    path+="/"+version
+    path+="/EEMu_MuMuE_Method"
+    path+="/"+year
+    path+="/"+obj
+    path+="/"+obj+year+"__"
+    path+=  "__".join([nlayer,nnode,batch,dropout])
+    path+="/Trf_"+trf
+    path+="/"+index
+    return path
+
+
+def GetPathOriginalKNU(version,year,obj,nlayer,nnode,batch,dropout,trf):
+    version=str(version)
+    year=str(year)
+    nlayer=str(nlayer)
+    nnode=str(nnode)
+    batch=str(batch)
+    dropout=str(dropout)
+
+    path="/u/user/jhchoi/scratch/v"+version+"/WORKDIR"
+    path+="/"+version
+    path+="/EEMu_MuMuE_Method"
+    path+="/"+year
+    path+="/"+obj
+    path+="/"+obj+year+"__"
+    path+=  "__".join([nlayer,nnode,batch,dropout])
+    path+="/Trf_"+trf
+
+    return path
+
+
+
+def GetPathModel(FromSNU,version,year,obj,nlayer,nnode,batch,dropout,trf,index):
+    UseOrig=False
+    if index < 0 : UseOrig=True
+    if FromSNU:
+        if UseOrig:
+            return GetPathOriginalSNU(version,year,obj,nlayer,nnode,batch,dropout,trf)
         else:
-            f=open(self.xmlpath,"r")
-        lines=f.readlines()
-        
-        fnew=open(self.xmlpath+"_new","w")
-        for line in lines:
-            if PrefixToFindLine in line:
-                line='    <Option name="FilenameTrainedModel" modified="No">'+SKFlat_WD+"/data/Run2UltraLegacy_v3/"+self.destination+"/TrainedModel_DNN.h5</Option>\n"
-            if "<Spectator" in line or " </Spectator" in line:
-                continue ### skip spectator
-            fnew.write(line)
-
-
-        f.close()
-        fnew.close()
-        os.system("mv "+self.xmlpath+"_new "+self.xmlpath)
-if __name__ == '__main__':
-    version="2405.4.3"
-    ana="EEMu_MuMuE_Method"
-    years=["2016preVFP","2016postVFP","2017","2018"]
-    dict_obj={
+            return GetPathReplicaSNU(version,year,obj,nlayer,nnode,batch,dropout,trf,index)
+    else:
+        if UseOrig:
+            return GetPathOriginalKNU(version,year,obj,nlayer,nnode,batch,dropout,trf)
+        else:
+            return GetPathReplicaKNU(version,year,obj,nlayer,nnode,batch,dropout,trf,index)
+dict_models={
+    "muon":{
         "2016preVFP":{
-            "muon":[3,48,1100,0.1,"G",39],
-            "electron":[3,48,600,0.1,"G",4],
-            "jet":[5,64,1000,0.2,"G",53],
+            "params":["2409.2",5, 64, 100, 0.2, 'U',-1],
+            ##version,nlayer,nnode,batch,dropout,trf,index(if==-1, Use original)
+            "FromSNU":1,
         },
+
         "2016postVFP":{
-            "muon":[3,48,1100,0.1,"G",64],
-            "electron":[3,48,600,0.1,"G",51],
-            "jet":[5,64,1000,0.2,"G",74],
+            "params":['2409.2', 5, 128, 1000, 0.4, 'U',15],
+           "FromSNU":1,
         },
+
 
         "2017":{
-            "muon":[3,48,1100,0.1,"G",49],
-            "electron":[3,48,600,0.1,"G",27],
-            "jet":[5,64,1000,0.2,"G",82],
+            "params":['2409.2', 10, 64, 1000, 0.2, 'G',87],
+           "FromSNU":1,
         },
-
+        
         "2018":{
-            "muon":[3,48,1100,0.1,"G",65],
-            "electron":[3,48,600,0.1,"G",34],
-            "jet":[5,64,1000,0.2,"G",23],
+            "params":['2409.2', 10, 256, 500, 0.4, 'G',-1],
+           "FromSNU":1,
+        }
+        
+    },
+
+    "electron":{
+
+        "2016preVFP":{
+            "params":['2409.2', 5, 256, 1000, 0.4, 'G',61],
+            ##version,nlayer,nnode,batch,dropout,trf,index(if==-1, Use original)
+            "FromSNU":1,
+        },
+
+        "2016postVFP":{
+            "params":['2409.2', 5, 128, 1000, 0.4, 'G',71],
+           "FromSNU":1,
         },
 
 
-    }
+        "2017":{
+            "params":['2409.2', 5, 64, 1000, 0.2, 'G',-1],
+           "FromSNU":1,
+        },
+        
+        "2018":{
+            "params":['2409.2', 20, 256, 100, 0.2, 'G',-1],
+           "FromSNU":1,
+        }
+
+    },
+
+
+
+    "jet":{
+
+        "2016preVFP":{
+            "params":['2409.2', 5, 64, 1000, 0.2, 'N',86],
+            ##version,nlayer,nnode,batch,dropout,trf,index(if==-1, Use original)
+            "FromSNU":0,
+        },
+
+        "2016postVFP":{
+            "params":['2409.2', 10, 256, 1000, 0.2, 'N',-1],
+            "FromSNU":0,
+        },
+
+
+        "2017":{
+            "params":['2409.2', 10, 128, 100, 0.2, 'N',64],
+            "FromSNU":0,
+        },
+        
+        "2018":{
+            "params":['2409.2', 5, 256, 1000, 0.2, 'N',67],
+            "FromSNU":0,
+        }
+
+    },
+
+
     
-
-    for year in dict_obj:
-        print "---",year,"---"
-        for obj in dict_obj[year]:
-            this_model=modelpath()
-            this_model.SetYear(year)
-            this_model.SetVersion(version)
-            this_model.SetAna(ana)
-            this_model.SetObj(obj)
+}
 
 
-            params=dict_obj[year][obj]
-            nlayer=params[0]
-            nnode=params[1]
-            batchsize=params[2]
-            dropout=params[3]
-            transform=params[4]
-            index=params[5]
+list_obj=["muon","electron","jet"]
+list_year=["2016preVFP","2016postVFP","2017","2018"]
 
-            this_model.SetNlayer(nlayer)
-            this_model.SetNnode(nnode)
-            this_model.SetBatchsize(batchsize)
-            this_model.SetDropout(dropout)
-            this_model.SetTransform(transform)
-            this_model.SetIndex(index)
-            
-            this_model.SetWorkdirPath()
-            this_model.CpModel()
 
-            print ""
+for obj in list_obj:
+    for year in list_year:
+        #GetDestination
+        params=dict_models[obj][year]["params"]
+        FromSNU=dict_models[obj][year]["FromSNU"]
+        version=params[0]
+        nlayer=params[1]
+        nnode=params[2]
+        batch=params[3]
+        dropout=params[4]
+        trf=params[5]
+        index=params[6]
+
+        path=GetPathModel(FromSNU,version,year,obj,nlayer,nnode,batch,dropout,trf,index)
+        des=GetDestination(version,year,obj)
+        command=""
+        command2=""
+        if FromSNU:
+            command="cp "+path+"/* "+des+"/" 
+            command2="cp "+path+"/*/*/*.xml "+des+"/" 
+            command3="cp "+path+"/*/*/*.h5 "+des+"/" 
+        else:
+            command="scp jhchoi@cms.knu.ac.kr:"+path+"/* "+des+"/" 
+            command2="scp jhchoi@cms.knu.ac.kr:"+path+"/*/*/*.xml "+des+"/" 
+            command3="scp jhchoi@cms.knu.ac.kr:"+path+"/*/*/*.h5 "+des+"/" 
+        print command
+        print command2
+        print command3
+

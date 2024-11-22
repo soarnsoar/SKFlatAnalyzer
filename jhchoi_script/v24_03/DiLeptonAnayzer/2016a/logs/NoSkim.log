@@ -1,68 +1,16 @@
 Submitting job(s)..................................................
-50 job(s) submitted to cluster 2314368.
+50 job(s) submitted to cluster 2532673.
 Submitting job(s)..................................................
-50 job(s) submitted to cluster 2314369.
+50 job(s) submitted to cluster 2532675.
 Submitting job(s)..................................................
-50 job(s) submitted to cluster 2314370.
+50 job(s) submitted to cluster 2532676.
 Submitting job(s)..................................................
-50 job(s) submitted to cluster 2314371.
+50 job(s) submitted to cluster 2532678.
 Submitting job(s)..................................................
-50 job(s) submitted to cluster 2314372.
+50 job(s) submitted to cluster 2532680.
 Submitting job(s).........................
-25 job(s) submitted to cluster 2314373.
+25 job(s) submitted to cluster 2532682.
 Submitting job(s)..........................................
-42 job(s) submitted to cluster 2314374.
+42 job(s) submitted to cluster 2532683.
 Submitting job(s)............................
-28 job(s) submitted to cluster 2314375.
-condor_submit WORKDIR_HADD/run.jds > WORKDIR_HADD/run.jid
-condor_submit WORKDIR_HADD/run.jds > WORKDIR_HADD/run.jid
-condor_submit WORKDIR_HADD/run.jds > WORKDIR_HADD/run.jid
-condor_submit WORKDIR_HADD/run.jds > WORKDIR_HADD/run.jid
-condor_submit WORKDIR_HADD/run.jds > WORKDIR_HADD/run.jid
-condor_submit WORKDIR_HADD/run.jds > WORKDIR_HADD/run.jid
-condor_submit WORKDIR_HADD/run.jds > WORKDIR_HADD/run.jid
-condor_submit WORKDIR_HADD/run.jds > WORKDIR_HADD/run.jid
-##################################################
-Submission Finished
-- JobID = 332592
-- Analyzer = DiLeptonAnalyzer
-- Skim = 
-- InputSamples = ['WJets_Sherpa', 'QCD_bEnriched_HT100to200', 'QCD_bEnriched_HT200to300', 'QCD_bEnriched_HT300to500', 'QCD_bEnriched_HT500to700', 'QCD_bEnriched_HT700to1000', 'QCD_bEnriched_HT1000to1500', 'QCD_bEnriched_HT1500to2000']
-- NJobs = 28
-- Era = 2016preVFP
-- UserFlags = []
-- RunDir = /data6/Users/jhchoi/SKFlatRunlog//2024_05_20_220548__332592__DiLeptonAnalyzer__Era2016preVFP__TAMSA1/QCD_bEnriched_HT1500to2000/
-- output will be send to : /data6/Users/jhchoi/SKFlatOutput//Run2UltraLegacy_v3/DiLeptonAnalyzer/2016preVFP/
-##################################################
-submit hadd
-CheckOutputSize...
-<AFTER hadd fin. please rm remainings..>
-rm /data6/Users/jhchoi/SKFlatRunlog//2024_05_20_220548__332592__DiLeptonAnalyzer__Era2016preVFP__TAMSA1/QCD_bEnriched_HT1000to1500//output/*.root
-submit hadd
-CheckOutputSize...
-<AFTER hadd fin. please rm remainings..>
-rm /data6/Users/jhchoi/SKFlatRunlog//2024_05_20_220548__332592__DiLeptonAnalyzer__Era2016preVFP__TAMSA1/QCD_bEnriched_HT300to500//output/*.root
-submit hadd
-CheckOutputSize...
-<AFTER hadd fin. please rm remainings..>
-rm /data6/Users/jhchoi/SKFlatRunlog//2024_05_20_220548__332592__DiLeptonAnalyzer__Era2016preVFP__TAMSA1/QCD_bEnriched_HT700to1000//output/*.root
-submit hadd
-CheckOutputSize...
-<AFTER hadd fin. please rm remainings..>
-rm /data6/Users/jhchoi/SKFlatRunlog//2024_05_20_220548__332592__DiLeptonAnalyzer__Era2016preVFP__TAMSA1/QCD_bEnriched_HT1500to2000//output/*.root
-submit hadd
-CheckOutputSize...
-<AFTER hadd fin. please rm remainings..>
-rm /data6/Users/jhchoi/SKFlatRunlog//2024_05_20_220548__332592__DiLeptonAnalyzer__Era2016preVFP__TAMSA1/QCD_bEnriched_HT500to700//output/*.root
-submit hadd
-CheckOutputSize...
-<AFTER hadd fin. please rm remainings..>
-rm /data6/Users/jhchoi/SKFlatRunlog//2024_05_20_220548__332592__DiLeptonAnalyzer__Era2016preVFP__TAMSA1/QCD_bEnriched_HT200to300//output/*.root
-submit hadd
-CheckOutputSize...
-<AFTER hadd fin. please rm remainings..>
-rm /data6/Users/jhchoi/SKFlatRunlog//2024_05_20_220548__332592__DiLeptonAnalyzer__Era2016preVFP__TAMSA1/QCD_bEnriched_HT100to200//output/*.root
-submit hadd
-CheckOutputSize...
-<AFTER hadd fin. please rm remainings..>
-rm /data6/Users/jhchoi/SKFlatRunlog//2024_05_20_220548__332592__DiLeptonAnalyzer__Era2016preVFP__TAMSA1/WJets_Sherpa//output/*.root
+28 job(s) submitted to cluster 2532684.

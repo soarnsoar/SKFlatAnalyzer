@@ -96,12 +96,12 @@ void TwoBjets::RunReco(){
 
   LepCh="";
   if(IsMuonChannel){
-    //vtW=GetTransverseVector(mu1)+PuppiMET;
+    //vtW=GetTransverseVector(mu1)+CurrentMET;
     LepCh="Muon";
     l1=mu1;
   }
   else if(IsElectronChannel){
-    //vtW=GetTransverseVector(el1)+PuppiMET;
+    //vtW=GetTransverseVector(el1)+CurrentMET;
     LepCh="Electron";
     l1=el1;
   }  
@@ -123,7 +123,7 @@ void TwoBjets::RunReco(){
 
   for(auto &i_bjet : v_bjetidx){
 
-    tuple<int,bool,int,int,double> bCand_Charge_info=GetBJetCharge_v2405_4_3(v_tightjet[i_bjet],AllMuons,AllElectrons);
+    tuple<int,bool,int,int,double> bCand_Charge_info=GetBJetCharge_v2409_2(v_tightjet[i_bjet],AllMuons,AllElectrons);
     int bCand_Charge=std::get<0>(bCand_Charge_info);
     bool bCand_NotUseOppositeCharge=std::get<1>(bCand_Charge_info);
     int bCand_im=std::get<2>(bCand_Charge_info);
@@ -156,7 +156,7 @@ void TwoBjets::FillHistCommon(TString cutname){
   FillHist(cutname+"/pt_l1",l1.Pt(),weight,200,0,200);
   FillHist(cutname+"/eta_l1",l1.Eta(),weight,50,-3,3);
 
-  FillHist(cutname+"/puppimet",PuppiMET.Pt(),weight,150,0,300);
+  FillHist(cutname+"/met",CurrentMET.Pt(),weight,150,0,300);
   FillHist(cutname+"/njet",njet,weight,10,0,10);
   FillHist(cutname+"/nbjet",nbjet,weight,10,0,10);
   

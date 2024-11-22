@@ -206,7 +206,8 @@ void DiLeptonAnalyzer::FillHistAll(TString cutname){
   FillHist(cutname+"/njet",njet,weight,10,0,10);
   FillHist(cutname+"/nbjet",nbjet,weight,10,0,10);
 
-  FillHist(cutname+"/puppimet",PuppiMET.Pt(),weight,200,0,200);
+  FillHist(cutname+"/met",CurrentMET.Pt(),weight,200,0,200);
+  FillHist(cutname+"/met_phi",CurrentMET.Phi(),weight,80,-4,4);
 
   
   if(njet>0){

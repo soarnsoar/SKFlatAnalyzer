@@ -1,0 +1,9 @@
+executable = /data6/Users/jhchoi/TMVA/TMVA_TOOL/ws/WORKDIR_ntrial/2409.2/EEMu_MuMuE_Method/2016postVFP/muon/muon2016postVFP__5__128__1000__0.4/Trf_U/15/run.sh
+universe = vanilla
+output = /data6/Users/jhchoi/TMVA/TMVA_TOOL/ws/WORKDIR_ntrial/2409.2/EEMu_MuMuE_Method/2016postVFP/muon/muon2016postVFP__5__128__1000__0.4/Trf_U/15/run.out
+error = /data6/Users/jhchoi/TMVA/TMVA_TOOL/ws/WORKDIR_ntrial/2409.2/EEMu_MuMuE_Method/2016postVFP/muon/muon2016postVFP__5__128__1000__0.4/Trf_U/15/run.err
+log = /data6/Users/jhchoi/TMVA/TMVA_TOOL/ws/WORKDIR_ntrial/2409.2/EEMu_MuMuE_Method/2016postVFP/muon/muon2016postVFP__5__128__1000__0.4/Trf_U/15/run.log
+request_cpus = 1
+accounting_group=group_cms
+JobBatchName=dnn_muon_2409.2_2016postVFP
+queue

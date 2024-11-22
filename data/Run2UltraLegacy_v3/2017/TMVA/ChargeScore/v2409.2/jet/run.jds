@@ -1,0 +1,9 @@
+executable = /d0/scratch/jhchoi/v2409.2/WORKDIR_ntrial/2409.2/EEMu_MuMuE_Method/2017/jet/jet2017__10__128__100__0.2/Trf_N/64/run.sh
+universe = vanilla
+output = /d0/scratch/jhchoi/v2409.2/WORKDIR_ntrial/2409.2/EEMu_MuMuE_Method/2017/jet/jet2017__10__128__100__0.2/Trf_N/64/run.out
+error = /d0/scratch/jhchoi/v2409.2/WORKDIR_ntrial/2409.2/EEMu_MuMuE_Method/2017/jet/jet2017__10__128__100__0.2/Trf_N/64/run.err
+log = /d0/scratch/jhchoi/v2409.2/WORKDIR_ntrial/2409.2/EEMu_MuMuE_Method/2017/jet/jet2017__10__128__100__0.2/Trf_N/64/run.log
+request_cpus = 1
+accounting_group=group_cms
+JobBatchName=dnn_jet_2409.2_2017
+queue

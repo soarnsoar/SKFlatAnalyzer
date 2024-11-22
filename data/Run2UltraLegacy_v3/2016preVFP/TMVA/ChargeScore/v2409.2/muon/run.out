@@ -1,0 +1,543 @@
+<sig cut>= (bmuon_charge*bjet_partonFlavour < 0)&&Has_bMuon
+<bkg cut>= (bmuon_charge*bjet_partonFlavour > 0)&&Has_bMuon
+_________________________________________________________________
+Layer (type)                 Output Shape              Param #   
+=================================================================
+dense_1 (Dense)              (None, 64)                896       
+_________________________________________________________________
+batch_normalization_1 (Batch (None, 64)                256       
+_________________________________________________________________
+activation_1 (Activation)    (None, 64)                0         
+_________________________________________________________________
+dropout_1 (Dropout)          (None, 64)                0         
+_________________________________________________________________
+dense_2 (Dense)              (None, 64)                4160      
+_________________________________________________________________
+batch_normalization_2 (Batch (None, 64)                256       
+_________________________________________________________________
+activation_2 (Activation)    (None, 64)                0         
+_________________________________________________________________
+dropout_2 (Dropout)          (None, 64)                0         
+_________________________________________________________________
+dense_3 (Dense)              (None, 64)                4160      
+_________________________________________________________________
+batch_normalization_3 (Batch (None, 64)                256       
+_________________________________________________________________
+activation_3 (Activation)    (None, 64)                0         
+_________________________________________________________________
+dropout_3 (Dropout)          (None, 64)                0         
+_________________________________________________________________
+dense_4 (Dense)              (None, 64)                4160      
+_________________________________________________________________
+batch_normalization_4 (Batch (None, 64)                256       
+_________________________________________________________________
+activation_4 (Activation)    (None, 64)                0         
+_________________________________________________________________
+dropout_4 (Dropout)          (None, 64)                0         
+_________________________________________________________________
+dense_5 (Dense)              (None, 64)                4160      
+_________________________________________________________________
+batch_normalization_5 (Batch (None, 64)                256       
+_________________________________________________________________
+activation_5 (Activation)    (None, 64)                0         
+_________________________________________________________________
+dropout_5 (Dropout)          (None, 64)                0         
+_________________________________________________________________
+dense_6 (Dense)              (None, 2)                 130       
+_________________________________________________________________
+activation_6 (Activation)    (None, 2)                 0         
+=================================================================
+Total params: 18,946
+Trainable params: 18,306
+Non-trainable params: 640
+_________________________________________________________________
+---sig_test---
+<self.testtree_sig> OutTree/sig
+/data6/Users/jhchoi/TMVA/TMVA_TOOL/inputs/EEMu_MuMuE_Method/v2409.2/2016preVFP/EEMu_MuMuE_Method_DYJetsToEE_MiNNLO.root
+/data6/Users/jhchoi/TMVA/TMVA_TOOL/inputs/EEMu_MuMuE_Method/v2409.2/2016preVFP/EEMu_MuMuE_Method_DYJetsToMuMu_MiNNLO.root
+--bkg_test---
+<self.testtree_bkg> OutTree/bkg
+/data6/Users/jhchoi/TMVA/TMVA_TOOL/inputs/EEMu_MuMuE_Method/v2409.2/2016preVFP/EEMu_MuMuE_Method_DYJetsToEE_MiNNLO.root
+/data6/Users/jhchoi/TMVA/TMVA_TOOL/inputs/EEMu_MuMuE_Method/v2409.2/2016preVFP/EEMu_MuMuE_Method_DYJetsToMuMu_MiNNLO.root
+---sig_train---
+<self.traintree_sig> OutTree/sig
+/data6/Users/jhchoi/TMVA/TMVA_TOOL/inputs/EEMu_MuMuE_Method/v2409.2/2016preVFP/EEMu_MuMuE_Method_DYJets.root
+---bkg_train---
+<self.traintree_bkg> OutTree/bkg
+/data6/Users/jhchoi/TMVA/TMVA_TOOL/inputs/EEMu_MuMuE_Method/v2409.2/2016preVFP/EEMu_MuMuE_Method_DYJets.root
+DataSetInfo              : [muon2016preVFP__5__64__100__0.2] : Added class "Signal"
+                         : Add Tree OutTree/sig of type Signal with 473146 events
+                         : Add Tree OutTree/sig of type Signal with 537532 events
+DataSetInfo              : [muon2016preVFP__5__64__100__0.2] : Added class "Background"
+                         : Add Tree OutTree/bkg of type Background with 338692 events
+                         : Add Tree OutTree/bkg of type Background with 384801 events
+>>>>self.dataloader.PrepareTrainingAndTestTree
+Set sig cut -> (bmuon_charge*bjet_partonFlavour < 0)&&Has_bMuon
+Set bkg cut -> (bmuon_charge*bjet_partonFlavour > 0)&&Has_bMuon
+Factory                  : Booking method: [1mDNN[0m
+                         : 
+DNN                      : [muon2016preVFP__5__64__100__0.2] : Create Transformation "U" with events from all classes.
+                         : 
+                         : Transformation, Variable selection : 
+                         : Input : variable 'bmuon_nsip3d' <---> Output : variable 'bmuon_nsip3d'
+                         : Input : variable 'bmuon_reliso' <---> Output : variable 'bmuon_reliso'
+                         : Input : variable 'bmuon_ptwrtbjet' <---> Output : variable 'bmuon_ptwrtbjet'
+                         : Input : variable 'bmuon_P_jetrest' <---> Output : variable 'bmuon_P_jetrest'
+                         : Input : variable 'bjet_charge*bmuon_charge' <---> Output : variable 'bjet_charge*bmuon_charge'
+                         : Input : variable 'bjet_ChargedHadronEnergyFraction' <---> Output : variable 'bjet_ChargedHadronEnergyFraction'
+                         : Input : variable 'bjet_NeutralHadronEnergyFraction' <---> Output : variable 'bjet_NeutralHadronEnergyFraction'
+                         : Input : variable 'bjet_NeutralEmEnergyFraction' <---> Output : variable 'bjet_NeutralEmEnergyFraction'
+                         : Input : variable 'bjet_ChargedEmEnergyFraction' <---> Output : variable 'bjet_ChargedEmEnergyFraction'
+                         : Input : variable 'bjet_MuonEnergyFraction' <---> Output : variable 'bjet_MuonEnergyFraction'
+                         : Input : variable 'bjet_ChargedMultiplicity' <---> Output : variable 'bjet_ChargedMultiplicity'
+                         : Input : variable 'bjet_NeutralMultiplicity' <---> Output : variable 'bjet_NeutralMultiplicity'
+                         : Input : variable 'fabs(bjet_charge)' <---> Output : variable 'fabs(bjet_charge)'
+                         : Load model from file: model.h5
+Factory                  : [1mTrain all methods[0m
+DataSetFactory           : [muon2016preVFP__5__64__100__0.2] : Number of events in input trees
+                         : Dataset[muon2016preVFP__5__64__100__0.2] :     Signal     requirement: "(bmuon_charge*bjet_partonFlavour < 0)&&Has_bMuon"
+                         : Dataset[muon2016preVFP__5__64__100__0.2] :     Signal          -- number of events passed: 50614  / sum of weights: 26720.6
+                         : Dataset[muon2016preVFP__5__64__100__0.2] :     Signal          -- efficiency             : 0.0460372
+                         : Dataset[muon2016preVFP__5__64__100__0.2] :     Background requirement: "(bmuon_charge*bjet_partonFlavour > 0)&&Has_bMuon"
+                         : Dataset[muon2016preVFP__5__64__100__0.2] :     Background      -- number of events passed: 24081  / sum of weights: 12905.2
+                         : Dataset[muon2016preVFP__5__64__100__0.2] :     Background      -- efficiency             : 0.0309023
+                         : Dataset[muon2016preVFP__5__64__100__0.2] :  you have opted for interpreting the requested number of training/testing events
+                         :  to be the number of events AFTER your preselection cuts
+                         : 
+                         : Dataset[muon2016preVFP__5__64__100__0.2] :  you have opted for interpreting the requested number of training/testing events
+                         :  to be the number of events AFTER your preselection cuts
+                         : 
+                         : Dataset[muon2016preVFP__5__64__100__0.2] : Weight renormalisation mode: "EqualNumEvents": renormalises all event classes ...
+                         : Dataset[muon2016preVFP__5__64__100__0.2] :  such that the effective (weighted) number of events in each class is the same 
+                         : Dataset[muon2016preVFP__5__64__100__0.2] :  (and equals the number of events (entries) given for class=0 )
+                         : Dataset[muon2016preVFP__5__64__100__0.2] : ... i.e. such that Sum[i=1..N_j]{w_i} = N_classA, j=classA, classB, ...
+                         : Dataset[muon2016preVFP__5__64__100__0.2] : ... (note that N_j is the sum of TRAINING events
+                         : Dataset[muon2016preVFP__5__64__100__0.2] :  ..... Testing events are not renormalised nor included in the renormalisation factor!)
+                         : Number of training and testing events
+                         : ---------------------------------------------------------------------------
+                         : Signal     -- training events            : 21341
+                         : Signal     -- testing events             : 29273
+                         : Signal     -- training and testing events: 50614
+                         : Dataset[muon2016preVFP__5__64__100__0.2] : Signal     -- due to the preselection a scaling factor has been applied to the numbers of requested events: 0.0500793
+                         : Background -- training events            : 10084
+                         : Background -- testing events             : 13997
+                         : Background -- training and testing events: 24081
+                         : Dataset[muon2016preVFP__5__64__100__0.2] : Background -- due to the preselection a scaling factor has been applied to the numbers of requested events: 0.0332844
+                         : 
+DataSetInfo              : Correlation matrix (Signal):
+                         : --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+                         :                                   bmuon_nsip3d bmuon_reliso bmuon_ptwrtbjet bmuon_P_jetrest bjet_charge*bmuon_charge bjet_ChargedHadronEnergyFraction bjet_NeutralHadronEnergyFraction bjet_NeutralEmEnergyFraction bjet_ChargedEmEnergyFraction bjet_MuonEnergyFraction bjet_ChargedMultiplicity bjet_NeutralMultiplicity fabs(bjet_charge)
+                         :                     bmuon_nsip3d:       +1.000       -0.000          +0.044          +0.040                   -0.011                           -0.007                           +0.023                       +0.050                       +0.001                  -0.043                   +0.001                   +0.040            -0.008
+                         :                     bmuon_reliso:       -0.000       +1.000          -0.045          -0.094                   -0.395                           +0.417                           +0.171                       +0.314                       -0.088                  -0.705                   +0.265                   +0.267            -0.365
+                         :                  bmuon_ptwrtbjet:       +0.044       -0.045          +1.000          +0.991                   +0.035                           -0.003                           -0.003                       -0.004                       +0.017                  -0.002                   +0.009                   +0.014            +0.038
+                         :                  bmuon_P_jetrest:       +0.040       -0.094          +0.991          +1.000                   +0.077                           -0.041                           -0.020                       -0.025                       +0.004                  +0.069                   +0.019                   +0.021            +0.080
+                         :         bjet_charge*bmuon_charge:       -0.011       -0.395          +0.035          +0.077                   +1.000                           -0.340                           -0.051                       -0.067                       -0.128                  +0.497                   -0.196                   -0.093            +0.794
+                         : bjet_ChargedHadronEnergyFraction:       -0.007       +0.417          -0.003          -0.041                   -0.340                           +1.000                           -0.238                       -0.273                       -0.252                  -0.559                   +0.404                   -0.080            -0.376
+                         : bjet_NeutralHadronEnergyFraction:       +0.023       +0.171          -0.003          -0.020                   -0.051                           -0.238                           +1.000                       -0.091                       -0.028                  -0.217                   -0.131                   +0.131            -0.051
+                         :     bjet_NeutralEmEnergyFraction:       +0.050       +0.314          -0.004          -0.025                   -0.067                           -0.273                           -0.091                       +1.000                       -0.175                  -0.311                   -0.043                   +0.445            -0.076
+                         :     bjet_ChargedEmEnergyFraction:       +0.001       -0.088          +0.017          +0.004                   -0.128                           -0.252                           -0.028                       -0.175                       +1.000                  -0.143                   -0.035                   -0.108            -0.030
+                         :          bjet_MuonEnergyFraction:       -0.043       -0.705          -0.002          +0.069                   +0.497                           -0.559                           -0.217                       -0.311                       -0.143                  +1.000                   -0.293                   -0.257            +0.486
+                         :         bjet_ChargedMultiplicity:       +0.001       +0.265          +0.009          +0.019                   -0.196                           +0.404                           -0.131                       -0.043                       -0.035                  -0.293                   +1.000                   +0.253            -0.255
+                         :         bjet_NeutralMultiplicity:       +0.040       +0.267          +0.014          +0.021                   -0.093                           -0.080                           +0.131                       +0.445                       -0.108                  -0.257                   +0.253                   +1.000            -0.101
+                         :                fabs(bjet_charge):       -0.008       -0.365          +0.038          +0.080                   +0.794                           -0.376                           -0.051                       -0.076                       -0.030                  +0.486                   -0.255                   -0.101            +1.000
+                         : --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+DataSetInfo              : Correlation matrix (Background):
+                         : --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+                         :                                   bmuon_nsip3d bmuon_reliso bmuon_ptwrtbjet bmuon_P_jetrest bjet_charge*bmuon_charge bjet_ChargedHadronEnergyFraction bjet_NeutralHadronEnergyFraction bjet_NeutralEmEnergyFraction bjet_ChargedEmEnergyFraction bjet_MuonEnergyFraction bjet_ChargedMultiplicity bjet_NeutralMultiplicity fabs(bjet_charge)
+                         :                     bmuon_nsip3d:       +1.000       -0.055          +0.067          +0.051                   +0.021                           -0.012                           +0.023                       +0.004                       -0.008                  +0.002                   +0.004                   +0.010            +0.004
+                         :                     bmuon_reliso:       -0.055       +1.000          -0.245          -0.433                   -0.383                           +0.327                           +0.135                       +0.248                       -0.149                  -0.638                   +0.284                   +0.264            -0.184
+                         :                  bmuon_ptwrtbjet:       +0.067       -0.245          +1.000          +0.784                   +0.191                           -0.116                           -0.019                       -0.075                       +0.062                  +0.186                   +0.022                   -0.002            +0.122
+                         :                  bmuon_P_jetrest:       +0.051       -0.433          +0.784          +1.000                   +0.359                           -0.231                           -0.062                       -0.127                       -0.007                  +0.469                   +0.072                   +0.051            +0.244
+                         :         bjet_charge*bmuon_charge:       +0.021       -0.383          +0.191          +0.359                   +1.000                           -0.333                           +0.033                       +0.048                       -0.119                  +0.455                   -0.097                   -0.012            +0.433
+                         : bjet_ChargedHadronEnergyFraction:       -0.012       +0.327          -0.116          -0.231                   -0.333                           +1.000                           -0.305                       -0.361                       -0.331                  -0.469                   +0.410                   -0.139            -0.275
+                         : bjet_NeutralHadronEnergyFraction:       +0.023       +0.135          -0.019          -0.062                   +0.033                           -0.305                           +1.000                       -0.132                       -0.049                  -0.154                   -0.160                   +0.136            +0.004
+                         :     bjet_NeutralEmEnergyFraction:       +0.004       +0.248          -0.075          -0.127                   +0.048                           -0.361                           -0.132                       +1.000                       -0.233                  -0.211                   -0.089                   +0.401            -0.025
+                         :     bjet_ChargedEmEnergyFraction:       -0.008       -0.149          +0.062          -0.007                   -0.119                           -0.331                           -0.049                       -0.233                       +1.000                  -0.106                   -0.073                   -0.125            +0.063
+                         :          bjet_MuonEnergyFraction:       +0.002       -0.638          +0.186          +0.469                   +0.455                           -0.469                           -0.154                       -0.211                       -0.106                  +1.000                   -0.273                   -0.201            +0.326
+                         :         bjet_ChargedMultiplicity:       +0.004       +0.284          +0.022          +0.072                   -0.097                           +0.410                           -0.160                       -0.089                       -0.073                  -0.273                   +1.000                   +0.210            -0.199
+                         :         bjet_NeutralMultiplicity:       +0.010       +0.264          -0.002          +0.051                   -0.012                           -0.139                           +0.136                       +0.401                       -0.125                  -0.201                   +0.210                   +1.000            -0.069
+                         :                fabs(bjet_charge):       +0.004       -0.184          +0.122          +0.244                   +0.433                           -0.275                           +0.004                       -0.025                       +0.063                  +0.326                   -0.199                   -0.069            +1.000
+                         : --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+DataSetFactory           : [muon2016preVFP__5__64__100__0.2] :  
+                         : 
+Factory                  : [muon2016preVFP__5__64__100__0.2] : Create Transformation "I" with events from all classes.
+                         : 
+                         : Transformation, Variable selection : 
+                         : Input : variable 'bmuon_nsip3d' <---> Output : variable 'bmuon_nsip3d'
+                         : Input : variable 'bmuon_reliso' <---> Output : variable 'bmuon_reliso'
+                         : Input : variable 'bmuon_ptwrtbjet' <---> Output : variable 'bmuon_ptwrtbjet'
+                         : Input : variable 'bmuon_P_jetrest' <---> Output : variable 'bmuon_P_jetrest'
+                         : Input : variable 'bjet_charge*bmuon_charge' <---> Output : variable 'bjet_charge*bmuon_charge'
+                         : Input : variable 'bjet_ChargedHadronEnergyFraction' <---> Output : variable 'bjet_ChargedHadronEnergyFraction'
+                         : Input : variable 'bjet_NeutralHadronEnergyFraction' <---> Output : variable 'bjet_NeutralHadronEnergyFraction'
+                         : Input : variable 'bjet_NeutralEmEnergyFraction' <---> Output : variable 'bjet_NeutralEmEnergyFraction'
+                         : Input : variable 'bjet_ChargedEmEnergyFraction' <---> Output : variable 'bjet_ChargedEmEnergyFraction'
+                         : Input : variable 'bjet_MuonEnergyFraction' <---> Output : variable 'bjet_MuonEnergyFraction'
+                         : Input : variable 'bjet_ChargedMultiplicity' <---> Output : variable 'bjet_ChargedMultiplicity'
+                         : Input : variable 'bjet_NeutralMultiplicity' <---> Output : variable 'bjet_NeutralMultiplicity'
+                         : Input : variable 'fabs(bjet_charge)' <---> Output : variable 'fabs(bjet_charge)'
+TFHandler_Factory        :                         Variable                                Mean                                RMS                        [        Min                                Max ]
+                         : -----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+                         :                     bmuon_nsip3d:                            19.071                            90.497   [                         0.0039722                            3492.6 ]
+                         :                     bmuon_reliso:                            2.8652                            2.2632   [                            0.0000                            9.9985 ]
+                         :                  bmuon_ptwrtbjet:                           0.98120                            2.6750   [                        0.00093140                            431.84 ]
+                         :                  bmuon_P_jetrest:                            1.3820                            2.9749   [                           0.21668                            479.77 ]
+                         :         bjet_charge*bmuon_charge:                           0.22115                           0.33815   [                          -0.98817                            1.0000 ]
+                         : bjet_ChargedHadronEnergyFraction:                           0.42197                           0.18967   [                            0.0000                            1.0000 ]
+                         : bjet_NeutralHadronEnergyFraction:                          0.086524                           0.10210   [                            0.0000                           0.82528 ]
+                         :     bjet_NeutralEmEnergyFraction:                           0.20320                           0.13784   [                            0.0000                           0.85094 ]
+                         :     bjet_ChargedEmEnergyFraction:                          0.034545                           0.10845   [                            0.0000                           0.88983 ]
+                         :          bjet_MuonEnergyFraction:                           0.25376                           0.17111   [                            0.0000                           0.96222 ]
+                         :         bjet_ChargedMultiplicity:                            9.2814                            3.4002   [                            1.0000                            47.000 ]
+                         :         bjet_NeutralMultiplicity:                            9.1440                            4.5943   [                            0.0000                            39.000 ]
+                         :                fabs(bjet_charge):                           0.33423                           0.22702   [                        4.2525e-05                            1.0000 ]
+                         : -----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+                         : Ranking input variables (method unspecific)...
+IdTransformation         : Ranking result (top variable is best ranked)
+                         : ---------------------------------------------------------
+                         : Rank : Variable                         : Separation
+                         : ---------------------------------------------------------
+                         :    1 : bjet_charge*bmuon_charge         : 1.242e-01
+                         :    2 : bmuon_P_jetrest                  : 9.035e-02
+                         :    3 : bjet_MuonEnergyFraction          : 7.595e-02
+                         :    4 : bmuon_ptwrtbjet                  : 7.031e-02
+                         :    5 : fabs(bjet_charge)                : 6.597e-02
+                         :    6 : bmuon_reliso                     : 5.591e-02
+                         :    7 : bjet_ChargedHadronEnergyFraction : 1.508e-02
+                         :    8 : bjet_NeutralEmEnergyFraction     : 1.011e-02
+                         :    9 : bjet_ChargedMultiplicity         : 6.755e-03
+                         :   10 : bjet_NeutralMultiplicity         : 6.513e-03
+                         :   11 : bjet_ChargedEmEnergyFraction     : 6.484e-03
+                         :   12 : bjet_NeutralHadronEnergyFraction : 4.096e-03
+                         :   13 : bmuon_nsip3d                     : 3.569e-03
+                         : ---------------------------------------------------------
+Factory                  : Train method: DNN for Classification
+                         : 
+                         : 
+                         : [1m================================================================[0m
+                         : [1mH e l p   f o r   M V A   m e t h o d   [ DNN ] :[0m
+                         : 
+                         : Keras is a high-level API for the Theano and Tensorflow packages.
+                         : This method wraps the training and predictions steps of the Keras
+                         : Python package for TMVA, so that dataloading, preprocessing and
+                         : evaluation can be done within the TMVA system. To use this Keras
+                         : interface, you have to generate a model with Keras first. Then,
+                         : this model can be loaded and trained in TMVA.
+                         : 
+                         : 
+                         : <Suppress this message by specifying "!H" in the booking option>
+                         : [1m================================================================[0m
+                         : 
+                         : Preparing the Gaussian transformation...
+TFHandler_DNN            :                         Variable                                Mean                                RMS                        [        Min                                Max ]
+                         : -----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+                         :                     bmuon_nsip3d:                           0.50034                           0.28867   [                        1.0000e-09                            1.0000 ]
+                         :                     bmuon_reliso:                           0.49635                           0.29050   [                        0.00067415                            1.0000 ]
+                         :                  bmuon_ptwrtbjet:                           0.50102                           0.28858   [                        1.0000e-09                            1.0000 ]
+                         :                  bmuon_P_jetrest:                           0.50141                           0.28831   [                        0.00043399                            1.0000 ]
+                         :         bjet_charge*bmuon_charge:                           0.50157                           0.28869   [                        0.00046539                            1.0000 ]
+                         : bjet_ChargedHadronEnergyFraction:                           0.49921                           0.28869   [                        0.00022062                            1.0000 ]
+                         : bjet_NeutralHadronEnergyFraction:                           0.38251                           0.32945   [                        0.00052622                            1.0000 ]
+                         :     bjet_NeutralEmEnergyFraction:                           0.49696                           0.29052   [                        6.4257e-05                            1.0000 ]
+                         :     bjet_ChargedEmEnergyFraction:                          0.074926                           0.20531   [                         0.0037991                            1.0000 ]
+                         :          bjet_MuonEnergyFraction:                           0.45610                           0.31019   [                        0.00044240                            1.0000 ]
+                         :         bjet_ChargedMultiplicity:                           0.49986                           0.28669   [                        4.9569e-08                            1.0000 ]
+                         :         bjet_NeutralMultiplicity:                           0.49985                           0.28686   [                        2.4711e-07                            1.0000 ]
+                         :                fabs(bjet_charge):                           0.50165                           0.28875   [                        0.00056484                            1.0000 ]
+                         : -----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+                         : Option TriesEarlyStopping: Training will stop after 30 number of epochs with no improvement of validation loss
+Train on 31425 samples, validate on 43270 samples
+Epoch 1/300
+ - 6s - loss: 2.2469 - acc: 0.6673 - val_loss: 0.2540 - val_acc: 0.6954
+Epoch 2/300
+ - 5s - loss: 2.2227 - acc: 0.6798 - val_loss: 0.2579 - val_acc: 0.6901
+Epoch 3/300
+ - 4s - loss: 2.2103 - acc: 0.6817 - val_loss: 0.2565 - val_acc: 0.6882
+Epoch 4/300
+ - 4s - loss: 2.2054 - acc: 0.6845 - val_loss: 0.2584 - val_acc: 0.6901
+Epoch 5/300
+ - 4s - loss: 2.2010 - acc: 0.6846 - val_loss: 0.2625 - val_acc: 0.6866
+Epoch 6/300
+ - 4s - loss: 2.1938 - acc: 0.6837 - val_loss: 0.2578 - val_acc: 0.6866
+Epoch 7/300
+ - 4s - loss: 2.1900 - acc: 0.6837 - val_loss: 0.2554 - val_acc: 0.6891
+Epoch 8/300
+ - 4s - loss: 2.1889 - acc: 0.6846 - val_loss: 0.2603 - val_acc: 0.6803
+Epoch 9/300
+ - 4s - loss: 2.1848 - acc: 0.6870 - val_loss: 0.2575 - val_acc: 0.6747
+Epoch 10/300
+ - 4s - loss: 2.1843 - acc: 0.6830 - val_loss: 0.2594 - val_acc: 0.6708
+Epoch 11/300
+ - 5s - loss: 2.1800 - acc: 0.6844 - val_loss: 0.2547 - val_acc: 0.6858
+Epoch 12/300
+ - 6s - loss: 2.1768 - acc: 0.6845 - val_loss: 0.2569 - val_acc: 0.6816
+Epoch 13/300
+ - 4s - loss: 2.1758 - acc: 0.6827 - val_loss: 0.2526 - val_acc: 0.6900
+Epoch 14/300
+ - 4s - loss: 2.1710 - acc: 0.6837 - val_loss: 0.2573 - val_acc: 0.6777
+Epoch 15/300
+ - 3s - loss: 2.1656 - acc: 0.6875 - val_loss: 0.2635 - val_acc: 0.6690
+Epoch 16/300
+ - 3s - loss: 2.1733 - acc: 0.6837 - val_loss: 0.2587 - val_acc: 0.6777
+Epoch 17/300
+ - 3s - loss: 2.1669 - acc: 0.6832 - val_loss: 0.2537 - val_acc: 0.6834
+Epoch 18/300
+ - 3s - loss: 2.1734 - acc: 0.6863 - val_loss: 0.2587 - val_acc: 0.6739
+Epoch 19/300
+ - 3s - loss: 2.1647 - acc: 0.6871 - val_loss: 0.2615 - val_acc: 0.6600
+Epoch 20/300
+ - 3s - loss: 2.1682 - acc: 0.6845 - val_loss: 0.2470 - val_acc: 0.7000
+Epoch 21/300
+ - 3s - loss: 2.1620 - acc: 0.6844 - val_loss: 0.2485 - val_acc: 0.6857
+Epoch 22/300
+ - 4s - loss: 2.1649 - acc: 0.6846 - val_loss: 0.2463 - val_acc: 0.6971
+Epoch 23/300
+ - 4s - loss: 2.1590 - acc: 0.6888 - val_loss: 0.2558 - val_acc: 0.6660
+Epoch 24/300
+ - 4s - loss: 2.1631 - acc: 0.6854 - val_loss: 0.2522 - val_acc: 0.6836
+Epoch 25/300
+ - 4s - loss: 2.1614 - acc: 0.6844 - val_loss: 0.2418 - val_acc: 0.7070
+Epoch 26/300
+ - 4s - loss: 2.1619 - acc: 0.6860 - val_loss: 0.2550 - val_acc: 0.6714
+Epoch 27/300
+ - 4s - loss: 2.1596 - acc: 0.6879 - val_loss: 0.2530 - val_acc: 0.6862
+Epoch 28/300
+ - 4s - loss: 2.1598 - acc: 0.6870 - val_loss: 0.2445 - val_acc: 0.7036
+Epoch 29/300
+ - 4s - loss: 2.1577 - acc: 0.6888 - val_loss: 0.2419 - val_acc: 0.7079
+Epoch 30/300
+ - 3s - loss: 2.1523 - acc: 0.6869 - val_loss: 0.2511 - val_acc: 0.6768
+Epoch 31/300
+ - 3s - loss: 2.1584 - acc: 0.6880 - val_loss: 0.2440 - val_acc: 0.6981
+Epoch 32/300
+ - 3s - loss: 2.1549 - acc: 0.6851 - val_loss: 0.2487 - val_acc: 0.6937
+Epoch 33/300
+ - 3s - loss: 2.1548 - acc: 0.6912 - val_loss: 0.2459 - val_acc: 0.6916
+Epoch 34/300
+ - 4s - loss: 2.1547 - acc: 0.6875 - val_loss: 0.2551 - val_acc: 0.6511
+Epoch 35/300
+ - 4s - loss: 2.1526 - acc: 0.6863 - val_loss: 0.2542 - val_acc: 0.6745
+Epoch 36/300
+ - 3s - loss: 2.1525 - acc: 0.6858 - val_loss: 0.2526 - val_acc: 0.6698
+Epoch 37/300
+ - 3s - loss: 2.1535 - acc: 0.6873 - val_loss: 0.2480 - val_acc: 0.6792
+Epoch 38/300
+ - 4s - loss: 2.1508 - acc: 0.6874 - val_loss: 0.2475 - val_acc: 0.6851
+Epoch 39/300
+ - 4s - loss: 2.1514 - acc: 0.6908 - val_loss: 0.2546 - val_acc: 0.6624
+Epoch 40/300
+ - 3s - loss: 2.1588 - acc: 0.6859 - val_loss: 0.2454 - val_acc: 0.6946
+Epoch 41/300
+ - 3s - loss: 2.1539 - acc: 0.6890 - val_loss: 0.2456 - val_acc: 0.6941
+Epoch 42/300
+ - 4s - loss: 2.1489 - acc: 0.6871 - val_loss: 0.2502 - val_acc: 0.6790
+Epoch 43/300
+ - 4s - loss: 2.1473 - acc: 0.6826 - val_loss: 0.2426 - val_acc: 0.6968
+Epoch 44/300
+ - 8s - loss: 2.1465 - acc: 0.6876 - val_loss: 0.2522 - val_acc: 0.6730
+Epoch 45/300
+ - 8s - loss: 2.1498 - acc: 0.6874 - val_loss: 0.2441 - val_acc: 0.6881
+Epoch 46/300
+ - 7s - loss: 2.1487 - acc: 0.6835 - val_loss: 0.2524 - val_acc: 0.6713
+Epoch 47/300
+ - 6s - loss: 2.1463 - acc: 0.6887 - val_loss: 0.2417 - val_acc: 0.6945
+Epoch 48/300
+ - 8s - loss: 2.1501 - acc: 0.6849 - val_loss: 0.2471 - val_acc: 0.6775
+Epoch 49/300
+ - 8s - loss: 2.1427 - acc: 0.6866 - val_loss: 0.2469 - val_acc: 0.6930
+Epoch 50/300
+ - 9s - loss: 2.1472 - acc: 0.6885 - val_loss: 0.2520 - val_acc: 0.6651
+Epoch 51/300
+ - 8s - loss: 2.1465 - acc: 0.6854 - val_loss: 0.2453 - val_acc: 0.6980
+Epoch 52/300
+ - 8s - loss: 2.1424 - acc: 0.6875 - val_loss: 0.2567 - val_acc: 0.6569
+Epoch 53/300
+ - 8s - loss: 2.1506 - acc: 0.6869 - val_loss: 0.2450 - val_acc: 0.7000
+Epoch 54/300
+ - 8s - loss: 2.1439 - acc: 0.6891 - val_loss: 0.2432 - val_acc: 0.7000
+Epoch 55/300
+ - 7s - loss: 2.1439 - acc: 0.6858 - val_loss: 0.2436 - val_acc: 0.6879
+Epoch 56/300
+ - 7s - loss: 2.1531 - acc: 0.6865 - val_loss: 0.2476 - val_acc: 0.6927
+Epoch 57/300
+ - 9s - loss: 2.1484 - acc: 0.6870 - val_loss: 0.2482 - val_acc: 0.6826
+Epoch 58/300
+ - 8s - loss: 2.1518 - acc: 0.6889 - val_loss: 0.2535 - val_acc: 0.6659
+Epoch 59/300
+ - 6s - loss: 2.1472 - acc: 0.6888 - val_loss: 0.2436 - val_acc: 0.6887
+Epoch 60/300
+ - 7s - loss: 2.1384 - acc: 0.6899 - val_loss: 0.2527 - val_acc: 0.6573
+Epoch 61/300
+ - 7s - loss: 2.1430 - acc: 0.6876 - val_loss: 0.2501 - val_acc: 0.6793
+Epoch 62/300
+ - 8s - loss: 2.1443 - acc: 0.6825 - val_loss: 0.2418 - val_acc: 0.7028
+Epoch 63/300
+ - 8s - loss: 2.1404 - acc: 0.6871 - val_loss: 0.2407 - val_acc: 0.6999
+Epoch 64/300
+ - 8s - loss: 2.1488 - acc: 0.6888 - val_loss: 0.2452 - val_acc: 0.6763
+Epoch 65/300
+ - 6s - loss: 2.1416 - acc: 0.6847 - val_loss: 0.2451 - val_acc: 0.6892
+Epoch 66/300
+ - 7s - loss: 2.1462 - acc: 0.6868 - val_loss: 0.2431 - val_acc: 0.7001
+Epoch 67/300
+ - 6s - loss: 2.1415 - acc: 0.6876 - val_loss: 0.2438 - val_acc: 0.6949
+Epoch 68/300
+ - 6s - loss: 2.1402 - acc: 0.6891 - val_loss: 0.2396 - val_acc: 0.7026
+Epoch 69/300
+ - 7s - loss: 2.1384 - acc: 0.6832 - val_loss: 0.2415 - val_acc: 0.6975
+Epoch 70/300
+ - 7s - loss: 2.1432 - acc: 0.6872 - val_loss: 0.2488 - val_acc: 0.6809
+Epoch 71/300
+ - 6s - loss: 2.1408 - acc: 0.6848 - val_loss: 0.2398 - val_acc: 0.6972
+Epoch 72/300
+ - 6s - loss: 2.1468 - acc: 0.6909 - val_loss: 0.2447 - val_acc: 0.6829
+Epoch 73/300
+ - 7s - loss: 2.1451 - acc: 0.6885 - val_loss: 0.2388 - val_acc: 0.7129
+Epoch 74/300
+ - 6s - loss: 2.1445 - acc: 0.6916 - val_loss: 0.2464 - val_acc: 0.6820
+Epoch 75/300
+ - 7s - loss: 2.1452 - acc: 0.6860 - val_loss: 0.2422 - val_acc: 0.6944
+Epoch 76/300
+ - 6s - loss: 2.1438 - acc: 0.6918 - val_loss: 0.2486 - val_acc: 0.6846
+Epoch 77/300
+ - 7s - loss: 2.1405 - acc: 0.6911 - val_loss: 0.2440 - val_acc: 0.6922
+Epoch 78/300
+ - 8s - loss: 2.1387 - acc: 0.6878 - val_loss: 0.2354 - val_acc: 0.7043
+Epoch 79/300
+ - 8s - loss: 2.1424 - acc: 0.6904 - val_loss: 0.2457 - val_acc: 0.6775
+Epoch 80/300
+ - 8s - loss: 2.1412 - acc: 0.6862 - val_loss: 0.2398 - val_acc: 0.6974
+Epoch 81/300
+ - 6s - loss: 2.1427 - acc: 0.6875 - val_loss: 0.2455 - val_acc: 0.6857
+Epoch 82/300
+ - 4s - loss: 2.1352 - acc: 0.6876 - val_loss: 0.2433 - val_acc: 0.6944
+Epoch 83/300
+ - 4s - loss: 2.1379 - acc: 0.6867 - val_loss: 0.2409 - val_acc: 0.7023
+Epoch 84/300
+ - 4s - loss: 2.1405 - acc: 0.6908 - val_loss: 0.2433 - val_acc: 0.6962
+Epoch 85/300
+ - 4s - loss: 2.1444 - acc: 0.6886 - val_loss: 0.2440 - val_acc: 0.6965
+Epoch 86/300
+ - 4s - loss: 2.1350 - acc: 0.6871 - val_loss: 0.2412 - val_acc: 0.6977
+Epoch 87/300
+ - 4s - loss: 2.1421 - acc: 0.6885 - val_loss: 0.2489 - val_acc: 0.6880
+Epoch 88/300
+ - 4s - loss: 2.1389 - acc: 0.6898 - val_loss: 0.2452 - val_acc: 0.6922
+Epoch 89/300
+ - 4s - loss: 2.1442 - acc: 0.6875 - val_loss: 0.2483 - val_acc: 0.6852
+Epoch 90/300
+ - 5s - loss: 2.1379 - acc: 0.6900 - val_loss: 0.2461 - val_acc: 0.6929
+Epoch 91/300
+ - 4s - loss: 2.1349 - acc: 0.6892 - val_loss: 0.2404 - val_acc: 0.6954
+Epoch 92/300
+ - 4s - loss: 2.1409 - acc: 0.6886 - val_loss: 0.2479 - val_acc: 0.6846
+Epoch 93/300
+ - 4s - loss: 2.1373 - acc: 0.6880 - val_loss: 0.2541 - val_acc: 0.6644
+Epoch 94/300
+ - 4s - loss: 2.1436 - acc: 0.6866 - val_loss: 0.2478 - val_acc: 0.6815
+Epoch 95/300
+ - 4s - loss: 2.1384 - acc: 0.6847 - val_loss: 0.2457 - val_acc: 0.6881
+Epoch 96/300
+ - 4s - loss: 2.1326 - acc: 0.6905 - val_loss: 0.2459 - val_acc: 0.6821
+Epoch 97/300
+ - 4s - loss: 2.1348 - acc: 0.6901 - val_loss: 0.2483 - val_acc: 0.6789
+Epoch 98/300
+ - 6s - loss: 2.1308 - acc: 0.6909 - val_loss: 0.2455 - val_acc: 0.6794
+Epoch 99/300
+ - 7s - loss: 2.1387 - acc: 0.6878 - val_loss: 0.2463 - val_acc: 0.6786
+Epoch 100/300
+ - 7s - loss: 2.1349 - acc: 0.6900 - val_loss: 0.2498 - val_acc: 0.6678
+Epoch 101/300
+ - 8s - loss: 2.1359 - acc: 0.6895 - val_loss: 0.2470 - val_acc: 0.6725
+Epoch 102/300
+ - 11s - loss: 2.1324 - acc: 0.6887 - val_loss: 0.2434 - val_acc: 0.6939
+Epoch 103/300
+ - 12s - loss: 2.1336 - acc: 0.6875 - val_loss: 0.2452 - val_acc: 0.6866
+Epoch 104/300
+ - 12s - loss: 2.1398 - acc: 0.6906 - val_loss: 0.2439 - val_acc: 0.6939
+Epoch 105/300
+ - 13s - loss: 2.1339 - acc: 0.6896 - val_loss: 0.2445 - val_acc: 0.6884
+Epoch 106/300
+ - 13s - loss: 2.1320 - acc: 0.6927 - val_loss: 0.2430 - val_acc: 0.6919
+Epoch 107/300
+ - 13s - loss: 2.1342 - acc: 0.6928 - val_loss: 0.2416 - val_acc: 0.6915
+Epoch 108/300
+ - 16s - loss: 2.1364 - acc: 0.6871 - val_loss: 0.2390 - val_acc: 0.7016
+Epoch 00108: early stopping
+                         : Trained model written to file: muon2016preVFP__5__64__100__0.2/weights/TrainedModel_DNN.h5
+                         : Elapsed time for training with 31425 events: 627 sec         
+                         : Creating xml weight file: [0;36mmuon2016preVFP__5__64__100__0.2/weights/muon2016preVFP__5__64__100__0.2_DNN.weights.xml[0m
+                         : Creating standalone class: [0;36mmuon2016preVFP__5__64__100__0.2/weights/muon2016preVFP__5__64__100__0.2_DNN.class.C[0m
+Factory                  : Training finished
+                         : 
+                         : Ranking input variables (method specific)...
+                         : No variable ranking supplied by classifier: DNN
+Factory                  : === Destroy and recreate all methods via weight files for testing ===
+                         : 
+Factory                  : [1mTest all methods[0m
+Factory                  : Test method: DNN for Classification performance
+                         : 
+                         : Load model from file: muon2016preVFP__5__64__100__0.2/weights/TrainedModel_DNN.h5
+Factory                  : [1mEvaluate all methods[0m
+Factory                  : Evaluate classifier: DNN
+                         : 
+TFHandler_DNN            :                         Variable                                Mean                                RMS                        [        Min                                Max ]
+                         : -----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+                         :                     bmuon_nsip3d:                           0.49541                           0.28905   [                        1.0000e-09                            1.0000 ]
+                         :                     bmuon_reliso:                           0.48226                           0.29178   [                        0.00067415                            1.0000 ]
+                         :                  bmuon_ptwrtbjet:                           0.53041                           0.28932   [                        1.0000e-09                            1.0000 ]
+                         :                  bmuon_P_jetrest:                           0.53713                           0.28882   [                        1.2674e-05                            1.0000 ]
+                         :         bjet_charge*bmuon_charge:                           0.53151                           0.28783   [                        0.00034401                            1.0000 ]
+                         : bjet_ChargedHadronEnergyFraction:                           0.48896                           0.28935   [                        0.00022062                            1.0000 ]
+                         : bjet_NeutralHadronEnergyFraction:                           0.37907                           0.32985   [                        0.00052622                            1.0000 ]
+                         :     bjet_NeutralEmEnergyFraction:                           0.48885                           0.28969   [                        6.4257e-05                            1.0000 ]
+                         :     bjet_ChargedEmEnergyFraction:                          0.073534                           0.20193   [                         0.0037991                            1.0000 ]
+                         :          bjet_MuonEnergyFraction:                           0.47782                           0.31358   [                        0.00044240                            1.0000 ]
+                         :         bjet_ChargedMultiplicity:                           0.49760                           0.28936   [                        4.9569e-08                           0.99999 ]
+                         :         bjet_NeutralMultiplicity:                           0.50060                           0.28815   [                        2.4711e-07                            1.0000 ]
+                         :                fabs(bjet_charge):                           0.52441                           0.29102   [                        0.00058358                            1.0000 ]
+                         : -----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+DNN                      : [muon2016preVFP__5__64__100__0.2] : Loop over test events and fill histograms with classifier response...
+                         : 
+TFHandler_DNN            :                         Variable                                Mean                                RMS                        [        Min                                Max ]
+                         : -----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+                         :                     bmuon_nsip3d:                           0.49541                           0.28905   [                        1.0000e-09                            1.0000 ]
+                         :                     bmuon_reliso:                           0.48226                           0.29178   [                        0.00067415                            1.0000 ]
+                         :                  bmuon_ptwrtbjet:                           0.53041                           0.28932   [                        1.0000e-09                            1.0000 ]
+                         :                  bmuon_P_jetrest:                           0.53713                           0.28882   [                        1.2674e-05                            1.0000 ]
+                         :         bjet_charge*bmuon_charge:                           0.53151                           0.28783   [                        0.00034401                            1.0000 ]
+                         : bjet_ChargedHadronEnergyFraction:                           0.48896                           0.28935   [                        0.00022062                            1.0000 ]
+                         : bjet_NeutralHadronEnergyFraction:                           0.37907                           0.32985   [                        0.00052622                            1.0000 ]
+                         :     bjet_NeutralEmEnergyFraction:                           0.48885                           0.28969   [                        6.4257e-05                            1.0000 ]
+                         :     bjet_ChargedEmEnergyFraction:                          0.073534                           0.20193   [                         0.0037991                            1.0000 ]
+                         :          bjet_MuonEnergyFraction:                           0.47782                           0.31358   [                        0.00044240                            1.0000 ]
+                         :         bjet_ChargedMultiplicity:                           0.49760                           0.28936   [                        4.9569e-08                           0.99999 ]
+                         :         bjet_NeutralMultiplicity:                           0.50060                           0.28815   [                        2.4711e-07                            1.0000 ]
+                         :                fabs(bjet_charge):                           0.52441                           0.29102   [                        0.00058358                            1.0000 ]
+                         : -----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+                         : 
+                         : Evaluation results ranked by best signal efficiency and purity (area)
+                         : -------------------------------------------------------------------------------------------------------------------
+                         : DataSet       MVA                       
+                         : Name:         Method:          ROC-integ
+                         : muon2016preVFP__5__64__100__0.2 DNN            : 0.760
+                         : -------------------------------------------------------------------------------------------------------------------
+                         : 
+                         : Testing efficiency compared to training efficiency (overtraining check)
+                         : -------------------------------------------------------------------------------------------------------------------
+                         : DataSet              MVA              Signal efficiency: from test sample (from training sample) 
+                         : Name:                Method:          @B=0.01             @B=0.10            @B=0.30   
+                         : -------------------------------------------------------------------------------------------------------------------
+                         : muon2016preVFP__5__64__100__0.2 DNN            : 0.090 (0.093)       0.399 (0.409)      0.682 (0.691)
+                         : -------------------------------------------------------------------------------------------------------------------
+                         : 
+Dataset:muon2016preVFP...: Created tree 'TestTree' with 43270 events
+                         : 
+Dataset:muon2016preVFP...: Created tree 'TrainTree' with 31425 events
+                         : 
+Factory                  : [1mThank you for using TMVA![0m
+                         : [1mFor citation information, please visit: http://tmva.sf.net/citeTMVA.html[0m
+ref.cut= DNN 0.527920196039
+auc= 0.75962189435
+myerr=0
+[ntry=1]

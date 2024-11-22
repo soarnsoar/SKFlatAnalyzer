@@ -1,0 +1,108 @@
+<?xml version="1.0"?>
+<MethodSetup Method="PyKeras::DNN">
+  <GeneralInfo>
+    <Info name="TMVA Release" value="4.2.1 [262657]"/>
+    <Info name="ROOT Release" value="6.12/07 [396295]"/>
+    <Info name="Creator" value="jhchoi"/>
+    <Info name="Date" value="Tue Oct  1 13:01:00 2024"/>
+    <Info name="Host" value="Linux vocms0301.cern.ch 2.6.32-696.30.1.el6.x86_64 #1 SMP Tue May 22 06:09:36 CEST 2018 x86_64 x86_64 x86_64 GNU/Linux"/>
+    <Info name="Dir" value="/d0/scratch/jhchoi/v2409.2/WORKDIR_ntrial/2409.2/EEMu_MuMuE_Method/2018/jet/jet2018__5__256__1000__0.2/Trf_N/67"/>
+    <Info name="Training events" value="1765563"/>
+    <Info name="TrainingTime" value="4.08339019e+04"/>
+    <Info name="AnalysisType" value="Classification"/>
+  </GeneralInfo>
+  <Options>
+    <Option name="V" modified="Yes">False</Option>
+    <Option name="VerbosityLevel" modified="No">Default</Option>
+    <Option name="VarTransform" modified="Yes">N</Option>
+    <Option name="H" modified="Yes">True</Option>
+    <Option name="CreateMVAPdfs" modified="No">False</Option>
+    <Option name="IgnoreNegWeightsInTraining" modified="Yes">True</Option>
+    <Option name="FilenameModel" modified="Yes">model.h5</Option>
+    <Option name="FilenameTrainedModel" modified="No">/data6/Users/jhchoi/SKFlatAnalyzers/test/ForTMVA/SKFlatAnalyzer/data/Run2UltraLegacy_v3/2018/TMVA/ChargeScore/v2409.2/jet//TrainedModel_DNN.h5</Option>
+    <Option name="BatchSize" modified="Yes">1000</Option>
+    <Option name="NumEpochs" modified="Yes">300</Option>
+    <Option name="Verbose" modified="Yes">2</Option>
+    <Option name="ContinueTraining" modified="No">False</Option>
+    <Option name="SaveBestOnly" modified="Yes">False</Option>
+    <Option name="TriesEarlyStopping" modified="Yes">30</Option>
+    <Option name="LearningRateSchedule" modified="No"/>
+  </Options>
+  <Variables NVar="8">
+    <Variable VarIndex="0" Expression="bjet_ChargedHadronEnergyFraction" Label="bjet_ChargedHadronEnergyFraction" Title="bjet_ChargedHadronEnergyFraction" Unit="" Internal="bjet_ChargedHadronEnergyFraction" Type="F" Min="0.00000000e+00" Max="1.00000036e+00"/>
+    <Variable VarIndex="1" Expression="bjet_NeutralHadronEnergyFraction" Label="bjet_NeutralHadronEnergyFraction" Title="bjet_NeutralHadronEnergyFraction" Unit="" Internal="bjet_NeutralHadronEnergyFraction" Type="F" Min="0.00000000e+00" Max="1.00000024e+00"/>
+    <Variable VarIndex="2" Expression="bjet_NeutralEmEnergyFraction" Label="bjet_NeutralEmEnergyFraction" Title="bjet_NeutralEmEnergyFraction" Unit="" Internal="bjet_NeutralEmEnergyFraction" Type="F" Min="0.00000000e+00" Max="1.00000012e+00"/>
+    <Variable VarIndex="3" Expression="bjet_ChargedEmEnergyFraction" Label="bjet_ChargedEmEnergyFraction" Title="bjet_ChargedEmEnergyFraction" Unit="" Internal="bjet_ChargedEmEnergyFraction" Type="F" Min="0.00000000e+00" Max="9.93901968e-01"/>
+    <Variable VarIndex="4" Expression="bjet_MuonEnergyFraction" Label="bjet_MuonEnergyFraction" Title="bjet_MuonEnergyFraction" Unit="" Internal="bjet_MuonEnergyFraction" Type="F" Min="0.00000000e+00" Max="9.94225264e-01"/>
+    <Variable VarIndex="5" Expression="bjet_ChargedMultiplicity" Label="bjet_ChargedMultiplicity" Title="bjet_ChargedMultiplicity" Unit="" Internal="bjet_ChargedMultiplicity" Type="F" Min="0.00000000e+00" Max="5.00000000e+01"/>
+    <Variable VarIndex="6" Expression="bjet_NeutralMultiplicity" Label="bjet_NeutralMultiplicity" Title="bjet_NeutralMultiplicity" Unit="" Internal="bjet_NeutralMultiplicity" Type="F" Min="0.00000000e+00" Max="5.30000000e+01"/>
+    <Variable VarIndex="7" Expression="fabs(bjet_charge)" Label="fabs(bjet_charge)" Title="fabs(bjet_charge)" Unit="" Internal="fabs_bjet_charge_" Type="F" Min="3.57663126e-08" Max="1.00000000e+00"/>
+  </Variables>
+  <Classes NClass="2">
+    <Class Name="Signal" Index="0"/>
+    <Class Name="Background" Index="1"/>
+  </Classes>
+  <Transformations NTransformations="1">
+    <Transform Name="Normalize">
+      <Selection>
+        <Input NInputs="8">
+          <Input Type="Variable" Label="bjet_ChargedHadronEnergyFraction" Expression="bjet_ChargedHadronEnergyFraction"/>
+          <Input Type="Variable" Label="bjet_NeutralHadronEnergyFraction" Expression="bjet_NeutralHadronEnergyFraction"/>
+          <Input Type="Variable" Label="bjet_NeutralEmEnergyFraction" Expression="bjet_NeutralEmEnergyFraction"/>
+          <Input Type="Variable" Label="bjet_ChargedEmEnergyFraction" Expression="bjet_ChargedEmEnergyFraction"/>
+          <Input Type="Variable" Label="bjet_MuonEnergyFraction" Expression="bjet_MuonEnergyFraction"/>
+          <Input Type="Variable" Label="bjet_ChargedMultiplicity" Expression="bjet_ChargedMultiplicity"/>
+          <Input Type="Variable" Label="bjet_NeutralMultiplicity" Expression="bjet_NeutralMultiplicity"/>
+          <Input Type="Variable" Label="fabs(bjet_charge)" Expression="fabs(bjet_charge)"/>
+        </Input>
+        <Output NOutputs="8">
+          <Output Type="Variable" Label="bjet_ChargedHadronEnergyFraction" Expression="bjet_ChargedHadronEnergyFraction"/>
+          <Output Type="Variable" Label="bjet_NeutralHadronEnergyFraction" Expression="bjet_NeutralHadronEnergyFraction"/>
+          <Output Type="Variable" Label="bjet_NeutralEmEnergyFraction" Expression="bjet_NeutralEmEnergyFraction"/>
+          <Output Type="Variable" Label="bjet_ChargedEmEnergyFraction" Expression="bjet_ChargedEmEnergyFraction"/>
+          <Output Type="Variable" Label="bjet_MuonEnergyFraction" Expression="bjet_MuonEnergyFraction"/>
+          <Output Type="Variable" Label="bjet_ChargedMultiplicity" Expression="bjet_ChargedMultiplicity"/>
+          <Output Type="Variable" Label="bjet_NeutralMultiplicity" Expression="bjet_NeutralMultiplicity"/>
+          <Output Type="Variable" Label="fabs(bjet_charge)" Expression="fabs(bjet_charge)"/>
+        </Output>
+      </Selection>
+      <Class ClassIndex="0">
+        <Ranges>
+          <Range Index="0" Min="0.0000000000000000e+00" Max="1.0000003576278687e+00"/>
+          <Range Index="1" Min="0.0000000000000000e+00" Max="1.0000002384185791e+00"/>
+          <Range Index="2" Min="0.0000000000000000e+00" Max="1.0000000000000000e+00"/>
+          <Range Index="3" Min="0.0000000000000000e+00" Max="9.9246889352798462e-01"/>
+          <Range Index="4" Min="0.0000000000000000e+00" Max="9.8897981643676758e-01"/>
+          <Range Index="5" Min="0.0000000000000000e+00" Max="4.8000000000000000e+01"/>
+          <Range Index="6" Min="0.0000000000000000e+00" Max="4.7000000000000000e+01"/>
+          <Range Index="7" Min="3.5766312578289217e-08" Max="1.0000000000000000e+00"/>
+        </Ranges>
+      </Class>
+      <Class ClassIndex="1">
+        <Ranges>
+          <Range Index="0" Min="0.0000000000000000e+00" Max="1.0000003576278687e+00"/>
+          <Range Index="1" Min="0.0000000000000000e+00" Max="1.0000002384185791e+00"/>
+          <Range Index="2" Min="0.0000000000000000e+00" Max="1.0000001192092896e+00"/>
+          <Range Index="3" Min="0.0000000000000000e+00" Max="9.9390196800231934e-01"/>
+          <Range Index="4" Min="0.0000000000000000e+00" Max="9.9422526359558105e-01"/>
+          <Range Index="5" Min="0.0000000000000000e+00" Max="5.0000000000000000e+01"/>
+          <Range Index="6" Min="0.0000000000000000e+00" Max="5.3000000000000000e+01"/>
+          <Range Index="7" Min="1.3147311506145343e-07" Max="1.0000000000000000e+00"/>
+        </Ranges>
+      </Class>
+      <Class ClassIndex="2">
+        <Ranges>
+          <Range Index="0" Min="0.0000000000000000e+00" Max="1.0000003576278687e+00"/>
+          <Range Index="1" Min="0.0000000000000000e+00" Max="1.0000002384185791e+00"/>
+          <Range Index="2" Min="0.0000000000000000e+00" Max="1.0000001192092896e+00"/>
+          <Range Index="3" Min="0.0000000000000000e+00" Max="9.9390196800231934e-01"/>
+          <Range Index="4" Min="0.0000000000000000e+00" Max="9.9422526359558105e-01"/>
+          <Range Index="5" Min="0.0000000000000000e+00" Max="5.0000000000000000e+01"/>
+          <Range Index="6" Min="0.0000000000000000e+00" Max="5.3000000000000000e+01"/>
+          <Range Index="7" Min="3.5766312578289217e-08" Max="1.0000000000000000e+00"/>
+        </Ranges>
+      </Class>
+    </Transform>
+  </Transformations>
+  <MVAPdfs/>
+</MethodSetup>

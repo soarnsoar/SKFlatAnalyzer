@@ -1,0 +1,11 @@
+executable = /data6/Users/jhchoi/TMVA/TMVA_TOOL/ws/WORKDIR/2409.2/EEMu_MuMuE_Method/2018/electron/electron2018__20__256__100__0.2/Trf_G/run.sh
+universe = vanilla
+output = /data6/Users/jhchoi/TMVA/TMVA_TOOL/ws/WORKDIR/2409.2/EEMu_MuMuE_Method/2018/electron/electron2018__20__256__100__0.2/Trf_G/run.out
+error = /data6/Users/jhchoi/TMVA/TMVA_TOOL/ws/WORKDIR/2409.2/EEMu_MuMuE_Method/2018/electron/electron2018__20__256__100__0.2/Trf_G/run.err
+log = /data6/Users/jhchoi/TMVA/TMVA_TOOL/ws/WORKDIR/2409.2/EEMu_MuMuE_Method/2018/electron/electron2018__20__256__100__0.2/Trf_G/run.log
+request_memory = 10000 MB 
+
+request_cpus = 1
+accounting_group=group_cms
+JobBatchName=dnn_electron_2409.2_2018
+queue

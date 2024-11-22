@@ -24,13 +24,21 @@ class JHAnalyzerBase : public AnalyzerCore {
   JHAnalyzerBase();
   ~JHAnalyzerBase();
 
+  //GetPDFSetIDCode
+  int GetPDFSetIDCode();
+  TString PDFalias;
+
   //Basic Global Object
   TString ProcessName;
   Event ev;
   //---flags
   bool runSys;
+  bool runMomSys;
   bool checksf;
   bool simple_lepscale;
+  bool weightonly;
+  bool pusysonly;
+  bool measure_btageff;
   //--end flags
   double weight;
   double btagcut;
@@ -50,54 +58,110 @@ class JHAnalyzerBase : public AnalyzerCore {
   TLorentzVector UpdateMETByJetScale(const TLorentzVector &met, int sys);
   TLorentzVector UpdateMETByJetSmear(const TLorentzVector &met, int sys);
   TLorentzVector GetShiftedMET(int sys);
-  TLorentzVector PuppiMET_raw, PuppiMET_roch, PuppiMET; 
-  //PuppiMET_roch -> correct_puppimet_by_rochcorr
+  TLorentzVector CurrentMET_raw, CurrentMET_roch, CurrentMET; 
+  //CurrentMET_roch -> correct_puppimet_by_rochcorr
   
   //--(2) Define EventLoop--//
   virtual void EventLoop(){};//main function making what you want
   virtual void TruthLoop(){};
   void FillHist(TString histname, double value, double this_weight, int n_bin, double x_min, double x_max);
-  void FillHistUp(TString sysname,TString histname,double value,double this_weight,int n_bin,double x_min, double x_max);
-  void FillHistDown(TString sysname,TString histname,double value,double this_weight,int n_bin,double x_min, double x_max);
-  void FillHistIdx2(TString sysname, int idx1, int idx2, TString histname,double value,double this_weight,int n_bin,double x_min, double x_max);
-  void FillHistIdx2(TString sysname, TString idx1, TString idx2, TString histname,double value,double this_weight,int n_bin,double x_min, double x_max);
+  void FillHist(TString histname, double value, double this_weight, int n_bin, double *xbins);
+  
+  void FillHistUp(TString sysname, TString histname, double value, double this_weight, int n_bin,double x_min, double x_max);
+  void FillHistUp(TString sysname, TString histname, double value, double this_weight, int n_bin, double *xbins);
+  
+  void FillHistDown(TString sysname, TString histname, double value, double this_weight, int n_bin,double x_min, double x_max);
+  void FillHistDown(TString sysname, TString histname, double value, double this_weight, int n_bin, double *xbins);
+  
+  void FillHistIdx2(TString sysname, int idx1, int idx2, TString histname, double value, double this_weight,int n_bin, double x_min, double x_max);
+  void FillHistIdx2(TString sysname, int idx1, int idx2, TString histname, double value, double this_weight,int n_bin, double *xbins);
+  
+  void FillHistIdx2(TString sysname, TString idx1, TString idx2, TString histname, double value, double this_weight,int n_bin, double x_min, double x_max);
+  void FillHistIdx2(TString sysname, TString idx1, TString idx2, TString histname, double value, double this_weight,int n_bin, double *xbins);
+
   //--(3) RunVariations
-  void RunVariations();
-  void FillReservedHist();
-  void FillReservedHistWeightBase();
-  void ClearReserveHist();
+  //void RunVariations();
+  //void FillReservedHist();
+  //void FillReservedHistWeightBase();
+  //void ClearReserveHist();
 
   void FillHistPUSys(TString histname, double value, double this_weight, int n_bin, double x_min, double x_max);
+  void FillHistPUSys(TString histname, double value, double this_weight, int n_bin, double *xbins);
+
   void FillHistPSSys(TString histname, double value, double this_weight, int n_bin, double x_min, double x_max);
+  void FillHistPSSys(TString histname, double value, double this_weight, int n_bin, double *xbins);
+
   void FillHistPrefireSys(TString histname, double value, double this_weight, int n_bin, double x_min, double x_max);
+  void FillHistPrefireSys(TString histname, double value, double this_weight, int n_bin, double *xbins);
 
   void FillHistElectronID(TString histname, double value, double this_weight, int n_bin, double x_min, double x_max);
+  void FillHistElectronID(TString histname, double value, double this_weight, int n_bin, double *xbins);
+
   void FillHistElectronRECO(TString histname, double value, double this_weight, int n_bin, double x_min, double x_max);
+  void FillHistElectronRECO(TString histname, double value, double this_weight, int n_bin, double *xbins);
+
   void FillHistElectronTrigger(TString histname, double value, double this_weight, int n_bin, double x_min, double x_max);
+  void FillHistElectronTrigger(TString histname, double value, double this_weight, int n_bin, double *xbins);
 
   void FillHistMuonID(TString histname, double value, double this_weight, int n_bin, double x_min, double x_max);
+  void FillHistMuonID(TString histname, double value, double this_weight, int n_bin, double *xbins);
+
   void FillHistMuonRECO(TString histname, double value, double this_weight, int n_bin, double x_min, double x_max);
+  void FillHistMuonRECO(TString histname, double value, double this_weight, int n_bin, double *xbins);
+
   void FillHistMuonTrigger(TString histname, double value, double this_weight, int n_bin, double x_min, double x_max);
+  void FillHistMuonTrigger(TString histname, double value, double this_weight, int n_bin, double *xbins);
+
   void FillHistMuonTrk(TString histname, double value, double this_weight, int n_bin, double x_min, double x_max);
+  void FillHistMuonTrk(TString histname, double value, double this_weight, int n_bin, double *xbins);
   
 
   void FillHistBtag(TString histname, double value, double this_weight, int n_bin, double x_min, double x_max);
+  void FillHistBtag(TString histname, double value, double this_weight, int n_bin, double *xbins);
+
   void FillHistZptWeight(TString histname, double value, double this_weight, int n_bin, double x_min, double x_max);
+  void FillHistZptWeight(TString histname, double value, double this_weight, int n_bin, double *xbins);
+
+  void FillHistTopPtReweight(TString histname, double value, double this_weight, int n_bin, double x_min, double x_max);
+  void FillHistTopPtReweight(TString histname, double value, double this_weight, int n_bin, double *xbins);
+
   void FillHistJetPUID(TString histname, double value, double this_weight, int n_bin, double x_min, double x_max);
+  void FillHistJetPUID(TString histname, double value, double this_weight, int n_bin, double *xbins);
+
+  void FillHistPDF(TString histname, double value, double this_weight, int n_bin, double x_min, double x_max);
+  void FillHistPDF(TString histname, double value, double this_weight, int n_bin, double *xbins);
+
+  void FillHistScale(TString histname, double value, double this_weight, int n_bin, double x_min, double x_max);
+  void FillHistScale(TString histname, double value, double this_weight, int n_bin, double *xbins);
+
+  void FillHistAlphaS(TString histname, double value, double this_weight, int n_bin, double x_min, double x_max);
+  void FillHistAlphaS(TString histname, double value, double this_weight, int n_bin, double *xbins);
+
+  /*
+  void FillHistalpsfact(TString histname, double value, double this_weight, int n_bin, double x_min, double x_max);
+  void FillHistalpsfact(TString histname, double value, double this_weight, int n_bin, double x_min, double x_max);
+
+  void FillHistlargeptscales(TString histname, double value, double this_weight, int n_bin, double x_min, double x_max);
+  void FillHistq0(TString histname, double value, double this_weight, int n_bin, double x_min, double x_max);
+  void FillHiststhw2(TString histname, double value, double this_weight, int n_bin, double x_min, double x_max);
+  void FillHistkHtt(TString histname, double value, double this_weight, int n_bin, double x_min, double x_max);
+  */
 
   void FillHistWeightBase(TString histname,double value,double this_weight,int n_bin,double x_min,double x_max);
-  void FillReservedHistMomentumVariations();
-  void FillReservedHistLeptonMomentumVariations();
+  void FillHistWeightBase(TString histname,double value,double this_weight,int n_bin,double *xbins);
+
+  //void FillReservedHistMomentumVariations();
+  //void FillReservedHistLeptonMomentumVariations();
   //--For Hist Reservation--//
-  struct ArgFillHist{
-    TString histname;
-    double value; double weight;
-    int n_bin; double x_min;
-    double x_max;
-  };
-  vector<ArgFillHist> vReserveHist;
+  //struct ArgFillHist{
+  //  TString histname;
+  //  double value; double weight;
+  //  int n_bin; double x_min;
+  //  double x_max;
+  //};
+  //vector<ArgFillHist> vReserveHist;
   //vector<std::tuple<TString, double, double, int, double, double>> vReserveHist;
-  void ClearReservedHist();
+  //void ClearReservedHist();
   
   //syst
   struct MomentumVar{
@@ -370,12 +434,15 @@ class JHAnalyzerBase : public AnalyzerCore {
 
 
   //void LoadChargeScoreTool(TString muon_version="2405.2",TString electron_version="2405.2", TString jet_version="2405.2", bool applycut=false);
-  void LoadChargeScoreTool(TString muon_version="2405.4.3",TString electron_version="2405.4.3", TString jet_version="2405.4.3", bool applycut=false);
+  //void LoadChargeScoreTool(TString muon_version="2405.4.3",TString electron_version="2405.4.3", TString jet_version="2405.4.3", bool applycut=false);
+  void LoadChargeScoreTool(TString muon_version="2409.2",TString electron_version="2409.2", TString jet_version="2409.2", bool applycut=false);
+  bool IsChargeScoreToolOn=false;
   void DeleteChargeScoreTool();
   void SetChargeScoreCut(TString version);
-  void SetChargeScoreCut_2405_2();
-  void SetChargeScoreCut_2405_4();
-  void SetChargeScoreCut_2405_4_3();
+  //void SetChargeScoreCut_2405_2();
+  //void SetChargeScoreCut_2405_4();
+  //void SetChargeScoreCut_2405_4_3();
+  void SetChargeScoreCut_2409_2();
   void SetMuonChargeScore(Muon &_this_bmuon, Jet &_this_bjet);
   void SetElectronChargeScore(Electron &_this_belectron, Jet &_this_bjet);
   void SetJetChargeScore(Jet &_this_bjet);
@@ -393,9 +460,22 @@ class JHAnalyzerBase : public AnalyzerCore {
   bjetvar bjet_ChargeTool;
 
 
-  tuple<int,double,int,int,double,int> GetBJetMuonScore_v2405_4_3(Jet &_bjet, vector<Muon> &_muoncoll);
-  tuple<int,double,int,int,double,int> GetBJetElectronScore_v2405_4_3(Jet &_bjet, vector<Electron> &_electroncoll);
-  tuple<int,bool,int,int,double> GetBJetCharge_v2405_4_3(Jet &_bjet, vector<Muon> &_muoncoll, vector<Electron> &electroncoll);
+
+
+  //tuple<int,double,int,int,double,int> GetBJetMuonScore_v2405_4_3(Jet &_bjet, vector<Muon> &_muoncoll);
+  //tuple<int,double,int,int,double,int> GetBJetElectronScore_v2405_4_3(Jet &_bjet, vector<Electron> &_electroncoll);
+  //tuple<int,bool,int,int,double> GetBJetCharge_v2405_4_3(Jet &_bjet, vector<Muon> &_muoncoll, vector<Electron> &electroncoll);
+
+
+
+  tuple<int,double,int,int,double,int> GetBJetMuonScore_v2409_2(Jet &_bjet, vector<Muon> &_muoncoll);
+  tuple<int,double,int,int,double,int> GetBJetElectronScore_v2409_2(Jet &_bjet, vector<Electron> &_electroncoll);
+  tuple<int,bool,int,int,double> GetBJetCharge_v2409_2(Jet &_bjet, vector<Muon> &_muoncoll, vector<Electron> &electroncoll);
+
+
+  vector<int> GetMuonIdxInBJet(Jet &_bjet, vector<Muon> &_muoncoll);
+  vector<int> GetElectronIdxInBJet(Jet &_bjet, vector<Electron> &_electroncoll);
+
 
   //---jet assignment
   //---input lins for TTSemilepJetAssignmentTool
@@ -440,17 +520,49 @@ class JHAnalyzerBase : public AnalyzerCore {
   TTSemilepJetAssignmentToolvar inputvar_TTSemilepJetAssignmentTool;
   void LoadTTSemilepJetAssignmentTool(TString version);
   TTSemilepJetAssignmentTool *TTLJJetAssignmentTool;
+  bool IsTTLJJetAssignmentToolOn=false;
   double GetTTSemilepJetAssignmentScore();
   void SetTTSemilepJetAssignmentScore(TLorentzVector &_met, TLorentzVector &_lep, TLorentzVector &_blep, TLorentzVector &_bhad, TLorentzVector &_q1jet, TLorentzVector &_q2jet);
   static double Chi2TTSemiLep(double *x, double *par);
   void InitJetAssigenChi2Fitter();
+  bool IsJetAssigenChi2FitterOn=false;
   void DeleteJetAssigenChi2Fitter();
   TF1 *f1;
   pair<vector<int>,double> GetJetIndexSet_Chi2(Lepton &_l1, TLorentzVector &_met,vector<Jet> &_v_tightjet, vector<int> &_v_bjetidx, bool _kincut);
   pair<double,double> GetChi2_and_vz(TLorentzVector &_lep, TLorentzVector &_MET, TLorentzVector &_blep, TLorentzVector &_q1, TLorentzVector &_q2, TLorentzVector &_bhad);
+
+
+  ///jet matching to gen ptl
+  bool IsGENMatched_Flavour_dR(Jet& this_jet, int genidx);
+
+
+  // mc btag eff
+  void SetUpBtagEffMeasurement();
+  void Measure_MCbtagEff();
+  vector<string> TaggersToMeasure;
+  vector<string> WPsToMeasure;
+  vector<double> CutValuesToMeasure;
+
+  //Use MET phi corr?
+  bool UsePhiCorrMET=false;
+  //UsePfMET
+  bool UsePfMET=false;
+
+
+  //JetPOG pt eta bin
+  double jetpog_etabins[9] = {-2.5, -2., -1.6, -0.8, 0.0, 0.8, 1.6, 2., 2.5};
+  const int njetpog_etabins=8;
+  double jetpog_ptbins[10] = {20., 30., 50., 70., 100., 140., 200., 300., 600., 1000.};//PT bins used in POG SF measurements                                                                               
+  const int njetpog_ptbins=9;
+
  private:
   MomentumVar _CurrentSys;
   JetTagging::Parameters jtp;
+
+
+
+
+
 };
 
 

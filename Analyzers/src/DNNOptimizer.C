@@ -47,14 +47,16 @@ void DNNOptimizer::initializeAnalyzer(){
 
 
   //charge
-  TString v_muonScore="2405.4.3";
-  TString v_electronScore="2405.4.3";
-  TString v_jetScore="2405.4.3";
+  TString v_muonScore="2409.2";
+  TString v_electronScore="2409.2";
+  TString v_jetScore="2409.2";
+  /*
   if(HasFlag("dnn_v2405.4")){
     v_muonScore="2405.4";
     v_electronScore="2405.4";
     v_jetScore="2405.2";
   }
+  */
   bool apply_dnncut=false;
   if(HasFlag("apply_dnncut")){
     apply_dnncut=true;
@@ -222,7 +224,7 @@ void DNNOptimizer::RunBasicZregion(){
   if(nbjet!=1) return ;
   dphi_z_b= fabs(v_bjet[0].DeltaPhi(vZ));
   ptzb=(v_bjet[0]+vZ).Pt();
-  if(PuppiMET.Pt() > 75.) return;
+  if(CurrentMET.Pt() > 75.) return;
   if(dphi_z_b < 1.6) return;
   if(vZ.Pt()<15.) return;
   if(ptzb>60.) return;
@@ -432,7 +434,7 @@ void DNNOptimizer::FillHistAll(TString cutname){
   FillHist(cutname+"/njet",njet,weight,10,0,10);
   FillHist(cutname+"/nbjet",nbjet,weight,10,0,10);
 
-  FillHist(cutname+"/puppimet",PuppiMET.Pt(),weight,200,0,200);
+  FillHist(cutname+"/met",CurrentMET.Pt(),weight,200,0,200);
 
   FillHist(cutname+"/dphi_z_b",dphi_z_b,weight,80,0,4);
   FillHist(cutname+"/ptzb",ptzb,weight,60,0,120);

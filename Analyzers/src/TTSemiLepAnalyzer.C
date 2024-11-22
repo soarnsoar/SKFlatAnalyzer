@@ -87,12 +87,12 @@ void TTSemiLepAnalyzer::RunReco(){
 
   LepCh="";
   if(IsMuonChannel){
-    vtW=GetTransverseVector(mu1)+PuppiMET;
+    vtW=GetTransverseVector(mu1)+CurrentMET;
     LepCh="Muon";
     l1=mu1;
   }
   else if(IsElectronChannel){
-    vtW=GetTransverseVector(el1)+PuppiMET;
+    vtW=GetTransverseVector(el1)+CurrentMET;
     LepCh="Electron";
     l1=el1;
   }  
@@ -129,7 +129,7 @@ void TTSemiLepAnalyzer::Run(){
   iq2=-1;
   vz_fit=0.0;
   ////Minimal Chi2 Method - kin fitter
-  pair<vector<int>,double> v_jetidxset_and_vz_chi2=GetJetIndexSet_Chi2(l1, PuppiMET, v_tightjet, v_bjetidx, HcbCR);
+  pair<vector<int>,double> v_jetidxset_and_vz_chi2=GetJetIndexSet_Chi2(l1, CurrentMET, v_tightjet, v_bjetidx, HcbCR);
     
   //vector<int> v_jetidxset_dnn=GetJetIndexSet_DNN();
   //[0]=ib1 = bLep cand's v_bjet index
@@ -148,7 +148,7 @@ void TTSemiLepAnalyzer::Run(){
   if(iq1<0) return;
   if(iq2<0) return;
 
-  neutrino_cand.SetPxPyPzE(PuppiMET.Px(),PuppiMET.Py(),vz_fit, sqrt(pow(PuppiMET.Pt(),2) + pow(vz_fit,2) ));
+  neutrino_cand.SetPxPyPzE(CurrentMET.Px(),CurrentMET.Py(),vz_fit, sqrt(pow(CurrentMET.Pt(),2) + pow(vz_fit,2) ));
 
   //FillHistAll(LepCh+"_afterFit");
   //FillHistAll("AllLep_afterFit");
@@ -324,8 +324,8 @@ void TTSemiLepAnalyzer::FillHistAll(TString cutname){
   FillHist(cutname+"/njet",njet,weight,10,0,10);
   FillHist(cutname+"/nbjet",nbjet,weight,10,0,10);
 
-  FillHist(cutname+"/puppimet",PuppiMET.Pt(),weight,200,0,200);
-  FillHist(cutname+"/dphi_l_met",PuppiMET.DeltaPhi(l1),weight,200,-4,4);
+  FillHist(cutname+"/met",CurrentMET.Pt(),weight,200,0,200);
+  FillHist(cutname+"/dphi_l_met",CurrentMET.DeltaPhi(l1),weight,200,-4,4);
 
   if(njet>0){
     FillHist(cutname+"/pt_j1",v_tightjet[0].Pt(),weight,200,0,200);

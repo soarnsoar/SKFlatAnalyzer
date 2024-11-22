@@ -1,68 +1,16 @@
 Submitting job(s)..................................................
-50 job(s) submitted to cluster 2271085.
+50 job(s) submitted to cluster 2532490.
 Submitting job(s)..................................................
-50 job(s) submitted to cluster 2271104.
+50 job(s) submitted to cluster 2532495.
 Submitting job(s)..................................................
-50 job(s) submitted to cluster 2271122.
+50 job(s) submitted to cluster 2532499.
 Submitting job(s)..................................................
-50 job(s) submitted to cluster 2271138.
+50 job(s) submitted to cluster 2532507.
 Submitting job(s)..................................................
-50 job(s) submitted to cluster 2271144.
+50 job(s) submitted to cluster 2532513.
 Submitting job(s)........................
-24 job(s) submitted to cluster 2271148.
+24 job(s) submitted to cluster 2532522.
 Submitting job(s)................................
-32 job(s) submitted to cluster 2271152.
+32 job(s) submitted to cluster 2532526.
 Submitting job(s)...........................................
-43 job(s) submitted to cluster 2271155.
-condor_submit WORKDIR_HADD/run.jds > WORKDIR_HADD/run.jid
-condor_submit WORKDIR_HADD/run.jds > WORKDIR_HADD/run.jid
-condor_submit WORKDIR_HADD/run.jds > WORKDIR_HADD/run.jid
-condor_submit WORKDIR_HADD/run.jds > WORKDIR_HADD/run.jid
-condor_submit WORKDIR_HADD/run.jds > WORKDIR_HADD/run.jid
-condor_submit WORKDIR_HADD/run.jds > WORKDIR_HADD/run.jid
-condor_submit WORKDIR_HADD/run.jds > WORKDIR_HADD/run.jid
-condor_submit WORKDIR_HADD/run.jds > WORKDIR_HADD/run.jid
-##################################################
-Submission Finished
-- JobID = 568606
-- Analyzer = DiLeptonAnalyzer
-- Skim = 
-- InputSamples = ['WJets_Sherpa', 'QCD_bEnriched_HT100to200', 'QCD_bEnriched_HT200to300', 'QCD_bEnriched_HT300to500', 'QCD_bEnriched_HT500to700', 'QCD_bEnriched_HT700to1000', 'QCD_bEnriched_HT1000to1500', 'QCD_bEnriched_HT1500to2000']
-- NJobs = 43
-- Era = 2016postVFP
-- UserFlags = ['runSys']
-- RunDir = /data6/Users/jhchoi/SKFlatRunlog//2024_04_30_182443__568606__DiLeptonAnalyzer__Era2016postVFP__runSys__TAMSA1/QCD_bEnriched_HT1500to2000/
-- output will be send to : /data6/Users/jhchoi/SKFlatOutput//Run2UltraLegacy_v3/DiLeptonAnalyzer/2016postVFP/runSys__
-##################################################
-submit hadd
-CheckOutputSize...
-<AFTER hadd fin. please rm remainings..>
-rm /data6/Users/jhchoi/SKFlatRunlog//2024_04_30_182443__568606__DiLeptonAnalyzer__Era2016postVFP__runSys__TAMSA1/WJets_Sherpa//output/*.root
-submit hadd
-CheckOutputSize...
-<AFTER hadd fin. please rm remainings..>
-rm /data6/Users/jhchoi/SKFlatRunlog//2024_04_30_182443__568606__DiLeptonAnalyzer__Era2016postVFP__runSys__TAMSA1/QCD_bEnriched_HT100to200//output/*.root
-submit hadd
-CheckOutputSize...
-<AFTER hadd fin. please rm remainings..>
-rm /data6/Users/jhchoi/SKFlatRunlog//2024_04_30_182443__568606__DiLeptonAnalyzer__Era2016postVFP__runSys__TAMSA1/QCD_bEnriched_HT200to300//output/*.root
-submit hadd
-CheckOutputSize...
-<AFTER hadd fin. please rm remainings..>
-rm /data6/Users/jhchoi/SKFlatRunlog//2024_04_30_182443__568606__DiLeptonAnalyzer__Era2016postVFP__runSys__TAMSA1/QCD_bEnriched_HT300to500//output/*.root
-submit hadd
-CheckOutputSize...
-<AFTER hadd fin. please rm remainings..>
-rm /data6/Users/jhchoi/SKFlatRunlog//2024_04_30_182443__568606__DiLeptonAnalyzer__Era2016postVFP__runSys__TAMSA1/QCD_bEnriched_HT700to1000//output/*.root
-submit hadd
-CheckOutputSize...
-<AFTER hadd fin. please rm remainings..>
-rm /data6/Users/jhchoi/SKFlatRunlog//2024_04_30_182443__568606__DiLeptonAnalyzer__Era2016postVFP__runSys__TAMSA1/QCD_bEnriched_HT1500to2000//output/*.root
-submit hadd
-CheckOutputSize...
-<AFTER hadd fin. please rm remainings..>
-rm /data6/Users/jhchoi/SKFlatRunlog//2024_04_30_182443__568606__DiLeptonAnalyzer__Era2016postVFP__runSys__TAMSA1/QCD_bEnriched_HT500to700//output/*.root
-submit hadd
-CheckOutputSize...
-<AFTER hadd fin. please rm remainings..>
-rm /data6/Users/jhchoi/SKFlatRunlog//2024_04_30_182443__568606__DiLeptonAnalyzer__Era2016postVFP__runSys__TAMSA1/QCD_bEnriched_HT1000to1500//output/*.root
+43 job(s) submitted to cluster 2532531.
