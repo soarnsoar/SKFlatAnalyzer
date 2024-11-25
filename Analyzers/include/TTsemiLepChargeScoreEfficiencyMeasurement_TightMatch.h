@@ -51,6 +51,9 @@ public:
   void FillHist_bCand_belectron(TString cutname);
   
   void FillHistBJet(TString cutname, int bjetidx, int bgenidx, TLorentzVector &Tcand);
+  void FillHistBJetForMeasure(TString cutname, TLorentzVector& Tcand);
+  TString GetCutSuffix(double this_bjet_pt);
+  TString cut_suffix;
 
   void FillHistBJetMuonMax(TString cutname, int bjetidx);
   void FillHistBJetMuonMin(TString cutname, int bjetidx);
@@ -116,7 +119,7 @@ public:
   bool ElectronChargeOnly;
   bool JetChargeOnly;
   bool simplecat;
-
+  bool ForMeasure;
 
   //bool TurnOnFillHist;
 

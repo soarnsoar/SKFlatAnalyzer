@@ -3024,6 +3024,7 @@ JHAnalyzerBase::bjetvar JHAnalyzerBase::Get_bjetvar(Jet &this_jet){
   ret.MuonEnergyFraction=this_jet.GetMuonEnergyFraction();
   ret.ChargedMultiplicity=this_jet.ChargedMultiplicity();
   ret.NeutralMultiplicity=this_jet.NeutralMultiplicity();
+  ret.charge=this_jet.Charge();
   ret.abs_charge=fabs(ret.charge);
   /*
   ret.pt=this_jet.Pt();

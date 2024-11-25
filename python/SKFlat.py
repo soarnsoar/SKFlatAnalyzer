@@ -908,12 +908,20 @@ try:
                 if nFiles>100:
                   #_nhadd=NJobs/10
                   _nhadd=int(sqrt(NJobs))
+
+                ##--remove _nhadd option (after fixing not using CMSSW_10_6_30
+                _nhadd=1
                 #_req_memory=int(float(__outputsize)*(_nhadd+1))
                 #_req_memory=int(float(__outputsize)*5.*float(_nhadd))
                 _req_memory=int(float(__outputsize)*nFiles)
-                if _req_memory < 10000: _req_memory=10000
+                if _req_memory < 60000: _req_memory=60000
                 if _req_memory > 200000 : _req_memory=200000
-                os.system("ExportShellCondorSetup_tamsa.py -c \"cd "+base_rundir+"&&hadd -j "+str(_nhadd)+" -f "+outputname+".root output/*.root&&mv "+outputname+".root "+FinalOutputPath+"\" -d WORKDIR_HADD -n hadd_"+outputname+str(args.Era)+" -m "+str(_nhadd)+" -r \""+str(_req_memory)+"\" -s")
+
+                ##CMSSW_10_6_30 has bug on hadd, use CMSSW_11_2_5 instead
+                command_cmssw_setup='echo "RunHadd"'
+                if "CMSSW_10_6_30" in os.getenv("$CMSSW_BASE"):
+                  command_cmssw_setup="source "+SKFlat_WD+"/bin/setup_cmssw_11_2_5.sh"
+                os.system("ExportShellCondorSetup_tamsa.py -c \"cd "+base_rundir+"&&"+command_cmssw_setup+"&&hadd -j "+str(_nhadd)+" -f "+outputname+".root output/*.root&&mv "+outputname+".root "+FinalOutputPath+"\" -d WORKDIR_HADD -n hadd_"+outputname+str(args.Era)+" -m "+str(_nhadd)+" -r \""+str(_req_memory)+"\" -s")
                 #os.system("submit_hadd.sh")
                 #os.system('hadd -f '+outputname+'.root output/*.root >> JobStatus.log')
                 #os.system('rm output/*.root')
