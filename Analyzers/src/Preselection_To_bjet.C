@@ -75,6 +75,15 @@ void Preselection_To_bjet::initializeAnalyzer(){
   LoadChargeScoreTool(v_muonScore,v_electronScore,v_jetScore,apply_dnncut);
 
 
+  apply_bchargeeff=false;
+  if(HasFlag("apply_bchargeeff")){
+    if(!IsDATA){
+      initializeBChargeEff("bbbarAsymMeasurement_"+MCSample+".root");
+      apply_bchargeeff=true;
+    }
+  }
+  
+
 
 
 
@@ -213,7 +222,10 @@ void Preselection_To_bjet::RunBasicZregion(){
 
 
 
-
+  //---Presl DONE---//
+  if(apply_bchargeeff){
+    ApplyBChargeIDSF();
+  }
 
 
   if(bgenidx>-1){//if DYb || DYbbar
@@ -279,6 +291,62 @@ void Preselection_To_bjet::RunBasicZregion(){
     
 
 }
+
+
+
+void Preselection_To_bjet::ApplyBChargeIDSF(){
+  if(IsDATA) return;
+  tuple<int,bool,int,int,double> bCand_Charge_info=GetBJetCharge_v2409_2(v_bjet[0],AllMuons,AllElectrons);
+
+  int bCand_Charge=std::get<0>(bCand_Charge_info);
+  bool bCand_NotUseOppositeCharge=std::get<1>(bCand_Charge_info);
+  int bCand_im=std::get<2>(bCand_Charge_info);
+  int bCand_ie=std::get<3>(bCand_Charge_info);
+  double bCnad_ChargeScore=std::get<4>(bCand_Charge_info);
+
+  int cat_id=0;
+
+  //---bchargeID---//
+  TString this_bchargeID="";
+  if(fabs(bCand_Charge)==1){
+    if(bCand_NotUseOppositeCharge){
+      this_bchargeID="muH";
+      cat_id=1;
+    }
+    else{
+      this_bchargeID="muL";
+      cat_id=2;
+    }
+  }
+  else if(fabs(bCand_Charge)==2){
+    if(bCand_NotUseOppositeCharge){
+      this_bchargeID="eH";
+      cat_id=3;
+    }
+    else{
+      this_bchargeID="eL";
+      cat_id=4;
+    }
+  }
+  else if(fabs(bCand_Charge)==3){
+    this_bchargeID="jG";
+    cat_id=5;
+  }
+  else{
+    this_bchargeID="jB";
+    cat_id=6;
+  }
+  //---orig parton
+  TString this_orig_parton=JHAnalyzerBase::Get_orig_parton_bChargeID(v_bjet[0]);
+  
+  if(apply_bchargeeff && !IsDATA){
+    //---SF
+    double SF_bChargeID=Get_bChargeID_SF(v_bjet[0].Pt(), this_bchargeID, this_orig_parton);
+    weight*=SF_bChargeID;
+  }
+  
+}
+
 bool Preselection_To_bjet::RunSLTMuon(){
   //----Check HasSLTMuon
   tuple<int,double,double,int,double,double> ret=JHAnalyzerBase::GetBJetMuonScore_v2409_2(v_bjet[0], AllMuons);

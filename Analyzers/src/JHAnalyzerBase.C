@@ -23,6 +23,7 @@ void JHAnalyzerBase::initializeAnalyzer(){
   simple_lepscale=HasFlag("simple_lepscale");
   checksf=HasFlag("checksf");
   measure_btageff=HasFlag("measure_btageff");
+  measure_bchargeeff=HasFlag("measure_bchargeeff");
   UsePfMET=HasFlag("pfmet");
   if(UsePfMET){
     cout << "[jhchoi] UsePfMET!!" << endl;
@@ -4060,4 +4061,636 @@ void JHAnalyzerBase::Measure_MCbtagEff(){
   } // END Loop jet
 
 
+}
+
+void JHAnalyzerBase::Measure_MCbChargeIDEff(Jet& this_jet, TString _suffix){
+  double this_jet_pt = this_jet.Pt();
+  if(this_jet_pt<30.) return;
+  tuple<int,bool,int,int,double> bCand_Charge_info=GetBJetCharge_v2409_2(this_jet,AllMuons,AllElectrons);
+  int bCand_Charge=std::get<0>(bCand_Charge_info);
+  bool bCand_NotUseOppositeCharge=std::get<1>(bCand_Charge_info);
+  int bCand_im=std::get<2>(bCand_Charge_info);
+  int bCand_ie=std::get<3>(bCand_Charge_info);
+  double bCnad_ChargeScore=std::get<4>(bCand_Charge_info);
+
+  //double jetpog_ptbins[10] = {20., 30., 50., 70., 100., 140., 200., 300., 600., 1000.}
+  
+  //---true flavour
+  int flv=this_jet.partonFlavour();
+  TString parton="";
+  if(flv==5){
+    parton="bminus";
+  }
+  else if(flv==-5){
+    parton="bplus";
+  }
+  else{
+    parton="light";
+  }
+
+  //---chargeIDs
+  TString bChargeID="";
+  if(abs(bCand_Charge)==1){//SLTMuon
+    if(bCand_NotUseOppositeCharge){
+      bChargeID="muH";
+    }
+    else{
+      bChargeID="muL";
+    }
+  }
+  else if(fabs(bCand_Charge)==2){//SLTElectron
+    if(bCand_NotUseOppositeCharge){
+      bChargeID="eH";
+    }
+    else{
+      bChargeID="eL";
+    }
+  }
+  else if(fabs(bCand_Charge)==3){//Good BJet
+    bChargeID="jG";
+  }
+  else if(fabs(bCand_Charge)==4){//Bad BJet
+    bChargeID="jB";
+  }
+  else{
+    cout << "[JHAnalyzerBase::Measure_MCbChargeIDEff] No bCand_Charge ->" << bCand_Charge << endl; 
+  }
+  if(this_jet_pt>200.) this_jet_pt=199.;
+  //    AnalyzerCore::FillHist(newhistname+"/"+ProcessName,value,this_weight,n_bin,x_min,x_max);
+  double this_ptbins[6]={30., 50., 70., 100., 140., 200};
+  AnalyzerCore::FillHist(parton+"_"+bChargeID+_suffix, this_jet_pt, weight, 5, this_ptbins);
+  
+  
+}
+
+void JHAnalyzerBase::initializeBChargeEff_TT(TString EffFileName){
+  if(IsDATA) return;
+  //DataEra
+  //DATA_DIR
+  TString datapath = getenv("DATA_DIR");
+  TString effdir= datapath+"/"+DataEra+"/BChargeEff/";
+  TString eff_filepath = effdir+EffFileName;
+  TFile *f = TFile::Open(eff_filepath);
+  vector<TString> v_parton = {"bminus","bplus","light"};
+  vector<TString> v_chargeID = {"muH","muL","eH","eL","jG","jB"};
+  vector<TString> v_bLepHad = {"bLep","bHad"};
+  
+  for(auto&  parton : v_parton){
+    for(auto& chargeID : v_chargeID){
+      for(auto& bLepHad : v_bLepHad){
+	TString this_histname=parton+"_"+chargeID+"_"+bLepHad;
+	map_hist_bchargeIDEff[this_histname]=(TH1D*)f->Get(this_histname)->Clone();
+	map_hist_bchargeIDEff[this_histname]->SetDirectory(0);
+      }
+    }
+  } 
+
+  //map_hist_bchargeIDEff[]
+
+  
+  f->Close();
+  delete f;
+  
+  initializeBChargeEffSF();
+  
+}
+
+void JHAnalyzerBase::DeleteBChargeEff_TT(){
+  for(auto & this_histmap : map_hist_bchargeIDEff ){
+    delete this_histmap.second;
+  }
+}
+
+
+void JHAnalyzerBase::initializeBChargeEff(TString EffFileName){
+  if(IsDATA) return;
+  cout << "[JHAnalyzerBase::initializeBChargeEff]" << endl;
+  //DataEra
+  //DATA_DIR
+  TString datapath = getenv("DATA_DIR");
+  TString effdir= datapath+"/"+DataEra+"/BChargeEff/";
+  TString eff_filepath = effdir+EffFileName;
+  cout << "[JHAnalyzerBase::initializeBChargeEff]Use" << eff_filepath << endl;
+  TFile *f = TFile::Open(eff_filepath);
+  vector<TString> v_parton = {"bminus","bplus","light"};
+  vector<TString> v_chargeID = {"muH","muL","eH","eL","jG","jB"};
+  
+  
+  for(auto&  parton : v_parton){
+    for(auto& chargeID : v_chargeID){
+      
+      TString this_histname=parton+"_"+chargeID;
+      map_hist_bchargeIDEff[this_histname]=(TH1D*)f->Get(this_histname)->Clone();
+      map_hist_bchargeIDEff[this_histname]->SetDirectory(0);
+    }
+  }
+  
+  //map_hist_bchargeIDEff[]
+  
+  
+  f->Close();
+  delete f;
+  
+  initializeBChargeEffSF();
+
+}
+
+void JHAnalyzerBase::DeleteBChargeEff(){
+  for(auto & this_histmap : map_hist_bchargeIDEff ){
+    delete this_histmap.second;
+  }
+}
+
+
+void JHAnalyzerBase::initializeBChargeEffSF(){
+  //How To Use
+  //1) Run this initialize funtion in the class's constructor 
+  //initializeBChargeEff("bbbarAsymMeasurement_"+MCSample+".root")
+  //2) Get SF Value using bjet info
+  //Below is example
+  /*
+  //---bchargeID---//
+  TString this_bchargeID="";
+  if(fabs(bCand_Charge)==1){
+  if(bCand_NotUseOppositeCharge){
+  this_bchargeID="muH";
+   cat_id=1;
+  } 
+   else{
+  this_bchargeID="muL";
+      cat_id=2;
+    }
+  }
+  else if(fabs(bCand_Charge)==2){
+    if(bCand_NotUseOppositeCharge){
+      this_bchargeID="eH";
+      cat_id=3;
+    }
+    else{
+      this_bchargeID="eL";
+      cat_id=4;
+    }
+  }
+  else if(fabs(bCand_Charge)==3){
+    this_bchargeID="jG";
+    cat_id=5;
+  }
+  else{
+    this_bchargeID="jB";
+    cat_id=6;
+  }
+  //---orig parton                                                                                                                                                                                          
+  TString this_orig_parton=JHAnalyzerBase::Get_orig_parton_bChargeID(v_bjet[0]);
+
+  if(apply_bchargeeff && !IsDATA){
+    //---SF                                                                                                                                                                                                 
+    double SF_bChargeID=Get_bChargeID_SF(v_bjet[0].Pt(), this_bchargeID, this_orig_parton);
+    weight*=SF_bChargeID;
+
+  }
+
+  */
+
+  //SF_bplus_jG_50To70
+  //map_bChargeEffSF["bplus"]["jG"]["50To70"]
+  //std::map<TString, std::map<TString, std::map<TString, double>>> map_bChargeEffSF;
+  if(DataEra=="2017"){
+    map_bChargeEffSF["bminus"]["eH"]["100To140"]=0.955;
+    map_bChargeEffSF["bminus"]["eH"]["140ToInf"]=0.917;
+    map_bChargeEffSF["bminus"]["eH"]["30To50"]=0.914;
+    map_bChargeEffSF["bminus"]["eH"]["50To70"]=0.898;
+    map_bChargeEffSF["bminus"]["eH"]["70To100"]=0.963;
+
+    map_bChargeEffSF["bminus"]["eL"]["100To140"]=1.119;
+    map_bChargeEffSF["bminus"]["eL"]["140ToInf"]=0.992;
+    map_bChargeEffSF["bminus"]["eL"]["30To50"]=1.128;
+    map_bChargeEffSF["bminus"]["eL"]["50To70"]=1.045;
+    map_bChargeEffSF["bminus"]["eL"]["70To100"]=1.051;
+
+    map_bChargeEffSF["bminus"]["jG"]["100To140"]=0.986;
+    map_bChargeEffSF["bminus"]["jG"]["140ToInf"]=0.989;
+    map_bChargeEffSF["bminus"]["jG"]["30To50"]=1.011;
+    map_bChargeEffSF["bminus"]["jG"]["50To70"]=0.995;
+    map_bChargeEffSF["bminus"]["jG"]["70To100"]=1.0;
+
+    map_bChargeEffSF["bminus"]["muH"]["100To140"]=1.12;
+    map_bChargeEffSF["bminus"]["muH"]["140ToInf"]=1.142;
+    map_bChargeEffSF["bminus"]["muH"]["30To50"]=1.006;
+    map_bChargeEffSF["bminus"]["muH"]["50To70"]=0.997;
+    map_bChargeEffSF["bminus"]["muH"]["70To100"]=1.003;
+    map_bChargeEffSF["bminus"]["muL"]["100To140"]=0.933;
+    map_bChargeEffSF["bminus"]["muL"]["140ToInf"]=1.109;
+    map_bChargeEffSF["bminus"]["muL"]["30To50"]=0.967;
+    map_bChargeEffSF["bminus"]["muL"]["50To70"]=0.954;
+    map_bChargeEffSF["bminus"]["muL"]["70To100"]=0.974;
+
+
+
+    map_bChargeEffSF["bplus"]["eH"]["100To140"]=0.984;
+    map_bChargeEffSF["bplus"]["eH"]["140ToInf"]=0.922;
+    map_bChargeEffSF["bplus"]["eH"]["30To50"]=0.91;
+    map_bChargeEffSF["bplus"]["eH"]["50To70"]=0.892;
+    map_bChargeEffSF["bplus"]["eH"]["70To100"]=0.921;
+
+    map_bChargeEffSF["bplus"]["eL"]["100To140"]=1.018;
+    map_bChargeEffSF["bplus"]["eL"]["140ToInf"]=1.022;
+    map_bChargeEffSF["bplus"]["eL"]["30To50"]=1.018;
+    map_bChargeEffSF["bplus"]["eL"]["50To70"]=0.928;
+    map_bChargeEffSF["bplus"]["eL"]["70To100"]=1.0;
+
+    map_bChargeEffSF["bplus"]["jG"]["100To140"]=0.988;
+    map_bChargeEffSF["bplus"]["jG"]["140ToInf"]=0.992;
+    map_bChargeEffSF["bplus"]["jG"]["30To50"]=0.999;
+    map_bChargeEffSF["bplus"]["jG"]["50To70"]=0.988;
+    map_bChargeEffSF["bplus"]["jG"]["70To100"]=0.99;
+
+    map_bChargeEffSF["bplus"]["muH"]["100To140"]=1.078;
+    map_bChargeEffSF["bplus"]["muH"]["140ToInf"]=1.189;
+    map_bChargeEffSF["bplus"]["muH"]["30To50"]=1.017;
+    map_bChargeEffSF["bplus"]["muH"]["50To70"]=1.022;
+    map_bChargeEffSF["bplus"]["muH"]["70To100"]=1.022;
+
+    map_bChargeEffSF["bplus"]["muL"]["100To140"]=0.872;
+    map_bChargeEffSF["bplus"]["muL"]["140ToInf"]=1.033;
+    map_bChargeEffSF["bplus"]["muL"]["30To50"]=0.854;
+    map_bChargeEffSF["bplus"]["muL"]["50To70"]=0.934;
+    map_bChargeEffSF["bplus"]["muL"]["70To100"]=0.868;
+
+
+    map_bChargeEffSF["light"]["eH"]["100To140"]=1;
+    map_bChargeEffSF["light"]["eH"]["140ToInf"]=1;
+    map_bChargeEffSF["light"]["eH"]["30To50"]=1;
+    map_bChargeEffSF["light"]["eH"]["50To70"]=1;
+    map_bChargeEffSF["light"]["eH"]["70To100"]=1;
+
+    map_bChargeEffSF["light"]["eL"]["100To140"]=1;
+    map_bChargeEffSF["light"]["eL"]["140ToInf"]=1;
+    map_bChargeEffSF["light"]["eL"]["30To50"]=1;
+    map_bChargeEffSF["light"]["eL"]["50To70"]=1;
+    map_bChargeEffSF["light"]["eL"]["70To100"]=1;
+
+    map_bChargeEffSF["light"]["jG"]["100To140"]=1;
+    map_bChargeEffSF["light"]["jG"]["140ToInf"]=1;
+    map_bChargeEffSF["light"]["jG"]["30To50"]=1;
+    map_bChargeEffSF["light"]["jG"]["50To70"]=1;
+    map_bChargeEffSF["light"]["jG"]["70To100"]=1;
+
+    map_bChargeEffSF["light"]["muH"]["100To140"]=1;
+    map_bChargeEffSF["light"]["muH"]["140ToInf"]=1;
+    map_bChargeEffSF["light"]["muH"]["30To50"]=1;
+    map_bChargeEffSF["light"]["muH"]["50To70"]=1;
+    map_bChargeEffSF["light"]["muH"]["70To100"]=1;
+
+    map_bChargeEffSF["light"]["muL"]["100To140"]=1;
+    map_bChargeEffSF["light"]["muL"]["140ToInf"]=1;
+    map_bChargeEffSF["light"]["muL"]["30To50"]=1;
+    map_bChargeEffSF["light"]["muL"]["50To70"]=1;
+    map_bChargeEffSF["light"]["muL"]["70To100"]=1;
+
+  }
+  else{
+    cout << "DataEra=" << DataEra << "is not ready for BChargeEffSF" << endl;
+  }
+  
+}
+
+
+double JHAnalyzerBase::Get_bChargeID_N_MC_TT(double this_pt, TString bchargeID, TString orig_parton, TString bLepbHad){
+  if(this_pt > 200.) this_pt=199.;
+  TString this_histname=orig_parton+"_"+bchargeID+"_"+bLepbHad;
+  int this_bin = map_hist_bchargeIDEff[this_histname]->FindBin(this_pt);
+  double this_N=map_hist_bchargeIDEff[this_histname]->GetBinContent(this_bin);
+  return this_N;
+}
+
+
+
+double JHAnalyzerBase::Get_bChargeID_N_MC(double this_pt, TString bchargeID, TString orig_parton){
+  if(this_pt > 200.) this_pt=199.;
+  TString this_histname=orig_parton+"_"+bchargeID;
+  int this_bin = map_hist_bchargeIDEff[this_histname]->FindBin(this_pt);
+  double this_N=map_hist_bchargeIDEff[this_histname]->GetBinContent(this_bin);
+  return this_N;
+}
+
+
+double JHAnalyzerBase::Get_bChargeID_Eff_MC_TT(double this_pt, TString bchargeID, TString orig_parton,TString bLepbHad){
+
+
+  double NUME=Get_bChargeID_N_MC_TT(this_pt,bchargeID,orig_parton,bLepbHad);
+  double DENO=Get_bChargeID_N_MC_TT(this_pt,"muH",orig_parton,bLepbHad) 
+    + Get_bChargeID_N_MC_TT(this_pt,"muL",orig_parton,bLepbHad)
+    +Get_bChargeID_N_MC_TT(this_pt,"eH",orig_parton,bLepbHad)
+    +Get_bChargeID_N_MC_TT(this_pt,"eL",orig_parton,bLepbHad)
+    +Get_bChargeID_N_MC_TT(this_pt,"jG",orig_parton,bLepbHad)
+    +Get_bChargeID_N_MC_TT(this_pt,"jB",orig_parton,bLepbHad);
+  if(DENO>0){
+    return NUME/DENO;
+  }
+  else{
+    return 1;
+  }
+
+}
+
+double JHAnalyzerBase::Get_bChargeID_Eff_MC(double this_pt, TString bchargeID, TString orig_parton){
+
+
+  double NUME=Get_bChargeID_N_MC(this_pt,bchargeID,orig_parton);
+  double DENO=Get_bChargeID_N_MC(this_pt,"muH",orig_parton)
+    + Get_bChargeID_N_MC(this_pt,"muL",orig_parton)
+    +Get_bChargeID_N_MC(this_pt,"eH",orig_parton)
+    +Get_bChargeID_N_MC(this_pt,"eL",orig_parton)
+    +Get_bChargeID_N_MC(this_pt,"jG",orig_parton)
+    +Get_bChargeID_N_MC(this_pt,"jB",orig_parton);
+  if(DENO>0){
+    return NUME/DENO;
+  }
+  else{
+    return 1;
+  }
+
+}
+
+
+TString JHAnalyzerBase::Get_PTBINNAME_bChargeID_Eff_TT(double this_pt){
+  if(this_pt < 50.){
+    return "30To50";
+  }
+  else if(this_pt < 70.){
+    return "50To70";
+  }
+  else if(this_pt < 100.){
+    return "70To100";
+  }
+  else if(this_pt < 140.){
+    return "100To140";
+  }
+  else{
+    return "140ToInf";
+  }
+}
+
+TString JHAnalyzerBase::Get_PTBINNAME_bChargeID_Eff(double this_pt){
+  if(this_pt < 50.){
+    return "30To50";
+  }
+  else if(this_pt < 70.){
+    return "50To70";
+  }
+  else if(this_pt < 100.){
+    return "70To100";
+  }
+  else if(this_pt < 140.){
+    return "100To140";
+  }
+  else{
+    return "140ToInf";
+  }
+}
+
+
+double JHAnalyzerBase::Get_bChargeID_Eff_Measure_TT(double this_pt, TString bchargeID, TString orig_parton,TString bLepbHad){
+  //map_bChargeEffSF["light"]["muH"]["70To100"
+  TString PTBINNAME=Get_PTBINNAME_bChargeID_Eff_TT(this_pt);
+  double P_Fails_previous=1.; // fail all previous step
+  double P_Pass_this=1.; // conditional prob.
+  //P_Total = P(current bchargeID|Fail All previous criteria) * P(Fail All previous criteria)
+  //        = SF(current bchargeID) * P_MC(current bchargeID|Fail All previous criteria) * P(Fail All previous criteria)
+
+  double N1=Get_bChargeID_N_MC_TT(this_pt,"muH",orig_parton,bLepbHad);
+  double N2=Get_bChargeID_N_MC_TT(this_pt,"muL",orig_parton,bLepbHad);
+  double N3=Get_bChargeID_N_MC_TT(this_pt,"eH",orig_parton,bLepbHad);
+  double N4=Get_bChargeID_N_MC_TT(this_pt,"eL",orig_parton,bLepbHad);
+  double N5=Get_bChargeID_N_MC_TT(this_pt,"jG",orig_parton,bLepbHad);
+  double N6=Get_bChargeID_N_MC_TT(this_pt,"jB",orig_parton,bLepbHad);
+  ///------ Pass mu,High--------//
+  double DENO=N1+N2+N3+N4+N5+N6; // For P_MC
+  double NUME=N1;  //For P_MC 
+  double P_Pass_this_MC = DENO > 0 ? NUME/DENO : 0.;
+  P_Pass_this= map_bChargeEffSF[orig_parton]["muH"][PTBINNAME] * P_Pass_this_MC;
+  
+  if(bchargeID=="muH"){
+    return P_Pass_this*P_Fails_previous;
+  }
+  P_Fails_previous = (1.- P_Pass_this) *P_Fails_previous;
+
+  //-------Fail mu,High && Pass mu,Low-------//
+  //P(Fail muH, Pass muL) = P(Pass muL | Fail muH) * P(Fail muH)
+  //                      = SF(Pass muL) * P_MC(Pass muL | Fail muH) * P(Fail muH)
+  DENO=N2+N3+N4+N5+N6;
+  NUME=N2;
+  P_Pass_this_MC = DENO > 0 ? NUME/DENO : 0.;
+  P_Pass_this = map_bChargeEffSF[orig_parton]["muL"][PTBINNAME] * P_Pass_this_MC;
+  if(bchargeID=="muL"){
+    return P_Pass_this*P_Fails_previous; 
+  }
+  P_Fails_previous = (1.-P_Pass_this) * P_Fails_previous; // Fail muH, muL all
+
+  //------Fail muH, muL && Pass e,High------//
+  //P(Fail muH,muL && Pass eH) = P(Pass eH | Fail muH,muL)*P(Fail muH,muL)
+  //                           = SF(Pass eH) * P_MC(Pass eH | Fail muH,muL) * P(Fail muH,muL)
+  DENO=N3+N4+N5+N6;
+  NUME=N3;
+  P_Pass_this_MC = DENO > 0 ? NUME/DENO : 0.;
+  P_Pass_this = map_bChargeEffSF[orig_parton]["eH"][PTBINNAME] * P_Pass_this_MC; //measured conditional Prob.
+  if(bchargeID=="eH"){
+    return P_Pass_this*P_Fails_previous;
+  }
+  P_Fails_previous = (1.-P_Pass_this) * P_Fails_previous;
+
+  //-----Fail muH, muL, eH && Pass e,L-----//
+  //P(Fail muH,muL,eH && Pass eL) = P(Pass eL | Fail muH,muL,eH)*P(Fail muH,muL,eH)
+  //                              = SF(Pass eL) * P_MC(Pass eL | Fail muH,muL,eH) * P(Fail muH,muL,eH)
+  DENO=N4+N5+N6;
+  NUME=N4;
+  P_Pass_this_MC = DENO > 0 ? NUME/DENO : 0.;
+  P_Pass_this = map_bChargeEffSF[orig_parton]["eL"][PTBINNAME] * P_Pass_this_MC; // measured conditional Prob.
+  if(bchargeID=="eL"){
+    return P_Pass_this*P_Fails_previous;
+  }
+  P_Fails_previous = (1.-P_Pass_this) * P_Fails_previous;
+  
+  //-----Fail muH,muL,eH,eL && Pass Good jet(jG)---//
+  //P(Fail muH,muL.eH,eL && Pass jG) = P(Pass jG | Fail muH,muL,eH,eL) * P(Fail muH,muL,eH,eL)
+  //                                 = SF(Pass jG) * P_MC(Pass jG | Fail muH,muL,eH,eL) * P(Fail muH,muL,eH,eL)
+  DENO=N5+N6;
+  NUME=N5;
+  P_Pass_this_MC = DENO > 0 ? NUME/DENO : 0.;
+  P_Pass_this = map_bChargeEffSF[orig_parton]["jG"][PTBINNAME] * P_Pass_this_MC;
+  if(bchargeID=="jG"){
+    return P_Pass_this*P_Fails_previous;
+  }
+  else if(bchargeID=="jB"){
+    return (1.-P_Pass_this)*P_Fails_previous;
+  }
+
+}
+
+
+double JHAnalyzerBase::Get_bChargeID_Eff_Measure(double this_pt, TString bchargeID, TString orig_parton){
+  //map_bChargeEffSF["light"]["muH"]["70To100"
+  TString PTBINNAME=Get_PTBINNAME_bChargeID_Eff_TT(this_pt);
+  double P_Fails_previous=1.; // fail all previous step
+  double P_Pass_this=1.; // conditional prob.
+  //P_Total = P(current bchargeID|Fail All previous criteria) * P(Fail All previous criteria)
+  //        = SF(current bchargeID) * P_MC(current bchargeID|Fail All previous criteria) * P(Fail All previous criteria)
+
+  double N1=Get_bChargeID_N_MC(this_pt,"muH",orig_parton);
+  double N2=Get_bChargeID_N_MC(this_pt,"muL",orig_parton);
+  double N3=Get_bChargeID_N_MC(this_pt,"eH",orig_parton);
+  double N4=Get_bChargeID_N_MC(this_pt,"eL",orig_parton);
+  double N5=Get_bChargeID_N_MC(this_pt,"jG",orig_parton);
+  double N6=Get_bChargeID_N_MC(this_pt,"jB",orig_parton);
+  ///------ Pass mu,High--------//
+  double DENO=N1+N2+N3+N4+N5+N6; // For P_MC
+  double NUME=N1;  //For P_MC 
+  double P_Pass_this_MC = DENO > 0 ? NUME/DENO : 0.;
+  P_Pass_this= map_bChargeEffSF[orig_parton]["muH"][PTBINNAME] * P_Pass_this_MC;
+  
+  if(bchargeID=="muH"){
+    return P_Pass_this*P_Fails_previous;
+  }
+  P_Fails_previous = (1.- P_Pass_this) *P_Fails_previous;
+
+  //-------Fail mu,High && Pass mu,Low-------//
+  //P(Fail muH, Pass muL) = P(Pass muL | Fail muH) * P(Fail muH)
+  //                      = SF(Pass muL) * P_MC(Pass muL | Fail muH) * P(Fail muH)
+  DENO=N2+N3+N4+N5+N6;
+  NUME=N2;
+  P_Pass_this_MC = DENO > 0 ? NUME/DENO : 0.;
+  P_Pass_this = map_bChargeEffSF[orig_parton]["muL"][PTBINNAME] * P_Pass_this_MC;
+  if(bchargeID=="muL"){
+    return P_Pass_this*P_Fails_previous; 
+  }
+  P_Fails_previous = (1.-P_Pass_this) * P_Fails_previous; // Fail muH, muL all
+
+  //------Fail muH, muL && Pass e,High------//
+  //P(Fail muH,muL && Pass eH) = P(Pass eH | Fail muH,muL)*P(Fail muH,muL)
+  //                           = SF(Pass eH) * P_MC(Pass eH | Fail muH,muL) * P(Fail muH,muL)
+  DENO=N3+N4+N5+N6;
+  NUME=N3;
+  P_Pass_this_MC = DENO > 0 ? NUME/DENO : 0.;
+  P_Pass_this = map_bChargeEffSF[orig_parton]["eH"][PTBINNAME] * P_Pass_this_MC; //measured conditional Prob.
+  if(bchargeID=="eH"){
+    return P_Pass_this*P_Fails_previous;
+  }
+  P_Fails_previous = (1.-P_Pass_this) * P_Fails_previous;
+
+  //-----Fail muH, muL, eH && Pass e,L-----//
+  //P(Fail muH,muL,eH && Pass eL) = P(Pass eL | Fail muH,muL,eH)*P(Fail muH,muL,eH)
+  //                              = SF(Pass eL) * P_MC(Pass eL | Fail muH,muL,eH) * P(Fail muH,muL,eH)
+  DENO=N4+N5+N6;
+  NUME=N4;
+  P_Pass_this_MC = DENO > 0 ? NUME/DENO : 0.;
+  P_Pass_this = map_bChargeEffSF[orig_parton]["eL"][PTBINNAME] * P_Pass_this_MC; // measured conditional Prob.
+  if(bchargeID=="eL"){
+    return P_Pass_this*P_Fails_previous;
+  }
+  P_Fails_previous = (1.-P_Pass_this) * P_Fails_previous;
+  
+  //-----Fail muH,muL,eH,eL && Pass Good jet(jG)---//
+  //P(Fail muH,muL.eH,eL && Pass jG) = P(Pass jG | Fail muH,muL,eH,eL) * P(Fail muH,muL,eH,eL)
+  //                                 = SF(Pass jG) * P_MC(Pass jG | Fail muH,muL,eH,eL) * P(Fail muH,muL,eH,eL)
+  DENO=N5+N6;
+  NUME=N5;
+  P_Pass_this_MC = DENO > 0 ? NUME/DENO : 0.;
+  P_Pass_this = map_bChargeEffSF[orig_parton]["jG"][PTBINNAME] * P_Pass_this_MC;
+  if(bchargeID=="jG"){
+    return P_Pass_this*P_Fails_previous;
+  }
+  else if(bchargeID=="jB"){
+    return (1.-P_Pass_this)*P_Fails_previous;
+  }
+
+}
+
+
+
+
+double JHAnalyzerBase::Get_bChargeID_SF_TT(double this_pt, TString bchargeID, TString orig_parton, TString bLepbHad){
+  //bChargeID 
+  // muH
+  // muL
+  // eH 
+  // eL 
+  // jG
+  // jB
+  //double JHAnalyzerBase::Get_bChargeID_Eff_Measure(double this_pt, TString bchargeID, TString orig_parton,TString bLepbHad){
+  //double JHAnalyzerBase::Get_bChargeID_Eff_MC(double this_pt, TString bchargeID, TString orig_parton,TString bLepbHad){
+  if(IsDATA) return 1.;
+
+  double this_Eff_MEASURE=Get_bChargeID_Eff_Measure_TT(this_pt, bchargeID, orig_parton, bLepbHad);
+  double this_Eff_MC     =Get_bChargeID_Eff_MC_TT     (this_pt, bchargeID, orig_parton, bLepbHad);
+
+  if(this_Eff_MC>0){
+    return this_Eff_MEASURE/this_Eff_MC;
+  }
+  return 1.;
+
+}
+
+
+double JHAnalyzerBase::Get_bChargeID_SF(double this_pt, TString bchargeID, TString orig_parton){
+  //bChargeID 
+  // muH
+  // muL
+  // eH 
+  // eL 
+  // jG
+  // jB
+  //double JHAnalyzerBase::Get_bChargeID_Eff_Measure(double this_pt, TString bchargeID, TString orig_parton,TString bLepbHad){
+  //double JHAnalyzerBase::Get_bChargeID_Eff_MC(double this_pt, TString bchargeID, TString orig_parton,TString bLepbHad){
+  if(IsDATA) return 1.;
+
+  double this_Eff_MEASURE=Get_bChargeID_Eff_Measure(this_pt, bchargeID, orig_parton);
+  double this_Eff_MC     =Get_bChargeID_Eff_MC     (this_pt, bchargeID, orig_parton);
+
+  if(this_Eff_MC>0){
+    return this_Eff_MEASURE/this_Eff_MC;
+  }
+  return 1.;
+
+}
+
+
+TString JHAnalyzerBase::Get_bChargeID(Jet& this_bjet){
+  tuple<int,bool,int,int,double> bCand_Charge_info=GetBJetCharge_v2409_2(this_bjet,AllMuons,AllElectrons);
+
+  int bCand_Charge=std::get<0>(bCand_Charge_info);
+  bool bCand_NotUseOppositeCharge=std::get<1>(bCand_Charge_info);
+  int bCand_im=std::get<2>(bCand_Charge_info);
+  int bCand_ie=std::get<3>(bCand_Charge_info);
+  double bCand_ChargeScore=std::get<4>(bCand_Charge_info);
+
+  TString this_bchargeID="";
+  if(fabs(bCand_Charge)==1){
+    this_bchargeID = bCand_NotUseOppositeCharge ? "muH" : "muL";
+  }
+  else if(fabs(bCand_Charge)==2){
+    this_bchargeID = bCand_NotUseOppositeCharge ? "eH" : "eL";
+  }
+  else if(fabs(bCand_Charge)==3){
+    this_bchargeID="jG";
+  }
+  else{
+    this_bchargeID="jB";
+  }
+  
+  return this_bchargeID;
+
+}
+TString JHAnalyzerBase::Get_orig_parton_bChargeID(Jet& this_bjet){
+  int this_partonFlavour=this_bjet.partonFlavour();
+  TString this_orig_parton="";
+  if(this_partonFlavour==5){
+    this_orig_parton="bminus";
+  }
+  else if(this_partonFlavour==-5){
+    this_orig_parton="bplus";
+  }
+  else{
+    this_orig_parton="light";
+  }
+  return this_orig_parton;
 }

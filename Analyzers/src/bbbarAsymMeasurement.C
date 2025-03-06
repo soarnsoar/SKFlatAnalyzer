@@ -8,6 +8,9 @@ bbbarAsymMeasurement::bbbarAsymMeasurement(){
 
 bbbarAsymMeasurement::~bbbarAsymMeasurement(){
   //==== Destructor of this Analyzer
+  if(apply_bchargeeff){
+    DeleteBChargeEff();
+  }
 }
 
 void bbbarAsymMeasurement::initializeAnalyzer(){
@@ -63,6 +66,13 @@ void bbbarAsymMeasurement::initializeAnalyzer(){
 
   LoadChargeScoreTool(v_muonScore,v_electronScore,v_jetScore,apply_dnncut);
 
+  apply_bchargeeff=false;
+  if(HasFlag("apply_bchargeeff")){
+    if(!IsDATA){
+      initializeBChargeEff("bbbarAsymMeasurement_"+MCSample+".root");
+      apply_bchargeeff=true;
+    }
+  }
 
 
 
@@ -191,6 +201,15 @@ void bbbarAsymMeasurement::RunBasicZregion(){
   if(vZ.Pt()<15.) return;
   if(ptzb>60.) return;
 
+
+
+  if(measure_bchargeeff){
+    Measure_MCbChargeIDEff(v_bjet[0]);
+    return;
+  }
+
+
+
   //Get bjet charges
   tuple<int,bool,int,int,double> bCand_Charge_info=GetBJetCharge_v2409_2(v_bjet[0],AllMuons,AllElectrons);
 
@@ -200,7 +219,52 @@ void bbbarAsymMeasurement::RunBasicZregion(){
   int bCand_ie=std::get<3>(bCand_Charge_info);
   double bCnad_ChargeScore=std::get<4>(bCand_Charge_info);
 
+  int cat_id=0;
+
+  //---bchargeID---//
+  TString this_bchargeID="";
+  if(fabs(bCand_Charge)==1){
+    if(bCand_NotUseOppositeCharge){
+      this_bchargeID="muH";
+      cat_id=1;
+    }
+    else{
+      this_bchargeID="muL";
+      cat_id=2;
+    }
+  }
+  else if(fabs(bCand_Charge)==2){
+    if(bCand_NotUseOppositeCharge){
+      this_bchargeID="eH";
+      cat_id=3;
+    }
+    else{
+      this_bchargeID="eL";
+      cat_id=4;
+    }
+  }
+  else if(fabs(bCand_Charge)==3){
+    this_bchargeID="jG";
+    cat_id=5;
+    }
+  else{
+    this_bchargeID="jB";
+    cat_id=6;
+  }
+  //---orig parton
+  TString this_orig_parton=JHAnalyzerBase::Get_orig_parton_bChargeID(v_bjet[0]);
+  
+  if(apply_bchargeeff && !IsDATA){
+    //---SF
+    double SF_bChargeID=Get_bChargeID_SF(v_bjet[0].Pt(), this_bchargeID, this_orig_parton);
+    weight*=SF_bChargeID;
+
+  }
+
   FillHist("FinalCut/MeasuredCharge_Total", bCand_Charge,weight,9,-4.5,4.5);
+  FillHist("FinalCut/abs_MeasuredCharge_Total", abs(bCand_Charge),weight,5,-0.5,4.5);
+  FillHist("FinalCut/category", cat_id,weight,6,0.5,6.5);
+
 
   
 }//[end]RunBasic Zregion
