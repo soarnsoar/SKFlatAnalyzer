@@ -28,7 +28,10 @@ void CFBackgroundEstimator::ReadHistograms(){
       histDir->cd();
       map_hist_Electron[a+"_"+this_cfname] = (TH1D *)file->Get(this_cfname)->Clone();
       file->Close();
-      delete file;
+      if(file){
+	delete file;
+	file=nullptr;
+      }
       origDir->cd();
       //cout << "[CFBackgroundEstimator::CFBackgroundEstimator] map_hist_Electron : " << a+"_"+this_cfname << endl;
     }
@@ -48,7 +51,10 @@ void CFBackgroundEstimator::ReadHistograms(){
       histDir->cd();
       map_hist_Muon[a+"_"+this_cfname] = (TH1D *)file->Get(this_cfname);
       file->Close();
-      delete file;
+      if(file){
+	delete file;
+	file=nullptr;
+      }
       origDir->cd();
       //cout << "[CFBackgroundEstimator::CFBackgroundEstimator] map_hist_Muon : " << a+"_"+this_cfname << endl;
     }

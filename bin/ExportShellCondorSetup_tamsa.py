@@ -1,4 +1,4 @@
-#!/usr/bin/env python                                                                                                                                        
+#!/usr/bin/env python2.7                                                                                                                                        
 import optparse
 import os
 #export CMS_PATH=/cvmfs/cms.cern.ch
@@ -14,10 +14,11 @@ def Export(WORKDIR,command,jobname,submit,ncpu,memory=False,nretry=3):
     #lines.append("export VO_CMS_SW_DIR="+os.getenv("VO_CMS_SW_DIR"))
     lines.append("export CMS_PATH=/cvmfs/cms.cern.ch")
     lines.append("source $CMS_PATH/cmsset_default.sh")
-    #lines.append("export SCRAM_ARCH="+os.getenv("SCRAM_ARCH"))
-    lines.append("export SCRAM_ARCH=slc7_amd64_gcc900")
+    lines.append("export SCRAM_ARCH="+os.getenv("SCRAM_ARCH"))
+    #lines.append("export SCRAM_ARCH=slc7_amd64_gcc900")
     #lines.append("source $VO_CMS_SW_DIR/cmsset_default.sh")
-    lines.append("export cmsswrel='cmssw/CMSSW_11_2_5'")
+    #lines.append("export cmsswrel='cmssw/CMSSW_11_2_5'")
+    lines.append("export cmsswrel="+os.getenv('cmsswrel'))
     #lines.append("cd "+os.getenv("CMSSW_BASE"))
     lines.append("cd /cvmfs/cms.cern.ch/$SCRAM_ARCH/cms/$cmsswrel/src")
     lines.append("eval `scramv1 ru -sh`")

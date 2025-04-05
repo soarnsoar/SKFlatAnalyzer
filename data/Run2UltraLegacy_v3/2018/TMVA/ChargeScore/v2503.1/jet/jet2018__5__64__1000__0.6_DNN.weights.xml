@@ -1,0 +1,54 @@
+<?xml version="1.0"?>
+<MethodSetup Method="PyKeras::DNN">
+  <GeneralInfo>
+    <Info name="TMVA Release" value="4.2.1 [262657]"/>
+    <Info name="ROOT Release" value="6.30/07 [400903]"/>
+    <Info name="Creator" value="jhchoi"/>
+    <Info name="Date" value="Mon Mar 31 23:00:56 2025"/>
+    <Info name="Host" value="Linux cmsbuild117.cern.ch 4.18.0-513.11.1.el8_9.x86_64 #1 SMP Wed Jan 17 02:00:40 EST 2024 x86_64 x86_64 x86_64 GNU/Linux"/>
+    <Info name="Dir" value="/data9/Users/jhchoi/TMVA/el9/TMVA_TOOL/ws/WORKDIR/2503.1/EEMu_MuMuE_Method/2018/jet/jet2018__5__64__1000__0.6/Trf_I"/>
+    <Info name="Training events" value="1696765"/>
+    <Info name="TrainingTime" value="2.35005360e+03"/>
+    <Info name="AnalysisType" value="Classification"/>
+  </GeneralInfo>
+  <Options>
+    <Option name="V" modified="Yes">False</Option>
+    <Option name="VerbosityLevel" modified="No">Default</Option>
+    <Option name="VarTransform" modified="Yes">I</Option>
+    <Option name="H" modified="Yes">True</Option>
+    <Option name="CreateMVAPdfs" modified="No">False</Option>
+    <Option name="IgnoreNegWeightsInTraining" modified="Yes">True</Option>
+    <Option name="FilenameModel" modified="Yes">model.h5</Option>
+    <Option name="FilenameTrainedModel" modified="No">/data6/Users/jhchoi/SKFlatAnalyzers/test/ForTMVA/SKFlatAnalyzer/data/Run2UltraLegacy_v3/2018/TMVA/ChargeScore/v2503.1/jet//TrainedModel_DNN.h5</Option>
+    <Option name="BatchSize" modified="Yes">1000</Option>
+    <Option name="NumEpochs" modified="Yes">300</Option>
+    <Option name="NumThreads" modified="No">0</Option>
+    <Option name="GpuOptions" modified="No"/>
+    <Option name="tf.keras" modified="No">True</Option>
+    <Option name="tfkeras" modified="No">True</Option>
+    <Option name="Verbose" modified="Yes">2</Option>
+    <Option name="ContinueTraining" modified="No">False</Option>
+    <Option name="SaveBestOnly" modified="Yes">False</Option>
+    <Option name="TriesEarlyStopping" modified="Yes">30</Option>
+    <Option name="LearningRateSchedule" modified="No"/>
+    <Option name="TensorBoard" modified="No"/>
+    <Option name="ValidationSize" modified="No">20%</Option>
+    <Option name="UserCode" modified="No"/>
+  </Options>
+  <Variables NVar="8">
+    <Variable VarIndex="0" Expression="bjet_ChargedHadronEnergyFraction" Label="bjet_ChargedHadronEnergyFraction" Title="bjet_ChargedHadronEnergyFraction" Unit="" Internal="bjet_ChargedHadronEnergyFraction" Type="F" Min="0.00000000e+00" Max="1.00000036e+00"/>
+    <Variable VarIndex="1" Expression="bjet_NeutralHadronEnergyFraction" Label="bjet_NeutralHadronEnergyFraction" Title="bjet_NeutralHadronEnergyFraction" Unit="" Internal="bjet_NeutralHadronEnergyFraction" Type="F" Min="0.00000000e+00" Max="1.00000024e+00"/>
+    <Variable VarIndex="2" Expression="bjet_NeutralEmEnergyFraction" Label="bjet_NeutralEmEnergyFraction" Title="bjet_NeutralEmEnergyFraction" Unit="" Internal="bjet_NeutralEmEnergyFraction" Type="F" Min="0.00000000e+00" Max="1.00000012e+00"/>
+    <Variable VarIndex="3" Expression="bjet_ChargedEmEnergyFraction" Label="bjet_ChargedEmEnergyFraction" Title="bjet_ChargedEmEnergyFraction" Unit="" Internal="bjet_ChargedEmEnergyFraction" Type="F" Min="0.00000000e+00" Max="9.93901968e-01"/>
+    <Variable VarIndex="4" Expression="bjet_MuonEnergyFraction" Label="bjet_MuonEnergyFraction" Title="bjet_MuonEnergyFraction" Unit="" Internal="bjet_MuonEnergyFraction" Type="F" Min="0.00000000e+00" Max="9.88228500e-01"/>
+    <Variable VarIndex="5" Expression="bjet_ChargedMultiplicity" Label="bjet_ChargedMultiplicity" Title="bjet_ChargedMultiplicity" Unit="" Internal="bjet_ChargedMultiplicity" Type="F" Min="0.00000000e+00" Max="5.00000000e+01"/>
+    <Variable VarIndex="6" Expression="bjet_NeutralMultiplicity" Label="bjet_NeutralMultiplicity" Title="bjet_NeutralMultiplicity" Unit="" Internal="bjet_NeutralMultiplicity" Type="F" Min="0.00000000e+00" Max="5.30000000e+01"/>
+    <Variable VarIndex="7" Expression="fabs(bjet_charge)" Label="fabs(bjet_charge)" Title="fabs(bjet_charge)" Unit="" Internal="fabs_bjet_charge_" Type="F" Min="3.57663126e-08" Max="1.00000000e+00"/>
+  </Variables>
+  <Classes NClass="2">
+    <Class Name="Signal" Index="0"/>
+    <Class Name="Background" Index="1"/>
+  </Classes>
+  <Transformations NTransformations="1"/>
+  <MVAPdfs/>
+</MethodSetup>

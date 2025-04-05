@@ -9,9 +9,15 @@ JetPUIDTool::JetPUIDTool(bool _isdata){
   map_eraInHist["2018"]="2018";
 }
 JetPUIDTool::~JetPUIDTool(){
-  if(h) delete h;
-  if(hsys) delete hsys;
-}
+  if(h) {
+    delete h;
+    h=nullptr;
+  }
+  if(hsys) {
+    delete hsys;
+    hsys=nullptr;
+  }
+  }
 void JetPUIDTool::ReadHist(TString _datadir,TString _era, TString _WP){
   TString filepath=_datadir+"/2017/JetPUID/PUID_106XTraining_ULRun2_EffSFandUncties_v1.root";
   TFile f(filepath);

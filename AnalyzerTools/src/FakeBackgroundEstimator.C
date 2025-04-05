@@ -30,7 +30,10 @@ void FakeBackgroundEstimator::ReadHistograms(){
       histDir->cd();
       map_hist_Electron[a+"_"+this_frname] = (TH2D *)file->Get(this_frname)->Clone();
       file->Close();
-      delete file;
+      if(file){
+	delete file;
+	file=nullptr;
+      }
       origDir->cd();
       //cout << "[FakeBackgroundEstimator::FakeBackgroundEstimator] map_hist_Electron : " << a+"_"+this_frname << endl;
     }
@@ -50,7 +53,10 @@ void FakeBackgroundEstimator::ReadHistograms(){
       histDir->cd();
       map_hist_Muon[a+"_"+this_frname] = (TH2D *)file->Get(this_frname)->Clone();
       file->Close();
-      delete file;
+      if(file){
+	delete file;
+	file=nullptr;
+      }
       origDir->cd();
       //cout << "[FakeBackgroundEstimator::FakeBackgroundEstimator] map_hist_Muon : " << a+"_"+this_frname << endl;
     }

@@ -56,7 +56,10 @@ void MCCorrection::ReadHistograms(){
 	cout << "[MCCorrection::MCCorrection] Wrong class type : " << elline << endl;
       }
       file->Close();
-      delete file;
+      if(file){
+	delete file;
+	file=nullptr;
+      }
       origDir->cd();
     }
   }
@@ -91,7 +94,10 @@ void MCCorrection::ReadHistograms(){
       histDir->cd();
       map_hist_Muon[a+"_"+b+"_"+c] = (TH2F *)file->Get(e)->Clone();
       file->Close();
-      delete file;
+      if(file){
+	delete file;
+	file=nullptr;
+      }
       origDir->cd();
     }
   }
@@ -122,7 +128,10 @@ void MCCorrection::ReadHistograms(){
     histDir->cd();
     map_hist_prefire[a + "_prefire"] = (TH2F *)file->Get(c)->Clone();
     file->Close();
-    delete file;
+    if(file){
+      delete file;
+      file=nullptr;
+    }
     origDir->cd();
   }
 
@@ -154,7 +163,10 @@ void MCCorrection::ReadHistograms(){
       cout << "[MCCorrection::ReadHistograms] No : " << a + "_" + b << endl;
     }
     file->Close();
-    delete file;
+    if(file){
+      delete file;
+      file=nullptr;
+    }
     origDir->cd();
   }
 /*
@@ -170,14 +182,18 @@ void MCCorrection::ReadHistograms(){
   histDir->cd();
   hist_DYPtReweight_2D = (TH2D *)file_DYPtReweightPath->Get("zptmass_weights")->Clone();
   file_DYPtReweightPath->Close();
-  delete file_DYPtReweightPath;
+  if(file_DYPtReweightPath){
+    delete file_DYPtReweightPath;
+    file_DYPtReweightPath=nullptr;
+  }
   origDir->cd();
 }
 
 MCCorrection::~MCCorrection(){
-
-  delete genFinderDY;
-
+  if(genFinderDY){
+    delete genFinderDY;
+    genFinderDY=nullptr;
+  }
 }
 
 void MCCorrection::SetMCSample(TString s){

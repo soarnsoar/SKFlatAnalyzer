@@ -120,7 +120,7 @@ public:
   bool JetChargeOnly;
   bool simplecat;
   bool ForMeasure;
-
+  bool apply_bchargeeff_TT;
   //bool TurnOnFillHist;
 
   int i_LightJet1,i_LightJet2;
@@ -142,7 +142,7 @@ public:
   bool bCand_NotUseOppositeCharge;
   int bCand_im;
   int bCand_ie;
-  double bCnad_ChargeScore;
+  double bCand_ChargeScore;
 
   bjetvar current_bjetvar;
   bmuonvar current_bmuonvar;

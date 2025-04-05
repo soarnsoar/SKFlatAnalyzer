@@ -785,5 +785,6 @@ double JHAnalyzerBase::Chi2TTSemiLep(double *x, double _lepx, double _lepy, doub
   ret.first=min_val;
   ret.second=min_vz;
   delete f1;
+  f1=nullptr;
   return ret;
 }

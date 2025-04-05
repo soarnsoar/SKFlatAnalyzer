@@ -1,6 +1,33 @@
-Submitting job(s)........................
-24 job(s) submitted to cluster 2532699.
-Submitting job(s)..................................................
-50 job(s) submitted to cluster 2532700.
-Submitting job(s)..................................................
-50 job(s) submitted to cluster 2532702.
+Submitting job(s)..........
+10 job(s) submitted to cluster 2105.
+Submitting job(s)..........
+10 job(s) submitted to cluster 2106.
+Submitting job(s)..........
+10 job(s) submitted to cluster 2107.
+condor_submit WORKDIR_HADD/run.jds > WORKDIR_HADD/run.jid
+condor_submit WORKDIR_HADD/run.jds > WORKDIR_HADD/run.jid
+condor_submit WORKDIR_HADD/run.jds > WORKDIR_HADD/run.jid
+##################################################
+Submission Finished
+- JobID = 101489
+- Analyzer = DiLeptonAnalyzer
+- Skim = SkimTree_Dilepton
+- InputSamples = ['DoubleEG:F', 'DoubleEG:G', 'DoubleEG:H']
+- NJobs = 10
+- Era = 2016postVFP
+- UserFlags = []
+- RunDir = /data6/Users/jhchoi/SKFlatRunlog//2025_03_25_121627__101489__DiLeptonAnalyzer__Era2016postVFP__SkimTree_Dilepton__TAMSA1/DoubleEG_periodH/
+- output will be send to : /data6/Users/jhchoi/SKFlatOutput//Run2UltraLegacy_v3/DiLeptonAnalyzer/2016postVFP//DATA/
+##################################################
+submit hadd
+CheckOutputSize...
+<AFTER hadd fin. please rm remainings..>
+rm /data6/Users/jhchoi/SKFlatRunlog//2025_03_25_121627__101489__DiLeptonAnalyzer__Era2016postVFP__SkimTree_Dilepton__TAMSA1/DoubleEG_periodF//output/*.root
+submit hadd
+CheckOutputSize...
+<AFTER hadd fin. please rm remainings..>
+rm /data6/Users/jhchoi/SKFlatRunlog//2025_03_25_121627__101489__DiLeptonAnalyzer__Era2016postVFP__SkimTree_Dilepton__TAMSA1/DoubleEG_periodG//output/*.root
+submit hadd
+CheckOutputSize...
+<AFTER hadd fin. please rm remainings..>
+rm /data6/Users/jhchoi/SKFlatRunlog//2025_03_25_121627__101489__DiLeptonAnalyzer__Era2016postVFP__SkimTree_Dilepton__TAMSA1/DoubleEG_periodH//output/*.root

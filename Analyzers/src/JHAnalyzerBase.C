@@ -23,6 +23,7 @@ void JHAnalyzerBase::initializeAnalyzer(){
   simple_lepscale=HasFlag("simple_lepscale");
   checksf=HasFlag("checksf");
   measure_btageff=HasFlag("measure_btageff");
+  measure_btageff_partonFlavour=HasFlag("measure_btageff_partonFlavour");
   measure_bchargeeff=HasFlag("measure_bchargeeff");
   UsePfMET=HasFlag("pfmet");
   if(UsePfMET){
@@ -60,6 +61,7 @@ void JHAnalyzerBase::initializeAnalyzer(){
 
   //---SetUp MC btag Eff Measurement--..
   if(measure_btageff) SetUpBtagEffMeasurement();
+  if(measure_btageff_partonFlavour) SetUpBtagEffMeasurementPartonFlavour();
 
 }
 
@@ -509,24 +511,24 @@ void JHAnalyzerBase::FillHistPUSys(TString histname, double value, double this_w
 void JHAnalyzerBase::FillHistZptWeight(TString histname, double value, double this_weight, int n_bin, double x_min, double x_max){
   double r_zptweight=zptweight ? 1/zptweight : 1;
   FillHistUp("zptweight",histname,value,this_weight*r_zptweight,n_bin,x_min,x_max);
-  FillHistDown("zptweight",histname,value,this_weight,n_bin,x_min,x_max);
+  //FillHistDown("zptweight",histname,value,this_weight,n_bin,x_min,x_max);
 }
 void JHAnalyzerBase::FillHistZptWeight(TString histname, double value, double this_weight, int n_bin, double *xbins){
   double r_zptweight=zptweight ? 1/zptweight : 1;
   FillHistUp("zptweight",histname,value,this_weight*r_zptweight,n_bin,xbins);
-  FillHistDown("zptweight",histname,value,this_weight,n_bin,xbins);
+  //FillHistDown("zptweight",histname,value,this_weight,n_bin,xbins);
 }
 
 
 void JHAnalyzerBase::FillHistTopPtReweight(TString histname, double value, double this_weight, int n_bin, double x_min, double x_max){
   double r_topptweight= topptweight ? 1/topptweight : 1;
   FillHistUp("topptweight",histname,value,this_weight*r_topptweight,n_bin,x_min,x_max);
-  FillHistDown("topptweight",histname,value,this_weight,n_bin,x_min,x_max);
+  //FillHistDown("topptweight",histname,value,this_weight,n_bin,x_min,x_max);
 }
 void JHAnalyzerBase::FillHistTopPtReweight(TString histname, double value, double this_weight, int n_bin, double *xbins){
   double r_topptweight= topptweight ? 1/topptweight : 1;
   FillHistUp("topptweight",histname,value,this_weight*r_topptweight,n_bin,xbins);
-  FillHistDown("topptweight",histname,value,this_weight,n_bin,xbins);
+  //FillHistDown("topptweight",histname,value,this_weight,n_bin,xbins);
 }
 
 
@@ -2951,7 +2953,7 @@ JHAnalyzerBase::bmuonvar JHAnalyzerBase::Get_bmuonvar(Muon &this_muon, Jet &this
 
   //--remove 2409.2
   
-  /*
+
   ret.charge=this_muon.Charge();
   ret.dR_l_j=this_muon.DeltaR(this_jet);
   ret.reltrkiso=this_muon.TrkIso()/this_muon.Pt();
@@ -2975,7 +2977,7 @@ JHAnalyzerBase::bmuonvar JHAnalyzerBase::Get_bmuonvar(Muon &this_muon, Jet &this
   ret.isRPCMuon=this_muon.IsType(Muon::RPCMuon);
   ret.isGEMMuon=this_muon.IsType(Muon::GEMMuon);
   ret.isME0Muon=this_muon.IsType(Muon::ME0Muon);
-  */
+
   return ret;
 }
 
@@ -2991,8 +2993,8 @@ JHAnalyzerBase::belectronvar JHAnalyzerBase::Get_belectronvar(Electron &this_ele
 
 
 
-  /*
-    --rm for v2409.2
+
+  //  --rm for v2409.2
   ret.dR_l_j=this_electron.DeltaR(this_jet);  
   ret.reltrkiso=this_electron.TrkIso()/this_electron.Pt();                                                                                       
   ret.relecalPFClusterIso=this_electron.ecalPFClusterIso()/this_electron.Pt();
@@ -3009,7 +3011,7 @@ JHAnalyzerBase::belectronvar JHAnalyzerBase::Get_belectronvar(Electron &this_ele
   ret.InvEminusInvP=fabs(this_electron.InvEminusInvP());
   ret.nmissinghits=this_electron.NMissingHits();
     
-   */
+
 
   return ret;
 }
@@ -3027,7 +3029,8 @@ JHAnalyzerBase::bjetvar JHAnalyzerBase::Get_bjetvar(Jet &this_jet){
   ret.NeutralMultiplicity=this_jet.NeutralMultiplicity();
   ret.charge=this_jet.Charge();
   ret.abs_charge=fabs(ret.charge);
-  /*
+
+  
   ret.pt=this_jet.Pt();
   ret.aeta=fabs(this_jet.Eta());
   ret.eta=this_jet.Eta();
@@ -3037,17 +3040,27 @@ JHAnalyzerBase::bjetvar JHAnalyzerBase::Get_bjetvar(Jet &this_jet){
   ret.partonFlavour=this_jet.partonFlavour();//if is data -> 0
   ret.hadronFlavour=this_jet.hadronFlavour();//if is data -> 0
 
-  */
+  
   return ret;
 }
 
 void JHAnalyzerBase::DeleteChargeScoreTool(){
   cout << "delete mChargeTool" << endl;
-  delete mChargeTool;
+  if (mChargeTool){
+    delete mChargeTool;
+    mChargeTool=nullptr;
+  }
+  
   cout << "delete eChargeTool" << endl;
-  delete eChargeTool;
+  if (eChargeTool){
+    delete eChargeTool;
+    eChargeTool=nullptr;
+  }
   cout << "delete jChargeTool" << endl;
-  delete jChargeTool;
+  if (jChargeTool){
+    delete jChargeTool;
+    jChargeTool=nullptr;
+  }
 }
 
 void JHAnalyzerBase::LoadChargeScoreTool(TString muon_version,TString electron_version, TString jet_version, bool applycut){
@@ -3130,10 +3143,67 @@ void JHAnalyzerBase::LoadChargeScoreTool(TString muon_version,TString electron_v
 
 
   if (applycut)SetChargeScoreCut(muon_version);
-  mChargeTool->SetScore();
-  eChargeTool->SetScore();
-  jChargeTool->SetScore();
+  for(int i = 0 ; i < 10 ; i++){
+    cout << "i=" << i << endl;
+    mChargeTool->SetScore();
+    cout << "mChargeTool->GetScore()=" << mChargeTool->GetScore() << endl;    
+    eChargeTool->SetScore();
+    cout << "eChargeTool->GetScore()=" << eChargeTool->GetScore() << endl;
+    jChargeTool->SetScore();
+    cout << "jChargeTool->GetScore()=" << jChargeTool->GetScore() << endl;
+  }
 }
+
+
+void JHAnalyzerBase::LoadChargeScoreTool_temp(TString muon_version,TString electron_version, TString jet_version, bool applycut){
+  IsChargeScoreToolOn=1;
+
+  eChargeTool=new ChargeScoreTool("electron",electron_version,DataEra);
+
+  //Link variables
+  //void TMVATool::AddVariable(TString _formula, float *_this_var_address)
+
+  ///---Muon---//
+
+  //---Electron---//
+  eChargeTool->AddVariable("belectron_P_jetrest",&belectron_ChargeTool.P_jetrest);
+  eChargeTool->AddVariable("belectron_ptwrtbjet",&belectron_ChargeTool.ptwrtjet);
+  eChargeTool->AddVariable("belectron_dR_l_j",&belectron_ChargeTool.dR_l_j);
+  eChargeTool->AddVariable("belectron_nsip3d",&belectron_ChargeTool.nsip3d);
+  eChargeTool->AddVariable("belectron_reltrkiso",&belectron_ChargeTool.reltrkiso);
+  eChargeTool->AddVariable("belectron_reliso",&belectron_ChargeTool.reliso);
+  eChargeTool->AddVariable("belectron_palongjet",&belectron_ChargeTool.palongjet);
+  eChargeTool->AddVariable("belectron_palongjetratio",&belectron_ChargeTool.palongjetratio);
+  eChargeTool->AddVariable("belectron_pt",&belectron_ChargeTool.pt);
+  eChargeTool->AddVariable("belectron_aeta",&belectron_ChargeTool.aeta);
+  eChargeTool->AddVariable("belectron_full5x5sigmaietaieta",&belectron_ChargeTool.full5x5sigmaietaieta);
+  eChargeTool->AddVariable("fabs(belectron_detaseed)",&belectron_ChargeTool.abs_detaseed);
+  eChargeTool->AddVariable("belectron_HoverE",&belectron_ChargeTool.HoverE);
+  eChargeTool->AddVariable("belectron_InvEminusInvP",&belectron_ChargeTool.InvEminusInvP);
+  eChargeTool->AddVariable("bjet_charge*belectron_charge",&belectron_ChargeTool.bjet_charge_dot_belectron_charge);
+  eChargeTool->AddVariable("bjet_pt",&bjet_ChargeTool.pt);
+  eChargeTool->AddVariable("bjet_aeta",&bjet_ChargeTool.aeta);
+  eChargeTool->AddVariable("bjet_ChargedHadronEnergyFraction",&bjet_ChargeTool.ChargedHadronEnergyFraction);
+  eChargeTool->AddVariable("bjet_NeutralHadronEnergyFraction",&bjet_ChargeTool.NeutralHadronEnergyFraction);
+  eChargeTool->AddVariable("bjet_NeutralEmEnergyFraction",&bjet_ChargeTool.NeutralEmEnergyFraction);
+  eChargeTool->AddVariable("bjet_ChargedEmEnergyFraction",&bjet_ChargeTool.ChargedEmEnergyFraction);
+  eChargeTool->AddVariable("bjet_MuonEnergyFraction",&bjet_ChargeTool.MuonEnergyFraction);
+  eChargeTool->AddVariable("fabs(bjet_charge)",&bjet_ChargeTool.abs_charge);
+  eChargeTool->AddVariable("bjet_ChargedMultiplicity",&bjet_ChargeTool.ChargedMultiplicity);
+  eChargeTool->AddVariable("bjet_NeutralMultiplicity",&bjet_ChargeTool.NeutralMultiplicity);
+  eChargeTool->SetupTMVA();
+
+
+
+  if (applycut)SetChargeScoreCut(muon_version);
+  for(int i = 0 ; i < 10 ; i++){
+    cout << "i=" << i << endl;
+    eChargeTool->SetScore();
+    cout << "eChargeTool->GetScore()=" << eChargeTool->GetScore() << endl;
+
+  }
+}
+
 void JHAnalyzerBase::SetChargeScoreCut(TString version){
   if(version=="2409.2"){
     SetChargeScoreCut_2409_2();
@@ -3263,9 +3333,12 @@ void JHAnalyzerBase::SetChargeScoreCut_2409_2(){
 
 
 void JHAnalyzerBase::SetMuonChargeScore(Muon &_this_bmuon, Jet &_this_bjet){
+  cout << "JHAnalyzerBase::SetMuonChargeScore" << endl;
+
   //bjet_ChargeTool=Get_bjetvar(_this_bjet);
   bmuon_ChargeTool=Get_bmuonvar(_this_bmuon,_this_bjet);//Change input variable value //set inputvariable
   mChargeTool->SetScore();
+  cout << "[END]JHAnalyzerBase::SetMuonChargeScore" << endl;
 }
 double JHAnalyzerBase::GetMuonChargeScore(){
   return mChargeTool->GetScore();
@@ -3276,9 +3349,11 @@ double JHAnalyzerBase::GetMuonChargeScoreCoeff(){
 
 
 void JHAnalyzerBase::SetElectronChargeScore(Electron &_this_belectron, Jet &_this_bjet){
+  cout << "JHAnalyzerBase::SetElectronChargeScore" << endl;
   //bjet_ChargeTool=Get_bjetvar(_this_bjet);
   belectron_ChargeTool=Get_belectronvar(_this_belectron,_this_bjet);//Change input variable value //set inputvariable
   eChargeTool->SetScore();
+  cout << "[END]JHAnalyzerBase::SetElectronChargeScore" << endl;
 }
 double JHAnalyzerBase::GetElectronChargeScore(){
   return eChargeTool->GetScore();
@@ -3289,8 +3364,10 @@ double JHAnalyzerBase::GetElectronChargeScoreCoeff(){
 
 
 void JHAnalyzerBase::SetJetChargeScore(Jet &_this_bjet){
+  cout << "JHAnalyzerBase::SetJetChargeScore" << endl;
   bjet_ChargeTool=Get_bjetvar(_this_bjet);//Change input variable value 
   jChargeTool->SetScore();
+  cout << "[END]JHAnalyzerBase::SetJetChargeScore" << endl;
 }
 double JHAnalyzerBase::GetJetChargeScore(){
   return jChargeTool->GetScore();
@@ -3908,6 +3985,76 @@ pair<vector<int>,double> JHAnalyzerBase::GetJetIndexSet_Chi2(Lepton &_l1, TLoren
 }
 
 
+
+
+
+
+pair<vector<int>,double> JHAnalyzerBase::GetJetIndexSet_Chi2_1b(Lepton &_l1, TLorentzVector &_met,vector<Jet> &_v_tightjet, int bjetidx){
+  /// 1b is determined
+  // case1 ) 1b is blep
+  // -> You should find bhad and q1,q2 from other jets
+  // case2 ) 1b is bhad
+  // -> You should find blep and q1,q2 from other jets
+  // final return
+  // {blep, bhad, q1,q2} , pz of neutrino
+
+  unsigned int _v_tightjetsize=_v_tightjet.size();
+  double minchi2=99999999999999.;
+  pair<vector<int>,double> ret({-1,-1,-1,-1},0.0);
+
+  
+  for(unsigned int iq1=0; iq1 < _v_tightjetsize; iq1++){
+    if(iq1==bjetidx) continue;
+    for(unsigned int iq2=0; iq2 < _v_tightjetsize; iq2++){
+      if(iq2<=iq1) continue; // q1,q2's order is not important. we only care the combination.
+      if(iq2==bjetidx) continue;      
+      for(unsigned int ib2=0; ib2 < _v_tightjetsize; ib2++){
+	if(ib2==iq1) continue;
+	if(ib2==iq2) continue;
+	if(ib2==bjetidx) continue;
+
+	//---Now we have bjetidx, ib2, iq1,iq2
+	//[case1] bjetidx==>iblep
+	//then ib2==>ibhad
+	
+	pair<double,double> case1_chi2ret=GetChi2_and_vz(_l1,_met,_v_tightjet[bjetidx],_v_tightjet[iq1],_v_tightjet[iq2],_v_tightjet[ib2]);
+	double case1_chi2=case1_chi2ret.first;
+	double case1_vz=case1_chi2ret.second;
+
+	if(case1_chi2 < minchi2){
+	  minchi2=case1_chi2;
+	  ret.first[0]=bjetidx; ret.first[1]=ib2; ret.first[2]=iq1, ret.first[3]=iq2;
+	  ret.second=case1_vz;
+	}
+
+	
+	//[case2] bjetidx==>ibhad
+	//then ib2===>iblep
+	pair<double,double> case2_chi2ret=GetChi2_and_vz(_l1,_met,_v_tightjet[ib2],_v_tightjet[iq1],_v_tightjet[iq2],_v_tightjet[bjetidx]);
+	double case2_chi2=case2_chi2ret.first;
+	double case2_vz=case2_chi2ret.second;
+
+	if(case2_chi2 < minchi2){
+	  minchi2=case2_chi2;
+	  ret.first[0]=ib2; ret.first[1]=bjetidx; ret.first[2]=iq1, ret.first[3]=iq2;
+	  ret.second=case2_vz;
+	}
+
+	
+      }
+    }//[END] iq2 loop
+  }//[END] iq1 loop
+  return ret;
+
+}
+
+
+
+
+
+
+
+
 void JHAnalyzerBase::InitJetAssigenChi2Fitter(){
   f1 = new TF1("f1", JHAnalyzerBase::Chi2TTSemiLep, -10000, 10000, 22);
   IsJetAssigenChi2FitterOn=1;
@@ -3916,11 +4063,18 @@ void JHAnalyzerBase::InitJetAssigenChi2Fitter(){
 void JHAnalyzerBase::DeleteJetAssigenChi2Fitter(){
   if(IsJetAssigenChi2FitterOn){
     cout << "delete f1" << endl;
-    delete f1;
+    if (f1){
+      delete f1;
+      f1=nullptr;
+    }
   }
 }
 
 pair<double,double> JHAnalyzerBase::GetChi2_and_vz(TLorentzVector &_lep, TLorentzVector &_MET, TLorentzVector &_blep, TLorentzVector &_q1, TLorentzVector &_q2, TLorentzVector &_bhad){
+  if(!f1){
+    cout << "[JHAnalyzerBase::GetChi2_and_vz]f1 is not set yet!!" << endl;
+    1/0;
+  }
   //nparam=22
   //TF1 *f1 = new TF1("f1", JHAnalyzerBase::Chi2TTSemiLep, -10000, 10000, 22);//name, function, range,range,nparam
   //f1->SetDirectory(0);//add for avoid memory leakage(not sure)
@@ -3961,7 +4115,7 @@ pair<double,double> JHAnalyzerBase::GetChi2_and_vz(TLorentzVector &_lep, TLorent
   pair<double,double> ret;
   ret.first=min_val;
   ret.second=min_vz;
-  //delete f1;
+
   return ret;
 }
 
@@ -3981,6 +4135,50 @@ bool JHAnalyzerBase::IsGENMatched_Flavour_dR(Jet& this_jet, int genidx){
 
 //---btag eff mc ---//
 void JHAnalyzerBase::SetUpBtagEffMeasurement(){
+  TString datapath = getenv("DATA_DIR");
+  TString btagpath = datapath+"/"+DataEra+"/BTag/";
+  TaggersToMeasure.clear();
+  WPsToMeasure.clear();
+  CutValuesToMeasure.clear();
+  ifstream in_tagger(btagpath+"/CutValues.txt");
+  string btaggerline;
+  while(getline(in_tagger,btaggerline)){
+    std::istringstream is_tag( btaggerline );
+    TString tstring_taggerline = btaggerline;
+    if(tstring_taggerline.Contains("#")) continue;
+    TString a;
+    string b,c;
+    float d;
+
+    is_tag >> a; // ERA
+    is_tag >> b; // TAGGER
+    is_tag >> c; // WP
+    is_tag >> d; // cut value
+
+    if(a == DataEra){
+      TaggersToMeasure.push_back(b);
+      WPsToMeasure.push_back(c);
+      CutValuesToMeasure.push_back(d);
+    }
+  }// end of taggermap loop
+
+  cout << "[JHAnalyzerBase::SetUpBtagEffMeasurement] What to measure :" << endl;
+  cout << "[JHAnalyzerBase::SetUpBtagEffMeasurement] Tagger\tWP\tCutValue" << endl;
+  for(unsigned i_m=0; i_m<TaggersToMeasure.size(); i_m++){
+
+    string Tagger = TaggersToMeasure.at(i_m);
+    string WP = WPsToMeasure.at(i_m);
+    double CutValue = CutValuesToMeasure.at(i_m);
+
+    cout << "[JHAnalyzerBase::SetUpBtagEffMeasurement] " << Tagger << "\t" << WP << "\t" << CutValue << endl;
+  }
+
+
+}
+
+
+
+void JHAnalyzerBase::SetUpBtagEffMeasurementPartonFlavour(){
   TString datapath = getenv("DATA_DIR");
   TString btagpath = datapath+"/"+DataEra+"/BTag/";
   TaggersToMeasure.clear();
@@ -4062,6 +4260,55 @@ void JHAnalyzerBase::Measure_MCbtagEff(){
 
 
 }
+
+//measure btageff by partonFlavour
+void JHAnalyzerBase::Measure_MCbtagEff_PartonFlavour(){
+  //AllJets_raw
+  vector<double> vec_etabins = {0.0, 0.8, 1.6, 2., 2.5};
+  vector<double> vec_ptbins = {20., 30., 50., 70., 100., 140., 200., 300., 600., 1000.};//PT bins used in POG SF measurements
+
+  double PtMax = vec_ptbins.at( vec_ptbins.size()-1 );
+  const int NEtaBin = vec_etabins.size()-1;
+  const int NPtBin = vec_ptbins.size()-1;
+
+  double etabins[NEtaBin+1];
+  for(int i=0; i<NEtaBin+1; i++) etabins[i] = vec_etabins.at(i);
+  double ptbins[NPtBin+1];
+  for(int i=0; i<NPtBin+1; i++) ptbins[i] = vec_ptbins.at(i);
+  for(unsigned int ij = 0 ; ij < AllJets_raw.size(); ij++){
+    //TString str = std::to_string(value).c_str();
+    TString flav= std::to_string(AllJets_raw.at(ij).partonFlavour()).c_str();
+    double this_Eta = fabs(AllJets_raw.at(ij).Eta());//POG recommendation is to use |eta|
+    double this_Pt = AllJets_raw.at(ij).Pt()<PtMax ? AllJets_raw.at(ij).Pt() : PtMax-1; // put overflows in the last bin
+    //==== First, fill the denominator
+    AnalyzerCore::FillHist("Jet_"+DataEra+"_eff_"+flav+"_denom", this_Eta, this_Pt, weight, NEtaBin, etabins, NPtBin, ptbins);
+    AnalyzerCore::FillHist("Jet_"+DataEra+"_eff_"+flav+"_denom__ETA", this_Eta, weight, NEtaBin, etabins);
+    AnalyzerCore::FillHist("Jet_"+DataEra+"_eff_"+flav+"_denom__PT",  this_Pt, weight, NPtBin, ptbins);
+    //  //    AnalyzerCore::FillHist(newhistname+"/"+ProcessName,value,this_weight,n_bin,x_min,x_max);
+    AnalyzerCore::FillHist("Jet_"+DataEra+"_eff_"+flav+"_denom__Overall",  0.5, weight, 1, 0,1);
+
+    //==== Now looping over (tagger,working point)
+    for(unsigned i_m=0; i_m<TaggersToMeasure.size(); i_m++){
+
+      string Tagger = TaggersToMeasure.at(i_m);
+      string WP = WPsToMeasure.at(i_m);
+      double CutValue = CutValuesToMeasure.at(i_m);
+
+      double this_taggerresult = AllJets_raw.at(ij).GetTaggerResult( JetTagging::StringToTagger(Tagger) );
+
+      if(this_taggerresult>CutValue){
+	AnalyzerCore::FillHist("Jet_"+DataEra+"_"+Tagger+"_"+WP+"_eff_"+flav+"_num", this_Eta, this_Pt, weight, NEtaBin, etabins, NPtBin, ptbins);
+	AnalyzerCore::FillHist("Jet_"+DataEra+"_"+Tagger+"_"+WP+"_eff_"+flav+"_num__ETA", this_Eta,  weight, NEtaBin, etabins);
+	AnalyzerCore::FillHist("Jet_"+DataEra+"_"+Tagger+"_"+WP+"_eff_"+flav+"_num__PT", this_Pt, weight, NPtBin, ptbins);
+
+	AnalyzerCore::FillHist("Jet_"+DataEra+"_"+Tagger+"_"+WP+"_eff_"+flav+"_num__Overall", 0.5, weight, 1, 0,1);
+      }
+    } // END Loop (tagger,working point)
+  } // END Loop jet
+
+
+}
+
 
 void JHAnalyzerBase::Measure_MCbChargeIDEff(Jet& this_jet, TString _suffix){
   double this_jet_pt = this_jet.Pt();
@@ -4149,15 +4396,20 @@ void JHAnalyzerBase::initializeBChargeEff_TT(TString EffFileName){
 
   
   f->Close();
-  delete f;
-  
+  if(f){
+    delete f;
+    f=nullptr;
+  }  
   initializeBChargeEffSF();
   
 }
 
 void JHAnalyzerBase::DeleteBChargeEff_TT(){
   for(auto & this_histmap : map_hist_bchargeIDEff ){
-    delete this_histmap.second;
+    if (this_histmap.second){
+      delete this_histmap.second;
+      this_histmap.second=nullptr;
+    }
   }
 }
 
@@ -4189,15 +4441,20 @@ void JHAnalyzerBase::initializeBChargeEff(TString EffFileName){
   
   
   f->Close();
-  delete f;
-  
+  if(f){
+    delete f;
+    f=nullptr;
+  }
   initializeBChargeEffSF();
 
 }
 
 void JHAnalyzerBase::DeleteBChargeEff(){
   for(auto & this_histmap : map_hist_bchargeIDEff ){
-    delete this_histmap.second;
+    if(this_histmap.second){
+      delete this_histmap.second;
+      this_histmap.second=nullptr;
+    }
   }
 }
 

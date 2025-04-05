@@ -1,26 +1,26 @@
-Submitting job(s)..................................................
-50 job(s) submitted to cluster 2314423.
-Submitting job(s)..................................................
-50 job(s) submitted to cluster 2314424.
+Submitting job(s)..........
+10 job(s) submitted to cluster 2042.
+Submitting job(s)..........
+10 job(s) submitted to cluster 2043.
 condor_submit WORKDIR_HADD/run.jds > WORKDIR_HADD/run.jid
 condor_submit WORKDIR_HADD/run.jds > WORKDIR_HADD/run.jid
 ##################################################
 Submission Finished
-- JobID = 208023
+- JobID = 85438
 - Analyzer = DiLeptonAnalyzer
 - Skim = SkimTree_Dilepton
 - InputSamples = ['SingleTop_tW_antitop_NoFullyHad', 'SingleTop_tW_top_NoFullyHad']
-- NJobs = 50
+- NJobs = 10
 - Era = 2017
 - UserFlags = []
-- RunDir = /data6/Users/jhchoi/SKFlatRunlog//2024_05_20_221019__208023__DiLeptonAnalyzer__Era2017__SkimTree_Dilepton__TAMSA1/SingleTop_tW_top_NoFullyHad/
+- RunDir = /data6/Users/jhchoi/SKFlatRunlog//2025_03_25_120436__85438__DiLeptonAnalyzer__Era2017__SkimTree_Dilepton__TAMSA1/SingleTop_tW_top_NoFullyHad/
 - output will be send to : /data6/Users/jhchoi/SKFlatOutput//Run2UltraLegacy_v3/DiLeptonAnalyzer/2017/
 ##################################################
 submit hadd
 CheckOutputSize...
 <AFTER hadd fin. please rm remainings..>
-rm /data6/Users/jhchoi/SKFlatRunlog//2024_05_20_221019__208023__DiLeptonAnalyzer__Era2017__SkimTree_Dilepton__TAMSA1/SingleTop_tW_antitop_NoFullyHad//output/*.root
+rm /data6/Users/jhchoi/SKFlatRunlog//2025_03_25_120436__85438__DiLeptonAnalyzer__Era2017__SkimTree_Dilepton__TAMSA1/SingleTop_tW_top_NoFullyHad//output/*.root
 submit hadd
 CheckOutputSize...
 <AFTER hadd fin. please rm remainings..>
-rm /data6/Users/jhchoi/SKFlatRunlog//2024_05_20_221019__208023__DiLeptonAnalyzer__Era2017__SkimTree_Dilepton__TAMSA1/SingleTop_tW_top_NoFullyHad//output/*.root
+rm /data6/Users/jhchoi/SKFlatRunlog//2025_03_25_120436__85438__DiLeptonAnalyzer__Era2017__SkimTree_Dilepton__TAMSA1/SingleTop_tW_antitop_NoFullyHad//output/*.root

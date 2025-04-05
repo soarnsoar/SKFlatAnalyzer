@@ -59,8 +59,16 @@ def CheckJobStatus(logfiledir, cycle, jobnumber, hostname):
   log_e = open(path_log_e).readlines()
   length_log_e = 0
   is_not_mounting_err = False
+  errlines=[]
   for e_l in log_e:
-    if "WARNING: Not mounting" in e_l:
+    #if "WARNING: Not mounting" in e_l:
+    if "**** Following environment variables are going to be unset." in e_l:
+      continue
+    elif "IMPORTANT: Setting CMSSW environment to use 'x86-64-v2' target." in e_l:
+      continue
+    elif "PROJECT_MULTIARCH_TARGET" in e_l:
+      length_log_e -= 1
+    elif "WARNING: Not mounting" in e_l:
       length_log_e -= 1
       is_not_mounting_err = True
     elif "RequestsDependencyWarning" in e_l:
@@ -69,10 +77,16 @@ def CheckJobStatus(logfiledir, cycle, jobnumber, hostname):
       continue
     elif "Using TensorFlow backend" in e_l:
       continue
+    elif "\n"==e_l:
+      continue
     else:
       print 'err!!->',e_l
+      errlines.append(e_l)
       length_log_e += 1
-    
+  ##---jhchoi--##
+  if len(errlines)>0:
+    print "Found as Errors"
+    print errlines
   if length_log_e > 0:
     print "length_log_e>0,->",length_log_e
     

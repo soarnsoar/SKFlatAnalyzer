@@ -44,11 +44,25 @@ void EEMu_MuMuE_Method::initializeAnalyzer(){
     MuonMinPt=0.;//no ptcut
   }
 
+  is_cut_v2503_1=false;
+  if(HasFlag("cut_v2503.1")){
+    is_cut_v2503_1=true;
+    //rm ptcut and add id bits
+    MuonMinPt=5.;//no ptcut
+  }
+  
+  is_cut_v2503_2=false;
+  if(HasFlag("cut_v2503.2")){
+    is_cut_v2503_2=true;
+    //rm ptcut and add id bits
+    MuonMinPt=5.;//no ptcut
+  }
+
   isTreeMode=false;
   if(HasFlag("treemode")){
     isTreeMode=true;
   }
-  if(isTreeMode && !is_cut_v2405_1 && !is_cut_v2405_2 && !is_cut_v2405_3){
+  if(isTreeMode && !is_cut_v2405_1 && !is_cut_v2405_2 && !is_cut_v2405_3 && !is_cut_v2503_1 && !is_cut_v2503_2){
     cout << "!!!![EEMu_MuMuE_Method::initializeAnalyzer] In basic setup, treemode is not allowed!!!! EXIT!!!" << endl;
     exit(1);
   }
@@ -229,6 +243,7 @@ void EEMu_MuMuE_Method::EventLoop(){
   nbelectron=0; nbmuon=0;
   RunElectronInJet();
   RunMuonInJet();
+  
   if(nbmuon==1 && nbelectron==0) FillTree_1bmuon();
   if(nbmuon==0 && nbelectron==1) FillTree_1belectron();
   if(nbmuon==0 && nbelectron==0) FillTree_0blepton();
@@ -240,6 +255,7 @@ void EEMu_MuMuE_Method::FillTree_1bmuon(){
   Has_bMuon=true;
   Has_bElectron=false;
   bmuon=Get_bmuonvar(current_bmuon,AllJets[jetidx_b]);
+  //cout << "bmuon.pt=" << bmuon.pt << endl;
   belectron=Get_init_belectronvar();
   bjet=Get_bjetvar(AllJets[jetidx_b]);
   bool isSig=false;
@@ -412,6 +428,59 @@ void EEMu_MuMuE_Method::RunMuonInJet_v2405_3(){
   }
 }
 
+
+void EEMu_MuMuE_Method::RunMuonInJet_v2503_1(){
+  //updated : matchedstats > 0
+  nbmuon=0;
+  for(auto& muon : AllMuons){
+    if(muon.Pt() < 5.) continue;
+    if(AllJets[jetidx_b].DeltaR(muon)>0.4) continue;
+    //if(muon.RelIso() > 10.) continue;
+    //if(muon.Chi2()>10) continue;
+    //if(muon.TrackerLayers()<1) continue;
+    //if(muon.MatchedStations() <1) continue;
+    nbmuon+=1;
+    current_bmuon=muon;
+    if(muon.Charge() > 0) {
+      FillHistBJet(ll_str+"__"+bcharge_str+"__muonPlus",AllJets[jetidx_b]);
+      FillHistMuon(ll_str+"__"+bcharge_str+"__muonPlus",muon);
+    }
+    if(muon.Charge() < 0){
+      FillHistBJet(ll_str+"__"+bcharge_str+"__muonMinus",AllJets[jetidx_b]);
+      FillHistMuon(ll_str+"__"+bcharge_str+"__muonMinus",muon);
+    }
+  }
+  //cout << "nbmuon=" << nbmuon << endl;
+}
+
+
+
+void EEMu_MuMuE_Method::RunMuonInJet_v2503_2(){
+  //updated : matchedstats > 0
+  nbmuon=0;
+  for(auto& muon : AllMuons){
+    if(muon.Pt() < 5.) continue;
+    if(AllJets[jetidx_b].DeltaR(muon)>0.4) continue;
+    //if(muon.RelIso() > 10.) continue;
+    if(muon.Chi2()>10) continue;
+    if(muon.TrackerLayers()<1) continue;
+    if(muon.MatchedStations() <1) continue;
+    nbmuon+=1;
+    current_bmuon=muon;
+    if(muon.Charge() > 0) {
+      FillHistBJet(ll_str+"__"+bcharge_str+"__muonPlus",AllJets[jetidx_b]);
+      FillHistMuon(ll_str+"__"+bcharge_str+"__muonPlus",muon);
+    }
+    if(muon.Charge() < 0){
+      FillHistBJet(ll_str+"__"+bcharge_str+"__muonMinus",AllJets[jetidx_b]);
+      FillHistMuon(ll_str+"__"+bcharge_str+"__muonMinus",muon);
+    }
+  }
+  //cout << "nbmuon=" << nbmuon << endl;
+}
+
+
+
 void EEMu_MuMuE_Method::RunMuonInJet(){
   //FillHist by MuonCharge
   //ll_str,bcharge_str
@@ -428,8 +497,22 @@ void EEMu_MuMuE_Method::RunMuonInJet(){
     RunMuonInJet_v2405_3();
     return;
   }
+
+ else if (is_cut_v2503_1){
+   RunMuonInJet_v2503_1();
+   return;
+ }
+
+ else if (is_cut_v2503_2){
+   RunMuonInJet_v2503_2();
+   return;
+ }
+  nbmuon=0;
   for(auto& muon : AllMuons){
     if(muon.Pt() < 5.) continue;
+    nbmuon+=1;
+    current_bmuon=muon;
+
     if(muon.Charge() > 0) {
       FillHistBJet(ll_str+"__"+bcharge_str+"__muonPlus",AllJets[jetidx_b]);
       FillHistMuon(ll_str+"__"+bcharge_str+"__muonPlus",muon);
@@ -473,7 +556,6 @@ void EEMu_MuMuE_Method::RunElectronInJet_v2405_1(){
   }
 }
 
-
 void EEMu_MuMuE_Method::RunElectronInJet_v2405_2(){
   //FillHist by ElectronCharge
   nbelectron=0;
@@ -496,6 +578,56 @@ void EEMu_MuMuE_Method::RunElectronInJet_v2405_2(){
   }
 }
 
+void EEMu_MuMuE_Method::RunElectronInJet_v2503_1(){
+  //FillHist by ElectronCharge
+  nbelectron=0;
+  for(auto& electron : AllElectrons){
+    if(!electron.IsGsfCtfScPixChargeConsistent()) continue;
+    if(!electron.PassConversionVeto()) continue;
+    //if(electron.RelIso() > 10.) continue;
+    //if(electron.NMissingHits() != 0) continue;
+    if(AllJets[jetidx_b].DeltaR(electron)>0.4) continue;
+    nbelectron+=1;
+    current_belectron=electron;
+    if(electron.Charge() > 0) {
+      FillHistElectron(ll_str+"__"+bcharge_str+"__electronPlus",electron);
+      FillHistBJet(ll_str+"__"+bcharge_str+"__electronPlus",AllJets[jetidx_b]);
+    }
+    if(electron.Charge() < 0) {
+      FillHistBJet(ll_str+"__"+bcharge_str+"__electronMinus",AllJets[jetidx_b]);
+      FillHistElectron(ll_str+"__"+bcharge_str+"__electronMinus",electron);
+    }
+  }
+}
+
+
+
+
+void EEMu_MuMuE_Method::RunElectronInJet_v2503_2(){
+  //FillHist by ElectronCharge
+  nbelectron=0;
+  for(auto& electron : AllElectrons){
+    if(!electron.IsGsfCtfScPixChargeConsistent()) continue;
+    if(!electron.PassConversionVeto()) continue;
+    //if(electron.RelIso() > 10.) continue;
+    //if(electron.NMissingHits() != 0) continue;
+    if(AllJets[jetidx_b].DeltaR(electron)>0.4) continue;
+    nbelectron+=1;
+    current_belectron=electron;
+    if(electron.Charge() > 0) {
+      FillHistElectron(ll_str+"__"+bcharge_str+"__electronPlus",electron);
+      FillHistBJet(ll_str+"__"+bcharge_str+"__electronPlus",AllJets[jetidx_b]);
+    }
+    if(electron.Charge() < 0) {
+      FillHistBJet(ll_str+"__"+bcharge_str+"__electronMinus",AllJets[jetidx_b]);
+      FillHistElectron(ll_str+"__"+bcharge_str+"__electronMinus",electron);
+    }
+  }
+}
+
+
+
+
 void EEMu_MuMuE_Method::RunElectronInJet_v2405_3(){
   RunElectronInJet_v2405_2();//variation only in muon
 }
@@ -516,8 +648,12 @@ void EEMu_MuMuE_Method::RunElectronInJet(){
     return;
   }
   //FillHist by ElectronCharge
+  nbelectron=0;
   for(auto& electron : AllElectrons){
-    if(!electron.IsGsfCtfScPixChargeConsistent()) continue;
+    if(!electron.IsGsfCtfScPixChargeConsistent()) continue;    
+    nbelectron+=1;
+    current_belectron=electron;
+
     if(electron.Charge() > 0) {
       FillHistElectron(ll_str+"__"+bcharge_str+"__electronPlus",electron);
       FillHistBJet(ll_str+"__"+bcharge_str+"__electronPlus",AllJets[jetidx_b]);

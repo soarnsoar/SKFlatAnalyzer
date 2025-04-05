@@ -108,7 +108,7 @@ void BasicTest::initializeAnalyzer(){
   //TString xmlpath=(TString)getenv("DATA_DIR")+"2017/TMVA/old/LepJetChargeReliability/aMCatNLO/muon/TMVAClassification_DNN.weights.xml"
   //xmlfile test
   //  TMVATool *myScoreTool=new TMVATool(xmlpath);
-  ChargeScoreTool *muonscoretool=new ChargeScoreTool("2405.2","muon",DataEra);
+  //ChargeScoreTool *muonscoretool=new ChargeScoreTool("2405.2","muon",DataEra);
 
 }
 

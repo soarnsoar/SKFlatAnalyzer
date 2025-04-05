@@ -1,0 +1,33 @@
+
+
+-- Schedd: tamsa1.snu.ac.kr : <172.30.1.100:9618?... @ 03/10/25 17:04:07
+OWNER  BATCH_NAME                                                                                                     SUBMITTED   DONE   RUN    IDLE  TOTAL JOB_IDS
+jhchoi MultiDimFitInit_PT100To140_2016preVFP_Full_SYST                                                               3/9  19:26      _      1      _      1 2677394.0
+jhchoi MultiDimFitInit_PT140ToInf_2016preVFP_Full_SYST                                                               3/9  19:26      _      1      _      1 2677395.0
+jhchoi MultiDimFitInit_PT30To50_2016preVFP_Full_SYST                                                                 3/9  19:26      _      1      _      1 2677396.0
+jhchoi MultiDimFitInit_PT50To70_2016preVFP_Full_SYST                                                                 3/9  19:26      _      1      _      1 2677397.0
+jhchoi MultiDimFitInit_PT70To100_2016preVFP_Full_SYST                                                                3/9  19:26      _      1      _      1 2677398.0
+jhchoi MultiDimFitInit_PT100To140_2016postVFP_Full_SYST                                                              3/9  19:26      _      1      _      1 2677399.0
+jhchoi MultiDimFitInit_PT140ToInf_2016postVFP_Full_SYST                                                              3/9  19:26      _      1      _      1 2677400.0
+jhchoi MultiDimFitInit_PT30To50_2016postVFP_Full_SYST                                                                3/9  19:26      _      1      _      1 2677401.0
+jhchoi MultiDimFitInit_PT70To100_2016postVFP_Full_SYST                                                               3/9  19:26      _      1      _      1 2677403.0
+jhchoi MultiDimFitInit_PT100To140_2017_Full_SYST                                                                     3/9  19:26      _      1      _      1 2677404.0
+jhchoi MultiDimFitInit_PT140ToInf_2017_Full_SYST                                                                     3/9  19:26      _      1      _      1 2677405.0
+jhchoi MultiDimFitInit_PT30To50_2017_Full_SYST                                                                       3/9  19:26      _      1      _      1 2677406.0
+jhchoi MultiDimFitInit_PT50To70_2017_Full_SYST                                                                       3/9  19:26      _      1      _      1 2677407.0
+jhchoi MultiDimFitInit_PT70To100_2017_Full_SYST                                                                      3/9  19:26      _      1      _      1 2677408.0
+jhchoi MultiDimFitInit_PT140ToInf_2018_Full_SYST                                                                     3/9  19:26      _      1      _      1 2677410.0
+jhchoi MultiDimFitInit_PT30To50_2018_Full_SYST                                                                       3/9  19:26      _      1      _      1 2677411.0
+jhchoi MultiDimFitInit_PT50To70_2018_Full_SYST                                                                       3/9  19:26      _      1      _      1 2677412.0
+jhchoi MultiDimFitInit_PT70To100_2018_Full_SYST                                                                      3/9  19:26      _      1      _      1 2677413.0
+jhchoi MultiDimFitInit_PT100To140_2018_Full_SYST                                                                     3/10 01:57      _      1      _      1 2677513.0
+jhchoi TESTPARAM__PT100To140__EXT__15__Migrad__1__0p5                                                                3/10 02:02      _      1      _      1 2677515.0
+jhchoi TESTPARAM__PT50To70__EXT__5__Migrad__1__0p2                                                                   3/10 04:18      _      1      _      1 2677516.0
+jhchoi TTsemiLepChargeScoreEfficiencyMeasurement_TightMatch_2016preVFP_TTLJ_powheg__measure_btageff_partonFlavour    3/10 16:50      _     50      _     50 2678011.0-49
+jhchoi TTsemiLepChargeScoreEfficiencyMeasurement_TightMatch_2016postVFP_TTLJ_powheg__measure_btageff_partonFlavour   3/10 16:51      _     50      _     50 2678013.0-49
+jhchoi TTsemiLepChargeScoreEfficiencyMeasurement_TightMatch_2017_TTLJ_powheg__measure_btageff_partonFlavour          3/10 16:52      _     50      _     50 2678014.0-49
+jhchoi TTsemiLepChargeScoreEfficiencyMeasurement_TightMatch_2018_TTLJ_powheg__measure_btageff_partonFlavour          3/10 16:53      _     50      _     50 2678015.0-49
+
+Total for query: 221 jobs; 0 completed, 0 removed, 0 idle, 221 running, 0 held, 0 suspended 
+Total for all users: 231 jobs; 0 completed, 0 removed, 0 idle, 231 running, 0 held, 0 suspended
+

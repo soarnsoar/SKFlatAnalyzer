@@ -1,5 +1,5 @@
 DYJetsToEE_MiNNLO
 DYJetsToMuMu_MiNNLO
 DYJetsToTauTau_MiNNLO
-WJets_Sherpa
+WJets_MG
 TTLL_powheg

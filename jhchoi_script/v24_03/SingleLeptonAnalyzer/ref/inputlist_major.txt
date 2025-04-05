@@ -1,5 +1,5 @@
 TTLL_powheg
-WJets_Sherpa
+WJets_MG
 DYJetsToEE_MiNNLO
 DYJetsToMuMu_MiNNLO
 DYJetsToTauTau_MiNNLO

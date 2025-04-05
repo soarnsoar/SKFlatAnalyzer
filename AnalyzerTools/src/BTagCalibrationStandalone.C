@@ -170,7 +170,10 @@ std::string th1ToFormulaBinTree(const TH1* hist, int start=0, int end=-1) {
     h2->SetBinContent(start, 0);  // kill underflow
     h2->SetBinContent(end, 0);    // kill overflow
     std::string res = th1ToFormulaBinTree(h2, start, end);
-    delete h2;
+    if(h2){
+      delete h2;
+      h2=nullptr;
+    }
     return res;
   }
   if (start == end) {                   // leave is reached

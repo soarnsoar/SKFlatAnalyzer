@@ -38,7 +38,9 @@ class JHAnalyzerBase : public AnalyzerCore {
   bool simple_lepscale;
   bool weightonly;
   bool pusysonly;
-  bool measure_btageff;
+  bool measure_btageff=false;
+  bool measure_btageff_partonFlavour=false;
+  bool measure_bchargeeff=false;
   //--end flags
   double weight;
   double btagcut;
@@ -436,6 +438,7 @@ class JHAnalyzerBase : public AnalyzerCore {
   //void LoadChargeScoreTool(TString muon_version="2405.2",TString electron_version="2405.2", TString jet_version="2405.2", bool applycut=false);
   //void LoadChargeScoreTool(TString muon_version="2405.4.3",TString electron_version="2405.4.3", TString jet_version="2405.4.3", bool applycut=false);
   void LoadChargeScoreTool(TString muon_version="2409.2",TString electron_version="2409.2", TString jet_version="2409.2", bool applycut=false);
+  void LoadChargeScoreTool_temp(TString muon_version="2409.2",TString electron_version="2409.2", TString jet_version="2409.2", bool applycut=false);
   bool IsChargeScoreToolOn=false;
   void DeleteChargeScoreTool();
   void SetChargeScoreCut(TString version);
@@ -529,6 +532,7 @@ class JHAnalyzerBase : public AnalyzerCore {
   void DeleteJetAssigenChi2Fitter();
   TF1 *f1;
   pair<vector<int>,double> GetJetIndexSet_Chi2(Lepton &_l1, TLorentzVector &_met,vector<Jet> &_v_tightjet, vector<int> &_v_bjetidx, bool _kincut);
+  pair<vector<int>,double> GetJetIndexSet_Chi2_1b(Lepton &_l1, TLorentzVector &_met,vector<Jet> &_v_tightjet, int bjetidx);
   pair<double,double> GetChi2_and_vz(TLorentzVector &_lep, TLorentzVector &_MET, TLorentzVector &_blep, TLorentzVector &_q1, TLorentzVector &_q2, TLorentzVector &_bhad);
 
 
@@ -538,7 +542,9 @@ class JHAnalyzerBase : public AnalyzerCore {
 
   // mc btag eff
   void SetUpBtagEffMeasurement();
+  void SetUpBtagEffMeasurementPartonFlavour();
   void Measure_MCbtagEff();
+  void Measure_MCbtagEff_PartonFlavour();
   vector<string> TaggersToMeasure;
   vector<string> WPsToMeasure;
   vector<double> CutValuesToMeasure;
@@ -555,6 +561,34 @@ class JHAnalyzerBase : public AnalyzerCore {
   double jetpog_ptbins[10] = {20., 30., 50., 70., 100., 140., 200., 300., 600., 1000.};//PT bins used in POG SF measurements                                                                               
   const int njetpog_ptbins=9;
 
+
+  //bChargeID
+  void Get_bChargeID_SF(Jet& this_jet, int abs_charge, int bchargeID);
+  void Measure_MCbChargeIDEff(Jet& this_jet,TString _suffix="");
+  
+  map<TString,TH1D*> map_hist_bchargeIDEff;
+  std::map<TString, std::map<TString, std::map<TString, double>>> map_bChargeEffSF;
+
+  double Get_bChargeID_SF_TT(double this_pt, TString bchargeID, TString orig_parton, TString bLepbHad);
+  double Get_bChargeID_Eff_Measure_TT(double this_pt, TString bchargeID, TString orig_parton,TString bLepbHad);
+  TString Get_PTBINNAME_bChargeID_Eff_TT(double this_pt);
+  double Get_bChargeID_Eff_MC_TT(double this_pt, TString bchargeID, TString orig_parton,TString bLepbHad);
+  double Get_bChargeID_N_MC_TT(double this_pt, TString bchargeID, TString orig_parton, TString bLepbHad);
+  void initializeBChargeEffSF();
+  void DeleteBChargeEff_TT();
+  void initializeBChargeEff_TT(TString EffFileName);
+
+
+  double Get_bChargeID_SF(double this_pt, TString bchargeID, TString orig_parton);
+  double Get_bChargeID_Eff_Measure(double this_pt, TString bchargeID, TString orig_parton);
+  TString Get_PTBINNAME_bChargeID_Eff(double this_pt);
+  double Get_bChargeID_Eff_MC(double this_pt, TString bchargeID, TString orig_parton);
+  double Get_bChargeID_N_MC(double this_pt, TString bchargeID, TString orig_parton);
+  void DeleteBChargeEff();
+  void initializeBChargeEff(TString EffFileName);
+
+  TString Get_bChargeID(Jet& this_bjet);
+  TString Get_orig_parton_bChargeID(Jet& this_bjet);
  private:
   MomentumVar _CurrentSys;
   JetTagging::Parameters jtp;

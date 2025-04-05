@@ -1,0 +1,10 @@
+executable = /data9/Users/jhchoi/TMVA/el9/TMVA_TOOL/ws/WORKDIR/2503.1/EEMu_MuMuE_Method/2018/jet/jet2018__5__64__1000__0.6/Trf_I/run.sh
+universe = vanilla
+output = /data9/Users/jhchoi/TMVA/el9/TMVA_TOOL/ws/WORKDIR/2503.1/EEMu_MuMuE_Method/2018/jet/jet2018__5__64__1000__0.6/Trf_I/run.out
+error = /data9/Users/jhchoi/TMVA/el9/TMVA_TOOL/ws/WORKDIR/2503.1/EEMu_MuMuE_Method/2018/jet/jet2018__5__64__1000__0.6/Trf_I/run.err
+log = /data9/Users/jhchoi/TMVA/el9/TMVA_TOOL/ws/WORKDIR/2503.1/EEMu_MuMuE_Method/2018/jet/jet2018__5__64__1000__0.6/Trf_I/run.log
+request_cpus = 1
+accounting_group=group_cms
+JobBatchName=dnn_jet_2503.1_2018
+concurrency_limits = n900.jhchoi
+queue

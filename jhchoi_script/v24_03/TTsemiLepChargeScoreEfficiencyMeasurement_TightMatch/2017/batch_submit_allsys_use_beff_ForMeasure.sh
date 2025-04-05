@@ -8,7 +8,7 @@ MEMORY="--memory 10000"
 MEMORYHIGH="--memory 22000"
 NMAX="--nmax 900"
 YEAR=2017
-SKFlat.py -a TTsemiLepChargeScoreEfficiencyMeasurement_TightMatch  ${SKIM} -i TTLJ_powheg -n 300 -e ${YEAR} $FLAG ${MEMORYHIGH} ${NMAX} &> use_beff_ForMeasure_syslogs/TTLJ_powheg.log&
+SKFlat.py -a TTsemiLepChargeScoreEfficiencyMeasurement_TightMatch  ${SKIM} -i TTLJ_powheg -n 400 -e ${YEAR} $FLAG ${MEMORYHIGH} ${NMAX} &> use_beff_ForMeasure_syslogs/TTLJ_powheg.log&
 SKFlat.py -a TTsemiLepChargeScoreEfficiencyMeasurement_TightMatch  ${SKIM} -l  inputlist_major.txt -n 50 -e ${YEAR} $FLAG ${MEMORY} ${NMAX} &> use_beff_ForMeasure_syslogs/major.log&
 SKFlat.py -a TTsemiLepChargeScoreEfficiencyMeasurement_TightMatch  ${SKIM} -l inputlist_minor.txt -n 50 -e ${YEAR} $FLAG ${MEMORY} ${NMAX} &> use_beff_ForMeasure_syslogs/minor.log&
 SKFlat.py -a TTsemiLepChargeScoreEfficiencyMeasurement_TightMatch  ${SKIM} -l inputlist_tW.txt -n 50 -e ${YEAR} $FLAG ${MEMORY} ${NMAX} &> use_beff_ForMeasure_syslogs/tW.log&

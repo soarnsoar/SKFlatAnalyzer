@@ -93,9 +93,80 @@ TString ChargeScoreTool::Get_xmlpath(TString objname, TString version, TString D
 
     }
 
+    _xmlfile=(TString)getenv("DATA_DIR")+"/"+DataEra+"/TMVA/ChargeScore/v"+version+"/"+objname+"/"+objname+DataEra+"__"+nlayer+"__"+nnode+"__"+batchsize+"__"+dropout+"_DNN.weights.xml";
+  }//[end of 2409.2]
+
+  else if(version=="2503.1"){
+    TString nlayer="0"; TString nnode="0"; TString batchsize="0"; TString dropout="0";
+    if(DataEra=="2016preVFP"){
+      if(objname.Contains("muon")){
+	nlayer="5"; nnode="64"; batchsize="100"; dropout="0.2";
+      }
+      else if(objname.Contains("electron")){
+	nlayer="5"; nnode="256"; batchsize="1000"; dropout="0.4";
+      }
+      else if(objname.Contains("jet")){
+	nlayer="5"; nnode="64"; batchsize="1000"; dropout="0.2";
+      }
+      else{
+	std::cout << "Wrong object->" << objname << std::endl;
+      }
+
+    }//
+    else if(DataEra=="2016postVFP"){
+      if(objname.Contains("muon")){
+	nlayer="5"; nnode="128"; batchsize="1000"; dropout="0.4";
+      }
+      else if(objname.Contains("electron")){
+	nlayer="5"; nnode="128"; batchsize="1000"; dropout="0.4";
+      }
+      else if(objname.Contains("jet")){
+	nlayer="10"; nnode="256"; batchsize="1000"; dropout="0.2";
+      }
+      else{
+	std::cout << "Wrong object->" << objname << std::endl;
+      }
+
+    }
+
+    else if(DataEra=="2017"){
+      if(objname.Contains("muon")){
+	nlayer="10"; nnode="64"; batchsize="1000"; dropout="0.2";
+      }
+      else if(objname.Contains("electron")){
+	nlayer="5"; nnode="64"; batchsize="1000"; dropout="0.2";
+      }
+      else if(objname.Contains("jet")){
+	nlayer="10"; nnode="128"; batchsize="100"; dropout="0.2";
+      }
+      else{
+	std::cout << "Wrong object->" << objname << std::endl;
+      }
+
+    }
 
 
-     _xmlfile=(TString)getenv("DATA_DIR")+"/"+DataEra+"/TMVA/ChargeScore/v"+version+"/"+objname+"/"+objname+DataEra+"__"+nlayer+"__"+nnode+"__"+batchsize+"__"+dropout+"_DNN.weights.xml";
+
+    else if(DataEra=="2018"){
+      if(objname.Contains("muon")){
+	nlayer="20"; nnode="256"; batchsize="500"; dropout="0.2";
+      }
+      else if(objname.Contains("electron")){
+	nlayer="5"; nnode="64"; batchsize="500"; dropout="0.2";
+      }
+      else if(objname.Contains("jet")){
+	nlayer="5"; nnode="64"; batchsize="1000"; dropout="0.6";
+      }
+      else{
+	std::cout << "Wrong object->" << objname << std::endl;
+      }
+
+    }
+
+
+    
+
+    _xmlfile=(TString)getenv("DATA_DIR")+"/"+DataEra+"/TMVA/ChargeScore/v"+version+"/"+objname+"/"+objname+DataEra+"__"+nlayer+"__"+nnode+"__"+batchsize+"__"+dropout+"_DNN.weights.xml";
 
   }
 

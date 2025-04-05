@@ -1,4 +1,3 @@
-WJets_Sherpa
 QCD_bEnriched_HT100to200
 QCD_bEnriched_HT200to300
 QCD_bEnriched_HT300to500

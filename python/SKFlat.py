@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python2.7
 
 import os,sys,time
 import argparse
@@ -361,6 +361,7 @@ source /cvmfs/cms.cern.ch/$SCRAM_ARCH/cms/$cmsswrel/external/$SCRAM_ARCH/bin/thi
 
 ### modifying LD_LIBRARY_PATH to use libraries in base_rundir
 export LD_LIBRARY_PATH=$(echo $LD_LIBRARY_PATH|sed 's@'$SKFlat_WD'/lib@{0}/lib@')
+export ROOT_INCLUDE_PATH=$ROOT_INCLUDE_PATH:$SKFlat_WD/DataFormats/include:$SKFlat_WD/AnalyzerTools/include:$SKFlat_WD/Analyzers/include
 
 while [ "$Trial" -lt 3 ]; do
   echo "#### running ####"
@@ -464,8 +465,11 @@ queue {0}
       os.system('mkdir -p '+thisjob_dir)
       runCfileFullPath = thisjob_dir+'run.C'
 
-    #IncludeLine = 'R__LOAD_LIBRARY(/cvmfs/cms.cern.ch/slc7_amd64_gcc900/external/lhapdf/6.2.3/lib/libLHAPDF.so)\n"'
-    IncludeLine = 'R__LOAD_LIBRARY(/cvmfs/cms.cern.ch/slc7_amd64_gcc820/external/lhapdf/6.2.3/lib/libLHAPDF.so)\nR__LOAD_LIBRARY(/cvmfs/cms.cern.ch/slc7_amd64_gcc820/lcg/root/6.14.09-pafccj5/lib/libPyMVA.so)\n'
+    IncludeLine = 'R__LOAD_LIBRARY(/cvmfs/cms.cern.ch/slc7_amd64_gcc900/external/lhapdf/6.2.3/lib/libLHAPDF.so)\n'
+    #IncludeLine += 'R__LOAD_LIBRARY('+os.getenv("ROOTSYS")+"/lib/libXMLIO.so"+')\n'
+    #IncludeLine += 'R__LOAD_LIBRARY('+os.getenv("ROOTSYS")+"/lib/libTMVA.so"+')\n'
+    IncludeLine += 'R__LOAD_LIBRARY('+os.getenv("ROOTSYS")+"/lib/libPyMVA.so"+')\n'
+    #IncludeLine = 'R__LOAD_LIBRARY(/cvmfs/cms.cern.ch/slc7_amd64_gcc820/external/lhapdf/6.2.3/lib/libLHAPDF.so)\nR__LOAD_LIBRARY(/cvmfs/cms.cern.ch/slc7_amd64_gcc820/lcg/root/6.14.09-pafccj5/lib/libPyMVA.so)\n'
     #IncludeLine = 'R__LOAD_LIBRARY(/cvmfs/cms.cern.ch/slc7_amd64_gcc700/external/lhapdf/6.2.3/lib/libLHAPDF.so)\n'
     #IncludeLine = 'R__LOAD_LIBRARY(/cvmfs/cms.cern.ch/slc7_amd64_gcc900/external/lhapdf/6.2.3/lib/libLHAPDF.so)\nR__LOAD_LIBRARY(/cvmfs/cms.cern.ch/slc7_amd64_gcc900/lcg/root/6.22.06/lib/libPyMVA.so)\n'
     #IncludeLine = 'R__LOAD_LIBRARY(/cvmfs/cms.cern.ch/slc7_amd64_gcc700/external/lhapdf/6.2.3-a2a84f5990d32c24c7240b02577bf55e/lib/libLHAPDF.so)\nR__LOAD_LIBRARY(/cvmfs/cms.cern.ch/slc7_amd64_gcc700/lcg/root/6.14.09-pohgbh/lib/libPyMVA.so)\n'
@@ -909,8 +913,7 @@ try:
                   #_nhadd=NJobs/10
                   _nhadd=int(sqrt(NJobs))
 
-                ##--remove _nhadd option (after fixing not using CMSSW_10_6_30
-                _nhadd=1
+
                 #_req_memory=int(float(__outputsize)*(_nhadd+1))
                 #_req_memory=int(float(__outputsize)*5.*float(_nhadd))
                 _req_memory=int(float(__outputsize)*nFiles)
@@ -919,8 +922,9 @@ try:
 
                 ##CMSSW_10_6_30 has bug on hadd, use CMSSW_11_2_5 instead
                 command_cmssw_setup='echo "RunHadd"'
-                if "CMSSW_10_6_30" in os.getenv("$CMSSW_BASE"):
-                  command_cmssw_setup="source "+SKFlat_WD+"/bin/setup_cmssw_11_2_5.sh"
+                if os.getenv("$CMSSW_BASE"):
+                  if "CMSSW_10_6_30" in os.getenv("$CMSSW_BASE"):
+                    command_cmssw_setup="source "+SKFlat_WD+"/bin/setup_cmssw_11_2_5.sh"
                 os.system("ExportShellCondorSetup_tamsa.py -c \"cd "+base_rundir+"&&"+command_cmssw_setup+"&&hadd -j "+str(_nhadd)+" -f "+outputname+".root output/*.root&&mv "+outputname+".root "+FinalOutputPath+"\" -d WORKDIR_HADD -n hadd_"+outputname+str(args.Era)+" -m "+str(_nhadd)+" -r \""+str(_req_memory)+"\" -s")
                 #os.system("submit_hadd.sh")
                 #os.system('hadd -f '+outputname+'.root output/*.root >> JobStatus.log')

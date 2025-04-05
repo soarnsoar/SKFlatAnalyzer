@@ -21,7 +21,10 @@ void PuppiSoftdropMassCorr::ReadHistograms(){
   func_reco_0eta1v3 = (TF1 *)rootfile->Get("puppiJECcorr_reco_0eta1v3")->Clone();
   func_reco_1v3eta2v5 = (TF1 *)rootfile->Get("puppiJECcorr_reco_1v3eta2v5")->Clone();
   rootfile->Close();
-  delete rootfile;
+  if(rootfile){
+    delete rootfile;
+    rootfile=nullptr;
+  }
   origDir->cd();
 
 }

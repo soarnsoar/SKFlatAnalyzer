@@ -82,6 +82,7 @@ SKFlatNtuple::~SKFlatNtuple()
 {
   if (!fChain) return;
   delete fChain->GetCurrentFile();
+  //fChain->GetCurrentFile()=nullptr;
   cout << "[SKFlatNtuple::~SKFlatNtuple] JOB FINISHED " << printcurrunttime() << endl;
 }
 

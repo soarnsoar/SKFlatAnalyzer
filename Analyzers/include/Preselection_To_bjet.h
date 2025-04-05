@@ -63,9 +63,11 @@ public:
   
   double dphi_z_b, ptzb;
   TString _JETPUID;
+  //--flag
   bool check_tmva_input;
   bool lepveto;
   bool MuonOnly;
+  bool apply_bchargeeff;
 
   float cut_jetcharge_dot_dnn;
 
@@ -77,6 +79,10 @@ public:
   void FillHist_muonmin(TString cutname, int im, double score);
   void FillHist_electronmax(TString cutname, int im, double score);
   void FillHist_electronmin(TString cutname, int im, double score);
+
+
+  //-----ApplyBChargeIDSF
+  void ApplyBChargeIDSF();
 };
 
 

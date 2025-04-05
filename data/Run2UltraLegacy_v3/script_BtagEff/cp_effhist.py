@@ -8,8 +8,8 @@ SKFlat_WD=os.getenv("SKFlat_WD")
 
 
 #_SkimTree_Dilepton
-#list_year=["2016preVFP", "2016postVFP", "2017", "2018"]
-list_year=["2018"]
+list_year=["2016preVFP", "2016postVFP", "2017", "2018"]
+#list_year=["2018"]
 
 ANANAME="TTsemiLepChargeScoreEfficiencyMeasurement_TightMatch"
 for YEAR in list_year:

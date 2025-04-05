@@ -58,9 +58,10 @@ public:
   
   double dphi_z_b, ptzb;
   TString _JETPUID;
+  //--flags
   bool check_tmva_input;
   bool lepveto;
-
+  bool apply_bchargeeff;
   float cut_jetcharge_dot_dnn;
 };
 

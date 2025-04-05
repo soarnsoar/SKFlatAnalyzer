@@ -126,7 +126,10 @@ void AnalyzerCore::SetupEfficiency(){
   }
 }
 void AnalyzerCore::DeleteEfficiency(){
-  if(fEff) delete fEff;
+  if(fEff) {
+    delete fEff;
+    fEff=nullptr;
+  }
 }
 void AnalyzerCore::SetupJetPUIDTool(){
   TString _datadir=getenv("DATA_DIR");
@@ -139,10 +142,18 @@ void AnalyzerCore::SetupJetPUIDTool(){
   map_jetpuid_tool["L"]->ReadHist(_datadir,_era,"L");
 }
 void AnalyzerCore::DeleteJetPUIDTool(){
-  if(map_jetpuid_tool["T"]) delete map_jetpuid_tool["T"];
-  if(map_jetpuid_tool["M"]) delete map_jetpuid_tool["M"];
-  if(map_jetpuid_tool["L"]) delete map_jetpuid_tool["L"];
-
+  if(map_jetpuid_tool["T"]){
+    delete map_jetpuid_tool["T"];
+    map_jetpuid_tool["T"]=nullptr;
+  }
+  if(map_jetpuid_tool["M"]){
+    delete map_jetpuid_tool["M"];
+    map_jetpuid_tool["M"]=nullptr;
+  }
+  if(map_jetpuid_tool["L"]){
+    delete map_jetpuid_tool["L"];
+    map_jetpuid_tool["L"]=nullptr;
+  }
 }
 double AnalyzerCore::GetLeptonTriggerSF(TString triggerSF_key,const vector<Lepton*>& leps,int set,int mem,TString option){
   if(IsDATA) return 1;
@@ -319,24 +330,27 @@ AnalyzerCore::~AnalyzerCore(){
   //cout << " vhist_TH1D.size()=" << vhist_TH1D.size() << endl;
 
   //let's skip this 
-  cout << "skip delete TH objects. Let ROOT release each memory. It's much faster way in ROOT 6.14" << endl;
-  /*
+  //cout << "skip delete TH objects. Let ROOT release each memory. It's much faster way in ROOT 6.14" << endl;
+  
   for(std::map< TString, TH1D* >::iterator mapit = maphist_TH1D.begin(); mapit!=maphist_TH1D.end(); mapit++){
     //cout<<"mapit->second->GetDirectory() =>" <<mapit->second->GetDirectory() << endl;
     delete mapit->second;
+    mapit->second=nullptr;
   }
   maphist_TH1D.clear();
   
   for(std::map< TString, TH2D* >::iterator mapit = maphist_TH2D.begin(); mapit!=maphist_TH2D.end(); mapit++){
     delete mapit->second;
+    mapit->second=nullptr;
   }
   maphist_TH2D.clear();
 
   for(std::map< TString, TH3D* >::iterator mapit = maphist_TH3D.begin(); mapit!=maphist_TH3D.end(); mapit++){
     delete mapit->second;
+    mapit->second=nullptr;
   }
   maphist_TH3D.clear();
-  */
+
 
 
   /*
@@ -362,10 +376,23 @@ AnalyzerCore::~AnalyzerCore(){
 
   cout << "[END]Delete HistMaps" << endl;
   cout << printcurrunttime() << endl;
-  delete jhchoi_newtree;
-  delete jhchoi_newtree2;
-  delete jhchoi_newtree3;
-  delete jhchoi_newtree4;
+  if(jhchoi_newtree) {
+    delete jhchoi_newtree;
+    jhchoi_newtree=nullptr;
+  }
+  if (jhchoi_newtree2){
+    delete jhchoi_newtree2;
+    jhchoi_newtree2=nullptr;
+  }
+  if (jhchoi_newtree3){
+    delete jhchoi_newtree3;
+    jhchoi_newtree3=nullptr;
+
+  }
+  if (jhchoi_newtree4){
+    delete jhchoi_newtree4;
+    jhchoi_newtree4=nullptr;
+  }
   cout << printcurrunttime() << endl;
   
   //==== output rootfile
@@ -375,6 +402,7 @@ AnalyzerCore::~AnalyzerCore(){
     cout << printcurrunttime() << endl;
     outfile->Close();
     delete outfile;
+    outfile=nullptr;    
     cout << "[DONE]Delete outfile" << endl;
     cout << printcurrunttime() << endl;
   }
@@ -382,15 +410,36 @@ AnalyzerCore::~AnalyzerCore(){
   //==== Tools
   cout << "Delete mccor" << endl;
   cout << printcurrunttime() << endl;
-  if(mcCorr) delete mcCorr;
+  if(mcCorr) {
+    delete mcCorr;
+    mcCorr=nullptr;
+  }
   cout << printcurrunttime() << endl;
   cout << "Delete puppiCorr" << endl;
-  if(puppiCorr) delete puppiCorr;
-  if(fakeEst) delete fakeEst;
-  if(cfEst) delete cfEst;
-  if(pdfReweight) delete pdfReweight;
-  if(muonGE) delete muonGE;
-  if(muonGEScaleSyst) delete muonGEScaleSyst;
+  if(puppiCorr) {
+    delete puppiCorr;
+    puppiCorr=nullptr;
+  }
+  if(fakeEst){
+    delete fakeEst;
+    fakeEst=nullptr;
+  }
+  if(cfEst) {
+    delete cfEst;
+    cfEst=nullptr;
+  }
+  if(pdfReweight) {
+    delete pdfReweight;
+    pdfReweight=nullptr;
+  }
+  if(muonGE){
+    delete muonGE;
+    muonGE=nullptr;
+  }
+  if(muonGEScaleSyst) {
+    delete muonGEScaleSyst;
+    muonGEScaleSyst=nullptr;
+  }
   cout << printcurrunttime() << endl;
   cout << "clear JECMap" << endl;
   AK4CHSJECUncMap.clear();
@@ -2995,7 +3044,10 @@ void AnalyzerCore::DeleteZptWeight(){
     fZptWeightYaxis=NULL;
   }
   for(auto f:fZptWeightY){
-    if(f) delete f;
+    if(f) {
+      delete f;
+      f=nullptr;
+    }
   }
   fZptWeightY.clear();
   if(fZptWeightMaxis){
@@ -3003,7 +3055,10 @@ void AnalyzerCore::DeleteZptWeight(){
     fZptWeightMaxis=NULL;
   }
   for(auto f:fZptWeightM){
-    if(f) delete f;
+    if(f) {
+      delete f;
+      f=nullptr;
+    }
   }
   fZptWeightM.clear();
 }

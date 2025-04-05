@@ -4,7 +4,7 @@ for D in ${ARR_DIR[@]};do
     echo ${D}
     cd ${D}
     source batch_submit_allsys_use_beff_ForMeasure.sh
-    #sleep 60
+    sleep 60
     cd -
 done
 grep -r "RR" 201*/syslogs/*.log

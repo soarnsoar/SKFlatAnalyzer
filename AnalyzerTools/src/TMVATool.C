@@ -1,6 +1,9 @@
 #include "TMVATool.h"
 #include "TFile.h"
 TMVATool::TMVATool(TString _xmlfile){
+  //TMVA::PyMethodBase::PyInitialize();
+  //std::cout << "Check python version" << std::endl; 
+  //gSystem->Exec("python3 --version");
   xmlfile=_xmlfile;
   ReadXML();
   reader=new TMVA::Reader("V");
@@ -8,7 +11,10 @@ TMVATool::TMVATool(TString _xmlfile){
 }
 TMVATool::~TMVATool(){
   std::cout << "[TMVATool] Delete reader" << std::endl;
-  delete reader;  
+  if(reader){
+    delete reader;
+    reader=nullptr;
+  }
   //std::cout << "[TMVATool] SKIP Delete reader" << std::endl;
 
   std::cout << "[TMVATool] clear inpuvariable map" << std::endl;
@@ -25,7 +31,10 @@ void TMVATool::ReadXML(){
   XMLDocPointer_t xmldoc = xml->ParseFile(xmlfile);
   if (!xmldoc) {
     std::cerr << "Error: Could not parse XML file!" << std::endl;
-    delete xml;
+    if(xml){
+      delete xml;
+      xml=nullptr;
+    }
     exit(1);
     return;
   }
@@ -33,8 +42,11 @@ void TMVATool::ReadXML(){
   if (!MethodSetup) {
     std::cerr << "Error: Could not find MethodSetup element!" << std::endl;
     xml->FreeDoc(xmldoc);
-    delete xml;
-    exit(1);
+    if(xml){
+      delete xml;
+      xml=nullptr;
+    }
+      exit(1);
     return;
   }
   
@@ -69,8 +81,10 @@ void TMVATool::ReadXML(){
   for(auto& exp : vInputVariables){
     std::cout << "exp=" << exp << std::endl;
   }
-
-  delete xml;
+  if(xml){
+    delete xml;
+    xml=nullptr;
+  }
   std::cout << "END TMVATool::ReadXML" << std::endl;
 }
 void TMVATool::AddVariable(TString _formula, float *_this_var_address){//
@@ -90,13 +104,26 @@ void TMVATool::SetupTMVA(){
     reader->AddVariable(exp,map_InputVariables[exp]);
   }
 
-  setenv("KERAS_BACKEND", "tensorflow", true);
-  TMVA::PyMethodBase::PyInitialize();
+  //setenv("KERAS_BACKEND", "tensorflow", true); 
+  //std::cout << "[TMVATool::SetupTMVA]TMVA::PyMethodBase::PyInitialize()" << std::endl;
+  //TMVA::PyMethodBase::PyInitialize();
+
   reader->BookMVA("PyKeras::DNN",xmlfile);
+
+
   
 }
 void TMVATool::SetScore(){
+  //std::cout << "TMVATool::SetScore" << std::endl;
+  //for(auto& exp : vInputVariables){
+  //  //reader->AddVariable(exp,map_InputVariables[exp]);
+  //  std::cout << exp << "=" << *map_InputVariables[exp] << std::endl;
+  //}
+
   score= reader->EvaluateMVA("PyKeras::DNN");
+  //std::cout << "[TMVATool::SetScore]score=" << score << std::endl;
+  
+  //std::cout << "[END]TMVATool::SetScore" << std::endl;
 }
 float TMVATool::GetScore(){
   return score;

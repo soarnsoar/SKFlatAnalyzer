@@ -50,13 +50,23 @@ void TTsemiLepChargeScoreEfficiencyMeasurement_TightMatch::initializeAnalyzer(){
   }
 
   //LoadTTSemilepJetAssignmentTool("1.0");
-  //charge
+  //charge--
+  /*
+    //before el9 update
   TString v_muonScore="2409.2";
   TString v_electronScore="2409.2";
   TString v_jetScore="2409.2";
-  bool apply_dnncut=true;
-  LoadChargeScoreTool(v_muonScore,v_electronScore,v_jetScore,apply_dnncut);
+  */
 
+  TString v_muonScore="2503.1";
+  TString v_electronScore="2503.1";
+  TString v_jetScore="2503.1";
+  
+  bool apply_dnncut=true;
+
+  if(!measure_btageff_partonFlavour && !measure_btageff){
+    LoadChargeScoreTool(v_muonScore,v_electronScore,v_jetScore,apply_dnncut);
+  }
 
 
 
@@ -210,7 +220,14 @@ void TTsemiLepChargeScoreEfficiencyMeasurement_TightMatch::RunReco(){
 
   //---if this job is for btag mc eff measure, measure eff. before getjets
   if(measure_btageff){
+    SetEventWeight();
     Measure_MCbtagEff();
+    return;
+  }
+
+  if(measure_btageff_partonFlavour){
+    SetEventWeight();
+    Measure_MCbtagEff_PartonFlavour();
     return;
   }
 

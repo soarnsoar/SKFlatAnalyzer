@@ -16,7 +16,7 @@ def GetPathReplicaSNU(version,year,obj,nlayer,nnode,batch,dropout,trf,index):
     index=str(index)
 
     #/data6/Users/jhchoi/TMVA/TMVA_TOOL/ws/WORKDIR_ntrial/2409.2/EEMu_MuMuE_Method/2017/muon/muon2017__10__64__1000__0.2/Trf_G
-    path="/data6/Users/jhchoi/TMVA/TMVA_TOOL/ws/WORKDIR_ntrial/"
+    path="/data9/Users/jhchoi/TMVA/el9/TMVA_TOOL/ws/WORKDIR_ntrial/"
     path+="/"+version
     path+="/EEMu_MuMuE_Method"
     path+="/"+year
@@ -36,7 +36,7 @@ def GetPathOriginalSNU(version,year,obj,nlayer,nnode,batch,dropout,trf):
     batch=str(batch)
     dropout=str(dropout)
 
-    path="/data6/Users/jhchoi/TMVA/TMVA_TOOL/ws/WORKDIR/"
+    path="/data9/Users/jhchoi/TMVA/el9/TMVA_TOOL/ws/WORKDIR/"
     path+="/"+version
     path+="/EEMu_MuMuE_Method"
     path+="/"+year
@@ -106,27 +106,30 @@ def GetPathModel(FromSNU,version,year,obj,nlayer,nnode,batch,dropout,trf,index):
             return GetPathOriginalKNU(version,year,obj,nlayer,nnode,batch,dropout,trf)
         else:
             return GetPathReplicaKNU(version,year,obj,nlayer,nnode,batch,dropout,trf,index)
+
+
+
 dict_models={
     "muon":{
         "2016preVFP":{
-            "params":["2409.2",5, 64, 100, 0.2, 'U',-1],
+            "params":["2503.2",5, 64, 1000, 0.2, 'G',-1],
             ##version,nlayer,nnode,batch,dropout,trf,index(if==-1, Use original)
             "FromSNU":1,
         },
 
         "2016postVFP":{
-            "params":['2409.2', 5, 128, 1000, 0.4, 'U',15],
+            "params":['2503.2', 5, 200, 1200, 0.5, 'G',-1],
            "FromSNU":1,
         },
 
 
         "2017":{
-            "params":['2409.2', 10, 64, 1000, 0.2, 'G',87],
+            "params":['2503.2', 3, 64, 1200, 0.2, 'G',-1],
            "FromSNU":1,
         },
         
         "2018":{
-            "params":['2409.2', 10, 256, 500, 0.4, 'G',-1],
+            "params":['2503.2', 3, 64, 1200, 0.2, 'G',-1],
            "FromSNU":1,
         }
         
@@ -135,24 +138,24 @@ dict_models={
     "electron":{
 
         "2016preVFP":{
-            "params":['2409.2', 5, 256, 1000, 0.4, 'G',61],
+            "params":['2503.2', 5, 64, 800, 0.2, 'U',-1],
             ##version,nlayer,nnode,batch,dropout,trf,index(if==-1, Use original)
             "FromSNU":1,
         },
 
         "2016postVFP":{
-            "params":['2409.2', 5, 128, 1000, 0.4, 'G',71],
+            "params":['2503.2', 10, 128, 100, 0.2, 'U',-1],
            "FromSNU":1,
         },
 
 
         "2017":{
-            "params":['2409.2', 5, 64, 1000, 0.2, 'G',-1],
+            "params":['2503.2', 6, 64, 1000, 0.1, 'G',-1],
            "FromSNU":1,
         },
         
         "2018":{
-            "params":['2409.2', 20, 256, 100, 0.2, 'G',-1],
+            "params":['2503.2', 5, 128, 500, 0.2, 'U',-1],
            "FromSNU":1,
         }
 
@@ -163,25 +166,25 @@ dict_models={
     "jet":{
 
         "2016preVFP":{
-            "params":['2409.2', 5, 64, 1000, 0.2, 'N',86],
+            "params":['2503.2', 4, 64, 300, 0.1, 'G',-1],
             ##version,nlayer,nnode,batch,dropout,trf,index(if==-1, Use original)
-            "FromSNU":0,
+            "FromSNU":1,
         },
 
         "2016postVFP":{
-            "params":['2409.2', 10, 256, 1000, 0.2, 'N',-1],
-            "FromSNU":0,
+            "params":['2503.2', 5, 64, 1000, 0.2, 'N',-1],
+            "FromSNU":1,
         },
 
 
         "2017":{
-            "params":['2409.2', 10, 128, 100, 0.2, 'N',64],
-            "FromSNU":0,
+            "params":['2503.2', 4, 50, 700, 0.1, 'G',-1],
+            "FromSNU":1,
         },
         
         "2018":{
-            "params":['2409.2', 5, 256, 1000, 0.2, 'N',67],
-            "FromSNU":0,
+            "params":['2503.2', 5, 50, 700, 0.1, 'G',-1],
+            "FromSNU":1,
         }
 
     },
@@ -193,6 +196,7 @@ dict_models={
 
 list_obj=["muon","electron","jet"]
 list_year=["2016preVFP","2016postVFP","2017","2018"]
+#list_year=[           "2018"]
 
 
 for obj in list_obj:
@@ -215,12 +219,13 @@ for obj in list_obj:
         if FromSNU:
             command="cp "+path+"/* "+des+"/" 
             command2="cp "+path+"/*/*/*.xml "+des+"/" 
-            command3="cp "+path+"/*/*/*.h5 "+des+"/" 
+            command3="cp "+path+"/*/*/*.h5 "+des+"/"
+            
         else:
             command="scp jhchoi@cms.knu.ac.kr:"+path+"/* "+des+"/" 
             command2="scp jhchoi@cms.knu.ac.kr:"+path+"/*/*/*.xml "+des+"/" 
             command3="scp jhchoi@cms.knu.ac.kr:"+path+"/*/*/*.h5 "+des+"/" 
-        print command
-        print command2
-        print command3
+        print(command)
+        print(command2)
+        print(command3)
 

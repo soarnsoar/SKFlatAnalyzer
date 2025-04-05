@@ -59,13 +59,17 @@
 #pragma link C++ class bbbarAsymMeasurement+;
 #pragma link C++ class bbbarAsymMeasurement_NoCat+;
 
-#pragma link C++ class TTSemiLepTrueBJetAnalyzer+;
+//#pragma link C++ class TTSemiLepTrueBJetAnalyzer+;
 #pragma link C++ class DYbTrueBJetAnalyzer+;
 //#pragma link C++ class TrueBJetAnalyzer+;
 
 #pragma link C++ class TrueBJetAnalyzer_AddRecoSel+;
 
 #pragma link C++ class Preselection_To_bjet+;
+
+#pragma link C++ class TTsemiLepBtagChargeAsymEfficiencyMeasurement+;
+
+
 
 
 

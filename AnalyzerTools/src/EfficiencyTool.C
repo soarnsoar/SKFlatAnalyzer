@@ -7,7 +7,10 @@ Efficiency::~Efficiency(){
   for(auto vv:targets){
     for(auto v:*vv){
       for(auto h:v){
-	if(h) delete h;
+	if(h){
+	  delete h;
+	  h=nullptr;
+	}
       }
     }
     vv->clear();
@@ -258,6 +261,7 @@ bool Efficiency::HasKey(TString path,TString key){
   TObject* obj=f.Get(key);
   if(obj){
     delete obj;
+    obj=nullptr;
     return true;
   }
   return false;
@@ -279,7 +283,10 @@ EfficiencyTool::EfficiencyTool(TString path){
 }
 EfficiencyTool::~EfficiencyTool(){
   for(auto it:fEfficiencies){
-    if(it.second) delete it.second;
+    if(it.second) {
+      delete it.second;
+      it.second=nullptr;
+    }
   }
   fEfficiencies.clear();
 }
