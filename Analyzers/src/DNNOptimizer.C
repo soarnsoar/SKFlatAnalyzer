@@ -47,9 +47,9 @@ void DNNOptimizer::initializeAnalyzer(){
 
 
   //charge
-  TString v_muonScore="2409.2";
-  TString v_electronScore="2409.2";
-  TString v_jetScore="2409.2";
+  TString v_muonScore="2503.2";
+  TString v_electronScore="2503.2";
+  TString v_jetScore="2503.2";
   /*
   if(HasFlag("dnn_v2405.4")){
     v_muonScore="2405.4";
