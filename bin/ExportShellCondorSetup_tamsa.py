@@ -75,7 +75,7 @@ def Export(WORKDIR,command,jobname,submit,ncpu,memory=False,nretry=3):
     #    ncpu=ncpu_criteria
 
     lines.append('request_cpus = '+str(ncpu))
-    lines.append('accounting_group=group_cms')
+    #lines.append('accounting_group=group_cms')
     lines.append('JobBatchName='+jobname)
 
     lines.append('queue')
