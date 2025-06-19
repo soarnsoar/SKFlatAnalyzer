@@ -922,10 +922,18 @@ try:
 
                 ##CMSSW_10_6_30 has bug on hadd, use CMSSW_11_2_5 instead
                 command_cmssw_setup='echo "RunHadd"'
-                if os.getenv("$CMSSW_BASE"):
-                  if "CMSSW_10_6_30" in os.getenv("$CMSSW_BASE"):
-                    command_cmssw_setup="source "+SKFlat_WD+"/bin/setup_cmssw_11_2_5.sh"
-                os.system("ExportShellCondorSetup_tamsa.py -c \"cd "+base_rundir+"&&"+command_cmssw_setup+"&&hadd -j "+str(_nhadd)+" -f "+outputname+".root output/*.root&&mv "+outputname+".root "+FinalOutputPath+"\" -d WORKDIR_HADD -n hadd_"+outputname+str(args.Era)+" -m "+str(_nhadd)+" -r \""+str(_req_memory)+"\" -s")
+                #if os.getenv("$CMSSW_BASE"):
+                #  if "CMSSW_10_6_30" in os.getenv("$CMSSW_BASE"):
+                #    command_cmssw_setup="source "+SKFlat_WD+"/bin/setup_cmssw_11_2_5.sh"
+                ##----OLD HADD----##
+                #print "Submit Hadd"
+                #submit_hadd="ExportShellCondorSetup_tamsa.py -c \"cd "+base_rundir+"&&"+command_cmssw_setup+"&&hadd -j "+str(_nhadd)+" -f "+outputname+".root output/*.root&&mv "+outputname+".root "+FinalOutputPath+"\" -d WORKDIR_HADD -n hadd_"+outputname+str(args.Era)+" -m "+str(_nhadd)+" -r \""+str(_req_memory)+"\" -s"
+                ##--[END]OLD HADD---##
+
+                ##---HADD USING condor_submit_dag
+                submit_hadd="submit_hadd_condor_dag.py -n DAG_hadd_"+outputname+str(args.Era)+' -i "output/*.root"' + " -f "+FinalOutputPath+"/"+outputname+".root -s"                 
+                print submit_hadd
+                os.system(submit_hadd)
                 #os.system("submit_hadd.sh")
                 #os.system('hadd -f '+outputname+'.root output/*.root >> JobStatus.log')
                 #os.system('rm output/*.root')
