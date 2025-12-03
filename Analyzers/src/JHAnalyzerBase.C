@@ -1,29 +1,43 @@
 #include "JHAnalyzerBase.h"
+#include "TStopwatch.h"
+#include <limits>
+
 
 JHAnalyzerBase::JHAnalyzerBase(){
 
   
 }
+void JHAnalyzerBase::SetJetEtacut(){
+  jetetacut=2.5;
+  if(DataEra.Contains("2016")) jetetacut=2.4;
+  cout << "[defualt jetetacut]=" << jetetacut << endl;
+}
 void JHAnalyzerBase::initializeAnalyzer(){
   cout << "[JHAnalyzerBase::initializeAnalyzer]DataEra->" << DataEra << endl;
+  SetJetEtacut();
   IsDYSample=MCSample.Contains("DYJets")||MCSample.Contains("ZToEE")||MCSample.Contains("ZToMuMu")||MCSample.Contains(TRegexp("DY[0-9]Jets"));
   cout << "IsDYSample=" << IsDYSample <<endl;
   IsTTSample=MCSample.Contains(TRegexp("TT[LJ][LJ]"));
   cout << "IsTTSample=" << IsTTSample <<endl;
   IsTTLJSample=MCSample.Contains("TTLJ");
+  IsQCDSample=MCSample.BeginsWith("QCD_");
+  cout << "IsQCDSample=" << IsQCDSample <<endl;
   AnalyzerCore::SetupEfficiency();
-  //AnalyzerCore::SetupJetPUIDTool();
+  AnalyzerCore::SetupJetPUIDTool();
   AnalyzerCore::SetupRoccoR();
   if(IsDYSample)  AnalyzerCore::SetupZptWeight();
   InitSystematicMomentumVariations();
   runSys=HasFlag("runSys");
+  //runSysMom00=HasFlag("runSysMom00");
   //weightonly=HasFlag("weightonly");
   pusysonly=HasFlag("pusysonly");
   runMomSys=HasFlag("runMomSys");
+  //scale00test=HasFlag("scale00test");
   simple_lepscale=HasFlag("simple_lepscale");
   checksf=HasFlag("checksf");
   measure_btageff=HasFlag("measure_btageff");
   measure_btageff_partonFlavour=HasFlag("measure_btageff_partonFlavour");
+  measure_btageff_partonFlavour_bonly=HasFlag("measure_btageff_partonFlavour_bonly");
   measure_bchargeeff=HasFlag("measure_bchargeeff");
   UsePfMET=HasFlag("pfmet");
   if(UsePfMET){
@@ -62,7 +76,7 @@ void JHAnalyzerBase::initializeAnalyzer(){
   //---SetUp MC btag Eff Measurement--..
   if(measure_btageff) SetUpBtagEffMeasurement();
   if(measure_btageff_partonFlavour) SetUpBtagEffMeasurementPartonFlavour();
-
+  if(measure_btageff_partonFlavour_bonly) SetUpBtagEffMeasurementPartonFlavour_bonly();
 }
 
 int JHAnalyzerBase::GetPDFSetIDCode(){
@@ -174,7 +188,12 @@ JHAnalyzerBase::~JHAnalyzerBase(){
 }
 
 void JHAnalyzerBase::executeEvent(){  
+  TStopwatch timer;
 
+
+  //EvtToTest= (event==5721707 || event==20757 || event==9019092 || event==6568447 || event==294056 || event==15412219 || event==5574457);
+  //EvtToTest=(event==25837934);
+  //if(!EvtToTest) return;
   if(!PassMETFilter()) return;
   SetEventBaseSysWeight();//this should be done first due to gen info for rochcorr
   InitAllObjects();
@@ -183,23 +202,44 @@ void JHAnalyzerBase::executeEvent(){
   //--init variables--//
   runWeightBase=true;
   SetSysStructure();
-  
+
+  //cout << "[nominal & weightbase run]"<< endl;
+  //timer.Start();
 
   InitClassVariablesPerEvent();
   InitBtagSys();
   TruthLoop();
+  
+
+    
+  //muonscale00event=0;
+  //electronscale00event=0;
+  //nominalevent=1;
   EventLoop();
+  //nominalevent=0;
+  //cout << "weight=" << weight << endl;
+  //timer.Stop();
+  //std::cout << "[CPU time]: " << timer.CpuTime() << " s\n";
+  //timer.Reset();
+  
   //FillReservedHistWeightBase();
   //ClearReserveHist();
 
+  //if(!runSys && !runMomSys && !scale00test) return;
   if(!runSys && !runMomSys) return;
   //if(weightonly) return;
   if(pusysonly) return;
   //---Momentum variations--//
   runWeightBase=false;
   SetSysStructure();//remove sysvariation weights
+
+  //cout << "[JetMet scale run]" << endl;
+  //timer.Start();
+
   for(const auto &sys : vMomentumVar){//jes/jer/met
     if(IsDATA) break; // jes/jer/met uncertainties of data are all propagated to MC
+    //if(scale00test) break;
+    //if(scale00test) break;
     SetSys(sys);
     InitClassVariablesPerEvent();
     InitBtagSys();
@@ -207,6 +247,12 @@ void JHAnalyzerBase::executeEvent(){
     //FillReservedHistMomentumVariations();
     //ClearReserveHist();
   }
+  //timer.Stop();
+  //std::cout << "[CPU time]: " << timer.CpuTime() << " s\n";
+  //timer.Reset();
+
+
+  
   if(simple_lepscale){
     //---Make muon/electron pt up/down collections 
     SetupSimpleMuonMomentumVar();
@@ -236,28 +282,62 @@ void JHAnalyzerBase::executeEvent(){
 
   }
   else{//not simple_lepscale
-
+    //cout << "[Muon Mom Scale Run]" << endl;
+    //timer.Start();
+	  
     for(const auto &_vsys : vMuonMomentumVar){
       for(const auto &sys : _vsys){
 	SetSys(sys);
 	InitClassVariablesPerEvent();
 	InitBtagSys();
+	/*
+	if (sys.idx1 ==0 && sys.idx2==0){
+	  muonscale00event=1;
+	}else{
+	  muonscale00event=0;
+	  if(scale00test) continue;
+	}
+	*/
 	EventLoop();
+	//if (sys.idx1 ==0 && sys.idx2==0) cout << "weight=" << weight << endl;
+
+
 	//FillReservedHistLeptonMomentumVariations();
 	//ClearReserveHist();
       }
     }
-    
+    //timer.Stop();
+    //std::cout << "[Func1] CPU time: " << timer.CpuTime() << " s\n";
+    //timer.Reset();
+
+
+    //cout << "[Ele Mom Scale Run]" << endl;
+    //timer.Start();
+
     for(const auto &_vsys : vElectronMomentumVar){
       for(const auto &sys : _vsys){
+	//if(scale00test) continue;
 	SetSys(sys);
 	InitClassVariablesPerEvent();
 	InitBtagSys();
+	/*
+	if (sys.idx1 ==0 && sys.idx2==0){
+	  electronscale00event=1;
+	}else{
+	  electronscale00event=0;
+	  if(scale00test) continue;
+	}
+	*/
 	EventLoop();
+	//if (sys.idx1 ==0 && sys.idx2==0) cout << "weight=" << weight << endl;
 	//FillReservedHistLeptonMomentumVariations();
 	//ClearReserveHist();
       }
     }
+    //timer.Stop();
+    //std::cout << "[Func1] CPU time: " << timer.CpuTime() << " s\n";
+    //timer.Reset();
+
   }//[END]not simple_lepscale
 }
 void JHAnalyzerBase::SetEventBaseSysWeight(){
@@ -306,11 +386,13 @@ void JHAnalyzerBase::SetEventBaseSysWeight(){
     r_Prefire={1.,1.};
   }
 
+
 }
 void JHAnalyzerBase::SetSysStructure(){
   //---WeightBase Systematic sources Only---//
+  //if(runSys&&runWeightBase &&  !scale00test){
   if(runSys&&runWeightBase){
-
+    //cout << "multiple variation of eff" << endl;
     w_ElectronID=fEff->GetStructure(ElectronIDSFKey);
     r_ElectronID=fEff->GetStructure(ElectronIDSFKey);
     w_ElectronRECO=fEff->GetStructure(ElectronRecoSFKey);
@@ -358,6 +440,7 @@ void JHAnalyzerBase::SetSysStructure(){
   }
 
   else{//if not weightbase
+    //cout << "no weight sys variations" << endl;
     //--Electron--//
     w_ElectronID.clear();
     r_ElectronID.clear();
@@ -401,6 +484,7 @@ void JHAnalyzerBase::InitBtagSys(){
   r_SystUpLTagUnCorr=1;r_SystDownLTagUnCorr=1;
   r_SystUpHTagCorr=1;r_SystDownHTagCorr=1;
   r_SystUpHTagUnCorr=1;r_SystDownHTagUnCorr=1;
+  r_ChargedAsymUp=1. ; r_ChargedAsymDown=1.;
 }
 
 void JHAnalyzerBase::InitClassVariablesPerEvent(){
@@ -571,7 +655,8 @@ void JHAnalyzerBase::FillHistPSSys(TString histname, double value, double this_w
 void JHAnalyzerBase::FillHistPDF(TString histname, double value, double this_weight, int n_bin, double x_min, double x_max){
   int idx=0;
   int _size=weight_PDF->size();
-  for(const auto& _wsyst : *weight_PDF){
+  for(auto& _wsyst : *weight_PDF){
+    if(std::isnan(_wsyst)) _wsyst=1;
     FillHistIdx2(PDFalias,_size,idx,histname,value,this_weight*_wsyst,n_bin,x_min,x_max);
     idx+=1;
   }
@@ -579,7 +664,8 @@ void JHAnalyzerBase::FillHistPDF(TString histname, double value, double this_wei
 void JHAnalyzerBase::FillHistPDF(TString histname, double value, double this_weight, int n_bin, double *xbins){
   int idx=0;
   int _size=weight_PDF->size();
-  for(const auto& _wsyst : *weight_PDF){
+  for(auto& _wsyst : *weight_PDF){
+    if(std::isnan(_wsyst)) _wsyst=1;
     FillHistIdx2(PDFalias,_size,idx,histname,value,this_weight*_wsyst,n_bin,xbins);
     idx+=1;
   }
@@ -632,7 +718,7 @@ void JHAnalyzerBase::FillHistPrefireSys(TString histname, double value, double t
   FillHistUp("prefire"+DataEra,histname,value,this_weight*r_Prefire[0],n_bin,xbins);
   FillHistDown("prefire"+DataEra,histname,value,this_weight*r_Prefire[1],n_bin,xbins);
 }
-/*
+
 void JHAnalyzerBase::FillHistJetPUID(TString histname, double value, double this_weight, int n_bin, double x_min, double x_max){
   //Prefire weight//
   FillHistUp("jetpuid",histname,value,this_weight*r_jetpuidsf_up,n_bin,x_min,x_max);
@@ -643,7 +729,7 @@ void JHAnalyzerBase::FillHistJetPUID(TString histname, double value, double this
   FillHistUp("jetpuid",histname,value,this_weight*r_jetpuidsf_up,n_bin,xbins);
   FillHistDown("jetpuid",histname,value,this_weight*r_jetpuidsf_down,n_bin,xbins);
 }
-*/
+
 
 void JHAnalyzerBase::FillHistBtag(TString histname, double value, double this_weight, int n_bin, double x_min, double x_max){
   //btag weight//  
@@ -659,6 +745,10 @@ void JHAnalyzerBase::FillHistBtag(TString histname, double value, double this_we
   FillHistIdx2("btag","HTagUnCorr"+DataEra,"Up",   histname, value,this_weight*r_SystUpHTagUnCorr,  n_bin,x_min,x_max);
   FillHistIdx2("btag","HTagUnCorr"+DataEra,"Down", histname, value,this_weight*r_SystDownHTagUnCorr,n_bin,x_min,x_max);
 }
+void JHAnalyzerBase::FillHistBtagChargeAsym(TString histname, double value, double this_weight, int n_bin, double x_min, double x_max){
+  FillHistUp("btagChargedAsym"+DataEra,   histname, value,this_weight*r_ChargedAsymUp,  n_bin,x_min,x_max);
+  FillHistDown("btagChargedAsym"+DataEra, histname, value,this_weight*r_ChargedAsymDown,n_bin,x_min,x_max);
+}
 void JHAnalyzerBase::FillHistBtag(TString histname, double value, double this_weight, int n_bin, double *xbins){
   //btag weight//  
   FillHistIdx2("btag","LTagCorr","Up",   histname, value,this_weight*r_SystUpLTagCorr,  n_bin,xbins);
@@ -672,6 +762,12 @@ void JHAnalyzerBase::FillHistBtag(TString histname, double value, double this_we
 
   FillHistIdx2("btag","HTagUnCorr"+DataEra,"Up",   histname, value,this_weight*r_SystUpHTagUnCorr,  n_bin,xbins);
   FillHistIdx2("btag","HTagUnCorr"+DataEra,"Down", histname, value,this_weight*r_SystDownHTagUnCorr,n_bin,xbins);
+}
+void JHAnalyzerBase::FillHistBtagChargeAsym(TString histname, double value, double this_weight, int n_bin, double *xbins){
+  //btag weight//    
+  
+  FillHistUp("btagChargedAsym"+DataEra,   histname, value,this_weight*r_ChargedAsymUp,   n_bin,xbins);
+  FillHistDown("btagChargedAsym"+DataEra  ,histname, value,this_weight*r_ChargedAsymDown,n_bin,xbins);
 }
 
 
@@ -852,6 +948,8 @@ void JHAnalyzerBase::FillHistWeightBase(TString histname,double value,double thi
   
   if(IsDATA) return;
   if(!runSys) return;
+  //if(scale00test) return;
+  //if(scale00test) return;
   //-PU
   FillHistPUSys(histname,value,this_weight,n_bin,x_min,x_max);
   if(pusysonly) return;
@@ -862,10 +960,12 @@ void JHAnalyzerBase::FillHistWeightBase(TString histname,double value,double thi
   FillHistPrefireSys(histname,value,this_weight,n_bin,x_min,x_max);
   //btag
   FillHistBtag(histname,value,this_weight,n_bin,x_min,x_max);
+  //btag charge asym factor
+  if(mcCorr->use_dasym) FillHistBtagChargeAsym(histname,value,this_weight,n_bin,x_min,x_max);
   //zptweight
   FillHistZptWeight(histname,value,this_weight,n_bin,x_min,x_max);
   //jetpuid
-  //FillHistJetPUID(histname,value,this_weight,n_bin,x_min,x_max);
+  FillHistJetPUID(histname,value,this_weight,n_bin,x_min,x_max);
   ///---EffTool--//
   //electronID//
   FillHistElectronID(histname,value,this_weight,n_bin,x_min,x_max);
@@ -902,6 +1002,7 @@ void JHAnalyzerBase::FillHistWeightBase(TString histname,double value,double thi
   
   if(IsDATA) return;
   if(!runSys) return;
+  //if(scale00test) return;
   //-PU
   FillHistPUSys(histname,value,this_weight,n_bin,xbins);
   if(pusysonly) return;
@@ -912,10 +1013,12 @@ void JHAnalyzerBase::FillHistWeightBase(TString histname,double value,double thi
   FillHistPrefireSys(histname,value,this_weight,n_bin,xbins);
   //btag
   FillHistBtag(histname,value,this_weight,n_bin,xbins);
+  //btag charge asym factor
+  if(mcCorr->use_dasym) FillHistBtagChargeAsym(histname,value,this_weight,n_bin,xbins);
   //zptweight
   FillHistZptWeight(histname,value,this_weight,n_bin,xbins);
   //jetpuid
-  //FillHistJetPUID(histname,value,this_weight,n_bin,xbins);
+  FillHistJetPUID(histname,value,this_weight,n_bin,xbins);
   ///---EffTool--//
   //electronID//
   FillHistElectronID(histname,value,this_weight,n_bin,xbins);
@@ -953,10 +1056,13 @@ void JHAnalyzerBase::SetSysSimpleMuon(int direction){
   if(direction>0){
     sysidx2_current="Up";
     AllMuons=AllMuons_plus;
+    std::sort(AllMuons.begin(), AllMuons.end(), PtComparing);
   }
   else if(direction<0){
     sysidx2_current="Down";
     AllMuons=AllMuons_minus;
+    std::sort(AllMuons.begin(), AllMuons.end(), PtComparing);
+
   }
   else{
     cout << "[JHAnalyzerBase::SetSysSimpleMuon]wrong direction=" << direction << endl;
@@ -965,7 +1071,9 @@ void JHAnalyzerBase::SetSysSimpleMuon(int direction){
   }
   std::sort(AllMuons.begin(), AllMuons.end(), PtComparing);
   AllElectrons=AllElectrons_roch;
+  std::sort(AllElectrons.begin(), AllElectrons.end(), PtComparing);  
   AllJets=AllJets_raw;
+  std::sort(AllJets.begin(), AllJets.end(), PtComparing);  
   CurrentMET=UpdateMETByMuonScale(CurrentMET_roch);  
   
 }
@@ -976,10 +1084,13 @@ void JHAnalyzerBase::SetSysSimpleElectron(int direction){
   if(direction>0){
     sysidx2_current="Up";
     AllElectrons=AllElectrons_plus;
+    std::sort(AllElectrons.begin(), AllElectrons.end(), PtComparing);
   }
   else if(direction<0){
     sysidx2_current="Down";
     AllElectrons=AllElectrons_minus;
+    std::sort(AllElectrons.begin(), AllElectrons.end(), PtComparing);
+      
   }
   else{
     cout << "[JHAnalyzerBase::SetSysSimpleElectron]wrong direction=" << direction << endl;
@@ -988,6 +1099,7 @@ void JHAnalyzerBase::SetSysSimpleElectron(int direction){
   }
   std::sort(AllElectrons.begin(), AllElectrons.end(), PtComparing);
   AllMuons=AllMuons_roch;
+  std::sort(AllMuons.begin(), AllMuons.end(), PtComparing);
   AllJets=AllJets_raw;
   CurrentMET=UpdateMETByElectronScale(CurrentMET_roch);  
   
@@ -1003,8 +1115,10 @@ void JHAnalyzerBase::SetSys(MomentumVar _sys){
   if(_sys.jes!=0){
     //AllMuons=AllMuons_raw;
     AllMuons=AllMuons_roch;
+    std::sort(AllMuons.begin(), AllMuons.end(), PtComparing);
     //AllElectrons=AllElectrons_raw;
     AllElectrons=AllElectrons_roch;
+    std::sort(AllElectrons.begin(), AllElectrons.end(), PtComparing);
     AllJets=ScaleJets(AllJets_raw,_sys.jes);
     std::sort(AllJets.begin(), AllJets.end(), PtComparing);
     CurrentMET=UpdateMETByJetScale(CurrentMET_roch,_sys.jes); 
@@ -1012,8 +1126,10 @@ void JHAnalyzerBase::SetSys(MomentumVar _sys){
   else if(_sys.jer!=0){
     //AllMuons=AllMuons_raw;
     AllMuons=AllMuons_roch;
+    std::sort(AllMuons.begin(), AllMuons.end(), PtComparing);
     //AllElectrons=AllElectrons_raw;
     AllElectrons=AllElectrons_roch;
+    std::sort(AllElectrons.begin(), AllElectrons.end(), PtComparing);
     AllJets=SmearJets(AllJets_raw,_sys.jer);
     std::sort(AllJets.begin(), AllJets.end(), PtComparing);
     CurrentMET=UpdateMETByJetSmear(CurrentMET_roch,_sys.jer);
@@ -1021,9 +1137,12 @@ void JHAnalyzerBase::SetSys(MomentumVar _sys){
   else if(_sys.met!=0){
     //AllMuons=AllMuons_raw;
     AllMuons=AllMuons_roch;
+    std::sort(AllMuons.begin(), AllMuons.end(), PtComparing);
     //AllElectrons=AllElectrons_raw;
     AllElectrons=AllElectrons_roch;
+    std::sort(AllElectrons.begin(), AllElectrons.end(), PtComparing);
     AllJets=AllJets_raw;
+    std::sort(AllJets.begin(), AllJets.end(), PtComparing);
     CurrentMET=GetShiftedMET(_sys.met);
   }
   else{
@@ -1177,10 +1296,31 @@ void JHAnalyzerBase::SetSys(MuonMomentumVar _sys){
   AllMuons=MuonMomentumCorrection(AllMuons_raw,_sys.idx1,_sys.idx2);
   //std::sort(AllMuons.begin(), AllMuons.end(), PtComparing);
   AllElectrons=AllElectrons_roch;
+  std::sort(AllElectrons.begin(), AllElectrons.end(), PtComparing);
   AllJets=AllJets_raw;
+  std::sort(AllJets.begin(), AllJets.end(), PtComparing);
   CurrentMET=UpdateMETByMuonScale(CurrentMET_roch);
   sysidx1_current=std::to_string(_sys.idx1);
   sysidx2_current=std::to_string(_sys.idx2);
+  /*
+  //jhchoitemp
+  if(!EvtToTest) return;
+  if(_sys.idx1==0 && _sys.idx2==0){
+    cout << "----Print muon for 0,0 Syst----" << endl;
+    for(const auto& muon : AllMuons){
+      cout << "muon.Pt()=" << muon.Pt() << endl;
+      cout << "muon.Eta()=" << muon.Eta() << endl;
+      cout << "muon.Phi()=" << muon.Phi() << endl;
+    }
+    cout << "CurrentMET=" << CurrentMET.Pt() << "CurrentMET_Phi=" << CurrentMET.Phi() << endl;
+    for(const auto& jet : AllJets){
+      cout << "jet.Pt()=" << jet.Pt() << endl;
+      cout << "jet.Eta()=" << jet.Eta() << endl;
+      cout << "jet.Phi()=" << jet.Phi() << endl;
+    }
+  }
+  */
+  
 }
 
 void JHAnalyzerBase::SetSys(ElectronMomentumVar _sys){
@@ -1188,14 +1328,44 @@ void JHAnalyzerBase::SetSys(ElectronMomentumVar _sys){
   //sysidx1_current=_sys.idx1;
   //sysidx2_current=_sys.idx2;
 
-  AllMuons=AllMuons_roch;  
+  AllMuons=AllMuons_roch;
+  std::sort(AllMuons.begin(), AllMuons.end(), PtComparing);
   AllElectrons=ElectronEnergyCorrection(AllElectrons_raw,_sys.idx1,_sys.idx2);
   //std::sort(AllElectrons.begin(), AllElectrons.end(), PtComparing);
 
   AllJets=AllJets_raw;
+  std::sort(AllJets.begin(), AllJets.end(), PtComparing);
   CurrentMET=UpdateMETByElectronScale(CurrentMET_roch);
   sysidx1_current=std::to_string(_sys.idx1);
-  sysidx2_current=std::to_string(_sys.idx2);  
+  sysidx2_current=std::to_string(_sys.idx2);
+
+  /*
+  //jhchoitemp
+  if(!EvtToTest) return;
+  if(_sys.idx1==0 && _sys.idx2==0){
+    cout << "----Print muon for 0,0 Syst----" << endl;
+    for(const auto& muon : AllMuons){
+      cout << "muon.Pt()=" << muon.Pt() << endl;
+      cout << "muon.Eta()=" << muon.Eta() << endl;
+      cout << "muon.Phi()=" << muon.Phi() << endl;
+    }                                                                                                                                                                             
+
+    cout << "----Print electron for 0,0 Syst----" << endl;
+    for(const auto& electron : AllElectrons){
+      cout << "electron.Pt()=" << electron.Pt() << endl;
+      cout << "electron.Eta()=" << electron.Eta() << endl;
+      cout << "electron.Phi()=" << electron.Phi() << endl;
+    }
+    cout << "CurrentMET=" << CurrentMET.Pt() << "CurrentMET_Phi=" << CurrentMET.Phi() << endl;
+    cout << "CurrentMET_roch=" << CurrentMET_roch.Pt() << "CurrentMET_Phi_roch=" << CurrentMET_roch.Phi() << endl;
+    for(const auto& jet : AllJets){
+      cout << "jet.Pt()=" << jet.Pt() << endl;
+      cout << "jet.Eta()=" << jet.Eta() << endl;
+      cout << "jet.Phi()=" << jet.Phi() << endl;
+    }
+  }
+  */
+  
 }
 
 
@@ -1215,6 +1385,28 @@ void JHAnalyzerBase::InitAllObjects(){
   std::sort(AllJets.begin(), AllJets.end(), PtComparing);
   
   InitMET();
+  /*
+  if(!EvtToTest) return;
+  //jhchoitemp
+  cout << "---Nominal---" << endl;
+  for(const auto& muon : AllMuons){
+    cout << "muon.Pt()=" << muon.Pt() << endl;
+    cout << "muon.Eta()=" << muon.Eta() << endl;
+    cout << "muon.Phi()=" << muon.Phi() << endl;
+  }
+  for(const auto& electron : AllElectrons){
+    cout << "electron.Pt()=" << electron.Pt() << endl;
+    cout << "electron.Eta()=" << electron.Eta() << endl;
+    cout << "electron.Phi()=" << electron.Phi() << endl;
+  }
+
+  cout << "CurrentMET=" << CurrentMET.Pt() << "CurrentMET_Phi=" << CurrentMET.Phi() << endl;
+  for(const auto& jet : AllJets){
+    cout << "jet.Pt()=" << jet.Pt() << endl;
+    cout << "jet.Eta()=" << jet.Eta() << endl;
+    cout << "jet.Phi()=" << jet.Phi() << endl;
+  }
+  */
 }
 
 void JHAnalyzerBase::InitMET(){
@@ -2230,7 +2422,7 @@ vector<int> JHAnalyzerBase::GetIdxTightJet(const vector<Lepton> &v_tightlep, dou
 }
 */
 //---Get TightJet Object base
-vector<Jet> JHAnalyzerBase::GetTightJet(const vector<Lepton> &v_tightlep, double ptmin, double etacut, TString JetID, TString _JetPUID ){
+vector<Jet> JHAnalyzerBase::GetTightJet(const vector<Lepton> &v_tightlep, double ptmin, double etacut, TString JetID, TString _JetPUID){
   vector<Jet> v_tightjet;
   for(const auto& jet : AllJets){
     if(jet.Pt() < ptmin) continue;
@@ -2249,11 +2441,13 @@ vector<Jet> JHAnalyzerBase::GetTightJet(const vector<Lepton> &v_tightlep, double
     v_tightjet.push_back(jet);
   }
   //--puid
-  //if(_JetPUID!=""){
-  //  v_tightjet=map_jetpuid_tool[_JetPUID]->GetJetsPassPUID(v_tightjet);
-  //  SetJetPUIDSF(_JetPUID);
-  //}
+  if(_JetPUID!=""){
+    v_tightjet=map_jetpuid_tool[_JetPUID]->GetJetsPassPUID(v_tightjet);
+    SetJetPUIDSF(_JetPUID);
+    
+  }
   SetBtagSF(v_tightjet);
+  //cout << "jetpuidsf= " << endl;
   return v_tightjet;
 }
 /*
@@ -2353,8 +2547,10 @@ void JHAnalyzerBase::SetBtagSF(const vector<int> &v_jetidx){
 }
 */
 void JHAnalyzerBase::SetBtagSF(const vector<Jet> &v_tightjet){
-
-  btagsf = mcCorr->GetBTaggingReweight_1a(v_tightjet, jtp);
+  //cout << "[JHAnalyzerBase::SetBtagSF]" << endl;
+  //cout << "mcCorr->use_dasym=" << mcCorr->use_dasym <<endl;
+  btagsf = mcCorr->GetBTaggingReweight_1a(v_tightjet, jtp, "central");
+  
   if(runSys){
     r_SystUpLTagCorr     =mcCorr->GetBTaggingReweight_1a(v_tightjet, jtp,"SystUpLTagCorr")/btagsf;
     r_SystDownLTagCorr   =mcCorr->GetBTaggingReweight_1a(v_tightjet, jtp,"SystDownLTagCorr")/btagsf;
@@ -2364,10 +2560,16 @@ void JHAnalyzerBase::SetBtagSF(const vector<Jet> &v_tightjet){
     r_SystDownHTagCorr     =mcCorr->GetBTaggingReweight_1a(v_tightjet, jtp,"SystDownHTagCorr")/btagsf;
     r_SystUpHTagUnCorr     =mcCorr->GetBTaggingReweight_1a(v_tightjet, jtp,"SystUpHTagUnCorr")/btagsf;
     r_SystDownHTagUnCorr     =mcCorr->GetBTaggingReweight_1a(v_tightjet, jtp,"SystDownHTagUnCorr")/btagsf;
+    if(mcCorr->use_dasym){//if b+- btag asym factor is considered in MCCorr
+      r_ChargedAsymUp     =mcCorr->GetBTaggingReweight_1a(v_tightjet, jtp,"dAsymUp")/btagsf;
+      r_ChargedAsymDown   =mcCorr->GetBTaggingReweight_1a(v_tightjet, jtp,"dAsymDown")/btagsf;
+
+    }
   }
 }
-/*
+
 void JHAnalyzerBase::SetJetPUIDSF(TString _JetPUID){
+  //cout << "[JHAnalyzerBase::SetJetPUIDSF] _JetPUID=" << _JetPUID << endl;
   jetpuidsf=map_jetpuid_tool[_JetPUID]->GetCurrentSF();
   if(runSys){
     jetpuidsf_up  =map_jetpuid_tool[_JetPUID]->GetCurrentSF_Up();
@@ -2376,7 +2578,7 @@ void JHAnalyzerBase::SetJetPUIDSF(TString _JetPUID){
     r_jetpuidsf_down= jetpuidsf ? jetpuidsf_down/jetpuidsf : 0;
   }
 }
-*/
+
 /*
 void JHAnalyzerBase::SetMuonSFs(const vector<int> &v_muonidx){
   SetMuonRecoSF(v_muonidx);
@@ -2953,7 +3155,7 @@ JHAnalyzerBase::bmuonvar JHAnalyzerBase::Get_bmuonvar(Muon &this_muon, Jet &this
 
   //--remove 2409.2
   
-
+  /*
   ret.charge=this_muon.Charge();
   ret.dR_l_j=this_muon.DeltaR(this_jet);
   ret.reltrkiso=this_muon.TrkIso()/this_muon.Pt();
@@ -2977,7 +3179,7 @@ JHAnalyzerBase::bmuonvar JHAnalyzerBase::Get_bmuonvar(Muon &this_muon, Jet &this
   ret.isRPCMuon=this_muon.IsType(Muon::RPCMuon);
   ret.isGEMMuon=this_muon.IsType(Muon::GEMMuon);
   ret.isME0Muon=this_muon.IsType(Muon::ME0Muon);
-
+  */
   return ret;
 }
 
@@ -2995,6 +3197,7 @@ JHAnalyzerBase::belectronvar JHAnalyzerBase::Get_belectronvar(Electron &this_ele
 
 
   //  --rm for v2409.2
+  /*
   ret.dR_l_j=this_electron.DeltaR(this_jet);  
   ret.reltrkiso=this_electron.TrkIso()/this_electron.Pt();                                                                                       
   ret.relecalPFClusterIso=this_electron.ecalPFClusterIso()/this_electron.Pt();
@@ -3010,7 +3213,7 @@ JHAnalyzerBase::belectronvar JHAnalyzerBase::Get_belectronvar(Electron &this_ele
   ret.HoverE=this_electron.HoverE();
   ret.InvEminusInvP=fabs(this_electron.InvEminusInvP());
   ret.nmissinghits=this_electron.NMissingHits();
-    
+  */
 
 
   return ret;
@@ -3027,10 +3230,11 @@ JHAnalyzerBase::bjetvar JHAnalyzerBase::Get_bjetvar(Jet &this_jet){
   ret.MuonEnergyFraction=this_jet.GetMuonEnergyFraction();
   ret.ChargedMultiplicity=this_jet.ChargedMultiplicity();
   ret.NeutralMultiplicity=this_jet.NeutralMultiplicity();
-  ret.charge=this_jet.Charge();
   ret.abs_charge=fabs(ret.charge);
 
-  
+
+  //skip for faster run
+  /*
   ret.pt=this_jet.Pt();
   ret.aeta=fabs(this_jet.Eta());
   ret.eta=this_jet.Eta();
@@ -3039,7 +3243,7 @@ JHAnalyzerBase::bjetvar JHAnalyzerBase::Get_bjetvar(Jet &this_jet){
 
   ret.partonFlavour=this_jet.partonFlavour();//if is data -> 0
   ret.hadronFlavour=this_jet.hadronFlavour();//if is data -> 0
-
+  */
   
   return ret;
 }
@@ -3333,12 +3537,17 @@ void JHAnalyzerBase::SetChargeScoreCut_2409_2(){
 
 
 void JHAnalyzerBase::SetMuonChargeScore(Muon &_this_bmuon, Jet &_this_bjet){
-  cout << "JHAnalyzerBase::SetMuonChargeScore" << endl;
+  //cout << "JHAnalyzerBase::SetMuonChargeScore" << endl;
 
   //bjet_ChargeTool=Get_bjetvar(_this_bjet);
+
+  //jhchoitemp
   bmuon_ChargeTool=Get_bmuonvar(_this_bmuon,_this_bjet);//Change input variable value //set inputvariable
+
+  //cout << "[SetMuonChargeScore]SetScore" << endl;
   mChargeTool->SetScore();
-  cout << "[END]JHAnalyzerBase::SetMuonChargeScore" << endl;
+  //cout << "[SetMuonChargeScore]SetScore DONE" << endl;
+  //cout << "[END]JHAnalyzerBase::SetMuonChargeScore" << endl;
 }
 double JHAnalyzerBase::GetMuonChargeScore(){
   return mChargeTool->GetScore();
@@ -3349,11 +3558,13 @@ double JHAnalyzerBase::GetMuonChargeScoreCoeff(){
 
 
 void JHAnalyzerBase::SetElectronChargeScore(Electron &_this_belectron, Jet &_this_bjet){
-  cout << "JHAnalyzerBase::SetElectronChargeScore" << endl;
+  //cout << "JHAnalyzerBase::SetElectronChargeScore" << endl;
   //bjet_ChargeTool=Get_bjetvar(_this_bjet);
+
+  //jhchoitemp
   belectron_ChargeTool=Get_belectronvar(_this_belectron,_this_bjet);//Change input variable value //set inputvariable
   eChargeTool->SetScore();
-  cout << "[END]JHAnalyzerBase::SetElectronChargeScore" << endl;
+  //cout << "[END]JHAnalyzerBase::SetElectronChargeScore" << endl;
 }
 double JHAnalyzerBase::GetElectronChargeScore(){
   return eChargeTool->GetScore();
@@ -3364,10 +3575,12 @@ double JHAnalyzerBase::GetElectronChargeScoreCoeff(){
 
 
 void JHAnalyzerBase::SetJetChargeScore(Jet &_this_bjet){
-  cout << "JHAnalyzerBase::SetJetChargeScore" << endl;
+  //cout << "JHAnalyzerBase::SetJetChargeScore" << endl;
+
+  //jhchoitemp
   bjet_ChargeTool=Get_bjetvar(_this_bjet);//Change input variable value 
   jChargeTool->SetScore();
-  cout << "[END]JHAnalyzerBase::SetJetChargeScore" << endl;
+  //cout << "[END]JHAnalyzerBase::SetJetChargeScore" << endl;
 }
 double JHAnalyzerBase::GetJetChargeScore(){
   return jChargeTool->GetScore();
@@ -3928,7 +4141,7 @@ double JHAnalyzerBase::Chi2TTSemiLep(double *x, double *par){
 
 pair<vector<int>,double> JHAnalyzerBase::GetJetIndexSet_Chi2(Lepton &_l1, TLorentzVector &_met,vector<Jet> &_v_tightjet, vector<int> &_v_bjetidx, bool _kincut){
   unsigned int _v_tightjetsize=_v_tightjet.size();
-  double minchi2=99999999999999.;
+  double minchi2=std::numeric_limits<double>::max();
   pair<vector<int>,double> ret({-1,-1,-1,-1},0.0);
 
   for(auto &ib1 : _v_bjetidx){
@@ -3989,7 +4202,24 @@ pair<vector<int>,double> JHAnalyzerBase::GetJetIndexSet_Chi2(Lepton &_l1, TLoren
 
 
 
-pair<vector<int>,double> JHAnalyzerBase::GetJetIndexSet_Chi2_1b(Lepton &_l1, TLorentzVector &_met,vector<Jet> &_v_tightjet, int bjetidx){
+pair<vector<int>,double> JHAnalyzerBase::GetJetIndexSet_Chi2_1b(Lepton &_l1, TLorentzVector &_met,vector<Jet> &_v_tightjet, int bjetidx, bool kincut){
+  //for debug
+  /*
+  if(EvtToTest && (nominalevent || electronscale00event)){
+    cout << "[GetJetIndexSet_Chi2_1b]" << endl;
+    cout << "_l1 pt,eta,phi=" << _l1.Pt() << "," << _l1.Eta() << "," << _l1.Phi() << endl;
+    cout << "_met.Pt,Phi" << _met.Pt() << "," << _met.Phi() << endl;
+    cout << "Printjet" << endl;
+    for(auto&  _jet : _v_tightjet){
+      cout << "pt,eta,phi" << _jet.Pt() << "," << _jet.Eta() << "," << _jet.Phi() << endl; 
+    }
+    cout << "bjetidx=" << bjetidx <<endl;
+    cout << "TopMassWindow" << TopMassWindow << endl;
+  }
+  */
+  //end of debug
+
+  //
   /// 1b is determined
   // case1 ) 1b is blep
   // -> You should find bhad and q1,q2 from other jets
@@ -3999,7 +4229,7 @@ pair<vector<int>,double> JHAnalyzerBase::GetJetIndexSet_Chi2_1b(Lepton &_l1, TLo
   // {blep, bhad, q1,q2} , pz of neutrino
 
   unsigned int _v_tightjetsize=_v_tightjet.size();
-  double minchi2=99999999999999.;
+  double minchi2=std::numeric_limits<double>::max();
   pair<vector<int>,double> ret({-1,-1,-1,-1},0.0);
 
   
@@ -4020,7 +4250,27 @@ pair<vector<int>,double> JHAnalyzerBase::GetJetIndexSet_Chi2_1b(Lepton &_l1, TLo
 	pair<double,double> case1_chi2ret=GetChi2_and_vz(_l1,_met,_v_tightjet[bjetidx],_v_tightjet[iq1],_v_tightjet[iq2],_v_tightjet[ib2]);
 	double case1_chi2=case1_chi2ret.first;
 	double case1_vz=case1_chi2ret.second;
+	if(kincut){
+	  //1.ThadCand mass : [100,240]
+	  //2.M(blep,l) < 170    
+	  TLorentzVector Tlep,Thad,neutrino;
+	  neutrino.SetPxPyPzE(_met.Px(),_met.Py(),case1_vz, sqrt( pow(_met.Px(),2) + pow(_met.Py(),2) + pow(case1_vz,2) ));
+	  //Tlep
+	  Tlep=neutrino+_l1+_v_tightjet[bjetidx];
+	  double M_Tlep=Tlep.M();
+	  //Thad
+	  Thad=_v_tightjet[iq1]+_v_tightjet[iq2]+_v_tightjet[ib2];
+	  double M_Thad=Thad.M();
+	  ////
+	  //M(blep,l) < 170
+	  double M_blep_l= (_v_tightjet[bjetidx] + _l1).M();
 
+	  if(M_Tlep > 240. || M_Tlep < 100. || M_Thad > 240. || M_Thad < 100. || M_blep_l > 170.){
+	    case1_chi2=std::numeric_limits<double>::max(); // skip this case
+	  }
+	  
+	}
+	
 	if(case1_chi2 < minchi2){
 	  minchi2=case1_chi2;
 	  ret.first[0]=bjetidx; ret.first[1]=ib2; ret.first[2]=iq1, ret.first[3]=iq2;
@@ -4034,6 +4284,30 @@ pair<vector<int>,double> JHAnalyzerBase::GetJetIndexSet_Chi2_1b(Lepton &_l1, TLo
 	double case2_chi2=case2_chi2ret.first;
 	double case2_vz=case2_chi2ret.second;
 
+
+	if(kincut){
+	  //1.ThadCand mass : [100,240]
+	  //2.M(blep,l) < 170    
+	  
+	  TLorentzVector Tlep,Thad,neutrino;
+	  neutrino.SetPxPyPzE(_met.Px(),_met.Py(),case2_vz, sqrt( pow(_met.Px(),2) + pow(_met.Py(),2) + pow(case2_vz,2) ));
+	  //Tlep
+	  Tlep=neutrino+_l1+_v_tightjet[ib2];
+	  double M_Tlep=Tlep.M();
+	  //Thad
+	  Thad=_v_tightjet[iq1]+_v_tightjet[iq2]+_v_tightjet[bjetidx];
+	  double M_Thad=Thad.M();
+	  ////
+          //M(blep,l) < 170
+	  double M_blep_l= (_v_tightjet[ib2] + _l1).M();
+
+	  if(M_Tlep > 240. || M_Tlep < 100. || M_Thad > 240. || M_Thad < 100. || M_blep_l > 170.){
+	    case2_chi2=std::numeric_limits<double>::max(); // skip this case
+	  }
+	  
+	}
+
+	
 	if(case2_chi2 < minchi2){
 	  minchi2=case2_chi2;
 	  ret.first[0]=ib2; ret.first[1]=bjetidx; ret.first[2]=iq1, ret.first[3]=iq2;
@@ -4044,20 +4318,223 @@ pair<vector<int>,double> JHAnalyzerBase::GetJetIndexSet_Chi2_1b(Lepton &_l1, TLo
       }
     }//[END] iq2 loop
   }//[END] iq1 loop
+
+  ///for debug
+  /*
+  if(EvtToTest && (nominalevent || electronscale00event)){
+    cout << "chi2 fitter ret" << endl;
+    cout << "jetidx=" << ret.first[0] << "," << ret.first[1] << "," << ret.first[2] << "," << ret.first[3] << endl;
+    cout << "vz=" << ret.second << endl;
+    cout << "minchi2=" << minchi2 << endl;
+  }
+  */
+  //[end]for debug
+  return ret;
+
+}
+
+
+pair<vector<int>,double> JHAnalyzerBase::GetJetIndexSet_Chi2_1b_AssignToLeptonicSide(Lepton &_l1, TLorentzVector &_met,vector<Jet> &_v_tightjet, int bjetidx, bool TopMassWindow){
+  //for debug                                                                                                                                          
+  /*                                                                                                                                                   
+  if(EvtToTest && (nominalevent || electronscale00event)){                                                                                             
+    cout << "[GetJetIndexSet_Chi2_1b]" << endl;                                                                                                        
+    cout << "_l1 pt,eta,phi=" << _l1.Pt() << "," << _l1.Eta() << "," << _l1.Phi() << endl;                                                             
+    cout << "_met.Pt,Phi" << _met.Pt() << "," << _met.Phi() << endl;                                                                                   
+    cout << "Printjet" << endl;                                                                                                                        
+    for(auto&  _jet : _v_tightjet){                                                                                                                    
+      cout << "pt,eta,phi" << _jet.Pt() << "," << _jet.Eta() << "," << _jet.Phi() << endl;                                                             
+    }                                                                                                                                                  
+    cout << "bjetidx=" << bjetidx <<endl;                                                                                                              
+    cout << "TopMassWindow" << TopMassWindow << endl;                                                                                                  
+  }                                                                                                                                                    
+  */
+  //end of debug                                                                                                                                       
+
+  //                                                                                                                                                   
+  /// 1b is determined                                                                                                                                 
+  // case1 ) 1b is blep                                                                                                                                
+  // -> You should find bhad and q1,q2 from other jets                                                                                                 
+  // case2 ) 1b is bhad                                                                                                                                
+  // -> You should find blep and q1,q2 from other jets                                                                                                 
+  // final return                                                                                                                                      
+  // {blep, bhad, q1,q2} , pz of neutrino                                                                                                              
+
+  unsigned int _v_tightjetsize=_v_tightjet.size();
+  double minchi2=std::numeric_limits<double>::max();
+  pair<vector<int>,double> ret({-1,-1,-1,-1},0.0);
+
+
+  for(unsigned int iq1=0; iq1 < _v_tightjetsize; iq1++){
+    if(iq1==bjetidx) continue;
+    for(unsigned int iq2=0; iq2 < _v_tightjetsize; iq2++){
+      if(iq2<=iq1) continue; // q1,q2's order is not important. we only care the combination.                                                          
+      if(iq2==bjetidx) continue;
+      for(unsigned int ib2=0; ib2 < _v_tightjetsize; ib2++){
+        if(ib2==iq1) continue;
+        if(ib2==iq2) continue;
+        if(ib2==bjetidx) continue;
+
+        //---Now we have bjetidx, ib2, iq1,iq2                                                                                                         
+        //[case1] bjetidx==>iblep                                                                                                                      
+        //then ib2==>ibhad                                                                                                                             
+
+        pair<double,double> case1_chi2ret=GetChi2_and_vz(_l1,_met,_v_tightjet[bjetidx],_v_tightjet[iq1],_v_tightjet[iq2],_v_tightjet[ib2]);
+        double case1_chi2=case1_chi2ret.first;
+        double case1_vz=case1_chi2ret.second;
+        if(TopMassWindow){
+          //ThadCand mass : [100,240]                                                                                                                  
+          TLorentzVector Tlep,Thad,neutrino;
+          neutrino.SetPxPyPzE(_met.Px(),_met.Py(),case1_vz, sqrt( pow(_met.Px(),2) + pow(_met.Py(),2) + pow(case1_vz,2) ));
+          //Tlep                                                                                                                                       
+          Tlep=neutrino+_l1+_v_tightjet[bjetidx];
+          double M_Tlep=Tlep.M();
+          //Thad                                                                                                                                       
+          Thad=_v_tightjet[iq1]+_v_tightjet[iq2]+_v_tightjet[ib2];
+          double M_Thad=Thad.M();
+          ////                                                                                                                                         
+
+          if(M_Tlep > 240. || M_Tlep < 100. || M_Thad > 240. || M_Thad < 100. ){
+            case1_chi2=std::numeric_limits<double>::max(); // skip this case                                                                           
+          }
+
+        }
+
+        if(case1_chi2 < minchi2){
+          minchi2=case1_chi2;
+          ret.first[0]=bjetidx; ret.first[1]=ib2; ret.first[2]=iq1, ret.first[3]=iq2;
+          ret.second=case1_vz;
+        }
+
+
+      }
+    }//[END] iq2 loop                                                                                                                                  
+  }//[END] iq1 loop                                                                                                                                    
+
+  ///for debug                                                                                                                                         
+  /*                                                                                                                                                   
+  if(EvtToTest && (nominalevent || electronscale00event)){                                                                                             
+    cout << "chi2 fitter ret" << endl;                                                                                                                 
+    cout << "jetidx=" << ret.first[0] << "," << ret.first[1] << "," << ret.first[2] << "," << ret.first[3] << endl;                                    
+    cout << "vz=" << ret.second << endl;                                                                                                               
+    cout << "minchi2=" << minchi2 << endl;                                                                                                             
+  }                                                                                                                                                    
+  */
+  //[end]for debug                                                                                                                                     
   return ret;
 
 }
 
 
 
+pair<vector<int>,double> JHAnalyzerBase::GetJetIndexSet_Chi2_1b_AssignToHadronicSide(Lepton &_l1, TLorentzVector &_met,vector<Jet> &_v_tightjet, int bjetidx, bool TopMassWindow){
+  //for debug                                                                                                                                          
+  /*                                                                                                                                                   
+  if(EvtToTest && (nominalevent || electronscale00event)){                                                                                             
+    cout << "[GetJetIndexSet_Chi2_1b]" << endl;                                                                                                        
+    cout << "_l1 pt,eta,phi=" << _l1.Pt() << "," << _l1.Eta() << "," << _l1.Phi() << endl;                                                             
+    cout << "_met.Pt,Phi" << _met.Pt() << "," << _met.Phi() << endl;                                                                                   
+    cout << "Printjet" << endl;                                                                                                                        
+    for(auto&  _jet : _v_tightjet){                                                                                                                    
+      cout << "pt,eta,phi" << _jet.Pt() << "," << _jet.Eta() << "," << _jet.Phi() << endl;                                                             
+    }                                                                                                                                                  
+    cout << "bjetidx=" << bjetidx <<endl;                                                                                                              
+    cout << "TopMassWindow" << TopMassWindow << endl;                                                                                                  
+  }                                                                                                                                                    
+  */
+  //end of debug                                                                                                                                       
+
+  //                                                                                                                                                   
+  /// 1b is determined                                                                                                                                 
+  // case1 ) 1b is blep                                                                                                                                
+  // -> You should find bhad and q1,q2 from other jets                                                                                                 
+  // case2 ) 1b is bhad                                                                                                                                
+  // -> You should find blep and q1,q2 from other jets                                                                                                 
+  // final return                                                                                                                                      
+  // {blep, bhad, q1,q2} , pz of neutrino                                                                                                              
+
+  unsigned int _v_tightjetsize=_v_tightjet.size();
+  double minchi2=std::numeric_limits<double>::max();
+  pair<vector<int>,double> ret({-1,-1,-1,-1},0.0);
 
 
+  for(unsigned int iq1=0; iq1 < _v_tightjetsize; iq1++){
+    if(iq1==bjetidx) continue;
+    for(unsigned int iq2=0; iq2 < _v_tightjetsize; iq2++){
+      if(iq2<=iq1) continue; // q1,q2's order is not important. we only care the combination.                                                          
+      if(iq2==bjetidx) continue;
+      for(unsigned int ib2=0; ib2 < _v_tightjetsize; ib2++){
+        if(ib2==iq1) continue;
+        if(ib2==iq2) continue;
+        if(ib2==bjetidx) continue;
+
+        //---Now we have bjetidx, ib2, iq1,iq2                                                                                                         
+        //[case1] bjetidx==>iblep                                                                                                                      
+        //then ib2==>ibhad                                                                                                                             
+	//-->skip
+
+
+        //[case2] bjetidx==>ibhad                                                                                                                      
+        //then ib2===>iblep                                                                                                                            
+        pair<double,double> case2_chi2ret=GetChi2_and_vz(_l1,_met,_v_tightjet[ib2],_v_tightjet[iq1],_v_tightjet[iq2],_v_tightjet[bjetidx]);
+        double case2_chi2=case2_chi2ret.first;
+        double case2_vz=case2_chi2ret.second;
+
+
+        if(TopMassWindow){
+          //ThadCand mass : [100,240]                                                                                                                  
+          TLorentzVector Tlep,Thad,neutrino;
+          neutrino.SetPxPyPzE(_met.Px(),_met.Py(),case2_vz, sqrt( pow(_met.Px(),2) + pow(_met.Py(),2) + pow(case2_vz,2) ));
+          //Tlep                                                                                                                                       
+          Tlep=neutrino+_l1+_v_tightjet[ib2];
+          double M_Tlep=Tlep.M();
+          //Thad                                                                                                                                       
+          Thad=_v_tightjet[iq1]+_v_tightjet[iq2]+_v_tightjet[bjetidx];
+          double M_Thad=Thad.M();
+          ////                                                                                                                                         
+
+          if(M_Tlep > 240. || M_Tlep < 100. || M_Thad > 240. || M_Thad < 100. ){
+            case2_chi2=std::numeric_limits<double>::max(); // skip this case                                                                           
+          }
+
+        }
+
+
+        if(case2_chi2 < minchi2){
+          minchi2=case2_chi2;
+          ret.first[0]=ib2; ret.first[1]=bjetidx; ret.first[2]=iq1, ret.first[3]=iq2;
+          ret.second=case2_vz;
+        }
+
+
+      }
+    }//[END] iq2 loop                                                                                                                                  
+  }//[END] iq1 loop                                                                                                                                    
+
+  ///for debug                                                                                                                                         
+  /*                                                                                                                                                   
+  if(EvtToTest && (nominalevent || electronscale00event)){                                                                                             
+    cout << "chi2 fitter ret" << endl;                                                                                                                 
+    cout << "jetidx=" << ret.first[0] << "," << ret.first[1] << "," << ret.first[2] << "," << ret.first[3] << endl;                                    
+    cout << "vz=" << ret.second << endl;                                                                                                               
+    cout << "minchi2=" << minchi2 << endl;                                                                                                             
+  }                                                                                                                                                    
+  */
+  //[end]for debug                                                                                                                                     
+  return ret;
+
+}
 
 
 
 void JHAnalyzerBase::InitJetAssigenChi2Fitter(){
-  f1 = new TF1("f1", JHAnalyzerBase::Chi2TTSemiLep, -10000, 10000, 22);
+  //f1 = new TF1("f1", JHAnalyzerBase::Chi2TTSemiLep, -10000, 10000, 22);
+  //f1 = new TF1("f1", JHAnalyzerBase::Chi2TTSemiLep, -500, 500, 22);//update 250719 by GEN/LEN Level vz dist.
+  f1 = new TF1("f1", JHAnalyzerBase::Chi2TTSemiLep, -2000, 2000, 22);//update 250722 by GEN/LEN Level vz dist.
+  //f1->SetNpx(1000);
   IsJetAssigenChi2FitterOn=1;
+
+  
 }
 
 void JHAnalyzerBase::DeleteJetAssigenChi2Fitter(){
@@ -4071,6 +4548,7 @@ void JHAnalyzerBase::DeleteJetAssigenChi2Fitter(){
 }
 
 pair<double,double> JHAnalyzerBase::GetChi2_and_vz(TLorentzVector &_lep, TLorentzVector &_MET, TLorentzVector &_blep, TLorentzVector &_q1, TLorentzVector &_q2, TLorentzVector &_bhad){
+  //cout << "-----GetChi2_and_vz" << endl;
   if(!f1){
     cout << "[JHAnalyzerBase::GetChi2_and_vz]f1 is not set yet!!" << endl;
     1/0;
@@ -4078,7 +4556,7 @@ pair<double,double> JHAnalyzerBase::GetChi2_and_vz(TLorentzVector &_lep, TLorent
   //nparam=22
   //TF1 *f1 = new TF1("f1", JHAnalyzerBase::Chi2TTSemiLep, -10000, 10000, 22);//name, function, range,range,nparam
   //f1->SetDirectory(0);//add for avoid memory leakage(not sure)
-
+  
   f1->SetParameter(0, _lep.Px());
   f1->SetParameter(1, _lep.Py());
   f1->SetParameter(2, _lep.Pz());
@@ -4106,16 +4584,37 @@ pair<double,double> JHAnalyzerBase::GetChi2_and_vz(TLorentzVector &_lep, TLorent
   f1->SetParameter(19, _bhad.Py());
   f1->SetParameter(20, _bhad.Pz());
   f1->SetParameter(21, _bhad.E());
-
-  f1->SetMinimum();
-
+  f1->Update();
+  /*
+  //f1->SetRange(-10000,10000); // for init update 250718
+  //f1->SetMinimum();
+  cout << "f1->GetNpx()" << f1->GetNpx() << endl;
+  // Print 22 parameters
+  for (int i = 0; i < 22; i++) {
+    std::cout << "Parameter " << i << ": " << f1->GetParameter(i) << std::endl;
+  }
+  
+  // Print x range
+  std::cout << "X Range: [" << f1->GetXmin() << ", " << f1->GetXmax() << "]" << std::endl;
+  
+  */
+  
   double min_vz = f1->GetMinimumX();
   double min_val = f1->Eval(min_vz);
-
+  //cout << "f1->Eval(-4.2572)= " << f1->Eval(-4.2572) << endl;
   pair<double,double> ret;
   ret.first=min_val;
   ret.second=min_vz;
 
+  //debug
+  /*
+  cout << "nominalevent=" << nominalevent << endl;
+  cout << "muonscale00event=" << muonscale00event << endl;
+  cout << "electronscale00event=" << electronscale00event << endl;
+  cout << "minchi2 in fitter=" << ret.first << endl;
+  cout << "min_vz in fitter=" << min_vz << endl;
+  */
+  //end debug
   return ret;
 }
 
@@ -4179,6 +4678,50 @@ void JHAnalyzerBase::SetUpBtagEffMeasurement(){
 
 
 void JHAnalyzerBase::SetUpBtagEffMeasurementPartonFlavour(){
+  TString datapath = getenv("DATA_DIR");
+  TString btagpath = datapath+"/"+DataEra+"/BTag/";
+  TaggersToMeasure.clear();
+  WPsToMeasure.clear();
+  CutValuesToMeasure.clear();
+  ifstream in_tagger(btagpath+"/CutValues.txt");
+  string btaggerline;
+  while(getline(in_tagger,btaggerline)){
+    std::istringstream is_tag( btaggerline );
+    TString tstring_taggerline = btaggerline;
+    if(tstring_taggerline.Contains("#")) continue;
+    TString a;
+    string b,c;
+    float d;
+
+    is_tag >> a; // ERA
+    is_tag >> b; // TAGGER
+    is_tag >> c; // WP
+    is_tag >> d; // cut value
+
+    if(a == DataEra){
+      TaggersToMeasure.push_back(b);
+      WPsToMeasure.push_back(c);
+      CutValuesToMeasure.push_back(d);
+    }
+  }// end of taggermap loop
+
+  cout << "[JHAnalyzerBase::SetUpBtagEffMeasurement] What to measure :" << endl;
+  cout << "[JHAnalyzerBase::SetUpBtagEffMeasurement] Tagger\tWP\tCutValue" << endl;
+  for(unsigned i_m=0; i_m<TaggersToMeasure.size(); i_m++){
+
+    string Tagger = TaggersToMeasure.at(i_m);
+    string WP = WPsToMeasure.at(i_m);
+    double CutValue = CutValuesToMeasure.at(i_m);
+
+    cout << "[JHAnalyzerBase::SetUpBtagEffMeasurement] " << Tagger << "\t" << WP << "\t" << CutValue << endl;
+  }
+
+
+}
+
+
+
+void JHAnalyzerBase::SetUpBtagEffMeasurementPartonFlavour_bonly(){
   TString datapath = getenv("DATA_DIR");
   TString btagpath = datapath+"/"+DataEra+"/BTag/";
   TaggersToMeasure.clear();
@@ -4308,6 +4851,59 @@ void JHAnalyzerBase::Measure_MCbtagEff_PartonFlavour(){
 
 
 }
+
+void JHAnalyzerBase::Measure_MCbtagEff_PartonFlavour_bonly(){
+  //AllJets_raw
+  vector<double> vec_etabins = {0.0, 0.8, 1.6, 2., 2.5};
+  vector<double> vec_ptbins = {20., 30., 50., 70., 100., 140., 200., 300., 600., 1000.};//PT bins used in POG SF measurements
+
+  double PtMax = vec_ptbins.at( vec_ptbins.size()-1 );
+  const int NEtaBin = vec_etabins.size()-1;
+  const int NPtBin = vec_ptbins.size()-1;
+
+  double etabins[NEtaBin+1];
+  for(int i=0; i<NEtaBin+1; i++) etabins[i] = vec_etabins.at(i);
+  double ptbins[NPtBin+1];
+  for(int i=0; i<NPtBin+1; i++) ptbins[i] = vec_ptbins.at(i);
+  for(unsigned int ij = 0 ; ij < AllJets_raw.size(); ij++){
+
+    TString flav= "B";
+    if(fabs(AllJets_raw.at(ij).hadronFlavour()) == 5){
+      int this_parton=AllJets_raw.at(ij).partonFlavour();
+      if(this_parton==5){
+	flav="Bminus";
+      }else if(this_parton==-5){
+	flav="Bplus";
+      }
+      else{
+	flav="B";
+      }
+    }
+    if(fabs(AllJets_raw.at(ij).hadronFlavour()) == 4) flav= "C";
+    if(fabs(AllJets_raw.at(ij).hadronFlavour()) == 0) flav= "Light";
+    double this_Eta = fabs(AllJets_raw.at(ij).Eta());//POG recommendation is to use |eta|
+    double this_Pt = AllJets_raw.at(ij).Pt()<PtMax ? AllJets_raw.at(ij).Pt() : PtMax-1; // put overflows in the last bin
+    //==== First, fill the denominator
+    AnalyzerCore::FillHist("Jet_"+DataEra+"_eff_"+flav+"_denom", this_Eta, this_Pt, weight, NEtaBin, etabins, NPtBin, ptbins);
+
+    //==== Now looping over (tagger,working point)
+    for(unsigned i_m=0; i_m<TaggersToMeasure.size(); i_m++){
+
+      string Tagger = TaggersToMeasure.at(i_m);
+      string WP = WPsToMeasure.at(i_m);
+      double CutValue = CutValuesToMeasure.at(i_m);
+
+      double this_taggerresult = AllJets_raw.at(ij).GetTaggerResult( JetTagging::StringToTagger(Tagger) );
+
+      if(this_taggerresult>CutValue){
+	AnalyzerCore::FillHist("Jet_"+DataEra+"_"+Tagger+"_"+WP+"_eff_"+flav+"_num", this_Eta, this_Pt, weight, NEtaBin, etabins, NPtBin, ptbins);
+      }
+    } // END Loop (tagger,working point)
+  } // END Loop jet
+
+
+}
+
 
 
 void JHAnalyzerBase::Measure_MCbChargeIDEff(Jet& this_jet, TString _suffix){
@@ -4573,7 +5169,7 @@ void JHAnalyzerBase::initializeBChargeEffSF(){
     map_bChargeEffSF["bplus"]["muL"]["50To70"]=0.934;
     map_bChargeEffSF["bplus"]["muL"]["70To100"]=0.868;
 
-
+    //----Only For b+/b- origin---///
     map_bChargeEffSF["light"]["eH"]["100To140"]=1;
     map_bChargeEffSF["light"]["eH"]["140ToInf"]=1;
     map_bChargeEffSF["light"]["eH"]["30To50"]=1;
