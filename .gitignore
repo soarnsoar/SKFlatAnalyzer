@@ -7,6 +7,7 @@
 lib/*.tar.gz
 lib/*.rootmap
 */obj
+test
 python/UserInfo_*.py
 !python/UserInfo_template.py
 keras_my
