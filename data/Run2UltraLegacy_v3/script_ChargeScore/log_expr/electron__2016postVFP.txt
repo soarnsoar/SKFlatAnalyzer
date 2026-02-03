@@ -1,0 +1,9 @@
+../2016postVFP/TMVA/ChargeScore/BDT/v2512.5/electron/FIN_BDT_2016postVFP_BDT.weights.xml
+eChargeTool->AddVariable("belectron_dR_l_j<0.15?0.15:belectron_dR_l_j",&belectron_ChargeTool.dR_l_j);
+eChargeTool->AddVariable("(belectron_P_jetrest<1.)?1.:(belectron_P_jetrest>2.)?2.:belectron_P_jetrest",&belectron_ChargeTool.P_jetrest);
+eChargeTool->AddVariable("(belectron_ptwrtbjet<0.5)?0.5:(belectron_ptwrtbjet>3.)?3.:belectron_ptwrtbjet",&belectron_ChargeTool.ptwrtjet);
+eChargeTool->AddVariable("bjet_ChargedEmEnergyFraction<0.2?bjet_ChargedEmEnergyFraction:0.2",&bjet_ChargeTool.ChargedEmEnergyFraction);
+eChargeTool->AddVariable("(bjet_ChargedHadronEnergyFraction<0.5)?0.5:(bjet_ChargedHadronEnergyFraction>0.9)?0.9:bjet_ChargedHadronEnergyFraction",&bjet_ChargeTool.ChargedHadronEnergyFraction);
+eChargeTool->AddVariable("(bjet_NeutralEmEnergyFraction<0.25)?0.25:(bjet_NeutralEmEnergyFraction>0.7)?0.7:bjet_NeutralEmEnergyFraction",&bjet_ChargeTool.NeutralEmEnergyFraction);
+eChargeTool->AddVariable("fabs(bjet_charge)<0.3?fabs(bjet_charge):0.3",&bjet_ChargeTool.abs_charge);
+eChargeTool->AddVariable("(bjet_charge*belectron_charge<-0.3)?-0.3:(bjet_charge*belectron_charge>0.3)?0.3:bjet_charge*belectron_charge",&belectron_ChargeTool.bjet_charge_dot_belectron_charge);

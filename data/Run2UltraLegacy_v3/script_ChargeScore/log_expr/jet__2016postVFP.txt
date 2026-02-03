@@ -1,0 +1,7 @@
+../2016postVFP/TMVA/ChargeScore/BDT/v2512.5/jet/FIN_BDT_2016postVFP_BDT.weights.xml
+jChargeTool->AddVariable("bjet_ChargedHadronEnergyFraction<0.15?0.15:(bjet_ChargedHadronEnergyFraction>0.7)?0.7:bjet_ChargedHadronEnergyFraction",&bjet_ChargeTool.ChargedHadronEnergyFraction);
+jChargeTool->AddVariable("(log(bjet_MuonEnergyFraction)<-3.5)?-3.5:(log(bjet_MuonEnergyFraction)>-1.5)?-1.5:log(bjet_MuonEnergyFraction)",&bjet_ChargeTool.log_MuonEnergyFraction);
+jChargeTool->AddVariable("bjet_NeutralEmEnergyFraction<0.7?bjet_NeutralEmEnergyFraction:0.7",&bjet_ChargeTool.NeutralEmEnergyFraction);
+jChargeTool->AddVariable("(log(bjet_NeutralHadronEnergyFraction)<-4.5)?-4.5:(log(bjet_NeutralHadronEnergyFraction)>-0.5)?-0.5:log(bjet_NeutralHadronEnergyFraction)",&bjet_ChargeTool.log_NeutralHadronEnergyFraction);
+jChargeTool->AddVariable("(bjet_NeutralMultiplicity<5)?5:(bjet_NeutralMultiplicity>32)?32:bjet_NeutralMultiplicity",&bjet_ChargeTool.NeutralMultiplicity);
+jChargeTool->AddVariable("fabs(bjet_charge)<0.7?fabs(bjet_charge):0.7",&bjet_ChargeTool.abs_charge);
