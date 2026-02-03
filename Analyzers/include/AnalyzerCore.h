@@ -165,11 +165,12 @@ public:
   PuppiSoftdropMassCorr *puppiCorr=NULL;
   FakeBackgroundEstimator *fakeEst=NULL;
   CFBackgroundEstimator *cfEst=NULL;
+
   void initializeAnalyzerTools();
   //-----btag mc eff filename
-  void SetBTagMCEff_Filename(TString _btagmceff_filename);
+  void SetBTagMCEff_Filename(TString _btagmceff_filename, bool _Use_dAsym=false);
   TString btagmceff_filename="";
-
+  bool Use_dAsym=false;  
   //==== MCweight
   double MCweight(bool usesign=true, bool norm_1invpb=true) const;
 
@@ -365,6 +366,9 @@ public:
   bool IsDYSample;
   bool IsTTSample;
   bool IsTTLJSample;
+  bool IsQCDSample;
+
+
   //--[end]jhchoi
   //==== Quick Plotters
   void FillLeptonPlots(std::vector<Lepton *> leps, TString this_region, double weight);

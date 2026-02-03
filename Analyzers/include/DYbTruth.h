@@ -1,9 +1,9 @@
-#ifndef EEMu_MuMuE_Method_h
-#define EEMu_MuMuE_Method_h
+#ifndef DYbTruth_h
+#define DYbTruth_h
 
 #include "JHAnalyzerBase.h"
 
-class EEMu_MuMuE_Method : public JHAnalyzerBase {
+class DYbTruth : public JHAnalyzerBase {
 
 public:
 
@@ -30,10 +30,6 @@ public:
   void FillHistElectron(TString cutname,Electron &electron);
   void FillHistBJet(TString cutname, Jet &jet);
   void FillHistNLepton(TString cutname);
-  void FillHist_1bmuon(TString SigORBkg);
-  void FillHist_1belectron(TString SigORBkg);
-  void FillHist_0blepton(TString SigORBkg);
-
   void CountEMuInJet(Jet &this_jet);
   void SetBranches(TTree *this_Tree);
   void FillTree_1bmuon();
@@ -42,8 +38,8 @@ public:
   belectronvar Get_init_belectronvar();
   bmuonvar Get_init_bmuonvar();
 
-  EEMu_MuMuE_Method();
-  ~EEMu_MuMuE_Method();
+  DYbTruth();
+  ~DYbTruth();
 
   bool IsEE, IsMuMu;
   int idx_lhe_mu1, idx_lhe_mu2;
@@ -58,6 +54,31 @@ public:
   TString bcharge_str, ll_str;
   int jetidx_b;
 
+  TString LepCh;
+
+  bool IsDiMuonChannel;
+  bool IsDiElectronChannel;
+
+  bool CheckIsDiElectronChannel(double min_mll,double max_mll);
+  void SetElectron(const Electron& _l1, const Electron& _l2);
+  bool CheckIsDiMuonChannel(double min_mll,double max_mll);
+  void SetMuon(const Muon& _l1, const Muon& _l2);
+
+  Muon mu1, mu2;
+  Electron el1, el2;
+  Lepton l1, l2;
+  TLorentzVector vZ;
+
+
+  double z_pt,z_eta,z_phi,z_mass,jet_pt,jet_eta,jet_phi,jet_mass;
+
+  double z_rapidity,jet_rapidity,z_jet_rapidity,z_minus_jet_rapidity;
+  double true_z_rapidity,true_b_rapidity,true_z_b_rapidity,true_z_minus_b_rapidity;
+  
+  double true_z_pt,true_z_eta,true_z_phi,true_z_mass;
+  double true_b_pt,true_b_eta,true_b_phi,true_b_mass;
+  double x_b,x_g;
+  
   int n_mu,n_e;
   int n_mup,n_ep;
   int n_mum,n_em;
@@ -67,6 +88,7 @@ public:
   bool is_cut_v2503_1;
   bool is_cut_v2503_2;
   bool isTreeMode;
+  bool lepveto;
   bool Has_bMuon;
   bool Has_bElectron;
   bmuonvar bmuon;

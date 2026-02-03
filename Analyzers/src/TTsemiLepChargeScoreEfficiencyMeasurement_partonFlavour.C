@@ -1,7 +1,7 @@
-#include "TTsemiLepChargeScoreEfficiencyMeasurement_TightMatch.h"
+#include "TTsemiLepChargeScoreEfficiencyMeasurement_partonFlavour.h"
 #include "TStopwatch.h"
 
-TTsemiLepChargeScoreEfficiencyMeasurement_TightMatch::TTsemiLepChargeScoreEfficiencyMeasurement_TightMatch(){
+TTsemiLepChargeScoreEfficiencyMeasurement_partonFlavour::TTsemiLepChargeScoreEfficiencyMeasurement_partonFlavour(){
   //runSys=true;
   //jetpog_etabins
   //jetpog_ptbins
@@ -11,26 +11,26 @@ TTsemiLepChargeScoreEfficiencyMeasurement_TightMatch::TTsemiLepChargeScoreEffici
     
 }
 
-TTsemiLepChargeScoreEfficiencyMeasurement_TightMatch::~TTsemiLepChargeScoreEfficiencyMeasurement_TightMatch(){
+TTsemiLepChargeScoreEfficiencyMeasurement_partonFlavour::~TTsemiLepChargeScoreEfficiencyMeasurement_partonFlavour(){
   //==== Destructor of this Analyzer
   if(apply_bchargeeff_TT){
     DeleteBChargeEff_TT();
   }
 }
 
-void TTsemiLepChargeScoreEfficiencyMeasurement_TightMatch::initializeAnalyzer(){
-  cout << "[TTsemiLepChargeScoreEfficiencyMeasurement_TightMatch::initializeAnalyzer]" << endl;
-  //TTsemiLepChargeScoreEfficiencyMeasurement_TightMatch
+void TTsemiLepChargeScoreEfficiencyMeasurement_partonFlavour::initializeAnalyzer(){
+  cout << "[TTsemiLepChargeScoreEfficiencyMeasurement_partonFlavour::initializeAnalyzer]" << endl;
+  //TTsemiLepChargeScoreEfficiencyMeasurement_partonFlavour
   if(HasFlag("use_beff")){
     //----use this analyzer specific btag mc eff----//
     //void AnalyzerCore::SetBTagMCEff_Filename(TString _btagmceff_filename)
-    if(!IsDATA) AnalyzerCore::SetBTagMCEff_Filename("TTsemiLepChargeScoreEfficiencyMeasurement_TightMatch_"+MCSample+".root");
+    if(!IsDATA) AnalyzerCore::SetBTagMCEff_Filename("TTsemiLepChargeScoreEfficiencyMeasurement_partonFlavour_"+MCSample+".root");
   }
 
   if(HasFlag("use_beff_dasym")){
     //----use this analyzer specific btag mc eff----//
-    //void AnalyzerCore::SetBTagMCEff_Filename(TString _btagmceff_filename)                                                                                                                                
-    if(!IsDATA) AnalyzerCore::SetBTagMCEff_Filename("TTsemiLepChargeScoreEfficiencyMeasurement_TightMatch_"+MCSample+".root",true);
+    //void AnalyzerCore::SetBTagMCEff_Filename(TString _btagmceff_filename)
+    if(!IsDATA) AnalyzerCore::SetBTagMCEff_Filename("TTsemiLepChargeScoreEfficiencyMeasurement_partonFlavour_"+MCSample+".root",true);
     //use_dasym=true;
   }
   //else{
@@ -138,7 +138,7 @@ void TTsemiLepChargeScoreEfficiencyMeasurement_TightMatch::initializeAnalyzer(){
   apply_bchargeeff_TT=false;
   if(HasFlag("apply_bchargeeff_TT")){
     if(!IsDATA){
-      initializeBChargeEff_TT("TTsemiLepChargeScoreEfficiencyMeasurement_TightMatch_"+MCSample+".root");
+      initializeBChargeEff_TT("TTsemiLepChargeScoreEfficiencyMeasurement_partonFlavour_"+MCSample+".root");
       apply_bchargeeff_TT=true;
     }
   }
@@ -146,11 +146,11 @@ void TTsemiLepChargeScoreEfficiencyMeasurement_TightMatch::initializeAnalyzer(){
 }
 
 
-void TTsemiLepChargeScoreEfficiencyMeasurement_TightMatch::SetMuon(const Muon& _l1){
+void TTsemiLepChargeScoreEfficiencyMeasurement_partonFlavour::SetMuon(const Muon& _l1){
   mu1=_l1;
 }
 
-bool TTsemiLepChargeScoreEfficiencyMeasurement_TightMatch::CheckIsMuonChannel(){
+bool TTsemiLepChargeScoreEfficiencyMeasurement_partonFlavour::CheckIsMuonChannel(){
   if (!ev.PassTrigger(MuonTriggerNames)) return 0;
 
   vector<Muon> v_muon;
@@ -167,12 +167,12 @@ bool TTsemiLepChargeScoreEfficiencyMeasurement_TightMatch::CheckIsMuonChannel(){
   return 1;
 }  
 
-void TTsemiLepChargeScoreEfficiencyMeasurement_TightMatch::SetElectron(const Electron& _l1){
+void TTsemiLepChargeScoreEfficiencyMeasurement_partonFlavour::SetElectron(const Electron& _l1){
   el1=_l1;
 }
 
 
-bool TTsemiLepChargeScoreEfficiencyMeasurement_TightMatch::CheckIsElectronChannel(){
+bool TTsemiLepChargeScoreEfficiencyMeasurement_partonFlavour::CheckIsElectronChannel(){
   if (!ev.PassTrigger(ElectronTriggerNames)) return 0;
   bool isElectronData = DataStream.Contains("EG")||DataStream.Contains("Electron");
   if ( IsDATA && isElectronData && ev.PassTrigger(MuonTriggerNames)) return 0; // to avoid double count
@@ -190,7 +190,7 @@ bool TTsemiLepChargeScoreEfficiencyMeasurement_TightMatch::CheckIsElectronChanne
   return 1;
 }  
 
-void TTsemiLepChargeScoreEfficiencyMeasurement_TightMatch::SetEventWeight(){
+void TTsemiLepChargeScoreEfficiencyMeasurement_partonFlavour::SetEventWeight(){
   weight=1;
   if(IsDATA) return;
   weight=MCweight()*ev.GetTriggerLumi("Full")*GetPileUpWeight(nPileUp,0)*GetPrefireWeight(0)*zptweight*weakweight*z0weight*topptweight*btagsf*jetpuidsf;
@@ -204,7 +204,7 @@ void TTsemiLepChargeScoreEfficiencyMeasurement_TightMatch::SetEventWeight(){
   
 }
 
-void TTsemiLepChargeScoreEfficiencyMeasurement_TightMatch::RunReco(){
+void TTsemiLepChargeScoreEfficiencyMeasurement_partonFlavour::RunReco(){
 
   IsMuonChannel=false;
   IsElectronChannel=false;
@@ -262,7 +262,7 @@ void TTsemiLepChargeScoreEfficiencyMeasurement_TightMatch::RunReco(){
   if(nbjet != 2) return;
   njet=v_tightjet.size();
   if(v_tightjet.size()<4) return;
-  if(njet4 && v_tightjet.size()!=4) return;
+  //if(njet4 && v_tightjet.size()!=4) return;
   //--Now Objects are ready--//
   SetEventWeight();
 
@@ -271,13 +271,14 @@ void TTsemiLepChargeScoreEfficiencyMeasurement_TightMatch::RunReco(){
   Run();
 
 }
-void TTsemiLepChargeScoreEfficiencyMeasurement_TightMatch::Run(){
+void TTsemiLepChargeScoreEfficiencyMeasurement_partonFlavour::Run(){
   iblep=-1;
   ibhad=-1;
   iq1=-1;
   iq2=-1;
   vz_fit=0.0;
   ////Minimal Chi2 Method - kin fitter
+
   pair<vector<int>,double> v_jetidxset_and_vz_chi2=GetJetIndexSet_Chi2(l1, CurrentMET, v_tightjet, v_bjetidx, HcbCR);
 
   //vector<int> v_jetidxset_dnn=GetJetIndexSet_DNN();
@@ -291,7 +292,7 @@ void TTsemiLepChargeScoreEfficiencyMeasurement_TightMatch::Run(){
   iq2=v_jetidxset_and_vz_chi2.first[3];
   vz_fit=v_jetidxset_and_vz_chi2.second;
 
-  
+    
   if(iblep<0) return;
   if(ibhad<0) return;
   if(iq1<0) return;
@@ -305,26 +306,11 @@ void TTsemiLepChargeScoreEfficiencyMeasurement_TightMatch::Run(){
   }
 
   //-----Let's get bcharge eff SF and apply to weight 
-  if(apply_bchargeeff_TT){
-    //Get_bChargeID_SF_TT(double this_pt, TString bchargeID, TString orig_parton, TString bLepbHad){
-    //v_tightjet[iblep]
 
-    //--bchargeID--//
-    TString bLep_bChargeID=JHAnalyzerBase::Get_bChargeID(v_tightjet[iblep]);
-    TString bHad_bChargeID=JHAnalyzerBase::Get_bChargeID(v_tightjet[ibhad]);
-
-    //--orig_parton--//
-    TString bLep_orig_parton=JHAnalyzerBase::Get_orig_parton_bChargeID(v_tightjet[iblep]);
-    TString bHad_orig_parton=JHAnalyzerBase::Get_orig_parton_bChargeID(v_tightjet[ibhad]);
-
-    //---GetSF--//
-    double SF_bLep=Get_bChargeID_SF_TT(v_tightjet[iblep].Pt(), bLep_bChargeID, bLep_orig_parton, "bLep");
-    double SF_bHad=Get_bChargeID_SF_TT(v_tightjet[ibhad].Pt(), bHad_bChargeID, bHad_orig_parton, "bHad");
-    weight=weight*SF_bLep*SF_bHad;
-  }
-  //----
   neutrino_cand.SetPxPyPzE(CurrentMET.Px(),CurrentMET.Py(),vz_fit, sqrt(pow(CurrentMET.Pt(),2) + pow(vz_fit,2) ));
-  SetTopAndW();  
+  SetTopAndW();
+  //Skip TightMatch for TTLJ
+  /*  
   if(IsTTLJSample){
     RunBJet("bJetLeptonicSide",iblep,bLep_True_genidx,Tlep_cand);
     RunBJet("bJetHadronicSide",ibhad,bHad_True_genidx,Thad_cand);
@@ -333,312 +319,138 @@ void TTsemiLepChargeScoreEfficiencyMeasurement_TightMatch::Run(){
     RunBJet("bJetLeptonicSide",iblep,-1,Tlep_cand);
     RunBJet("bJetHadronicSide",ibhad,-1,Thad_cand);
   }
+	       */
 
+  RunBJet("bJetLeptonicSide",iblep,Tlep_cand);
+  RunBJet("bJetHadronicSide",ibhad,Thad_cand);
 
+  //jhchoitemp
+  if(fChain->GetReadEntry() % 100 == 0){
 
-
+    cout << "[mChargeTool->TotalCall]=" << mChargeTool->TotalCall << endl ;
+    cout << "[mChargeTool->TotalCallTime]=" << mChargeTool->TotalCallTime << endl ;
+    
+    cout << "[eChargeTool->TotalCall]=" << eChargeTool->TotalCall << endl ;
+    cout << "[eChargeTool->TotalCallTime]=" << eChargeTool->TotalCallTime << endl ;
+    
+    cout << "[jChargeTool->TotalCall]=" << jChargeTool->TotalCall << endl ;
+    cout << "[jChargeTool->TotalCallTime]=" << jChargeTool->TotalCallTime << endl ;
+    
+    
+  }
 }
 
 
 
 
-void TTsemiLepChargeScoreEfficiencyMeasurement_TightMatch::RunBJet(TString bjetname, int bjetidx, int bgenidx, TLorentzVector &Tcand){
+void TTsemiLepChargeScoreEfficiencyMeasurement_partonFlavour::RunBJet(TString bjetname, int bjetidx, TLorentzVector &Tcand){
   //----Before analyzing the current bjet (whose jetidx = bjetidx),
   // Add suffix to ProcessName if the bjet from b- OR b+ OR light parton
   
   bool isMatched=false;
 
   ///---Let's Check matching OR not (if it is TTLJ sample <=> bgenidx>-1)---//
+ 
   int this_partonFlavour=-9999;
-  if(bgenidx>-1){//if TTLJ sample
+  if(!IsDATA){
     this_partonFlavour = v_tightjet[bjetidx].partonFlavour();
-
-    bool FlavourMatched=false;
-    bool dRMatched=false;
-    if( v_tightjet[bjetidx].partonFlavour() == gens[bgenidx].PID() ) FlavourMatched=true;
-    if( v_tightjet[bjetidx].DeltaR(gens[bgenidx]) < 0.4 ) dRMatched=true;
-    isMatched=FlavourMatched&&dRMatched;
+    TString psuffix="From"+std::to_string(this_partonFlavour);
+    ProcessName=MCSample+"_"+psuffix;
   }
 
-  if(isMatched){
-    TString bsuffix="";
-    if(this_partonFlavour==5){
-      bsuffix="Frombminus";
-    }
-    else if(this_partonFlavour==-5){
-      bsuffix="Frombplus";
-    }
-    else{
-      cout << "True Matched b-tagged jet cannot have flavour with->" << this_partonFlavour << endl;
-      1/0;
-    }
-    ProcessName=MCSample+"_"+bsuffix;//ProcessName ===> ~Origin of the process
-  }  //Add bjetname Suffix
-  else{
-    if(!IsDATA){
-      this_partonFlavour = v_tightjet[bjetidx].partonFlavour();
-      TString psuffix="From"+std::to_string(this_partonFlavour);
-      ProcessName=MCSample+"_"+psuffix;
-    }
 
-
-  }  //Add bjetname Suffix
-
-
-  //
   cut_suffix=GetCutSuffix(v_tightjet[bjetidx].Pt());
 
   //------No Cat---
   if(!ForMeasure){
-    FillHistBJet("Lepton_"+bjetname,bjetidx,bgenidx,Tcand);
-    //FillHistBJet(LepCh+"_"+bjetname,bjetidx,bgenidx,Tcand);
-    FillHistBJet("Lepton"+LepSign+"_"+bjetname,bjetidx,bgenidx,Tcand);
-    //FillHistBJet(LepCh+LepSign+"_"+bjetname,bjetidx,bgenidx,Tcand);
+    FillHistBJet("Lepton_"+bjetname,bjetidx,Tcand);
+    FillHistBJet("Lepton"+LepSign+"_"+bjetname,bjetidx,Tcand);
   }
 
 
-
+  
   //TurnOnFillHist=1;
-  bool IsSLTMuon=RunBJetMuon(bjetname, bjetidx, bgenidx,Tcand);
-  //if(runWeightBase) cout << "IsSLTMuon=" << IsSLTMuon << endl;
+  bool IsSLTMuon=RunBJetMuon(bjetname, bjetidx,Tcand);
   if(IsSLTMuon) return;
 
-  //if(MuonChargeOnly) return;
-
-  //TurnOnFillHist=1;
-  bool IsSLTElectron=RunBJetElectron(bjetname,bjetidx,bgenidx,Tcand);
-  //if(runWeightBase) cout << "IsSLTElectron=" << IsSLTElectron << endl;
+  bool IsSLTElectron=RunBJetElectron(bjetname,bjetidx,Tcand);
   if(IsSLTElectron) return;
   
-  //if(ElectronChargeOnly) return;
-  
-  //TurnOnFillHist=1;
-  //if(runWeightBase) cout << "IsJetEvent!" << endl;
-  RunBJetCharge(bjetname,bjetidx,bgenidx,Tcand);
+  RunBJetCharge(bjetname,bjetidx,Tcand);
   
 }
-void TTsemiLepChargeScoreEfficiencyMeasurement_TightMatch::RunBJetCharge(TString bjetname, int bjetidx, int bgenidx,TLorentzVector &Tcand){
+void TTsemiLepChargeScoreEfficiencyMeasurement_partonFlavour::RunBJetCharge(TString bjetname, int bjetidx,TLorentzVector &Tcand){
 
   //--- use jetcharge
   bjetname+="TestJet";
   SetJetChargeScore(v_tightjet[bjetidx]);
-  //TString cut_suffix=GetCutSuffix(v_tightjet[bjetidx].Pt());
   double bjet_score=GetJetChargeScore();
   ///------All TestJet region----///
-  if(ForMeasure){
-    //FillHistBJetForMeasure("Lepton"+LepSign+"_"+bjetname+cut_suffix,Tcand);
-  }
-  else{
-    if(!runSys){
-      FillHistBJet("Lepton_"+bjetname,bjetidx,bgenidx,Tcand);
-      FillHist("Lepton_"+bjetname+"/bjet_score", bjet_score,weight,100,0,1);
-      
-      //FillHistBJet(LepCh+"_"+bjetname,bjetidx,bgenidx,Tcand);
-      //FillHist(LepCh+"_"+bjetname+"/bjet_score", bjet_score,weight,100,0,1);
-      
-      FillHistBJet("Lepton"+LepSign+"_"+bjetname,bjetidx,bgenidx,Tcand);
-      FillHist("Lepton"+LepSign+"_"+bjetname+"/bjet_score", bjet_score,weight,100,0,1);
-    }
-    //FillHistBJet(LepCh+LepSign+"_"+bjetname,bjetidx,bgenidx,Tcand);
-    //FillHist(LepCh+LepSign+"_"+bjetname+"/bjet_score", bjet_score,weight,100,0,1);
-  }
-
 
   //-------Apply bjetCharge cut ----//
-  //int bjet_charge=v_tightjet[bjetidx].Charge() > 0 ? +1 : -1;
+
   //---Good bjet---//
-  if(bjet_score>jChargeTool->mincut){
-    if(ForMeasure){
-      FillHistBJetForMeasure("Lepton"+LepSign+"_"+bjetname+"_GoodBJet"+cut_suffix,Tcand);
-      if(v_tightjet[bjetidx].Charge()>0){
-	FillHistBJetForMeasure("Lepton"+LepSign+"_"+bjetname+"_GoodBJetPlus"+cut_suffix,Tcand);
-      }
-      else{
-	FillHistBJetForMeasure("Lepton"+LepSign+"_"+bjetname+"_GoodBJetMinus"+cut_suffix,Tcand);
-      }
+  if(bjet_score > jChargeTool->mincut){
+    FillHistBJetForMeasure("Lepton"+LepSign+"_"+bjetname+"_GoodBJet"+cut_suffix,Tcand);
+    if(v_tightjet[bjetidx].Charge()>0){
+      FillHistBJetForMeasure("Lepton"+LepSign+"_"+bjetname+"_GoodBJetPlus"+cut_suffix,Tcand);
     }
     else{
-      if(!runSys){
-	FillHistBJet("Lepton_"+bjetname+"_GoodBJet",bjetidx,bgenidx,Tcand);
-	FillHist("Lepton_"+bjetname+"_GoodBJet"+"/bjet_score", bjet_score,weight,100,0,1);
-	
-	//FillHistBJet(LepCh+"_"+bjetname+"_GoodBJet",bjetidx,bgenidx,Tcand);
-	//FillHist(LepCh+"_"+bjetname+"_GoodBJet"+"/bjet_score", bjet_score,weight,100,0,1);
-	
-	FillHistBJet("Lepton"+LepSign+"_"+bjetname+"_GoodBJet",bjetidx,bgenidx,Tcand);
-	FillHist("Lepton"+LepSign+"_"+bjetname+"_GoodBJet"+"/bjet_score", bjet_score,weight,100,0,1);
-      }
-      //FillHistBJet(LepCh+LepSign+"_"+bjetname+"_GoodBJet",bjetidx,bgenidx,Tcand);
-      //FillHist(LepCh+LepSign+"_"+bjetname+"_GoodBJet"+"/bjet_score", bjet_score,weight,100,0,1);
+      FillHistBJetForMeasure("Lepton"+LepSign+"_"+bjetname+"_GoodBJetMinus"+cut_suffix,Tcand);
     }
   }
-  //--------
+  //--------bad scored---//
   else{
-    if(ForMeasure){
-      FillHistBJetForMeasure("Lepton"+LepSign+"_"+bjetname+"_BadBJet"+cut_suffix,Tcand);
-      if(v_tightjet[bjetidx].Charge()>0){
-	FillHistBJetForMeasure("Lepton"+LepSign+"_"+bjetname+"_BadBJetPlus"+cut_suffix,Tcand);
-      }
-      else{
-	FillHistBJetForMeasure("Lepton"+LepSign+"_"+bjetname+"_BadBJetMinus"+cut_suffix,Tcand);
-      }
+    FillHistBJetForMeasure("Lepton"+LepSign+"_"+bjetname+"_BadBJet"+cut_suffix,Tcand);
+    if(v_tightjet[bjetidx].Charge()>0){
+      FillHistBJetForMeasure("Lepton"+LepSign+"_"+bjetname+"_BadBJetPlus"+cut_suffix,Tcand);
     }
     else{
-      if(!runSys){
-	FillHistBJet("Lepton_"+bjetname+"_BadBJet",bjetidx,bgenidx,Tcand);
-	FillHist("Lepton_"+bjetname+"_BadBJet"+"/bjet_score", bjet_score,weight,100,0,1);
-	
-	//FillHistBJet(LepCh+"_"+bjetname+"_BadBJet",bjetidx,bgenidx,Tcand);
-	//FillHist(LepCh+"_"+bjetname+"_BadBJet"+"/bjet_score", bjet_score,weight,100,0,1);
-	
-	FillHistBJet("Lepton"+LepSign+"_"+bjetname+"_BadBJet",bjetidx,bgenidx,Tcand);
-	FillHist("Lepton"+LepSign+"_"+bjetname+"_BadBJet"+"/bjet_score", bjet_score,weight,100,0,1);
-      }
-      //FillHistBJet(LepCh+LepSign+"_"+bjetname+"_BadBJet",bjetidx,bgenidx,Tcand);
-      //FillHist(LepCh+LepSign+"_"+bjetname+"_BadBJet"+"/bjet_score", bjet_score,weight,100,0,1);
-    }//not simplecat
+      FillHistBJetForMeasure("Lepton"+LepSign+"_"+bjetname+"_BadBJetMinus"+cut_suffix,Tcand);
+    }    
   }//bad jet
 
 }
 
 
 
-bool TTsemiLepChargeScoreEfficiencyMeasurement_TightMatch::RunBJetMuon(TString bjetname, int bjetidx,int bgenidx, TLorentzVector& Tcand){
-  //if(ElectronChargeOnly) TurnOnFillHist=0;
-  //if(JetChargeOnly) TurnOnFillHist=0;
-  //TString cut_suffix=GetCutSuffix(v_tightjet[bjetidx].Pt());
+bool TTsemiLepChargeScoreEfficiencyMeasurement_partonFlavour::RunBJetMuon(TString bjetname, int bjetidx, TLorentzVector& Tcand){
+
   
   bjetname+="TestMuon";
-  //FillHistBJet(TString cutname, int bjetidx)
-  if(ForMeasure){
-    //FillHistBJetForMeasure("Lepton"+LepSign+"_"+bjetname+cut_suffix,Tcand);
-  }
-  else{
-    if(!runSys){
-      FillHistBJet("Lepton_"+bjetname,bjetidx,bgenidx,Tcand);
-      //FillHistBJet(LepCh+"_"+bjetname,bjetidx,bgenidx,Tcand);
-      FillHistBJet("Lepton"+LepSign+"_"+bjetname,bjetidx,bgenidx,Tcand);
-    }
-
-    //FillHistBJet(LepCh+LepSign+"_"+bjetname,bjetidx,bgenidx,Tcand);
-  }
-  
 
   //(1) Check if the bjet has basic softmuons.
-  bool HasSoftMuon=Run_HasSoftMuon(bjetidx);
+  bool HasSoftMuon=Run_HasSoftMuon(bjetidx); // calc softmuon score as well.
   if(!HasSoftMuon) return 0;
-  if(ForMeasure){
-    //FillHistBJetForMeasure("Lepton"+LepSign+"_"+bjetname+"_HasSoftMuon"+cut_suffix,Tcand);
-  }
-  else{
-    if(!runSys){
-      FillHistBJet("Lepton_"+bjetname+"_HasSoftMuon",bjetidx,bgenidx,Tcand);
-      FillHistBJetMuonMax("Lepton_"+bjetname+"_HasSoftMuon",bjetidx);
-      FillHistBJetMuonMin("Lepton_"+bjetname+"_HasSoftMuon",bjetidx);
-
-      //FillHistBJet(LepCh+"_"+bjetname+"_HasSoftMuon",bjetidx,bgenidx,Tcand);
-      //FillHistBJetMuonMax(LepCh+"_"+bjetname+"_HasSoftMuon",bjetidx);
-      //FillHistBJetMuonMin(LepCh+"_"+bjetname+"_HasSoftMuon",bjetidx);
-
-
-      FillHistBJet("Lepton"+LepSign+"_"+bjetname+"_HasSoftMuon",bjetidx,bgenidx,Tcand);
-      FillHistBJetMuonMax("Lepton"+LepSign+"_"+bjetname+"_HasSoftMuon",bjetidx);
-      FillHistBJetMuonMin("Lepton"+LepSign+"_"+bjetname+"_HasSoftMuon",bjetidx);
-    }
-    //FillHistBJet(LepCh+LepSign+"_"+bjetname+"_HasSoftMuon",bjetidx,bgenidx,Tcand);
-    //FillHistBJetMuonMax(LepCh+LepSign+"_"+bjetname+"_HasSoftMuon",bjetidx);
-    //FillHistBJetMuonMin(LepCh+LepSign+"_"+bjetname+"_HasSoftMuon",bjetidx);
-  }
   //(2) if there is soft muon, check whether the muon pass CutToMax OR CutToMin
 
   //(2-1) The Muon Has very HighScore
   bool SLTMuonPassCutToMax=RunSLTMuonPassCutToMax();
 
   if(SLTMuonPassCutToMax){
-    if(ForMeasure){
-      FillHistBJetForMeasure("Lepton"+LepSign+"_"+bjetname+"_HasSLTMuonHigh"+cut_suffix,Tcand);
-      if(current_bmuon_charge_max>0){
-	FillHistBJetForMeasure("Lepton"+LepSign+"_"+bjetname+"_HasSLTMuonHighPlus"+cut_suffix,Tcand);
-      }
-      else{
-	FillHistBJetForMeasure("Lepton"+LepSign+"_"+bjetname+"_HasSLTMuonHighMinus"+cut_suffix,Tcand);
-      }
+    FillHistBJetForMeasure("Lepton"+LepSign+"_"+bjetname+"_HasSLTMuonHigh"+cut_suffix,Tcand);
+    if(current_bmuon_charge_max>0){
+      FillHistBJetForMeasure("Lepton"+LepSign+"_"+bjetname+"_HasSLTMuonHighPlus"+cut_suffix,Tcand);
     }
     else{
-      if(!runSys){
-	FillHistBJet("Lepton_"+bjetname+"_HasSLTMuonHigh",bjetidx,bgenidx,Tcand);
-	FillHistBJetMuonMax("Lepton_"+bjetname+"_HasSLTMuonHigh",bjetidx);
-	FillHistBJetMuonMin("Lepton_"+bjetname+"_HasSLTMuonHigh",bjetidx);
-
-	//FillHistBJet(LepCh+"_"+bjetname+"_HasSLTMuonHigh",bjetidx,bgenidx,Tcand);
-	//FillHistBJetMuonMax(LepCh+"_"+bjetname+"_HasSLTMuonHigh",bjetidx);
-	//FillHistBJetMuonMin(LepCh+"_"+bjetname+"_HasSLTMuonHigh",bjetidx);
-
-	FillHistBJet("Lepton"+LepSign+"_"+bjetname+"_HasSLTMuonHigh",bjetidx,bgenidx,Tcand);
-	FillHistBJetMuonMax("Lepton"+LepSign+"_"+bjetname+"_HasSLTMuonHigh",bjetidx);
-	FillHistBJetMuonMin("Lepton"+LepSign+"_"+bjetname+"_HasSLTMuonHigh",bjetidx);
-      }
-
-      //FillHistBJet(LepCh+LepSign+"_"+bjetname+"_HasSLTMuonHigh",bjetidx,bgenidx,Tcand);
-      //FillHistBJetMuonMax(LepCh+LepSign+"_"+bjetname+"_HasSLTMuonHigh",bjetidx);
-      //FillHistBJetMuonMin(LepCh+LepSign+"_"+bjetname+"_HasSLTMuonHigh",bjetidx);
-    }
+      FillHistBJetForMeasure("Lepton"+LepSign+"_"+bjetname+"_HasSLTMuonHighMinus"+cut_suffix,Tcand);
+    }    
     return 1;
   }
+  
   ///---Fail SLTMuonHigh
-  if(ForMeasure){
-    //FillHistBJetForMeasure("Lepton"+LepSign+"_"+bjetname+"_FailSLTMuonHigh"+cut_suffix,Tcand);
-  }
-  else{
-    if(!runSys){
-      FillHistBJet("Lepton_"+bjetname+"_FailSLTMuonHigh",bjetidx,bgenidx,Tcand);
-      FillHistBJetMuonMax("Lepton_"+bjetname+"_FailSLTMuonHigh",bjetidx);
-      FillHistBJetMuonMin("Lepton_"+bjetname+"_FailSLTMuonHigh",bjetidx);
-
-      //FillHistBJet(LepCh+"_"+bjetname+"_FailSLTMuonHigh",bjetidx,bgenidx,Tcand);
-      //FillHistBJetMuonMax(LepCh+"_"+bjetname+"_FailSLTMuonHigh",bjetidx);
-      //FillHistBJetMuonMin(LepCh+"_"+bjetname+"_FailSLTMuonHigh",bjetidx);
-
-
-      FillHistBJet("Lepton"+LepSign+"_"+bjetname+"_FailSLTMuonHigh",bjetidx,bgenidx,Tcand);
-      FillHistBJetMuonMax("Lepton"+LepSign+"_"+bjetname+"_FailSLTMuonHigh",bjetidx);
-      FillHistBJetMuonMin("Lepton"+LepSign+"_"+bjetname+"_FailSLTMuonHigh",bjetidx);
-    }
-
-    //FillHistBJet(LepCh+LepSign+"_"+bjetname+"_FailSLTMuonHigh",bjetidx,bgenidx,Tcand);
-    //FillHistBJetMuonMax(LepCh+LepSign+"_"+bjetname+"_FailSLTMuonHigh",bjetidx);
-    //FillHistBJetMuonMin(LepCh+LepSign+"_"+bjetname+"_FailSLTMuonHigh",bjetidx);
-  }
   //(2-2) The Muon Has very LowScore
   bool SLTMuonPassCutToMin=RunSLTMuonPassCutToMin();
   if(SLTMuonPassCutToMin){
-    if(ForMeasure){
-      FillHistBJetForMeasure("Lepton"+LepSign+"_"+bjetname+"_HasSLTMuonLow"+cut_suffix,Tcand);
-      if(current_bmuon_charge_min<0){//take opposite charge -> measured as plus
-	FillHistBJetForMeasure("Lepton"+LepSign+"_"+bjetname+"_HasSLTMuonLowPlus"+cut_suffix,Tcand);
-      }
-      else{
-	FillHistBJetForMeasure("Lepton"+LepSign+"_"+bjetname+"_HasSLTMuonLowMinus"+cut_suffix,Tcand);
-      }
+
+    FillHistBJetForMeasure("Lepton"+LepSign+"_"+bjetname+"_HasSLTMuonLow"+cut_suffix,Tcand);
+    if(current_bmuon_charge_min<0){//take opposite charge -> measured as plus
+      FillHistBJetForMeasure("Lepton"+LepSign+"_"+bjetname+"_HasSLTMuonLowPlus"+cut_suffix,Tcand);
     }
     else{
-      if(!runSys){
-	FillHistBJet("Lepton_"+bjetname+"_HasSLTMuonLow",bjetidx,bgenidx,Tcand);
-	FillHistBJetMuonMax("Lepton_"+bjetname+"_HasSLTMuonLow",bjetidx);
-	FillHistBJetMuonMin("Lepton_"+bjetname+"_HasSLTMuonLow",bjetidx);
-
-	//FillHistBJet(LepCh+"_"+bjetname+"_HasSLTMuonLow",bjetidx,bgenidx,Tcand);
-	//FillHistBJetMuonMax(LepCh+"_"+bjetname+"_HasSLTMuonLow",bjetidx);
-	//FillHistBJetMuonMin(LepCh+"_"+bjetname+"_HasSLTMuonLow",bjetidx);
-
-	FillHistBJet("Lepton"+LepSign+"_"+bjetname+"_HasSLTMuonLow",bjetidx,bgenidx,Tcand);
-	FillHistBJetMuonMax("Lepton"+LepSign+"_"+bjetname+"_HasSLTMuonLow",bjetidx);
-	FillHistBJetMuonMin("Lepton"+LepSign+"_"+bjetname+"_HasSLTMuonLow",bjetidx);
-      }
-      //FillHistBJet(LepCh+LepSign+"_"+bjetname+"_HasSLTMuonLow",bjetidx,bgenidx,Tcand);
-      //FillHistBJetMuonMax(LepCh+LepSign+"_"+bjetname+"_HasSLTMuonLow",bjetidx);
-      //FillHistBJetMuonMin(LepCh+LepSign+"_"+bjetname+"_HasSLTMuonLow",bjetidx);
+      FillHistBJetForMeasure("Lepton"+LepSign+"_"+bjetname+"_HasSLTMuonLowMinus"+cut_suffix,Tcand);
     }
+
     return 1;
   }
 
@@ -648,11 +460,10 @@ bool TTsemiLepChargeScoreEfficiencyMeasurement_TightMatch::RunBJetMuon(TString b
 
 
 
-bool TTsemiLepChargeScoreEfficiencyMeasurement_TightMatch::Run_HasSoftMuon(int bjetidx){
-  //cout << "[Run_HasSoftMuon]" << endl;
-  //cout << "Run[JHAnalyzerBase::GetBJetMuonScore_v2409_2]" << endl;
+bool TTsemiLepChargeScoreEfficiencyMeasurement_partonFlavour::Run_HasSoftMuon(int bjetidx){
+
   tuple<int,double,double,int,double,double> ret=JHAnalyzerBase::GetBJetMuonScore_v2409_2(v_tightjet[bjetidx], AllMuons);
-  //cout << "Done[JHAnalyzerBase::GetBJetMuonScore_v2409_2]" << endl;
+
   //{im_max,bmuon_score_max,bmuon_charge_max,im_min,bmuon_score_min,bmuon_charge_min
   int im_max=std::get<0>(ret);
   double bmuon_score_max=std::get<1>(ret);
@@ -684,60 +495,23 @@ bool TTsemiLepChargeScoreEfficiencyMeasurement_TightMatch::Run_HasSoftMuon(int b
 
 }
 
-bool TTsemiLepChargeScoreEfficiencyMeasurement_TightMatch::RunSLTMuonPassCutToMax(){
+bool TTsemiLepChargeScoreEfficiencyMeasurement_partonFlavour::RunSLTMuonPassCutToMax(){
   if(current_bmuon_score_max > mChargeTool->mincut) return 1;
   return 0;
 }
 
-bool TTsemiLepChargeScoreEfficiencyMeasurement_TightMatch::RunSLTMuonPassCutToMin(){
+bool TTsemiLepChargeScoreEfficiencyMeasurement_partonFlavour::RunSLTMuonPassCutToMin(){
   if(current_bmuon_score_min < mChargeTool->maxcut) return 1;
   return 0;
 }
 
 
-bool TTsemiLepChargeScoreEfficiencyMeasurement_TightMatch::RunBJetElectron(TString bjetname, int bjetidx,int bgenidx, TLorentzVector& Tcand){
-  //if(MuonChargeOnly) TurnOnFillHist=0;
-  //if(JetChargeOnly) TurnOnFillHist=0;
-  //cut_suffix=GetCutSuffix(v_tightjet[bjetidx].Pt());
+bool TTsemiLepChargeScoreEfficiencyMeasurement_partonFlavour::RunBJetElectron(TString bjetname, int bjetidx, TLorentzVector& Tcand){
   bjetname+="TestElectron";
-  //FillHistBJet(TString cutname, int bjetidx,Tcand)
-  if(ForMeasure){
-    //FillHistBJetForMeasure("Lepton"+LepSign+"_"+bjetname+cut_suffix,Tcand);
-  }
-  else{
-    if(!runSys){
-      FillHistBJet("Lepton_"+bjetname,bjetidx,bgenidx,Tcand);
-      //FillHistBJet(LepCh+"_"+bjetname,bjetidx,bgenidx,Tcand);
-      FillHistBJet("Lepton"+LepSign+"_"+bjetname,bjetidx,bgenidx,Tcand);
-    }
-    //FillHistBJet(LepCh+LepSign+"_"+bjetname,bjetidx,bgenidx,Tcand);
-  }
+
   //(1) Check if the bjet has basic softelectrons.
   bool HasSoftElectron=Run_HasSoftElectron(bjetidx);
   if(!HasSoftElectron) return 0;
-
-  if(ForMeasure){
-    //FillHistBJetForMeasure("Lepton"+LepSign+"_"+bjetname+"_HasSoftElectron"+cut_suffix,Tcand);
-  }
-  else{
-    if(!runSys){
-      FillHistBJet("Lepton_"+bjetname+"_HasSoftElectron",bjetidx,bgenidx,Tcand);
-      FillHistBJetElectronMax("Lepton_"+bjetname+"_HasSoftElectron",bjetidx);
-      FillHistBJetElectronMin("Lepton_"+bjetname+"_HasSoftElectron",bjetidx);
-
-      //FillHistBJet(LepCh+"_"+bjetname+"_HasSoftElectron",bjetidx,bgenidx,Tcand);
-      //FillHistBJetElectronMax(LepCh+"_"+bjetname+"_HasSoftElectron",bjetidx);
-      //FillHistBJetElectronMin(LepCh+"_"+bjetname+"_HasSoftElectron",bjetidx);
-
-      FillHistBJet("Lepton"+LepSign+"_"+bjetname+"_HasSoftElectron",bjetidx,bgenidx,Tcand);
-      FillHistBJetElectronMax("Lepton"+LepSign+"_"+bjetname+"_HasSoftElectron",bjetidx);
-      FillHistBJetElectronMin("Lepton"+LepSign+"_"+bjetname+"_HasSoftElectron",bjetidx);
-    }
-    
-    //FillHistBJet(LepCh+LepSign+"_"+bjetname+"_HasSoftElectron",bjetidx,bgenidx,Tcand);
-    //FillHistBJetElectronMax(LepCh+LepSign+"_"+bjetname+"_HasSoftElectron",bjetidx);
-    //FillHistBJetElectronMin(LepCh+LepSign+"_"+bjetname+"_HasSoftElectron",bjetidx);
-  }
   
   //(2) if there is soft electron, check whether the electron pass CutToMax OR CutToMin
   
@@ -745,92 +519,30 @@ bool TTsemiLepChargeScoreEfficiencyMeasurement_TightMatch::RunBJetElectron(TStri
   bool SLTElectronPassCutToMax=RunSLTElectronPassCutToMax();
   
   if(SLTElectronPassCutToMax){
-    if(ForMeasure){
-      FillHistBJetForMeasure("Lepton"+LepSign+"_"+bjetname+"_HasSLTElectronHigh"+cut_suffix,Tcand);
-      if(current_belectron_charge_max>0){
-	FillHistBJetForMeasure("Lepton"+LepSign+"_"+bjetname+"_HasSLTElectronHighPlus"+cut_suffix,Tcand);
-      }
-      else{
-	FillHistBJetForMeasure("Lepton"+LepSign+"_"+bjetname+"_HasSLTElectronHighMinus"+cut_suffix,Tcand);
-      }
+
+    FillHistBJetForMeasure("Lepton"+LepSign+"_"+bjetname+"_HasSLTElectronHigh"+cut_suffix,Tcand);
+    if(current_belectron_charge_max>0){
+      FillHistBJetForMeasure("Lepton"+LepSign+"_"+bjetname+"_HasSLTElectronHighPlus"+cut_suffix,Tcand);
     }
     else{
-      if(!runSys){
-	FillHistBJet("Lepton_"+bjetname+"_HasSLTElectronHigh",bjetidx,bgenidx,Tcand);
-	FillHistBJetElectronMax("Lepton_"+bjetname+"_HasSLTElectronHigh",bjetidx);
-	FillHistBJetElectronMin("Lepton_"+bjetname+"_HasSLTElectronHigh",bjetidx);
-
-	//FillHistBJet(LepCh+"_"+bjetname+"_HasSLTElectronHigh",bjetidx,bgenidx,Tcand);
-	//FillHistBJetElectronMax(LepCh+"_"+bjetname+"_HasSLTElectronHigh",bjetidx);
-	//FillHistBJetElectronMin(LepCh+"_"+bjetname+"_HasSLTElectronHigh",bjetidx);
-
-	FillHistBJet("Lepton"+LepSign+"_"+bjetname+"_HasSLTElectronHigh",bjetidx,bgenidx,Tcand);
-	FillHistBJetElectronMax("Lepton"+LepSign+"_"+bjetname+"_HasSLTElectronHigh",bjetidx);
-	FillHistBJetElectronMin("Lepton"+LepSign+"_"+bjetname+"_HasSLTElectronHigh",bjetidx);
-	
-      }
-      
-      //FillHistBJet(LepCh+LepSign+"_"+bjetname+"_HasSLTElectronHigh",bjetidx,bgenidx,Tcand);
-      //FillHistBJetElectronMax(LepCh+LepSign+"_"+bjetname+"_HasSLTElectronHigh",bjetidx);
-      //FillHistBJetElectronMin(LepCh+LepSign+"_"+bjetname+"_HasSLTElectronHigh",bjetidx);
+      FillHistBJetForMeasure("Lepton"+LepSign+"_"+bjetname+"_HasSLTElectronHighMinus"+cut_suffix,Tcand);
     }
+
     return 1;
   }
 
-  if(ForMeasure){
-    //FillHistBJetForMeasure("Lepton"+LepSign+"_"+bjetname+"_FailSLTElectronHigh"+cut_suffix,Tcand);
-  }
-  else{
-    if(!runSys){
-      FillHistBJet("Lepton_"+bjetname+"_FailSLTElectronHigh",bjetidx,bgenidx,Tcand);
-      FillHistBJetElectronMax("Lepton_"+bjetname+"_FailSLTElectronHigh",bjetidx);
-      FillHistBJetElectronMin("Lepton_"+bjetname+"_FailSLTElectronHigh",bjetidx);
-
-      //FillHistBJet(LepCh+"_"+bjetname+"_FailSLTElectronHigh",bjetidx,bgenidx,Tcand);
-      //FillHistBJetElectronMax(LepCh+"_"+bjetname+"_FailSLTElectronHigh",bjetidx);
-      //FillHistBJetElectronMin(LepCh+"_"+bjetname+"_FailSLTElectronHigh",bjetidx);
-
-      FillHistBJet("Lepton"+LepSign+"_"+bjetname+"_FailSLTElectronHigh",bjetidx,bgenidx,Tcand);
-      FillHistBJetElectronMax("Lepton"+LepSign+"_"+bjetname+"_FailSLTElectronHigh",bjetidx);
-      FillHistBJetElectronMin("Lepton"+LepSign+"_"+bjetname+"_FailSLTElectronHigh",bjetidx);
-      
-    }
-    //FillHistBJet(LepCh+LepSign+"_"+bjetname+"_FailSLTElectronHigh",bjetidx,bgenidx,Tcand);
-    //FillHistBJetElectronMax(LepCh+LepSign+"_"+bjetname+"_FailSLTElectronHigh",bjetidx);
-    //FillHistBJetElectronMin(LepCh+LepSign+"_"+bjetname+"_FailSLTElectronHigh",bjetidx);
-  }
   //(2-2) The Electron Has very LowScore
   bool SLTElectronPassCutToMin=RunSLTElectronPassCutToMin();
   if(SLTElectronPassCutToMin){
-    if(ForMeasure){
-      FillHistBJetForMeasure("Lepton"+LepSign+"_"+bjetname+"_HasSLTElectronLow"+cut_suffix,Tcand);
-      if(current_belectron_charge_min<0){//take opposite charge -> measured as plus
-	FillHistBJetForMeasure("Lepton"+LepSign+"_"+bjetname+"_HasSLTElectronLowPlus"+cut_suffix,Tcand);
-      }
-      else{
-	FillHistBJetForMeasure("Lepton"+LepSign+"_"+bjetname+"_HasSLTElectronLowMinus"+cut_suffix,Tcand);
-      }
+
+    FillHistBJetForMeasure("Lepton"+LepSign+"_"+bjetname+"_HasSLTElectronLow"+cut_suffix,Tcand);
+    if(current_belectron_charge_min<0){//take opposite charge -> measured as plus
+      FillHistBJetForMeasure("Lepton"+LepSign+"_"+bjetname+"_HasSLTElectronLowPlus"+cut_suffix,Tcand);
     }
     else{
-      if(!runSys){
-	FillHistBJet("Lepton_"+bjetname+"_HasSLTElectronLow",bjetidx,bgenidx,Tcand);
-	FillHistBJetElectronMax("Lepton_"+bjetname+"_HasSLTElectronLow",bjetidx);
-	FillHistBJetElectronMin("Lepton_"+bjetname+"_HasSLTElectronLow",bjetidx);
-
-	//FillHistBJet(LepCh+"_"+bjetname+"_HasSLTElectronLow",bjetidx,bgenidx,Tcand);
-	//FillHistBJetElectronMax(LepCh+"_"+bjetname+"_HasSLTElectronLow",bjetidx);
-	//FillHistBJetElectronMin(LepCh+"_"+bjetname+"_HasSLTElectronLow",bjetidx);
-
-
-	FillHistBJet("Lepton"+LepSign+"_"+bjetname+"_HasSLTElectronLow",bjetidx,bgenidx,Tcand);
-	FillHistBJetElectronMax("Lepton"+LepSign+"_"+bjetname+"_HasSLTElectronLow",bjetidx);
-	FillHistBJetElectronMin("Lepton"+LepSign+"_"+bjetname+"_HasSLTElectronLow",bjetidx);
-	
-      }
-      //FillHistBJet(LepCh+LepSign+"_"+bjetname+"_HasSLTElectronLow",bjetidx,bgenidx,Tcand);
-      //FillHistBJetElectronMax(LepCh+LepSign+"_"+bjetname+"_HasSLTElectronLow",bjetidx);
-      //FillHistBJetElectronMin(LepCh+LepSign+"_"+bjetname+"_HasSLTElectronLow",bjetidx);
+      FillHistBJetForMeasure("Lepton"+LepSign+"_"+bjetname+"_HasSLTElectronLowMinus"+cut_suffix,Tcand);
     }
+
     return 1;
   }
 
@@ -838,18 +550,18 @@ bool TTsemiLepChargeScoreEfficiencyMeasurement_TightMatch::RunBJetElectron(TStri
 
 }
 
-bool TTsemiLepChargeScoreEfficiencyMeasurement_TightMatch::RunSLTElectronPassCutToMax(){
+bool TTsemiLepChargeScoreEfficiencyMeasurement_partonFlavour::RunSLTElectronPassCutToMax(){
   if(current_belectron_score_max > eChargeTool->mincut) return 1; //mincut==CutToMax
   return 0;
 }
 
-bool TTsemiLepChargeScoreEfficiencyMeasurement_TightMatch::RunSLTElectronPassCutToMin(){
+bool TTsemiLepChargeScoreEfficiencyMeasurement_partonFlavour::RunSLTElectronPassCutToMin(){
   if(current_belectron_score_min < eChargeTool->maxcut) return 1;//maxcut==CutToMin
   return 0;
 }
 
 
-bool TTsemiLepChargeScoreEfficiencyMeasurement_TightMatch::Run_HasSoftElectron(int bjetidx){
+bool TTsemiLepChargeScoreEfficiencyMeasurement_partonFlavour::Run_HasSoftElectron(int bjetidx){
   tuple<int,double,double,int,double,double> ret=JHAnalyzerBase::GetBJetElectronScore_v2409_2(v_tightjet[bjetidx], AllElectrons);
   //{ie_max,belectron_score_max,belectron_charge_max,ie_min,belectron_score_min,belectron_charge_min
   int ie_max=std::get<0>(ret);
@@ -881,7 +593,7 @@ bool TTsemiLepChargeScoreEfficiencyMeasurement_TightMatch::Run_HasSoftElectron(i
   return 1;
 
 }
-TString TTsemiLepChargeScoreEfficiencyMeasurement_TightMatch::GetCutSuffix(double this_bjet_pt){
+TString TTsemiLepChargeScoreEfficiencyMeasurement_partonFlavour::GetCutSuffix(double this_bjet_pt){
   //jetpog_ptbins={20., 30., 50., 70., 100., 140., 200., 300., 600., 1000.}
   TString ret="";
   if(this_bjet_pt>140.){
@@ -905,11 +617,11 @@ TString TTsemiLepChargeScoreEfficiencyMeasurement_TightMatch::GetCutSuffix(doubl
   return ret;
 }
 
-void TTsemiLepChargeScoreEfficiencyMeasurement_TightMatch::FillHistBJetForMeasure(TString cutname, TLorentzVector& Tcand){
+void TTsemiLepChargeScoreEfficiencyMeasurement_partonFlavour::FillHistBJetForMeasure(TString cutname, TLorentzVector& Tcand){
     FillHist(cutname+"/Tcand_mass", Tcand.M(),weight,120,50,350); 
-    FillHist(cutname+"/Event", 0.5,weight,1,0,1); 
+    //FillHist(cutname+"/Event", 0.5,weight,1,0,1); 
 }
-void TTsemiLepChargeScoreEfficiencyMeasurement_TightMatch::FillHistBJet(TString cutname, int bjetidx,int bgenidx, TLorentzVector& Tcand){
+void TTsemiLepChargeScoreEfficiencyMeasurement_partonFlavour::FillHistBJet(TString cutname, int bjetidx, TLorentzVector& Tcand){
   //if(!TurnOnFillHist) return;
   FillHist(cutname+"/bjet_pt", v_tightjet[bjetidx].Pt(),weight,njetpog_ptbins,jetpog_ptbins);
   FillHist(cutname+"/bjet_eta", v_tightjet[bjetidx].Eta(),weight,njetpog_etabins,jetpog_etabins);
@@ -921,7 +633,7 @@ void TTsemiLepChargeScoreEfficiencyMeasurement_TightMatch::FillHistBJet(TString 
 }
 
 
-void TTsemiLepChargeScoreEfficiencyMeasurement_TightMatch::FillHistBJetMuonMax(TString cutname, int bjetidx){
+void TTsemiLepChargeScoreEfficiencyMeasurement_partonFlavour::FillHistBJetMuonMax(TString cutname, int bjetidx){
   //if(!TurnOnFillHist) return;
   //double JHAnalyzerBase::GetP_JetRestFrame(TLorentzVector &lep, TLorentzVector &jet)
   double ptAtJetRest=JHAnalyzerBase::GetP_JetRestFrame(AllMuons[current_im_max],v_tightjet[bjetidx]);
@@ -940,7 +652,7 @@ void TTsemiLepChargeScoreEfficiencyMeasurement_TightMatch::FillHistBJetMuonMax(T
 
 
 
-void TTsemiLepChargeScoreEfficiencyMeasurement_TightMatch::FillHistBJetMuonMin(TString cutname, int bjetidx){
+void TTsemiLepChargeScoreEfficiencyMeasurement_partonFlavour::FillHistBJetMuonMin(TString cutname, int bjetidx){
   //if(!TurnOnFillHist) return;
   //double JHAnalyzerBase::GetP_JetRestFrame(TLorentzVector &lep, TLorentzVector &jet)
   double ptAtJetRest=JHAnalyzerBase::GetP_JetRestFrame(AllMuons[current_im_min],v_tightjet[bjetidx]);
@@ -960,7 +672,7 @@ void TTsemiLepChargeScoreEfficiencyMeasurement_TightMatch::FillHistBJetMuonMin(T
 
 
 
-void TTsemiLepChargeScoreEfficiencyMeasurement_TightMatch::FillHistBJetElectronMax(TString cutname, int bjetidx){
+void TTsemiLepChargeScoreEfficiencyMeasurement_partonFlavour::FillHistBJetElectronMax(TString cutname, int bjetidx){
   //if(!TurnOnFillHist) return;
   //double JHAnalyzerBase::GetP_JetRestFrame(TLorentzVector &lep, TLorentzVector &jet)
   double ptAtJetRest=JHAnalyzerBase::GetP_JetRestFrame(AllElectrons[current_ie_max],v_tightjet[bjetidx]);
@@ -979,7 +691,7 @@ void TTsemiLepChargeScoreEfficiencyMeasurement_TightMatch::FillHistBJetElectronM
 
 
 
-void TTsemiLepChargeScoreEfficiencyMeasurement_TightMatch::FillHistBJetElectronMin(TString cutname, int bjetidx){
+void TTsemiLepChargeScoreEfficiencyMeasurement_partonFlavour::FillHistBJetElectronMin(TString cutname, int bjetidx){
   //if(!TurnOnFillHist) return;
   //double JHAnalyzerBase::GetP_JetRestFrame(TLorentzVector &lep, TLorentzVector &jet)
   double ptAtJetRest=JHAnalyzerBase::GetP_JetRestFrame(AllElectrons[current_ie_min],v_tightjet[bjetidx]);
@@ -995,7 +707,7 @@ void TTsemiLepChargeScoreEfficiencyMeasurement_TightMatch::FillHistBJetElectronM
   FillHist(cutname+"/electronmin_score", current_belectron_score_min,weight,100,0,1);
 }
 
-void TTsemiLepChargeScoreEfficiencyMeasurement_TightMatch::SetTopAndW(){
+void TTsemiLepChargeScoreEfficiencyMeasurement_partonFlavour::SetTopAndW(){
 
   Wlep_cand=l1+neutrino_cand;
   Whad_cand=v_tightjet[iq1]+v_tightjet[iq2];
@@ -1004,7 +716,7 @@ void TTsemiLepChargeScoreEfficiencyMeasurement_TightMatch::SetTopAndW(){
 }
 
 ///----OLD---///
-void TTsemiLepChargeScoreEfficiencyMeasurement_TightMatch::RunPlots(){
+void TTsemiLepChargeScoreEfficiencyMeasurement_partonFlavour::RunPlots(){
   
   if(!IsDATA){
     bool isbLepFromb= abs(v_tightjet[iblep].hadronFlavour())==5;
@@ -1048,7 +760,7 @@ void TTsemiLepChargeScoreEfficiencyMeasurement_TightMatch::RunPlots(){
 
 }
 
-bool TTsemiLepChargeScoreEfficiencyMeasurement_TightMatch::HasMatchedRecoJet(int genidx,double dRcut){
+bool TTsemiLepChargeScoreEfficiencyMeasurement_partonFlavour::HasMatchedRecoJet(int genidx,double dRcut){
   TLorentzVector this_genptl=gens[genidx];
   for(auto &jet : v_tightjet){
     if(this_genptl.DeltaR(jet) < dRcut) return 1;
@@ -1057,7 +769,7 @@ bool TTsemiLepChargeScoreEfficiencyMeasurement_TightMatch::HasMatchedRecoJet(int
 }
 
 
-bool TTsemiLepChargeScoreEfficiencyMeasurement_TightMatch::HasFlavourMatchedRecoJet(int genidx){
+bool TTsemiLepChargeScoreEfficiencyMeasurement_partonFlavour::HasFlavourMatchedRecoJet(int genidx){
   //TLorentzVector this_genptl=gens[genidx];
   int true_pid=gens[genidx].PID();
   for(auto &jet : v_tightjet){
@@ -1069,7 +781,7 @@ bool TTsemiLepChargeScoreEfficiencyMeasurement_TightMatch::HasFlavourMatchedReco
 
 
 
-void TTsemiLepChargeScoreEfficiencyMeasurement_TightMatch::FillHistTTLJ(TString cutname){
+void TTsemiLepChargeScoreEfficiencyMeasurement_partonFlavour::FillHistTTLJ(TString cutname){
 
 
 
@@ -1114,7 +826,7 @@ void TTsemiLepChargeScoreEfficiencyMeasurement_TightMatch::FillHistTTLJ(TString 
 
 
 }
-void TTsemiLepChargeScoreEfficiencyMeasurement_TightMatch::FillHist_bjetinfo(TString cutname, int i_bjet, TString Name_bCand){
+void TTsemiLepChargeScoreEfficiencyMeasurement_partonFlavour::FillHist_bjetinfo(TString cutname, int i_bjet, TString Name_bCand){
   //Charge of bjets
   //---Get Charge of bjets
   //pair<int,bool> JHAnalyzerBase::GetBJetCharge_v2409_2(Jet &_bjet, vector<Muon> &_muoncoll, vector<Electron> &electroncoll){
@@ -1222,7 +934,7 @@ void TTsemiLepChargeScoreEfficiencyMeasurement_TightMatch::FillHist_bjetinfo(TSt
 
 }
 
-void TTsemiLepChargeScoreEfficiencyMeasurement_TightMatch::FillHist_bCand(TString cutname){
+void TTsemiLepChargeScoreEfficiencyMeasurement_partonFlavour::FillHist_bCand(TString cutname){
   //FillHist(cutname+"/"+bCandName+"_pt",v_tightjet[ibCand].Pt(),weight,100,0,300);
   //FillHist(cutname+"/"+bCandName+"_eta",v_tightjet[ibCand].Eta(),weight,100,-5,5);
   //FillHist(cutname+"/"+bCandName+"_phi",v_tightjet[ibCand].Phi(),weight,100,-4,4);
@@ -1365,7 +1077,7 @@ void TTsemiLepChargeScoreEfficiencyMeasurement_TightMatch::FillHist_bCand(TStrin
 
 
 }
-void TTsemiLepChargeScoreEfficiencyMeasurement_TightMatch::FillHist_bCand_bmuon(TString cutname){  
+void TTsemiLepChargeScoreEfficiencyMeasurement_partonFlavour::FillHist_bCand_bmuon(TString cutname){  
 
   if(runSys) return;
   if(ForBinning) return;
@@ -1383,7 +1095,7 @@ void TTsemiLepChargeScoreEfficiencyMeasurement_TightMatch::FillHist_bCand_bmuon(
 }
 
 
-void TTsemiLepChargeScoreEfficiencyMeasurement_TightMatch::FillHist_bCand_belectron(TString cutname){  
+void TTsemiLepChargeScoreEfficiencyMeasurement_partonFlavour::FillHist_bCand_belectron(TString cutname){  
   if(runSys) return;
   if(ForBinning) return;
   FillHist(cutname+"/"+current_bjetname+"_belectron_P_jetrest",current_belectronvar.P_jetrest,weight,10,0,10);
@@ -1401,7 +1113,7 @@ void TTsemiLepChargeScoreEfficiencyMeasurement_TightMatch::FillHist_bCand_belect
 }
 
 
-void TTsemiLepChargeScoreEfficiencyMeasurement_TightMatch::FillHistAll(TString cutname){
+void TTsemiLepChargeScoreEfficiencyMeasurement_partonFlavour::FillHistAll(TString cutname){
   if(ForBinning) return;
   FillHist(cutname+"/nPV",nPV,weight,100,0,100);
 
@@ -1430,7 +1142,7 @@ void TTsemiLepChargeScoreEfficiencyMeasurement_TightMatch::FillHistAll(TString c
 }
 
 
-void TTsemiLepChargeScoreEfficiencyMeasurement_TightMatch::EventLoop(){
+void TTsemiLepChargeScoreEfficiencyMeasurement_partonFlavour::EventLoop(){
   RunReco();
 
 }
@@ -1438,17 +1150,7 @@ void TTsemiLepChargeScoreEfficiencyMeasurement_TightMatch::EventLoop(){
 
 
 
-
-void TTsemiLepChargeScoreEfficiencyMeasurement_TightMatch::TruthLoop(){
-  //it must be TTLJ samples
-  if (IsTTLJSample){
-    TTsemiLepChargeScoreEfficiencyMeasurement_TightMatch::RunLHEinfo();
-    TTsemiLepChargeScoreEfficiencyMeasurement_TightMatch::RunGENinfo();
-  }
-
-}
-
-void TTsemiLepChargeScoreEfficiencyMeasurement_TightMatch::RunLHEinfo(){
+void TTsemiLepChargeScoreEfficiencyMeasurement_partonFlavour::RunLHEinfo(){
   //
   //initialize
   int LHEsize = lhes.size();
@@ -1496,7 +1198,7 @@ void TTsemiLepChargeScoreEfficiencyMeasurement_TightMatch::RunLHEinfo(){
   bHadCharge_LHE=LeptonCharge;
   
 }
-void TTsemiLepChargeScoreEfficiencyMeasurement_TightMatch::RunGENinfo(){
+void TTsemiLepChargeScoreEfficiencyMeasurement_partonFlavour::RunGENinfo(){
   unsigned int gensize=gens.size();
   //status21 is incoming particle.
   //To find W decay daughters 

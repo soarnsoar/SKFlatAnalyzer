@@ -45,7 +45,7 @@ void TTSemiLepTrueBJetAnalyzer::SetEventWeight(){
 
 void TTSemiLepTrueBJetAnalyzer::RunReco(){
   v_tightlep={};
-  v_tightjet=GetTightJet(v_tightlep,30,2.4);
+  v_tightjet=GetTightJet(v_tightlep,30,jetetacut);
   v_bjetidx=GetBJetIdx(v_tightjet);
 
 

@@ -47,12 +47,13 @@
 #pragma link C++ class bbbarAnalyzer+;
 
 
-#pragma link C++ class TTSemiLepJetAssignment+;
-#pragma link C++ class TTSemiLepJetAssignment_ProduceTrainingTree+;
+//#pragma link C++ class TTSemiLepJetAssignment+;
+//#pragma link C++ class TTSemiLepJetAssignment_ProduceTrainingTree+;
 
 #pragma link C++ class TTSemiLepAnalyzer+;
 //#pragma link C++ class TTsemiLepChargeScoreEfficiencyMeasurement+;
 #pragma link C++ class TTsemiLepChargeScoreEfficiencyMeasurement_TightMatch+;
+#pragma link C++ class TTsemiLepChargeScoreEfficiencyMeasurement_partonFlavour;
 //#pragma link C++ class TTdiLepChargeScoreEfficiencyMeasurement+;
 #pragma link C++ class TwoBjets+;
 #pragma link C++ class OneBjet+;
@@ -67,10 +68,14 @@
 
 #pragma link C++ class Preselection_To_bjet+;
 
-#pragma link C++ class TTsemiLepBtagChargeAsymEfficiencyMeasurement+;
+//#pragma link C++ class TTsemiLepBtagChargeAsymEfficiencyMeasurement+;
+#pragma link C++ class TTsemiLepBtagChargeAsymEfficiencyMeasurement_BINNING+;
 
+#pragma link C++ class TTLJ_Truth+;
 
+#pragma link C++ class DYbTruth+;
 
+#pragma link C++ class PreselectionToBDTRegionAnalyzer+;
 
 
 #endif

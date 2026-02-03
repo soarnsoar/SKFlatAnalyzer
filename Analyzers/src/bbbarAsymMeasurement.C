@@ -14,6 +14,19 @@ bbbarAsymMeasurement::~bbbarAsymMeasurement(){
 }
 
 void bbbarAsymMeasurement::initializeAnalyzer(){
+
+  if(HasFlag("use_beff_dasym")){
+    //----use this analyzer specific btag mc eff----//
+        //void AnalyzerCore::SetBTagMCEff_Filename(TString _btagmceff_filename)
+    if(!IsDATA) AnalyzerCore::SetBTagMCEff_Filename("bbbarAsymMeasurement_"+MCSample+".root",true);
+    use_dasym=true;
+  }
+  else{
+    use_dasym=false;
+  }
+
+
+  
   cout << "[bbbarAsymMeasurement::initializeAnalyzer]" << endl;
   JHAnalyzerBase::initializeAnalyzer();
   JHAnalyzerBase::SetupDiLeptonChannel();
@@ -129,7 +142,7 @@ void bbbarAsymMeasurement::SetEventWeight(){
   weight=1;
   if(IsDATA) return;
 
-  weight=MCweight()*ev.GetTriggerLumi("Full")*GetPileUpWeight(nPileUp,0)*GetPrefireWeight(0)*zptweight*weakweight*z0weight*topptweight*btagsf*jetpuidsf;
+  weight=MCweight()*ev.GetTriggerLumi("Full")*GetPileUpWeight(nPileUp,0)*GetPrefireWeight(0)*weakweight*z0weight*topptweight*btagsf*jetpuidsf;
   
   if(IsDiMuonChannel){
     weight*=w_MuonID[0][0]*w_MuonRECO[0][0]*w_MuonTrk[0][0]*w_MuonTrigger[0][0];
@@ -179,9 +192,18 @@ void bbbarAsymMeasurement::RunBasicZregion(){
   else{
     return;
   }
+
+  if(measure_btageff_partonFlavour_bonly){
+    SetEventWeight();
+    Measure_MCbtagEff_PartonFlavour_bonly();
+    return;
+  }
+
+
+  
   //----Jet---//
   v_tightlep={l1,l2};
-  v_tightjet=GetTightJet(v_tightlep,30,2.4,"tight",_JETPUID);
+  v_tightjet=GetTightJet(v_tightlep,30,jetetacut,"tight",_JETPUID);
   v_bjet=GetBJet(v_tightjet);
 
   njet=v_tightjet.size();

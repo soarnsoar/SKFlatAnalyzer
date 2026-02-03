@@ -189,7 +189,7 @@ void bChargeID_TrainTree::RunBasicZregion(){
   //----Jet---//
   //v_tightlep={l1,l2};
   v_tightlep={};
-  v_tightjet=GetTightJet(v_tightlep,30,2.4,"tight");
+  v_tightjet=GetTightJet(v_tightlep,30,jetetacut,"tight");
   v_bjet=GetBJet(v_tightjet);
 
   njet=v_tightjet.size();

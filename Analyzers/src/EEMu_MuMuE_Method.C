@@ -259,14 +259,102 @@ void EEMu_MuMuE_Method::FillTree_1bmuon(){
   belectron=Get_init_belectronvar();
   bjet=Get_bjetvar(AllJets[jetidx_b]);
   bool isSig=false;
+  bool isBkg=false;
+
   if(bmuon.charge*bcharge > 0) isSig=true;
+  if(bmuon.charge*bcharge < 0) isBkg=true;
+
   if(isSig){
     jhchoi_newtree->Fill();
-  }else{
+    if(IsEE)FillHist_1bmuon("Sig");
+  }else if(isBkg){
     jhchoi_newtree2->Fill();
+    if(IsEE)FillHist_1bmuon("Bkg");
   }
 }
+void EEMu_MuMuE_Method::FillHist_1bmuon(TString SigORBkg){
+/*
+  this_Tree->Branch("bmuon_P_jetrest",&bmuon.P_jetrest);
+  this_Tree->Branch("bmuon_ptwrtbjet",&bmuon.ptwrtjet);
+  this_Tree->Branch("bmuon_dR_l_j",&bmuon.dR_l_j);
+  this_Tree->Branch("bmuon_nsip3d",&bmuon.nsip3d);
+  this_Tree->Branch("bmuon_reltrkiso",&bmuon.reltrkiso);
+  this_Tree->Branch("bmuon_reliso",&bmuon.reliso);
+  this_Tree->Branch("bmuon_charge",&bmuon.charge);
+  this_Tree->Branch("bmuon_palongjet",&bmuon.palongjet);
+  this_Tree->Branch("bmuon_palongjetratio",&bmuon.palongjetratio);
+  this_Tree->Branch("bmuon_pt",&bmuon.pt);
+  this_Tree->Branch("bmuon_aeta",&bmuon.aeta);
+  this_Tree->Branch("bmuon_normchi2",&bmuon.normchi2);
+  this_Tree->Branch("bmuon_ntracklayers",&bmuon.ntracklayers);
+  this_Tree->Branch("bmuon_ntrackhits",&bmuon.ntrackhits);
+  this_Tree->Branch("bmuon_nvalidmuonhits",&bmuon.nvalidmuonhits);
+  this_Tree->Branch("bmuon_nmatchedstations",&bmuon.nmatchedstations);
+  //ID
+  this_Tree->Branch("bmuon_isGlobalMuon",&bmuon.isGlobalMuon);
+  this_Tree->Branch("bmuon_isTrackerMuon",&bmuon.isTrackerMuon);
+  this_Tree->Branch("bmuon_isStandAloneMuon",&bmuon.isStandAloneMuon);
+  this_Tree->Branch("bmuon_isCaloMuon",&bmuon.isCaloMuon);
+  this_Tree->Branch("bmuon_isPFMuon",&bmuon.isPFMuon);
+  this_Tree->Branch("bmuon_isRPCMuon",&bmuon.isRPCMuon);
+  this_Tree->Branch("bmuon_isGEMMuon",&bmuon.isGEMMuon);
+  this_Tree->Branch("bmuon_isME0Muon",&bmuon.isME0Muon);
 
+ */
+  FillHist(SigORBkg+"_1bmuon/muon_p_jetrestframe",bmuon.P_jetrest,weight,100,0,10);
+  FillHist(SigORBkg+"_1bmuon/muon_ptwrtjet",bmuon.ptwrtjet,weight,100,0,10);
+  FillHist(SigORBkg+"_1bmuon/muon_palongjet",bmuon.palongjet,weight,100,0,50);
+  FillHist(SigORBkg+"_1bmuon/muon_palongjet_Over_Pjet",bmuon.palongjetratio,weight,100,0,1);
+  FillHist(SigORBkg+"_1bmuon/muon_dR_j",bmuon.dR_l_j,weight,100,0,1);
+  FillHist(SigORBkg+"_1bmuon/muon_reliso",bmuon.reliso,weight,100,0,10);
+  FillHist(SigORBkg+"_1bmuon/muon_logreliso",log10(bmuon.reliso),weight,100,-2,1.5);
+  FillHist(SigORBkg+"_1bmuon/muon_reltrkiso",bmuon.reltrkiso,weight,100,0,10);
+  FillHist(SigORBkg+"_1bmuon/muon_logreltrkiso",log10(bmuon.reltrkiso),weight,100,-2,1.5);
+  FillHist(SigORBkg+"_1bmuon/muon_nsip3d",fabs(bmuon.nsip3d),weight,100,0,10);
+
+
+  //To Check ID                                                                                                                                                                                                                               
+  FillHist(SigORBkg+"_1bmuon/muon_NormChi2",bmuon.normchi2,weight,40,0,20);
+  FillHist(SigORBkg+"_1bmuon/muon_TrackerLayers",bmuon.ntracklayers,weight,20,0,20);
+  FillHist(SigORBkg+"_1bmuon/muon_TrackerHits",bmuon.ntrackhits,weight,35,0,35);
+  FillHist(SigORBkg+"_1bmuon/muon_ValidMuonHits",bmuon.nvalidmuonhits,weight,60,0,60);
+  FillHist(SigORBkg+"_1bmuon/muon_MatchedStations",bmuon.nmatchedstations,weight,6,0,6);
+
+  /*
+  this_Tree->Branch("bjet_pt",&bjet.pt);
+  this_Tree->Branch("bjet_aeta",&bjet.aeta);
+  this_Tree->Branch("bjet_ChargedHadronEnergyFraction",&bjet.ChargedHadronEnergyFraction);
+  this_Tree->Branch("bjet_NeutralHadronEnergyFraction",&bjet.NeutralHadronEnergyFraction);
+  this_Tree->Branch("bjet_NeutralEmEnergyFraction",&bjet.NeutralEmEnergyFraction);
+  this_Tree->Branch("bjet_ChargedEmEnergyFraction",&bjet.ChargedEmEnergyFraction);
+  this_Tree->Branch("bjet_MuonEnergyFraction",&bjet.MuonEnergyFraction);
+  this_Tree->Branch("bjet_charge",&bjet.charge);
+  this_Tree->Branch("bjet_partonFlavour",&bjet.partonFlavour);
+  this_Tree->Branch("bjet_ChargedMultiplicity",&bjet.ChargedMultiplicity);
+  this_Tree->Branch("bjet_NeutralMultiplicity",&bjet.NeutralMultiplicity);
+
+   */
+  FillHist(SigORBkg+"_1bmuon/bjet_ChargedHadronEnergyFraction",bjet.ChargedHadronEnergyFraction,weight,100,0,1);
+  FillHist(SigORBkg+"_1bmuon/bjet_logChargedHadronEnergyFraction",log10(bjet.ChargedHadronEnergyFraction),weight,100,-6,0);
+  FillHist(SigORBkg+"_1bmuon/bjet_NeutralHadronEnergyFraction",bjet.NeutralHadronEnergyFraction,weight,100,0,1);
+  FillHist(SigORBkg+"_1bmuon/bjet_log_NeutralHadronEnergyFraction",log10(bjet.NeutralHadronEnergyFraction),weight,100,-6,0);
+  FillHist(SigORBkg+"_1bmuon/bjet_NeutralEmEnergyFraction",bjet.NeutralEmEnergyFraction,weight,100,0,1);
+  FillHist(SigORBkg+"_1bmuon/bjet_logNeutralEmEnergyFraction",log10(bjet.NeutralEmEnergyFraction),weight,100,-6,0);
+  FillHist(SigORBkg+"_1bmuon/bjet_ChargedEmEnergyFraction",bjet.ChargedEmEnergyFraction,weight,100,0,1);
+  FillHist(SigORBkg+"_1bmuon/bjet_logChargedEmEnergyFraction",log10(bjet.ChargedEmEnergyFraction),weight,100,-6,0);
+  FillHist(SigORBkg+"_1bmuon/bjet_MuonEnergyFraction",bjet.MuonEnergyFraction,weight,100,0,1);
+  FillHist(SigORBkg+"_1bmuon/bjet_logMuonEnergyFraction",log10(bjet.MuonEnergyFraction),weight,100,-6,0);
+  FillHist(SigORBkg+"_1bmuon/bjet_charge",bjet.charge,weight,50,-1,1);
+  FillHist(SigORBkg+"_1bmuon/bjet_charge_dot_muon_charge",bjet.charge*bmuon.charge,weight,50,-1,1);
+  FillHist(SigORBkg+"_1bmuon/fabs(bjet_charge)",fabs(bjet.charge),weight,50,0,1);
+  
+  FillHist(SigORBkg+"_1bmuon/bjet_partonFlavour",bjet.partonFlavour,weight,27,-6,21);
+
+  FillHist(SigORBkg+"_1bmuon/bjet_ChargedMultiplicity",bjet.ChargedMultiplicity,weight,60,0,60);
+  FillHist(SigORBkg+"_1bmuon/bjet_NeutralMultiplicity",bjet.NeutralMultiplicity,weight,60,0,60);
+
+  
+}
 void EEMu_MuMuE_Method::FillTree_1belectron(){
   Has_bMuon=false;
   Has_bElectron=true;
@@ -275,14 +363,83 @@ void EEMu_MuMuE_Method::FillTree_1belectron(){
   bjet=Get_bjetvar(AllJets[jetidx_b]);
 
   bool isSig=false;
+  bool isBkg=false;
   if(belectron.charge*bcharge > 0) isSig=true;
-
+  if(belectron.charge*bcharge < 0) isBkg=true;
   if(isSig){
     jhchoi_newtree->Fill();
-  }else{
+    if(IsMuMu)FillHist_1belectron("Sig");
+  }else if(isBkg){
     jhchoi_newtree2->Fill();
+    if(IsMuMu)FillHist_1belectron("Bkg");
   }
 }
+void EEMu_MuMuE_Method::FillHist_1belectron(TString SigORBkg){
+  /*
+  this_Tree->Branch("belectron_P_jetrest",&belectron.P_jetrest);
+  this_Tree->Branch("belectron_ptwrtbjet",&belectron.ptwrtjet);
+  this_Tree->Branch("belectron_dR_l_j",&belectron.dR_l_j);
+  this_Tree->Branch("belectron_nsip3d",&belectron.nsip3d);
+  this_Tree->Branch("belectron_reltrkiso",&belectron.reltrkiso);
+  this_Tree->Branch("belectron_reliso",&belectron.reliso);
+  this_Tree->Branch("belectron_charge",&belectron.charge);
+  this_Tree->Branch("belectron_relecalPFClusterIso",&belectron.relecalPFClusterIso);
+  this_Tree->Branch("belectron_IsGsfCtfScPixChargeConsistent",&belectron.IsGsfCtfScPixChargeConsistent);
+  this_Tree->Branch("belectron_palongjet",&belectron.palongjet);
+  this_Tree->Branch("belectron_palongjetratio",&belectron.palongjetratio);
+  this_Tree->Branch("belectron_pt",&belectron.pt);
+  this_Tree->Branch("belectron_aeta",&belectron.aeta);
+  this_Tree->Branch("belectron_full5x5sigmaietaieta",&belectron.full5x5sigmaietaieta);
+  this_Tree->Branch("belectron_detaseed",&belectron.detaseed);
+  this_Tree->Branch("belectron_HoverE",&belectron.HoverE);
+  this_Tree->Branch("belectron_InvEminusInvP",&belectron.InvEminusInvP);
+  this_Tree->Branch("belectron_nmissinghits",&belectron.nmissinghits);
+
+   */
+  FillHist(SigORBkg+"_1belectron/electron_p_jetrestframe",belectron.P_jetrest,weight,100,0,10);
+  FillHist(SigORBkg+"_1belectron/electron_ptwrtjet",belectron.ptwrtjet,weight,100,0,10);
+  FillHist(SigORBkg+"_1belectron/electron_palongjet",belectron.palongjet,weight,100,0,50);
+  FillHist(SigORBkg+"_1belectron/electron_palongjet_Over_Pjet",belectron.palongjetratio,weight,100,0,1);
+  FillHist(SigORBkg+"_1belectron/electron_dR_j",belectron.dR_l_j,weight,100,0,1);
+  FillHist(SigORBkg+"_1belectron/electron_reliso",belectron.reliso,weight,100,0,10);
+  FillHist(SigORBkg+"_1belectron/electron_logreliso",log10(belectron.reliso),weight,100,-2,1.5);
+  FillHist(SigORBkg+"_1belectron/electron_reltrkiso",belectron.reltrkiso,weight,100,0,10);
+  FillHist(SigORBkg+"_1belectron/electron_logreltrkiso",log10(belectron.reltrkiso),weight,100,-2,1.5);
+
+  FillHist(SigORBkg+"_1belectron/electron_nsip3d",fabs(belectron.nsip3d),weight,100,0,10);
+
+  FillHist(SigORBkg+"_1belectron/bjet_ChargedHadronEnergyFraction",bjet.ChargedHadronEnergyFraction,weight,100,0,1);
+  FillHist(SigORBkg+"_1belectron/bjet_logChargedHadronEnergyFraction",log10(bjet.ChargedHadronEnergyFraction),weight,100,-6,0);
+  FillHist(SigORBkg+"_1belectron/bjet_NeutralHadronEnergyFraction",bjet.NeutralHadronEnergyFraction,weight,100,0,1);
+  FillHist(SigORBkg+"_1belectron/bjet_log_NeutralHadronEnergyFraction",log10(bjet.NeutralHadronEnergyFraction),weight,100,-6,0);
+  FillHist(SigORBkg+"_1belectron/bjet_NeutralEmEnergyFraction",bjet.NeutralEmEnergyFraction,weight,100,0,1);
+  FillHist(SigORBkg+"_1belectron/bjet_logNeutralEmEnergyFraction",log10(bjet.NeutralEmEnergyFraction),weight,100,-6,0);
+  FillHist(SigORBkg+"_1belectron/bjet_ChargedEmEnergyFraction",bjet.ChargedEmEnergyFraction,weight,100,0,1);
+  FillHist(SigORBkg+"_1belectron/bjet_logChargedEmEnergyFraction",log10(bjet.ChargedEmEnergyFraction),weight,100,-6,0);
+  FillHist(SigORBkg+"_1belectron/bjet_MuonEnergyFraction",bjet.MuonEnergyFraction,weight,100,0,1);
+  FillHist(SigORBkg+"_1belectron/bjet_logMuonEnergyFraction",log10(bjet.MuonEnergyFraction),weight,100,-6,0);
+  FillHist(SigORBkg+"_1belectron/bjet_charge",bjet.charge,weight,50,-1,1);
+  FillHist(SigORBkg+"_1belectron/bjet_charge_dot_electron_charge",bjet.charge*belectron.charge,weight,50,-1,1);
+  FillHist(SigORBkg+"_1belectron/fabs(bjet_charge)",fabs(bjet.charge),weight,50,0,1);
+
+  /*
+  FillHist(SigORBkg+"_1belectron/bjet_ChargedHadronEnergyFraction",bjet.ChargedHadronEnergyFraction,weight,100,0,1);
+  FillHist(SigORBkg+"_1belectron/bjet_NeutralHadronEnergyFraction",bjet.NeutralHadronEnergyFraction,weight,100,0,1);
+  FillHist(SigORBkg+"_1belectron/bjet_NeutralEmEnergyFraction",bjet.NeutralEmEnergyFraction,weight,100,0,1);
+  FillHist(SigORBkg+"_1belectron/bjet_ChargedEmEnergyFraction",bjet.ChargedEmEnergyFraction,weight,100,0,1);
+  FillHist(SigORBkg+"_1belectron/bjet_logChargedEmEnergyFraction",log10(bjet.ChargedEmEnergyFraction),weight,100,-3,0);
+  FillHist(SigORBkg+"_1belectron/bjet_MuonEnergyFraction",bjet.MuonEnergyFraction,weight,100,0,1);
+  FillHist(SigORBkg+"_1belectron/bjet_logMuonEnergyFraction",log10(bjet.MuonEnergyFraction),weight,100,-3,0);
+  FillHist(SigORBkg+"_1belectron/bjet_charge",bjet.charge,weight,50,-1,1);
+  FillHist(SigORBkg+"_1belectron/fabs(bjet_charge)",fabs(bjet.charge),weight,50,0,1);
+  FillHist(SigORBkg+"_1belectron/bjet_partonFlavour",bjet.partonFlavour,weight,27,-6,21);
+  */
+  FillHist(SigORBkg+"_1belectron/bjet_ChargedMultiplicity",bjet.ChargedMultiplicity,weight,60,0,60);
+  FillHist(SigORBkg+"_1belectron/bjet_NeutralMultiplicity",bjet.NeutralMultiplicity,weight,60,0,60);
+
+
+}
+
 void EEMu_MuMuE_Method::FillTree_0blepton(){
   Has_bMuon=false;
   Has_bElectron=false;
@@ -291,12 +448,48 @@ void EEMu_MuMuE_Method::FillTree_0blepton(){
   bjet=Get_bjetvar(AllJets[jetidx_b]);
 
   bool isSig=false;
+  bool isBkg=false;
   if(bjet.charge*bcharge > 0) isSig=true;
+  if(bjet.charge*bcharge < 0) isBkg=true;
   if(isSig){
     jhchoi_newtree->Fill();
-  }else{
+    FillHist_0blepton("Sig");
+  }else if(isBkg){
     jhchoi_newtree2->Fill();
+    FillHist_0blepton("Bkg");
   }
+
+}
+
+void EEMu_MuMuE_Method::FillHist_0blepton(TString SigORBkg){
+  FillHist(SigORBkg+"_0blepton/bjet_ChargedHadronEnergyFraction",bjet.ChargedHadronEnergyFraction,weight,100,0,1);
+  FillHist(SigORBkg+"_0blepton/bjet_logChargedHadronEnergyFraction",log10(bjet.ChargedHadronEnergyFraction),weight,100,-6,0);
+  FillHist(SigORBkg+"_0blepton/bjet_NeutralHadronEnergyFraction",bjet.NeutralHadronEnergyFraction,weight,100,0,1);
+  FillHist(SigORBkg+"_0blepton/bjet_log_NeutralHadronEnergyFraction",log10(bjet.NeutralHadronEnergyFraction),weight,100,-6,0);
+  FillHist(SigORBkg+"_0blepton/bjet_NeutralEmEnergyFraction",bjet.NeutralEmEnergyFraction,weight,100,0,1);
+  FillHist(SigORBkg+"_0blepton/bjet_logNeutralEmEnergyFraction",log10(bjet.NeutralEmEnergyFraction),weight,100,-6,0);
+  FillHist(SigORBkg+"_0blepton/bjet_ChargedEmEnergyFraction",bjet.ChargedEmEnergyFraction,weight,100,0,1);
+  FillHist(SigORBkg+"_0blepton/bjet_logChargedEmEnergyFraction",log10(bjet.ChargedEmEnergyFraction),weight,100,-6,0);
+  FillHist(SigORBkg+"_0blepton/bjet_MuonEnergyFraction",bjet.MuonEnergyFraction,weight,100,0,1);
+  FillHist(SigORBkg+"_0blepton/bjet_logMuonEnergyFraction",log10(bjet.MuonEnergyFraction),weight,100,-6,0);
+  FillHist(SigORBkg+"_0blepton/bjet_charge",bjet.charge,weight,50,-1,1);
+  FillHist(SigORBkg+"_0blepton/fabs(bjet_charge)",fabs(bjet.charge),weight,50,0,1);
+  /*
+  FillHist(SigORBkg+"_0blepton/bjet_ChargedHadronEnergyFraction",bjet.ChargedHadronEnergyFraction,weight,100,0,1);
+  FillHist(SigORBkg+"_0blepton/bjet_NeutralHadronEnergyFraction",bjet.NeutralHadronEnergyFraction,weight,100,0,1);
+  FillHist(SigORBkg+"_0blepton/bjet_NeutralEmEnergyFraction",bjet.NeutralEmEnergyFraction,weight,100,0,1);
+  FillHist(SigORBkg+"_0blepton/bjet_ChargedEmEnergyFraction",bjet.ChargedEmEnergyFraction,weight,100,0,1);
+  FillHist(SigORBkg+"_0blepton/bjet_logChargedEmEnergyFraction",log10(bjet.ChargedEmEnergyFraction),weight,100,-3,0);
+  FillHist(SigORBkg+"_0blepton/bjet_MuonEnergyFraction",bjet.MuonEnergyFraction,weight,100,0,1);
+  FillHist(SigORBkg+"_0blepton/bjet_logMuonEnergyFraction",log10(bjet.MuonEnergyFraction),weight,100,-3,0);
+  FillHist(SigORBkg+"_0blepton/bjet_charge",bjet.charge,weight,50,-1,1);
+  FillHist(SigORBkg+"_0blepton/fabs(bjet_charge)",fabs(bjet.charge),weight,50,0,1);
+  FillHist(SigORBkg+"_0blepton/bjet_partonFlavour",bjet.partonFlavour,weight,27,-6,21);
+  */
+  FillHist(SigORBkg+"_0blepton/bjet_ChargedMultiplicity",bjet.ChargedMultiplicity,weight,60,0,60);
+  FillHist(SigORBkg+"_0blepton/bjet_NeutralMultiplicity",bjet.NeutralMultiplicity,weight,60,0,60);
+
+  
 
 }
 
@@ -554,7 +747,7 @@ void EEMu_MuMuE_Method::RunElectronInJet_v2405_1(){
       FillHistElectron(ll_str+"__"+bcharge_str+"__electronMinus",electron);
     }
   }
-}
+} 
 
 void EEMu_MuMuE_Method::RunElectronInJet_v2405_2(){
   //FillHist by ElectronCharge
@@ -736,7 +929,7 @@ void EEMu_MuMuE_Method::FillHistElectron(TString cutname,Electron &electron){
   FillHist(cutname+"/electron_p_jetrestframe",GetP_JetRestFrame(electron,AllJets[jetidx_b]),weight,100,0,20);
   FillHist(cutname+"/electron_ptwrtjet",GetPt_wrt_Jet(electron,AllJets[jetidx_b]),weight,100,0,20);
   FillHist(cutname+"/electron_palongjet",GetP_along_Jet(electron,AllJets[jetidx_b]),weight,100,0,50);
-  FillHist(cutname+"/electron_palongjet_over_Pjet",GetP_along_Jet(electron,AllJets[jetidx_b])/AllJets[jetidx_b].P(),weight,100,0,1);
+  FillHist(cutname+"/electron_palongjet_Over_Pjet",GetP_along_Jet(electron,AllJets[jetidx_b])/AllJets[jetidx_b].P(),weight,100,0,1);
   FillHist(cutname+"/electron_dR_j",electron.DeltaR(AllJets[jetidx_b]),weight,100,0,2);
   FillHist(cutname+"/electron_reliso",electron.RelIso(),weight,100,0,20);
   FillHist(cutname+"/electron_logreliso",log10(electron.RelIso()),weight,100,-2,1.5);

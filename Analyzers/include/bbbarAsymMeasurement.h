@@ -62,6 +62,7 @@ public:
   bool check_tmva_input;
   bool lepveto;
   bool apply_bchargeeff;
+  bool use_dasym;
   float cut_jetcharge_dot_dnn;
 };
 

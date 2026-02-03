@@ -94,7 +94,7 @@ void SingleLeptonAnalyzer::RunBasicWregion(){
   }
   //----Jet---//
   v_tightlep={l1};
-  v_tightjet=GetTightJet(v_tightlep,30,2.4);
+  v_tightjet=GetTightJet(v_tightlep,30,jetetacut);
   v_bjet=GetBJet(v_tightjet);
 
   njet=v_tightjet.size();

@@ -153,7 +153,7 @@ void DiLeptonAnalyzer::RunBasicZregion(){
   }
   //----Jet---//
   v_tightlep={l1,l2};
-  v_tightjet=GetTightJet(v_tightlep,30,2.4,"tight",_JETPUID);
+  v_tightjet=GetTightJet(v_tightlep,30,jetetacut,"tight",_JETPUID);
   v_bjet=GetBJet(v_tightjet);
 
   njet=v_tightjet.size();
@@ -162,7 +162,7 @@ void DiLeptonAnalyzer::RunBasicZregion(){
   SetEventWeight();  
   FillHistAll("ll");
   FillHistAll(LepCh);
-
+  if(runSys) return;
   if(nbjet==0){
     FillHistAll("ll__0bjet");
     FillHistAll(LepCh+"__0bjet");

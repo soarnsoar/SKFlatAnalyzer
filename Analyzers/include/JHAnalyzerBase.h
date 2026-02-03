@@ -3,6 +3,7 @@
 
 #include "AnalyzerCore.h"
 
+
 class JHAnalyzerBase : public AnalyzerCore {
 
  public:
@@ -34,18 +35,46 @@ class JHAnalyzerBase : public AnalyzerCore {
   //---flags
   bool runSys;
   bool runMomSys;
+  bool runSysMom00;
   bool checksf;
   bool simple_lepscale;
   bool weightonly;
   bool pusysonly;
   bool measure_btageff=false;
   bool measure_btageff_partonFlavour=false;
+  bool measure_btageff_partonFlavour_bonly=false;
   bool measure_bchargeeff=false;
   //--end flags
+  //--flag for test
+  bool muonscale00event;
+  bool electronscale00event;
+  bool nominalevent;
+
+  bool nominal_LeptonMinus_bJetHadronicSide__PASS__PT30To50__Eta1p6To2;
+  bool muonscale00_LeptonMinus_bJetHadronicSide__PASS__PT30To50__Eta1p6To2;
+  
+  bool nominal_LeptonPlus_bJetLeptonicSide__FAIL__PT100To140__Eta0To0p8;
+  bool electronscale00_LeptonPlus_bJetLeptonicSide__FAIL__PT100To140__Eta0To0p8;
+
+  bool nominal_LeptonPlus_bJetLeptonicSide__FAIL__PT30To50__Eta0To0p8;
+  bool electronscale00_LeptonPlus_bJetLeptonicSide__FAIL__PT30To50__Eta0To0p8;
+
+
+  bool nominal_LeptonPlus_bJetHadronicSide__FAIL__PT30To50__Eta0To0p8;
+  bool electronscale00_LeptonPlus_bJetHadronicSide__FAIL__PT30To50__Eta0To0p8;
+  
+  bool scale00test;
+
+  bool EvtToTest;
+  //--
+
+  double jetetacut;
+  
   double weight;
   double btagcut;
   bool runWeightBase;
   //--(1) Prepare Event--//
+  void SetJetEtacut();
   void InitAllObjects();
   //SetAllObjects()
   //->This Mustbe done before start events.
@@ -121,6 +150,10 @@ class JHAnalyzerBase : public AnalyzerCore {
   void FillHistBtag(TString histname, double value, double this_weight, int n_bin, double x_min, double x_max);
   void FillHistBtag(TString histname, double value, double this_weight, int n_bin, double *xbins);
 
+
+  void FillHistBtagChargeAsym(TString histname, double value, double this_weight, int n_bin, double x_min, double x_max);
+  void FillHistBtagChargeAsym(TString histname, double value, double this_weight, int n_bin, double *xbins);
+
   void FillHistZptWeight(TString histname, double value, double this_weight, int n_bin, double x_min, double x_max);
   void FillHistZptWeight(TString histname, double value, double this_weight, int n_bin, double *xbins);
 
@@ -138,6 +171,10 @@ class JHAnalyzerBase : public AnalyzerCore {
 
   void FillHistAlphaS(TString histname, double value, double this_weight, int n_bin, double x_min, double x_max);
   void FillHistAlphaS(TString histname, double value, double this_weight, int n_bin, double *xbins);
+
+
+  //void FillHistQCDXSEC(TString histname, double value, double this_weight, int n_bin, double x_min, double x_max);
+  //void FillHistQCDXSEC(TString histname, double value, double this_weight, int n_bin, double *xbins);
 
   /*
   void FillHistalpsfact(TString histname, double value, double this_weight, int n_bin, double x_min, double x_max);
@@ -232,7 +269,7 @@ class JHAnalyzerBase : public AnalyzerCore {
   void SetIsDoubleLeptonTrigger();
   void PrintSFStructure();
   //vector<int> GetIdxTightJet(const vector<Lepton> &TightLeptonCollection ,double ptmin, double etacut, TString JetID="tight" );
-  vector<Jet> GetTightJet(const vector<Lepton> &TightLeptonCollection ,double ptmin, double etacut, TString JetID="tight", TString _JETPUID="" );
+  vector<Jet> GetTightJet(const vector<Lepton> &TightLeptonCollection ,double ptmin, double etacut, TString JetID="tight", TString _JETPUID="",bool apply_vetomap=true);
   //vector<Jet*> GetPointerTightJet(const vector<Lepton*> &TightLeptonCollection ,double ptmin, double etacut, TString JetID="tight" );
   //vector<int> GetIdxBJet(const vector<int> &v_TightjetIdx);
   vector<Jet> GetBJet(const vector<Jet> &v_Tightjet);
@@ -317,6 +354,30 @@ class JHAnalyzerBase : public AnalyzerCore {
   double r_SystUpLTagUnCorr,r_SystDownLTagUnCorr;
   double r_SystUpHTagCorr,r_SystDownHTagCorr;
   double r_SystUpHTagUnCorr,r_SystDownHTagUnCorr;
+  //btag dasym variation
+  //double r_ChargedAsymUp,r_ChargedAsymDown;
+  enum PtBin { kPT30To50 = 0, kPT50To70, kPT70To100, kPT100To140, kPT140ToInf, nPtBin };
+  enum EtaBin { kEta0To0p8 = 0, kEta0p8To1p6, kEta1p6To2, kEta2To2p5, nEtaBin};  
+  
+  double arr_r_ChargedAsymUp[nPtBin][nEtaBin];
+  double arr_r_ChargedAsymDown[nPtBin][nEtaBin];
+
+  //  static const char* PtBinName[nPtBin];
+
+  //static const char* EtaBinName[nEtaBin];
+  inline static const char* PtBinName[nPtBin] = {
+    "PT30To50","PT50To70","PT70To100","PT100To140","PT140ToInf"
+  };
+  inline static const char* EtaBinName[nEtaBin] ={
+    "Eta0To0p8",
+    "Eta0p8To1p6",
+    "Eta1p6To2",
+    "Eta2To2p5"
+  };
+
+
+  
+  //vector<double> v_r_ChargedAsymDown;
   //puidsf
   double jetpuidsf;
   double jetpuidsf_up, jetpuidsf_down;
@@ -329,6 +390,8 @@ class JHAnalyzerBase : public AnalyzerCore {
   double weakweight;
   //toppt
   double topptweight;
+  //QCD xsec
+  //doube r_QCDXSEC;
   std::vector<Muon> AllMuons_raw;
   std::vector<Muon> AllMuons_roch;
   std::vector<Electron> AllElectrons_raw;
@@ -407,6 +470,11 @@ class JHAnalyzerBase : public AnalyzerCore {
     float InvEminusInvP=0;
     float nmissinghits=0;
     float bjet_charge_dot_belectron_charge=0;
+    bool passVetoID=0;
+    bool passVetoIDnoIso=0;
+    bool passLooseID=0;
+    bool passMediumID=0;
+    bool passTightID=0;
   };
 
   struct bjetvar{
@@ -415,9 +483,11 @@ class JHAnalyzerBase : public AnalyzerCore {
     float eta=0;
     float ChargedHadronEnergyFraction=0;
     float NeutralHadronEnergyFraction=0;
+    float log_NeutralHadronEnergyFraction=-std::numeric_limits<float>::infinity();
     float NeutralEmEnergyFraction=0;
     float ChargedEmEnergyFraction=0;
     float MuonEnergyFraction=0;
+    float log_MuonEnergyFraction=-std::numeric_limits<float>::infinity();
     float charge=0;
     float abs_charge=0;
     float partonFlavour=0;
@@ -426,18 +496,122 @@ class JHAnalyzerBase : public AnalyzerCore {
     float NeutralMultiplicity=0;
   };
 
+  struct bmuonvar_cut{
+    float P_jetrest[2]={-std::numeric_limits<float>::infinity(),std::numeric_limits<float>::infinity()};
+    float ptwrtjet[2]={-std::numeric_limits<float>::infinity(),std::numeric_limits<float>::infinity()};
+    float dR_l_j[2]={-std::numeric_limits<float>::infinity(),std::numeric_limits<float>::infinity()};
+    float nsip3d[2]={-std::numeric_limits<float>::infinity(),std::numeric_limits<float>::infinity()};
+    float reltrkiso[2]={-std::numeric_limits<float>::infinity(),std::numeric_limits<float>::infinity()};
+    float reliso[2]={-std::numeric_limits<float>::infinity(),std::numeric_limits<float>::infinity()};
+    float charge[2]={-std::numeric_limits<float>::infinity(),std::numeric_limits<float>::infinity()};
+    float palongjet[2]={-std::numeric_limits<float>::infinity(),std::numeric_limits<float>::infinity()};
+    float palongjetratio[2]={-std::numeric_limits<float>::infinity(),std::numeric_limits<float>::infinity()};
+    float pt[2]={-std::numeric_limits<float>::infinity(),std::numeric_limits<float>::infinity()};
+    float aeta[2]={-std::numeric_limits<float>::infinity(),std::numeric_limits<float>::infinity()};
+    float normchi2[2]={-std::numeric_limits<float>::infinity(),std::numeric_limits<float>::infinity()};
+    float ntracklayers[2]={-std::numeric_limits<float>::infinity(),std::numeric_limits<float>::infinity()};
+    float ntrackhits[2]={-std::numeric_limits<float>::infinity(),std::numeric_limits<float>::infinity()};
+    float nvalidmuonhits[2]={-std::numeric_limits<float>::infinity(),std::numeric_limits<float>::infinity()};
+    float nmatchedstations[2]={-std::numeric_limits<float>::infinity(),std::numeric_limits<float>::infinity()};
+    float bjet_charge_dot_bmuon_charge[2]={-std::numeric_limits<float>::infinity(),std::numeric_limits<float>::infinity()};
+    
+  };
 
+  struct belectronvar_cut{
+    float P_jetrest[2]={-std::numeric_limits<float>::infinity(),std::numeric_limits<float>::infinity()};
+    float ptwrtjet[2]={-std::numeric_limits<float>::infinity(),std::numeric_limits<float>::infinity()};
+    float palongjet[2]={-std::numeric_limits<float>::infinity(),std::numeric_limits<float>::infinity()};
+    float palongjetratio[2]={-std::numeric_limits<float>::infinity(),std::numeric_limits<float>::infinity()};
+    float dR_l_j[2]={-std::numeric_limits<float>::infinity(),std::numeric_limits<float>::infinity()};
+    float nsip3d[2]={-std::numeric_limits<float>::infinity(),std::numeric_limits<float>::infinity()};
+    float reltrkiso[2]={-std::numeric_limits<float>::infinity(),std::numeric_limits<float>::infinity()};
+    float reliso[2]={-std::numeric_limits<float>::infinity(),std::numeric_limits<float>::infinity()};
+    float charge[2]={-std::numeric_limits<float>::infinity(),std::numeric_limits<float>::infinity()};
+    float relecalPFClusterIso[2]={-std::numeric_limits<float>::infinity(),std::numeric_limits<float>::infinity()};
+    float IsGsfCtfScPixChargeConsistent[2]={-std::numeric_limits<float>::infinity(),std::numeric_limits<float>::infinity()};
+    float pt[2]={-std::numeric_limits<float>::infinity(),std::numeric_limits<float>::infinity()};
+    float aeta[2]={-std::numeric_limits<float>::infinity(),std::numeric_limits<float>::infinity()};
+    float full5x5sigmaietaieta[2]={-std::numeric_limits<float>::infinity(),std::numeric_limits<float>::infinity()};
+    float detaseed[2]={-std::numeric_limits<float>::infinity(),std::numeric_limits<float>::infinity()};
+    float abs_detaseed[2]={-std::numeric_limits<float>::infinity(),std::numeric_limits<float>::infinity()};
+    float HoverE[2]={-std::numeric_limits<float>::infinity(),std::numeric_limits<float>::infinity()};
+    float InvEminusInvP[2]={-std::numeric_limits<float>::infinity(),std::numeric_limits<float>::infinity()};
+    float nmissinghits[2]={-std::numeric_limits<float>::infinity(),std::numeric_limits<float>::infinity()};
+    float bjet_charge_dot_belectron_charge[2]={-std::numeric_limits<float>::infinity(),std::numeric_limits<float>::infinity()};
+  };
+
+  struct bjetvar_cut{
+    float pt[2]={-std::numeric_limits<float>::infinity(),std::numeric_limits<float>::infinity()};
+    float aeta[2]={-std::numeric_limits<float>::infinity(),std::numeric_limits<float>::infinity()};
+    float eta[2]={-std::numeric_limits<float>::infinity(),std::numeric_limits<float>::infinity()};
+    float ChargedHadronEnergyFraction[2]={-std::numeric_limits<float>::infinity(),std::numeric_limits<float>::infinity()};
+    float NeutralHadronEnergyFraction[2]={-std::numeric_limits<float>::infinity(),std::numeric_limits<float>::infinity()};
+    float NeutralEmEnergyFraction[2]={-std::numeric_limits<float>::infinity(),std::numeric_limits<float>::infinity()};
+    float ChargedEmEnergyFraction[2]={-std::numeric_limits<float>::infinity(),std::numeric_limits<float>::infinity()};
+    float MuonEnergyFraction[2]={-std::numeric_limits<float>::infinity(),std::numeric_limits<float>::infinity()};
+    float charge[2]={-std::numeric_limits<float>::infinity(),std::numeric_limits<float>::infinity()};
+    float abs_charge[2]={-std::numeric_limits<float>::infinity(),std::numeric_limits<float>::infinity()};
+    float partonFlavour[2]={-std::numeric_limits<float>::infinity(),std::numeric_limits<float>::infinity()};
+    float hadronFlavour[2]={-std::numeric_limits<float>::infinity(),std::numeric_limits<float>::infinity()};
+    float ChargedMultiplicity[2]={-std::numeric_limits<float>::infinity(),std::numeric_limits<float>::infinity()};
+    float NeutralMultiplicity[2]={-std::numeric_limits<float>::infinity(),std::numeric_limits<float>::infinity()};
+  };
+
+  
 
   JHAnalyzerBase::bmuonvar Get_bmuonvar(Muon &this_muon, Jet &this_jet);
   JHAnalyzerBase::belectronvar Get_belectronvar(Electron &this_electron, Jet &this_jet);
   JHAnalyzerBase::bjetvar Get_bjetvar(Jet &this_jet);
+  /*
+  enum class MuonScoreVer {
+    v2409_2,
+    v2512_3,
+    v2512_4,
+    
+    v2512_5_2016preVFP,
 
+    v2512_5_2016postVFP,
+    v2512_5_2017,
+    v2512_5_2018,
+
+    others
+  };
+  enum class ElectronScoreVer {
+    v2409_2,
+    v2512_3,
+    v2512_4,
+
+    v2512_5_2016preVFP,
+    v2512_5_2016postVFP,
+    v2512_5_2017,
+    v2512_5_2018,
+
+    others
+  };
+  enum class JetScoreVer {
+    v2409_2,
+    v2512_3,
+    v2512_4,
+
+    v2512_5_2016preVFP,
+    v2512_5_2016postVFP,
+    v2512_5_2017,
+    v2512_5_2018,
+
+    others
+  };
+  */
 
 
 
   //void LoadChargeScoreTool(TString muon_version="2405.2",TString electron_version="2405.2", TString jet_version="2405.2", bool applycut=false);
   //void LoadChargeScoreTool(TString muon_version="2405.4.3",TString electron_version="2405.4.3", TString jet_version="2405.4.3", bool applycut=false);
-  void LoadChargeScoreTool(TString muon_version="2409.2",TString electron_version="2409.2", TString jet_version="2409.2", bool applycut=false);
+  void LoadChargeScoreTool(TString muon_version="2512.4",TString electron_version="2512.4", TString jet_version="2512.4", bool applycut=false);
+  void LoadChargeScoreTool_2409_2(bool applycut=false);
+  void LoadChargeScoreTool_2512_3(bool applycut=false);
+  void LoadChargeScoreTool_2512_4(bool applycut=false);
+  void LoadChargeScoreTool_2512_5(bool applycut=false);
+
   void LoadChargeScoreTool_temp(TString muon_version="2409.2",TString electron_version="2409.2", TString jet_version="2409.2", bool applycut=false);
   bool IsChargeScoreToolOn=false;
   void DeleteChargeScoreTool();
@@ -457,10 +631,13 @@ class JHAnalyzerBase : public AnalyzerCore {
   double GetJetChargeScoreCoeff();
   ChargeScoreTool *mChargeTool;
   bmuonvar bmuon_ChargeTool;
+  bmuonvar_cut bmuon_ChargeTool_cut;
   ChargeScoreTool *eChargeTool;
   belectronvar belectron_ChargeTool;
+  belectronvar_cut belectron_ChargeTool_cut;
   ChargeScoreTool *jChargeTool;
   bjetvar bjet_ChargeTool;
+  bjetvar_cut bjet_ChargeTool_cut;
 
 
 
@@ -531,8 +708,12 @@ class JHAnalyzerBase : public AnalyzerCore {
   bool IsJetAssigenChi2FitterOn=false;
   void DeleteJetAssigenChi2Fitter();
   TF1 *f1;
+
+
   pair<vector<int>,double> GetJetIndexSet_Chi2(Lepton &_l1, TLorentzVector &_met,vector<Jet> &_v_tightjet, vector<int> &_v_bjetidx, bool _kincut);
-  pair<vector<int>,double> GetJetIndexSet_Chi2_1b(Lepton &_l1, TLorentzVector &_met,vector<Jet> &_v_tightjet, int bjetidx);
+  pair<vector<int>,double> GetJetIndexSet_Chi2_1b(Lepton &_l1, TLorentzVector &_met,vector<Jet> &_v_tightjet, int bjetidx, bool kincut=false);
+  pair<vector<int>,double> GetJetIndexSet_Chi2_1b_AssignToLeptonicSide(Lepton &_l1, TLorentzVector &_met,vector<Jet> &_v_tightjet, int bjetidx, bool TopMassWindow=false);
+  pair<vector<int>,double> GetJetIndexSet_Chi2_1b_AssignToHadronicSide(Lepton &_l1, TLorentzVector &_met,vector<Jet> &_v_tightjet, int bjetidx, bool TopMassWindow=false);
   pair<double,double> GetChi2_and_vz(TLorentzVector &_lep, TLorentzVector &_MET, TLorentzVector &_blep, TLorentzVector &_q1, TLorentzVector &_q2, TLorentzVector &_bhad);
 
 
@@ -543,8 +724,11 @@ class JHAnalyzerBase : public AnalyzerCore {
   // mc btag eff
   void SetUpBtagEffMeasurement();
   void SetUpBtagEffMeasurementPartonFlavour();
+  void SetUpBtagEffMeasurementPartonFlavour_bonly();
   void Measure_MCbtagEff();
   void Measure_MCbtagEff_PartonFlavour();
+  void Measure_MCbtagEff_PartonFlavour_bonly();
+
   vector<string> TaggersToMeasure;
   vector<string> WPsToMeasure;
   vector<double> CutValuesToMeasure;
@@ -561,6 +745,11 @@ class JHAnalyzerBase : public AnalyzerCore {
   double jetpog_ptbins[10] = {20., 30., 50., 70., 100., 140., 200., 300., 600., 1000.};//PT bins used in POG SF measurements                                                                               
   const int njetpog_ptbins=9;
 
+  //JetVetoMap//
+  TFile* TFileJetVetoMap=NULL;
+  TH2D* h_jetvetomap=NULL;
+  void SetJetVetoMap();
+  
 
   //bChargeID
   void Get_bChargeID_SF(Jet& this_jet, int abs_charge, int bchargeID);

@@ -4,8 +4,23 @@
 
 
 JHAnalyzerBase::JHAnalyzerBase(){
-
+  /*
+  ///---define pt eta bin name----//
+  const char* JHAnalyzerBase::PtBinName[JHAnalyzerBase::nPtBin] = {
+    "PT30To50",
+    "PT50To70",
+    "PT70To100",
+    "PT100To140",
+    "PT140ToInf"
+  };
   
+  const char* JHAnalyzerBase::EtaBinName[JHAnalyzerBase::nEtaBin] = {
+    "Eta0To0p8",
+    "Eta0p8To1p6",
+    "Eta1p6To2",
+    "Eta2To2p5"
+  };
+  */
 }
 void JHAnalyzerBase::SetJetEtacut(){
   jetetacut=2.5;
@@ -29,7 +44,7 @@ void JHAnalyzerBase::initializeAnalyzer(){
   InitSystematicMomentumVariations();
   runSys=HasFlag("runSys");
   //runSysMom00=HasFlag("runSysMom00");
-  //weightonly=HasFlag("weightonly");
+  weightonly=HasFlag("weightonly");
   pusysonly=HasFlag("pusysonly");
   runMomSys=HasFlag("runMomSys");
   //scale00test=HasFlag("scale00test");
@@ -77,7 +92,53 @@ void JHAnalyzerBase::initializeAnalyzer(){
   if(measure_btageff) SetUpBtagEffMeasurement();
   if(measure_btageff_partonFlavour) SetUpBtagEffMeasurementPartonFlavour();
   if(measure_btageff_partonFlavour_bonly) SetUpBtagEffMeasurementPartonFlavour_bonly();
+
+  //---jet veto map(jetvetomap)
+  TFileJetVetoMap=NULL;
+  h_jetvetomap=NULL;
+  SetJetVetoMap();
+  
 }
+
+void JHAnalyzerBase::SetJetVetoMap(){
+ 
+  
+  TString _datadir=getenv("DATA_DIR");
+  TString _era=GetEra();
+    
+  TString vetofilepath=_datadir+"/"+_era+"/JetVetoMap/";
+  TString vetohname="";
+  if(_era.Contains("2016")){
+    //vetofilepath+="hotjets-UL16.root";
+    vetofilepath+="hotjets-UL16_add_mc.root";
+    //vetohname="h2hot_ul16_plus_hbm2_hbp12_qie11";
+    vetohname="h2hot_ul16_plus_hbm2_hbp12_qie11_plus_mc";
+    
+  }
+  else if(_era.Contains("2017")){
+    vetofilepath+="hotjets-UL17_v2.root";
+    vetohname="h2hot_ul17_plus_hep17_plus_hbpw89";
+  }else if(_era.Contains("2018")){
+    vetofilepath+="hotjets-UL18.root";
+    vetohname="h2hot_ul18_plus_hem1516_and_hbp2m1";
+  }
+  cout << "[JHAnalyzerBase::SetJetVetoMap] Open jet veto map file->" << vetofilepath << endl;
+  cout << "histname=" << vetohname << endl;
+  TFileJetVetoMap=TFile::Open(vetofilepath);
+  h_jetvetomap=(TH2D*)TFileJetVetoMap->Get(vetohname)->Clone();
+  if(!h_jetvetomap->InheritsFrom(TH2::Class())){
+    cout << "!!!!veto map is not loaed properly!!!!" << endl;
+    exit(ENODATA);
+
+  }
+  h_jetvetomap->SetDirectory(0);
+  TFileJetVetoMap->Close();
+  delete TFileJetVetoMap;
+  TFileJetVetoMap=nullptr;
+}
+
+
+
 
 int JHAnalyzerBase::GetPDFSetIDCode(){
   //id=325500
@@ -185,6 +246,15 @@ JHAnalyzerBase::~JHAnalyzerBase(){
   DeleteJetAssigenChi2Fitter();
   cout << printcurrunttime() << endl;
   cout << "[END]~JHAnalyzerBase" << endl;
+  //---JetVetoMap
+
+  
+  //TFileJetVetoMap->Close();
+  //delete TFileJetVetoMap;
+  //TFileJetVetoMap=nullptr;
+  //if(h_jetvetomap) delete h_jetvetomap;  
+
+
 }
 
 void JHAnalyzerBase::executeEvent(){  
@@ -226,9 +296,10 @@ void JHAnalyzerBase::executeEvent(){
   //ClearReserveHist();
 
   //if(!runSys && !runMomSys && !scale00test) return;
-  if(!runSys && !runMomSys) return;
-  //if(weightonly) return;
+  if(weightonly) return;
   if(pusysonly) return;
+  if(!runSys && !runMomSys) return;  
+
   //---Momentum variations--//
   runWeightBase=false;
   SetSysStructure();//remove sysvariation weights
@@ -484,7 +555,13 @@ void JHAnalyzerBase::InitBtagSys(){
   r_SystUpLTagUnCorr=1;r_SystDownLTagUnCorr=1;
   r_SystUpHTagCorr=1;r_SystDownHTagCorr=1;
   r_SystUpHTagUnCorr=1;r_SystDownHTagUnCorr=1;
-  r_ChargedAsymUp=1. ; r_ChargedAsymDown=1.;
+  //r_ChargedAsymUp=1. ; r_ChargedAsymDown=1.;
+  for (int ipt = 0; ipt < nPtBin; ++ipt) {
+    for (int ieta = 0; ieta < nEtaBin; ++ieta) {
+      arr_r_ChargedAsymUp[ipt][ieta]   = 1.0;
+      arr_r_ChargedAsymDown[ipt][ieta] = 1.0;
+    }
+  }
 }
 
 void JHAnalyzerBase::InitClassVariablesPerEvent(){
@@ -593,12 +670,12 @@ void JHAnalyzerBase::FillHistPUSys(TString histname, double value, double this_w
 
 
 void JHAnalyzerBase::FillHistZptWeight(TString histname, double value, double this_weight, int n_bin, double x_min, double x_max){
-  double r_zptweight=zptweight ? 1/zptweight : 1;
+  double r_zptweight=zptweight ? zptweight : 1;
   FillHistUp("zptweight",histname,value,this_weight*r_zptweight,n_bin,x_min,x_max);
   //FillHistDown("zptweight",histname,value,this_weight,n_bin,x_min,x_max);
 }
 void JHAnalyzerBase::FillHistZptWeight(TString histname, double value, double this_weight, int n_bin, double *xbins){
-  double r_zptweight=zptweight ? 1/zptweight : 1;
+  double r_zptweight=zptweight ? zptweight : 1;
   FillHistUp("zptweight",histname,value,this_weight*r_zptweight,n_bin,xbins);
   //FillHistDown("zptweight",histname,value,this_weight,n_bin,xbins);
 }
@@ -746,8 +823,12 @@ void JHAnalyzerBase::FillHistBtag(TString histname, double value, double this_we
   FillHistIdx2("btag","HTagUnCorr"+DataEra,"Down", histname, value,this_weight*r_SystDownHTagUnCorr,n_bin,x_min,x_max);
 }
 void JHAnalyzerBase::FillHistBtagChargeAsym(TString histname, double value, double this_weight, int n_bin, double x_min, double x_max){
-  FillHistUp("btagChargedAsym"+DataEra,   histname, value,this_weight*r_ChargedAsymUp,  n_bin,x_min,x_max);
-  FillHistDown("btagChargedAsym"+DataEra, histname, value,this_weight*r_ChargedAsymDown,n_bin,x_min,x_max);
+  for (int ipt = 0; ipt < nPtBin; ++ipt) {
+    for (int ieta = 0; ieta < nEtaBin; ++ieta) {
+      FillHistUp("btagChargedAsym"+TString(PtBinName[ipt])+TString(EtaBinName[ieta])+DataEra,   histname, value,this_weight*arr_r_ChargedAsymUp[ipt][ieta],  n_bin,x_min,x_max);
+      FillHistDown("btagChargedAsym"+TString(PtBinName[ipt])+TString(EtaBinName[ieta])+DataEra, histname, value,this_weight*arr_r_ChargedAsymDown[ipt][ieta],n_bin,x_min,x_max);
+    }
+  }
 }
 void JHAnalyzerBase::FillHistBtag(TString histname, double value, double this_weight, int n_bin, double *xbins){
   //btag weight//  
@@ -765,9 +846,15 @@ void JHAnalyzerBase::FillHistBtag(TString histname, double value, double this_we
 }
 void JHAnalyzerBase::FillHistBtagChargeAsym(TString histname, double value, double this_weight, int n_bin, double *xbins){
   //btag weight//    
+  for (int ipt = 0; ipt < nPtBin; ++ipt) {
+    for (int ieta = 0; ieta < nEtaBin; ++ieta) {
+      FillHistUp("btagChargedAsym"+TString(PtBinName[ipt])+TString(EtaBinName[ieta])+DataEra,   histname, value,this_weight*arr_r_ChargedAsymUp[ipt][ieta],  n_bin,xbins);
+      FillHistDown("btagChargedAsym"+TString(PtBinName[ipt])+TString(EtaBinName[ieta])+DataEra, histname, value,this_weight*arr_r_ChargedAsymDown[ipt][ieta],n_bin,xbins);
+    }
+  }
   
-  FillHistUp("btagChargedAsym"+DataEra,   histname, value,this_weight*r_ChargedAsymUp,   n_bin,xbins);
-  FillHistDown("btagChargedAsym"+DataEra  ,histname, value,this_weight*r_ChargedAsymDown,n_bin,xbins);
+  //FillHistUp("btagChargedAsym"+DataEra,   histname, value,this_weight*r_ChargedAsymUp,   n_bin,xbins);
+  //FillHistDown("btagChargedAsym"+DataEra  ,histname, value,this_weight*r_ChargedAsymDown,n_bin,xbins);
 }
 
 
@@ -2422,11 +2509,22 @@ vector<int> JHAnalyzerBase::GetIdxTightJet(const vector<Lepton> &v_tightlep, dou
 }
 */
 //---Get TightJet Object base
-vector<Jet> JHAnalyzerBase::GetTightJet(const vector<Lepton> &v_tightlep, double ptmin, double etacut, TString JetID, TString _JetPUID){
+vector<Jet> JHAnalyzerBase::GetTightJet(const vector<Lepton> &v_tightlep, double ptmin, double etacut, TString JetID, TString _JetPUID,bool apply_vetomap){
   vector<Jet> v_tightjet;
   for(const auto& jet : AllJets){
     if(jet.Pt() < ptmin) continue;
     if(fabs(jet.Eta()) > etacut) continue;
+    if(apply_vetomap){
+      double this_eta=jet.Eta();
+      double this_phi=jet.Phi();
+      int this_bin=h_jetvetomap->FindBin(this_eta,this_phi);
+      if(h_jetvetomap->GetBinContent(this_bin)>0) continue;
+    }
+
+
+
+
+    
     if(!jet.PassID(JetID)) continue;
     //--Lepton Cleaning--//
     bool HasCloseLep=false;
@@ -2561,9 +2659,17 @@ void JHAnalyzerBase::SetBtagSF(const vector<Jet> &v_tightjet){
     r_SystUpHTagUnCorr     =mcCorr->GetBTaggingReweight_1a(v_tightjet, jtp,"SystUpHTagUnCorr")/btagsf;
     r_SystDownHTagUnCorr     =mcCorr->GetBTaggingReweight_1a(v_tightjet, jtp,"SystDownHTagUnCorr")/btagsf;
     if(mcCorr->use_dasym){//if b+- btag asym factor is considered in MCCorr
-      r_ChargedAsymUp     =mcCorr->GetBTaggingReweight_1a(v_tightjet, jtp,"dAsymUp")/btagsf;
-      r_ChargedAsymDown   =mcCorr->GetBTaggingReweight_1a(v_tightjet, jtp,"dAsymDown")/btagsf;
+      //global nuisance
+      //r_ChargedAsymUp     =mcCorr->GetBTaggingReweight_1a(v_tightjet, jtp,"dAsymUp")/btagsf;
+      //r_ChargedAsymDown   =mcCorr->GetBTaggingReweight_1a(v_tightjet, jtp,"dAsymDown")/btagsf;
 
+      //nuisance-split
+      for (int ipt = 0; ipt < nPtBin; ++ipt) {
+	for (int ieta = 0; ieta < nEtaBin; ++ieta) {
+	  arr_r_ChargedAsymUp[ipt][ieta]=mcCorr->GetBTaggingReweight_1a(v_tightjet, jtp,"dAsymUp",ipt,ieta)/btagsf;
+	  arr_r_ChargedAsymDown[ipt][ieta]=mcCorr->GetBTaggingReweight_1a(v_tightjet, jtp,"dAsymDown",ipt,ieta)/btagsf;
+	}
+      }
     }
   }
 }
@@ -3145,23 +3251,19 @@ double JHAnalyzerBase::GetP_along_Jet(TLorentzVector &lep, TLorentzVector &jet){
 
 
 JHAnalyzerBase::bmuonvar JHAnalyzerBase::Get_bmuonvar(Muon &this_muon, Jet &this_jet){
-  //bmuon=Get_bmuonvars(AllMuons[i],jet);
   bmuonvar ret;
   ret.nsip3d=fabs(this_muon.IP3D()/this_muon.IP3Derr());
   ret.reliso=this_muon.RelIso();
   ret.ptwrtjet=GetPt_wrt_Jet(this_muon,this_jet);
   ret.P_jetrest=GetP_JetRestFrame(this_muon,this_jet);
   ret.bjet_charge_dot_bmuon_charge=this_muon.Charge()*this_jet.Charge();
-
-  //--remove 2409.2
-  
-  /*
+  ret.palongjet=GetP_along_Jet(this_muon,this_jet);
+  ret.palongjetratio=ret.palongjet/this_jet.P();
   ret.charge=this_muon.Charge();
   ret.dR_l_j=this_muon.DeltaR(this_jet);
   ret.reltrkiso=this_muon.TrkIso()/this_muon.Pt();
 
-  ret.palongjet=GetP_along_Jet(this_muon,this_jet);
-  ret.palongjetratio=ret.palongjet/this_jet.P();
+
   ret.pt=this_muon.Pt();
   ret.aeta=fabs(this_muon.Eta());
   ret.normchi2=this_muon.Chi2();
@@ -3179,32 +3281,88 @@ JHAnalyzerBase::bmuonvar JHAnalyzerBase::Get_bmuonvar(Muon &this_muon, Jet &this
   ret.isRPCMuon=this_muon.IsType(Muon::RPCMuon);
   ret.isGEMMuon=this_muon.IsType(Muon::GEMMuon);
   ret.isME0Muon=this_muon.IsType(Muon::ME0Muon);
-  */
+
+  return ret;
+
+
+}
+/*
+JHAnalyzerBase::bmuonvar JHAnalyzerBase::Get_bmuonvar_2409_2(Muon &this_muon, Jet &this_jet){
+  //bmuon=Get_bmuonvars(AllMuons[i],jet);
+  //bmuon_var=["bmuon_nsip3d<10. ? bmuon_nsip3d : 10.","bmuon_reliso","bmuon_ptwrtbjet < 10. ? bmuon_ptwrtbjet : 10.","bmuon_P_jetrest < 10. ? bmuon_P_jetrest : 10.","bmuon_palongjet < 100. ? bmuon_palongjet: 100.", "bmuon_palongjetratio < 1. ? bmuon_palongjetratio : 1." , "bjet_charge*bmuon_charge", ]  
+  bmuonvar ret;
+  ret.nsip3d=fabs(this_muon.IP3D()/this_muon.IP3Derr());
+  if(ret.nsip3d > 10) ret.nsip3d=10.;
+  ret.reliso=this_muon.RelIso();
+  if(ret.reliso > 10) ret.reliso=10.;
+  ret.ptwrtjet=GetPt_wrt_Jet(this_muon,this_jet);
+  if(ret.ptwrtjet >10) ret.ptwrtjet=10.;
+  ret.P_jetrest=GetP_JetRestFrame(this_muon,this_jet);
+  if(ret.P_jetrest>10) ret.P_jetrest=10.;
+  ret.bjet_charge_dot_bmuon_charge=this_muon.Charge()*this_jet.Charge();
+  ret.palongjet=GetP_along_Jet(this_muon,this_jet);
+  if(ret.palongjet >100 ) ret.palongjet=100.;
+  ret.palongjetratio=ret.palongjet/this_jet.P();
+  if(ret.palongjetratio>1) ret.palongjetratio=1.;
+  ret.charge=this_muon.Charge();
+
+
+
+
+  //--remove 2409.2
+  
+
+
+  ret.dR_l_j=this_muon.DeltaR(this_jet);
+  ret.reltrkiso=this_muon.TrkIso()/this_muon.Pt();
+
+
+  ret.pt=this_muon.Pt();
+  ret.aeta=fabs(this_muon.Eta());
+  ret.normchi2=this_muon.Chi2();
+  ret.ntracklayers=this_muon.TrackerLayers();
+  ret.ntrackhits=this_muon.TrackerHits();
+  ret.nvalidmuonhits=this_muon.ValidMuonHits();
+  ret.nmatchedstations=this_muon.MatchedStations();
+
+
+  ret.isGlobalMuon=this_muon.IsType(Muon::GlobalMuon);
+  ret.isTrackerMuon=this_muon.IsType(Muon::TrackerMuon);
+  ret.isStandAloneMuon=this_muon.IsType(Muon::StandAloneMuon);
+  ret.isCaloMuon=this_muon.IsType(Muon::CaloMuon);
+  ret.isPFMuon=this_muon.IsType(Muon::PFMuon);
+  ret.isRPCMuon=this_muon.IsType(Muon::RPCMuon);
+  ret.isGEMMuon=this_muon.IsType(Muon::GEMMuon);
+  ret.isME0Muon=this_muon.IsType(Muon::ME0Muon);
+
   return ret;
 }
+*/
+
 
 JHAnalyzerBase::belectronvar JHAnalyzerBase::Get_belectronvar(Electron &this_electron, Jet &this_jet){
-  //belectron=Get_belectronvars(AllElectrons[i],jet);
+
   belectronvar ret;
   ret.nsip3d=fabs(this_electron.IP3D()/this_electron.IP3Derr());
   ret.reliso=this_electron.RelIso();
   ret.ptwrtjet=GetPt_wrt_Jet(this_electron,this_jet);
   ret.P_jetrest=GetP_JetRestFrame(this_electron,this_jet);
   ret.bjet_charge_dot_belectron_charge=this_electron.Charge()*this_jet.Charge();
-
-
+  
+  ret.palongjet=GetP_along_Jet(this_electron,this_jet);
+  ret.palongjetratio=ret.palongjet/this_jet.P();
+  ret.charge=this_electron.Charge();
 
 
 
   //  --rm for v2409.2
-  /*
+
   ret.dR_l_j=this_electron.DeltaR(this_jet);  
   ret.reltrkiso=this_electron.TrkIso()/this_electron.Pt();                                                                                       
   ret.relecalPFClusterIso=this_electron.ecalPFClusterIso()/this_electron.Pt();
   ret.charge=this_electron.Charge();
   ret.IsGsfCtfScPixChargeConsistent=this_electron.IsGsfCtfScPixChargeConsistent();
-  ret.palongjet=GetP_along_Jet(this_electron,this_jet);
-  ret.palongjetratio=ret.palongjet/this_jet.P();
+
   ret.pt=this_electron.Pt();
   ret.aeta=this_electron.Eta();
   ret.full5x5sigmaietaieta=this_electron.Full5x5_sigmaIetaIeta();
@@ -3213,37 +3371,88 @@ JHAnalyzerBase::belectronvar JHAnalyzerBase::Get_belectronvar(Electron &this_ele
   ret.HoverE=this_electron.HoverE();
   ret.InvEminusInvP=fabs(this_electron.InvEminusInvP());
   ret.nmissinghits=this_electron.NMissingHits();
-  */
+
+  ret.passVetoID=this_electron.PassID("passVetoID");
+  ret.passVetoIDnoIso=this_electron.PassID("passVetoIDnoIso");
+  ret.passLooseID=this_electron.PassID("passLooseID");
+  ret.passMediumID=this_electron.PassID("passMediumID");
+  ret.passTightID=this_electron.PassID("passTightID");
+
+  return ret;
+}
+/*
+
+JHAnalyzerBase::belectronvar JHAnalyzerBase::Get_belectronvar_2409_2(Electron &this_electron, Jet &this_jet){
+  //belectron=Get_belectronvars(AllElectrons[i],jet);
+  //belectron_var=["belectron_nsip3d < 30. ? belectron_nsip3d : 30.","belectron_reliso","belectron_ptwrtbjet < 10. ? belectron_ptwrtbjet : 10.","belectron_P_jetrest < 10. ? belectron_P_jetrest : 10.","belectron_palongjet < 100. ? belectron_palongjet : 100.","belectron_palongjetratio < 1. ? belectron_palongjetratio : 1.","bjet_charge*belectron_charge"]  
+
+  belectronvar ret;
+  ret.nsip3d=fabs(this_electron.IP3D()/this_electron.IP3Derr());
+  if(ret.nsip3d>30) ret.nsip3d=30.;
+  ret.reliso=this_electron.RelIso();
+  if(ret.reliso>10) ret.reliso=10.;
+  ret.ptwrtjet=GetPt_wrt_Jet(this_electron,this_jet);
+  if(ret.ptwrtjet>10) ret.ptwrtjet=10.;
+  ret.P_jetrest=GetP_JetRestFrame(this_electron,this_jet);
+  if(ret.P_jetrest>10) ret.P_jetrest=10.;
+  ret.bjet_charge_dot_belectron_charge=this_electron.Charge()*this_jet.Charge();
+  
+  ret.palongjet=GetP_along_Jet(this_electron,this_jet);
+  if(ret.palongjet>100) ret.palongjet=100;
+  ret.palongjetratio=ret.palongjet/this_jet.P();
+  ret.charge=this_electron.Charge();
+
+
+
+  //  --rm for v2409.2
+
+  ret.dR_l_j=this_electron.DeltaR(this_jet);  
+  ret.reltrkiso=this_electron.TrkIso()/this_electron.Pt();                                                                                       
+  ret.relecalPFClusterIso=this_electron.ecalPFClusterIso()/this_electron.Pt();
+  ret.charge=this_electron.Charge();
+  ret.IsGsfCtfScPixChargeConsistent=this_electron.IsGsfCtfScPixChargeConsistent();
+
+  ret.pt=this_electron.Pt();
+  ret.aeta=this_electron.Eta();
+  ret.full5x5sigmaietaieta=this_electron.Full5x5_sigmaIetaIeta();
+  ret.detaseed=this_electron.dEtaSeed();
+  ret.abs_detaseed=fabs(ret.detaseed);
+  ret.HoverE=this_electron.HoverE();
+  ret.InvEminusInvP=fabs(this_electron.InvEminusInvP());
+  ret.nmissinghits=this_electron.NMissingHits();
+
 
 
   return ret;
 }
-
+*/
 
 JHAnalyzerBase::bjetvar JHAnalyzerBase::Get_bjetvar(Jet &this_jet){
   bjetvar ret;
 
   ret.ChargedHadronEnergyFraction=this_jet.GetChargedHadronEnergyFraction();
   ret.NeutralHadronEnergyFraction=this_jet.GetNeutralHadronEnergyFraction();
+  ret.log_NeutralHadronEnergyFraction=log(this_jet.GetNeutralHadronEnergyFraction());
   ret.NeutralEmEnergyFraction=this_jet.GetNeutralEmEnergyFraction();
   ret.ChargedEmEnergyFraction=this_jet.GetChargedEmEnergyFraction();
   ret.MuonEnergyFraction=this_jet.GetMuonEnergyFraction();
+  ret.log_MuonEnergyFraction=log(this_jet.GetMuonEnergyFraction());
   ret.ChargedMultiplicity=this_jet.ChargedMultiplicity();
   ret.NeutralMultiplicity=this_jet.NeutralMultiplicity();
-  ret.abs_charge=fabs(ret.charge);
-
+  ret.abs_charge=fabs(this_jet.Charge());
+  ret.charge=this_jet.Charge();
 
   //skip for faster run
-  /*
+
   ret.pt=this_jet.Pt();
   ret.aeta=fabs(this_jet.Eta());
   ret.eta=this_jet.Eta();
 
-  ret.charge=this_jet.Charge();
+
 
   ret.partonFlavour=this_jet.partonFlavour();//if is data -> 0
   ret.hadronFlavour=this_jet.hadronFlavour();//if is data -> 0
-  */
+
   
   return ret;
 }
@@ -3266,9 +3475,253 @@ void JHAnalyzerBase::DeleteChargeScoreTool(){
     jChargeTool=nullptr;
   }
 }
-
 void JHAnalyzerBase::LoadChargeScoreTool(TString muon_version,TString electron_version, TString jet_version, bool applycut){
+  //muon_score_version=muon_version;
+  //electron_score_version=electron_version;
+  //jet_score_version=jet_version;
+
+
+
+  //bmuon_ChargeTool
+  //belectron_ChargeTool
+  //bjet_ChargeTool
+  
+  if(muon_version=="2409.2" && electron_version=="2409.2" && jet_version=="2409.2"){
+    LoadChargeScoreTool_2409_2(applycut);
+    return;
+  }
+  else if(muon_version=="2512.5" && electron_version=="2512.5" && jet_version=="2512.5"){    
+    LoadChargeScoreTool_2512_5(applycut);
+  }
+  else if(muon_version=="2512.4" && electron_version=="2512.4" && jet_version=="2512.4"){    
+    LoadChargeScoreTool_2512_4(applycut);
+  }
+  else if(muon_version=="2512.3" && electron_version=="2512.3" && jet_version=="2512.3"){    
+    LoadChargeScoreTool_2512_3(applycut);
+  }  
+}
+
+
+
+void JHAnalyzerBase::LoadChargeScoreTool_2512_5(bool applycut){
   IsChargeScoreToolOn=1;
+  TString muon_version="2512.5";
+  TString electron_version="2512.5";
+  TString jet_version="2512.5";
+  mChargeTool=new ChargeScoreTool("muon",muon_version,DataEra);
+  eChargeTool=new ChargeScoreTool("electron",electron_version,DataEra);
+  jChargeTool=new ChargeScoreTool("jet",jet_version,DataEra);
+  //Link variables
+  //void TMVATool::AddVariable(TString _formula, float *_this_var_address)
+  /*
+
+  //bmuon_ChargeTool
+  //belectron_ChargeTool
+  //bjet_ChargeTool
+
+
+   */
+  ///---Muon---//
+  if(DataEra=="2016preVFP"){
+
+    mChargeTool->AddVariable("bmuon_dR_l_j<0.04?0.04:bmuon_dR_l_j",&bmuon_ChargeTool.dR_l_j,0.04);
+    mChargeTool->AddVariable("(bmuon_P_jetrest<1.5)?1.5:(bmuon_P_jetrest>3.)?3.:bmuon_P_jetrest",&bmuon_ChargeTool.P_jetrest,1.5,3.);
+    mChargeTool->AddVariable("bmuon_palongjet<25.?bmuon_palongjet:25.",&bmuon_ChargeTool.palongjet,0.,25.);
+    mChargeTool->AddVariable("(bmuon_ptwrtbjet<1.)?1.:(bmuon_ptwrtbjet>3.)?3.:bmuon_ptwrtbjet",&bmuon_ChargeTool.ptwrtjet,1.,3.);
+    mChargeTool->AddVariable("(bmuon_reliso<1.)?1:(bmuon_reliso>5.)?5.:bmuon_reliso",&bmuon_ChargeTool.reliso,1.,5.);
+    mChargeTool->AddVariable("(bjet_ChargedHadronEnergyFraction<0.1)?0.1:(bjet_ChargedHadronEnergyFraction>0.6)?0.6:bjet_ChargedHadronEnergyFraction",&bjet_ChargeTool.ChargedHadronEnergyFraction,0.1,0.6);
+    mChargeTool->AddVariable("(bjet_ChargedMultiplicity<2)?2:(bjet_ChargedMultiplicity>30)?30:bjet_ChargedMultiplicity",&bjet_ChargeTool.ChargedMultiplicity,2.,30.);
+    mChargeTool->AddVariable("(bjet_MuonEnergyFraction<0.25)?0.25:(bjet_MuonEnergyFraction>0.5)?0.5:bjet_MuonEnergyFraction",&bjet_ChargeTool.MuonEnergyFraction,0.25,0.5);
+    mChargeTool->AddVariable("(bjet_NeutralEmEnergyFraction<0.2)?0.2:(bjet_NeutralEmEnergyFraction>0.5)?0.5:bjet_NeutralEmEnergyFraction",&bjet_ChargeTool.NeutralEmEnergyFraction,0.2,0.5);
+    mChargeTool->AddVariable("(bjet_NeutralHadronEnergyFraction<0.15)?0.15:(bjet_NeutralHadronEnergyFraction>0.4)?0.4:bjet_NeutralHadronEnergyFraction",&bjet_ChargeTool.NeutralHadronEnergyFraction,0.15,0.4);
+    mChargeTool->AddVariable("(bjet_NeutralMultiplicity<6)?6:(bjet_NeutralMultiplicity>25)?25:bjet_NeutralMultiplicity",&bjet_ChargeTool.NeutralMultiplicity,6.,25.);
+    mChargeTool->AddVariable("fabs(bjet_charge)",&bjet_ChargeTool.abs_charge);
+    mChargeTool->AddVariable("(bjet_charge*bmuon_charge<-0.1)?-0.1:bjet_charge*bmuon_charge",&bmuon_ChargeTool.bjet_charge_dot_bmuon_charge,-0.1);
+
+  }
+  else if(DataEra=="2016postVFP"){
+    mChargeTool->AddVariable("bmuon_dR_l_j<0.04?0.04:bmuon_dR_l_j",&bmuon_ChargeTool.dR_l_j,0.04);
+    mChargeTool->AddVariable("bmuon_nsip3d<10.?bmuon_nsip3d:10.",&bmuon_ChargeTool.nsip3d,0.,10.);
+    mChargeTool->AddVariable("(bmuon_P_jetrest<1.5)?1.5:(bmuon_P_jetrest>4.)?4.:bmuon_P_jetrest",&bmuon_ChargeTool.P_jetrest,1.5,4.);
+    mChargeTool->AddVariable("bmuon_palongjet<30.?bmuon_palongjet:30.",&bmuon_ChargeTool.palongjet,0.,30.);
+    mChargeTool->AddVariable("(bmuon_ptwrtbjet<1.)?1.:(bmuon_ptwrtbjet>3.)?3.:bmuon_ptwrtbjet",&bmuon_ChargeTool.ptwrtjet,1.,3.);
+    mChargeTool->AddVariable("bmuon_reliso<6.?bmuon_reliso:6.",&bmuon_ChargeTool.reliso,0.,6.);
+    mChargeTool->AddVariable("(bjet_ChargedHadronEnergyFraction<0.2)?0.2:(bjet_ChargedHadronEnergyFraction>0.8)?0.8:bjet_ChargedHadronEnergyFraction",&bjet_ChargeTool.ChargedHadronEnergyFraction,0.2,0.8);
+    mChargeTool->AddVariable("(bjet_MuonEnergyFraction<0.25)?0.25:(bjet_MuonEnergyFraction>0.45)?0.45:bjet_MuonEnergyFraction",&bjet_ChargeTool.MuonEnergyFraction,0.25,0.45);
+    mChargeTool->AddVariable("(bjet_NeutralEmEnergyFraction<0.4)?bjet_NeutralEmEnergyFraction:0.4",&bjet_ChargeTool.NeutralEmEnergyFraction,0.,0.4);
+    mChargeTool->AddVariable("(bjet_NeutralHadronEnergyFraction<0.15)?0.15:(bjet_NeutralHadronEnergyFraction>0.4)?0.4:bjet_NeutralHadronEnergyFraction",&bjet_ChargeTool.NeutralHadronEnergyFraction,0.15,0.4);
+    mChargeTool->AddVariable("(bjet_NeutralMultiplicity<25)?bjet_NeutralMultiplicity:25",&bjet_ChargeTool.NeutralMultiplicity,0.,25.);
+    mChargeTool->AddVariable("fabs(bjet_charge)<0.5?fabs(bjet_charge):0.5",&bjet_ChargeTool.abs_charge,0.,0.5);
+    mChargeTool->AddVariable("(bjet_charge*bmuon_charge<-0.5)?-0.5:(bjet_charge*bmuon_charge>0.6)?0.6:bjet_charge*bmuon_charge",&bmuon_ChargeTool.bjet_charge_dot_bmuon_charge,-0.5,0.6);
+    
+
+  }
+  else if(DataEra=="2017"){
+    mChargeTool->AddVariable("bmuon_dR_l_j<0.04?0.04:bmuon_dR_l_j",&bmuon_ChargeTool.dR_l_j,0.04);
+    mChargeTool->AddVariable("(bmuon_nsip3d<3.)?3.:(bmuon_nsip3d>10.)?10.:bmuon_nsip3d",&bmuon_ChargeTool.nsip3d,3.,10.);
+    mChargeTool->AddVariable("(bmuon_P_jetrest<1.5)?1.5:(bmuon_P_jetrest>5.)?5.:bmuon_P_jetrest",&bmuon_ChargeTool.P_jetrest,1.5,5.);
+    mChargeTool->AddVariable("bmuon_palongjet<30.?bmuon_palongjet:30.",&bmuon_ChargeTool.palongjet,0.,30.);
+    mChargeTool->AddVariable("(bmuon_ptwrtbjet<1.5)?1.5:(bmuon_ptwrtbjet>3.5)?3.5:bmuon_ptwrtbjet",&bmuon_ChargeTool.ptwrtjet,1.5,3.5);
+    mChargeTool->AddVariable("bmuon_reliso<6.?bmuon_reliso:6.",&bmuon_ChargeTool.reliso,0.,6.);
+    mChargeTool->AddVariable("(bjet_ChargedHadronEnergyFraction<0.35)?0.35:(bjet_ChargedHadronEnergyFraction>0.9)?0.9:bjet_ChargedHadronEnergyFraction",&bjet_ChargeTool.ChargedHadronEnergyFraction,0.35,0.9);
+    mChargeTool->AddVariable("(bjet_MuonEnergyFraction<0.15)?0.15:(bjet_MuonEnergyFraction>0.45)?0.45:bjet_MuonEnergyFraction",&bjet_ChargeTool.MuonEnergyFraction,0.15,0.45);
+    mChargeTool->AddVariable("bjet_NeutralEmEnergyFraction<0.5?bjet_NeutralEmEnergyFraction:0.5",&bjet_ChargeTool.NeutralEmEnergyFraction,0.,0.5);
+    mChargeTool->AddVariable("(bjet_NeutralHadronEnergyFraction<0.1)?0.1:(bjet_NeutralHadronEnergyFraction>0.4)?0.4:bjet_NeutralHadronEnergyFraction",&bjet_ChargeTool.NeutralHadronEnergyFraction,0.1,0.4);
+    mChargeTool->AddVariable("bjet_NeutralMultiplicity<30?bjet_NeutralMultiplicity:30",&bjet_ChargeTool.NeutralMultiplicity,0.,30.);
+    mChargeTool->AddVariable("fabs(bjet_charge)<0.5?fabs(bjet_charge):0.5",&bjet_ChargeTool.abs_charge,0.,0.5);
+    mChargeTool->AddVariable("(bjet_charge*bmuon_charge<-0.2)?-0.2:(bjet_charge*bmuon_charge>0.5)?0.5:bjet_charge*bmuon_charge",&bmuon_ChargeTool.bjet_charge_dot_bmuon_charge,-0.2,0.5);
+
+  }
+  else if(DataEra=="2018"){
+    mChargeTool->AddVariable("bmuon_dR_l_j<0.04?0.04:bmuon_dR_l_j",&bmuon_ChargeTool.dR_l_j,0.04);
+    mChargeTool->AddVariable("(bmuon_nsip3d<1.)?1.:(bmuon_nsip3d>10.)?10.:bmuon_nsip3d",&bmuon_ChargeTool.nsip3d,1.,10.);
+    mChargeTool->AddVariable("(bmuon_P_jetrest<1.5)?1.5:(bmuon_P_jetrest>4.)?4.:bmuon_P_jetrest",&bmuon_ChargeTool.P_jetrest,1.5,4.);
+    mChargeTool->AddVariable("bmuon_palongjet<30.?bmuon_palongjet:30.",&bmuon_ChargeTool.palongjet,0.,30.);
+    mChargeTool->AddVariable("bmuon_ptwrtbjet<1.?1:bmuon_ptwrtbjet>3.5?3.5:bmuon_ptwrtbjet",&bmuon_ChargeTool.ptwrtjet,1.,3.5);
+    mChargeTool->AddVariable("bmuon_reliso<4.?bmuon_reliso:4.",&bmuon_ChargeTool.reliso,0.,4.);
+    mChargeTool->AddVariable("(bjet_ChargedHadronEnergyFraction<0.35)?0.35:(bjet_ChargedHadronEnergyFraction>0.9)?0.9:bjet_ChargedHadronEnergyFraction",&bjet_ChargeTool.ChargedHadronEnergyFraction,0.35,0.9);
+    mChargeTool->AddVariable("(bjet_MuonEnergyFraction<0.15)?0.15:(bjet_MuonEnergyFraction>0.45)?0.45:bjet_MuonEnergyFraction",&bjet_ChargeTool.MuonEnergyFraction,0.15,0.45);
+    mChargeTool->AddVariable("bjet_NeutralEmEnergyFraction<0.1?0.1:bjet_NeutralEmEnergyFraction>0.5?0.5:bjet_NeutralEmEnergyFraction",&bjet_ChargeTool.NeutralEmEnergyFraction,0.1,0.5);
+    mChargeTool->AddVariable("(bjet_NeutralHadronEnergyFraction<0.1)?0.1:(bjet_NeutralHadronEnergyFraction>0.5)?0.5:bjet_NeutralHadronEnergyFraction",&bjet_ChargeTool.NeutralHadronEnergyFraction,0.1,0.5);
+    mChargeTool->AddVariable("(bjet_NeutralMultiplicity<30)?bjet_NeutralMultiplicity:30",&bjet_ChargeTool.NeutralMultiplicity,0.,30.);
+    mChargeTool->AddVariable("fabs(bjet_charge)<0.5?fabs(bjet_charge):0.5",&bjet_ChargeTool.abs_charge,0.,0.5);
+    mChargeTool->AddVariable("bjet_charge*bmuon_charge<-0.6?-0.6:bjet_charge*bmuon_charge>0.5?0.5:bjet_charge*bmuon_charge",&bmuon_ChargeTool.bjet_charge_dot_bmuon_charge,-0.6,0.5);
+
+  }
+  mChargeTool->SetupTMVA();
+
+
+  //---Electron---//
+  if(DataEra=="2016preVFP"){
+    eChargeTool->AddVariable("(belectron_dR_l_j<0.15)?0.15:belectron_dR_l_j",&belectron_ChargeTool.dR_l_j,0.15);
+    eChargeTool->AddVariable("(belectron_P_jetrest<0.8)?0.8:(belectron_P_jetrest>1.5)?1.5:belectron_P_jetrest",&belectron_ChargeTool.P_jetrest,0.8,1.5);
+    eChargeTool->AddVariable("(belectron_ptwrtbjet<0.5)?0.5:(belectron_ptwrtbjet>1.5)?1.5:belectron_ptwrtbjet",&belectron_ChargeTool.ptwrtjet,0.5,1.5);
+    eChargeTool->AddVariable("bjet_ChargedEmEnergyFraction<0.2?bjet_ChargedEmEnergyFraction:0.2",&bjet_ChargeTool.ChargedEmEnergyFraction,0.,0.2);
+    eChargeTool->AddVariable("(bjet_ChargedHadronEnergyFraction<0.2)?0.2:(bjet_ChargedHadronEnergyFraction>0.9)?0.9:bjet_ChargedHadronEnergyFraction",&bjet_ChargeTool.ChargedHadronEnergyFraction,0.2,0.9);
+    eChargeTool->AddVariable("(bjet_NeutralEmEnergyFraction<0.4)?0.4:(bjet_NeutralEmEnergyFraction>0.7)?0.7:bjet_NeutralEmEnergyFraction",&bjet_ChargeTool.NeutralEmEnergyFraction,0.4,0.7);
+    eChargeTool->AddVariable("(fabs(bjet_charge)<0.7)?fabs(bjet_charge):0.7",&bjet_ChargeTool.abs_charge,0.,0.7);
+    eChargeTool->AddVariable("(bjet_charge*belectron_charge<-0.3)?-0.3:(bjet_charge*belectron_charge>0.3)?0.3:bjet_charge*belectron_charge",&belectron_ChargeTool.bjet_charge_dot_belectron_charge,-0.3,0.3);
+  }
+  else if(DataEra=="2016postVFP"){
+    eChargeTool->AddVariable("belectron_dR_l_j<0.15?0.15:belectron_dR_l_j",&belectron_ChargeTool.dR_l_j,0.15);
+    eChargeTool->AddVariable("(belectron_P_jetrest<1.)?1.:(belectron_P_jetrest>2.)?2.:belectron_P_jetrest",&belectron_ChargeTool.P_jetrest,1.,2.);
+    eChargeTool->AddVariable("(belectron_ptwrtbjet<0.5)?0.5:(belectron_ptwrtbjet>3.)?3.:belectron_ptwrtbjet",&belectron_ChargeTool.ptwrtjet,0.5,3.);
+    eChargeTool->AddVariable("bjet_ChargedEmEnergyFraction<0.2?bjet_ChargedEmEnergyFraction:0.2",&bjet_ChargeTool.ChargedEmEnergyFraction,0.,0.2);
+    eChargeTool->AddVariable("(bjet_ChargedHadronEnergyFraction<0.5)?0.5:(bjet_ChargedHadronEnergyFraction>0.9)?0.9:bjet_ChargedHadronEnergyFraction",&bjet_ChargeTool.ChargedHadronEnergyFraction,0.5,0.9);
+    eChargeTool->AddVariable("(bjet_NeutralEmEnergyFraction<0.25)?0.25:(bjet_NeutralEmEnergyFraction>0.7)?0.7:bjet_NeutralEmEnergyFraction",&bjet_ChargeTool.NeutralEmEnergyFraction,0.25,0.7);
+    eChargeTool->AddVariable("fabs(bjet_charge)<0.3?fabs(bjet_charge):0.3",&bjet_ChargeTool.abs_charge,0.,0.3);
+    eChargeTool->AddVariable("(bjet_charge*belectron_charge<-0.3)?-0.3:(bjet_charge*belectron_charge>0.3)?0.3:bjet_charge*belectron_charge",&belectron_ChargeTool.bjet_charge_dot_belectron_charge,-0.3,0.3);
+
+  }
+  else if(DataEra=="2017"){
+    eChargeTool->AddVariable("belectron_dR_l_j<0.1?0.1:belectron_dR_l_j",&belectron_ChargeTool.dR_l_j,0.1);
+    eChargeTool->AddVariable("belectron_nsip3d<6.?belectron_nsip3d:6.",&belectron_ChargeTool.nsip3d,0.,6.);
+    eChargeTool->AddVariable("(belectron_P_jetrest<2.)?belectron_P_jetrest:2.",&belectron_ChargeTool.P_jetrest,0.,2.);
+    eChargeTool->AddVariable("(belectron_ptwrtbjet<3.)?belectron_ptwrtbjet:3.",&belectron_ChargeTool.ptwrtjet,0.,3.);
+    eChargeTool->AddVariable("bjet_ChargedEmEnergyFraction<0.2?bjet_ChargedEmEnergyFraction:0.2",&bjet_ChargeTool.ChargedEmEnergyFraction,0.,0.2);
+    eChargeTool->AddVariable("bjet_ChargedHadronEnergyFraction<0.6?0.6:bjet_ChargedHadronEnergyFraction",&bjet_ChargeTool.ChargedHadronEnergyFraction,0.6);
+    eChargeTool->AddVariable("(bjet_NeutralEmEnergyFraction<0.2)?0.2:(bjet_NeutralEmEnergyFraction>0.65)?0.65:bjet_NeutralEmEnergyFraction",&bjet_ChargeTool.NeutralEmEnergyFraction,0.2,0.65);
+    eChargeTool->AddVariable("fabs(bjet_charge)<0.35?fabs(bjet_charge):0.35",&bjet_ChargeTool.abs_charge,0.,0.35);
+    eChargeTool->AddVariable("(bjet_charge*belectron_charge<-0.4)?-0.4:(bjet_charge*belectron_charge>0.3)?0.3:bjet_charge*belectron_charge",&belectron_ChargeTool.bjet_charge_dot_belectron_charge,-0.4,0.3);
+
+  }
+  else if(DataEra=="2018"){
+    eChargeTool->AddVariable("belectron_dR_l_j<0.15?0.15:belectron_dR_l_j",&belectron_ChargeTool.dR_l_j,0.15);
+    eChargeTool->AddVariable("belectron_nsip3d<6.?belectron_nsip3d:6.",&belectron_ChargeTool.nsip3d,0.,6.);
+    eChargeTool->AddVariable("belectron_P_jetrest<4.?belectron_P_jetrest:4.",&belectron_ChargeTool.P_jetrest,0.,4.);
+    eChargeTool->AddVariable("(belectron_ptwrtbjet<3.)?3.:belectron_ptwrtbjet>5.?5.:belectron_ptwrtbjet",&belectron_ChargeTool.ptwrtjet,3.,5.);
+    eChargeTool->AddVariable("bjet_ChargedEmEnergyFraction<0.15?bjet_ChargedEmEnergyFraction:0.15",&bjet_ChargeTool.ChargedEmEnergyFraction,0.,0.15);
+    eChargeTool->AddVariable("bjet_ChargedHadronEnergyFraction<0.6?0.6:bjet_ChargedHadronEnergyFraction",&bjet_ChargeTool.ChargedHadronEnergyFraction,0.6);
+    eChargeTool->AddVariable("(bjet_NeutralEmEnergyFraction<0.35)?0.35:(bjet_NeutralEmEnergyFraction>0.75)?0.75:bjet_NeutralEmEnergyFraction",&bjet_ChargeTool.NeutralEmEnergyFraction,0.35,0.75);
+    eChargeTool->AddVariable("fabs(bjet_charge)<0.3?fabs(bjet_charge):0.3",&bjet_ChargeTool.abs_charge,0.,0.3);
+    eChargeTool->AddVariable("(bjet_charge*belectron_charge<-0.2)?-0.2:(bjet_charge*belectron_charge>0.4)?0.4:bjet_charge*belectron_charge",&belectron_ChargeTool.bjet_charge_dot_belectron_charge,-0.2,0.4);
+  }
+  eChargeTool->SetupTMVA();
+  //---Jet----//
+  if(DataEra=="2016preVFP"){
+    jChargeTool->AddVariable("bjet_ChargedHadronEnergyFraction>0.15?bjet_ChargedHadronEnergyFraction:0.15",&bjet_ChargeTool.ChargedHadronEnergyFraction,0.15);
+    jChargeTool->AddVariable("(bjet_ChargedMultiplicity<30)?bjet_ChargedMultiplicity:30",&bjet_ChargeTool.ChargedMultiplicity,0.,30.);
+    jChargeTool->AddVariable("(bjet_NeutralEmEnergyFraction<0.15)?0.15:(bjet_NeutralEmEnergyFraction>0.7)?0.7:bjet_NeutralEmEnergyFraction",&bjet_ChargeTool.NeutralEmEnergyFraction,0.15,0.7);
+    jChargeTool->AddVariable("(bjet_NeutralHadronEnergyFraction<0.1)?0.1:(bjet_NeutralHadronEnergyFraction>0.4)?0.4:bjet_NeutralHadronEnergyFraction",&bjet_ChargeTool.NeutralHadronEnergyFraction,0.1,0.4);
+    jChargeTool->AddVariable("(bjet_NeutralMultiplicity<30)?bjet_NeutralMultiplicity:30",&bjet_ChargeTool.NeutralMultiplicity,0.,30.);
+    jChargeTool->AddVariable("(fabs(bjet_charge)<0.9)?fabs(bjet_charge):0.9",&bjet_ChargeTool.abs_charge,0.,0.9);
+  }
+  else if(DataEra=="2016postVFP"){
+    jChargeTool->AddVariable("bjet_ChargedHadronEnergyFraction<0.15?0.15:(bjet_ChargedHadronEnergyFraction>0.7)?0.7:bjet_ChargedHadronEnergyFraction",&bjet_ChargeTool.ChargedHadronEnergyFraction,0.15,0.7);
+    jChargeTool->AddVariable("(log(bjet_MuonEnergyFraction)<-3.5)?-3.5:(log(bjet_MuonEnergyFraction)>-1.5)?-1.5:log(bjet_MuonEnergyFraction)",&bjet_ChargeTool.log_MuonEnergyFraction,-3.5,-1.5);
+    jChargeTool->AddVariable("bjet_NeutralEmEnergyFraction<0.7?bjet_NeutralEmEnergyFraction:0.7",&bjet_ChargeTool.NeutralEmEnergyFraction,0.,0.7);
+    jChargeTool->AddVariable("(log(bjet_NeutralHadronEnergyFraction)<-4.5)?-4.5:(log(bjet_NeutralHadronEnergyFraction)>-0.5)?-0.5:log(bjet_NeutralHadronEnergyFraction)",&bjet_ChargeTool.log_NeutralHadronEnergyFraction,-4.5,-0.5);
+    jChargeTool->AddVariable("(bjet_NeutralMultiplicity<5)?5:(bjet_NeutralMultiplicity>32)?32:bjet_NeutralMultiplicity",&bjet_ChargeTool.NeutralMultiplicity,5.,32.);
+    jChargeTool->AddVariable("fabs(bjet_charge)<0.7?fabs(bjet_charge):0.7",&bjet_ChargeTool.abs_charge,0.,0.7);
+
+  }
+  else if(DataEra=="2017"){
+    jChargeTool->AddVariable("bjet_ChargedHadronEnergyFraction<0.3?0.3:bjet_ChargedHadronEnergyFraction",&bjet_ChargeTool.ChargedHadronEnergyFraction,0.3);
+    jChargeTool->AddVariable("bjet_NeutralEmEnergyFraction<0.05?0.05:bjet_NeutralEmEnergyFraction>0.7?0.7:bjet_NeutralEmEnergyFraction",&bjet_ChargeTool.NeutralEmEnergyFraction,0.05,0.7);
+    jChargeTool->AddVariable("(log(bjet_NeutralHadronEnergyFraction)<-4)?-4:(log(bjet_NeutralHadronEnergyFraction)>-1)?-1:log(bjet_NeutralHadronEnergyFraction)",&bjet_ChargeTool.log_NeutralHadronEnergyFraction,-4.,-1.);
+    jChargeTool->AddVariable("bjet_NeutralMultiplicity<30?bjet_NeutralMultiplicity:30",&bjet_ChargeTool.NeutralMultiplicity,0.,30.);
+    jChargeTool->AddVariable("fabs(bjet_charge)<0.4?fabs(bjet_charge):0.4",&bjet_ChargeTool.abs_charge,0.,0.4);
+  }
+  else if(DataEra=="2018"){
+    jChargeTool->AddVariable("bjet_ChargedHadronEnergyFraction>0.2?bjet_ChargedHadronEnergyFraction:0.2",&bjet_ChargeTool.ChargedHadronEnergyFraction,0.,0.2);
+    jChargeTool->AddVariable("bjet_NeutralEmEnergyFraction<0.05?0.05:bjet_NeutralEmEnergyFraction>0.75?0.75:bjet_NeutralEmEnergyFraction",&bjet_ChargeTool.NeutralEmEnergyFraction,0.05,0.75);
+    jChargeTool->AddVariable("(bjet_NeutralHadronEnergyFraction<0.1)?0.1:(bjet_NeutralHadronEnergyFraction>0.6)?0.6:bjet_NeutralHadronEnergyFraction",&bjet_ChargeTool.NeutralHadronEnergyFraction,0.1,0.6);
+    jChargeTool->AddVariable("bjet_NeutralMultiplicity<30?bjet_NeutralMultiplicity:30",&bjet_ChargeTool.NeutralMultiplicity,0.,30.);
+    jChargeTool->AddVariable("fabs(bjet_charge)<0.4?fabs(bjet_charge):0.4",&bjet_ChargeTool.abs_charge,0.,0.4);
+  }
+
+  jChargeTool->SetupTMVA();
+
+
+  if (applycut){
+
+    map<TString,float> map_muon_mincut;
+    map_muon_mincut["2016preVFP"]=0.0;  map_muon_mincut["2016postVFP"]=-0.05;  map_muon_mincut["2017"]=0.0; map_muon_mincut["2018"]=0.0;
+    map<TString,float> map_muon_maxcut;
+    map_muon_maxcut["2016preVFP"]=-0.6;  map_muon_maxcut["2016postVFP"]=-0.55;  map_muon_maxcut["2017"]=-0.55; map_muon_maxcut["2018"]=-0.55;
+
+    
+    map<TString,float> map_electron_mincut;
+    map_electron_mincut["2016preVFP"]=0.05;  map_electron_mincut["2016postVFP"]=0.05;  map_electron_mincut["2017"]=0.05; map_electron_mincut["2018"]=0.05;
+    map<TString,float> map_electron_maxcut;
+    map_electron_maxcut["2016preVFP"]=-0.4;  map_electron_maxcut["2016postVFP"]=-0.4;  map_electron_maxcut["2017"]=-0.45; map_electron_maxcut["2018"]=-0.45;
+    map<TString,float> map_jet_mincut;
+    map_jet_mincut["2016preVFP"]=0.06;  map_jet_mincut["2016postVFP"]=-0.04;  map_jet_mincut["2017"]=-0.08; map_jet_mincut["2018"]=-0.06;
+    map<TString,float> map_jet_maxcut;//Turn off this region
+    map_jet_maxcut["2016preVFP"]=-1;  map_jet_maxcut["2016postVFP"]=-1;  map_jet_maxcut["2017"]=-1; map_jet_maxcut["2018"]=-1;
+    
+    
+    cout << "[JHAnalyzerBase::SetChargeScoreCut_2409_2] " << endl;
+    cout << "Muon" << endl;
+    mChargeTool->SetMinCut(map_muon_mincut[DataEra]);
+    mChargeTool->SetMaxCut(map_muon_maxcut[DataEra]);
+    cout << "Electron" << endl;
+    eChargeTool->SetMinCut(map_electron_mincut[DataEra]);
+    eChargeTool->SetMaxCut(map_electron_maxcut[DataEra]);
+    cout << "Jet" << endl;
+    jChargeTool->SetMinCut(map_jet_mincut[DataEra]);
+    jChargeTool->SetMaxCut(map_jet_maxcut[DataEra]);
+    
+  }
+  for(int i = 0 ; i < 10 ; i++){
+    cout << "i=" << i << endl;
+    mChargeTool->SetScore();
+    cout << "mChargeTool->GetScore()=" << mChargeTool->GetScore() << endl;    
+    eChargeTool->SetScore();
+    cout << "eChargeTool->GetScore()=" << eChargeTool->GetScore() << endl;
+    jChargeTool->SetScore();
+    cout << "jChargeTool->GetScore()=" << jChargeTool->GetScore() << endl;
+  }
+}
+
+
+
+
+void JHAnalyzerBase::LoadChargeScoreTool_2512_4(bool applycut){
+  IsChargeScoreToolOn=1;
+  TString muon_version="2512.4";
+  TString electron_version="2512.4";
+  TString jet_version="2512.4";
   mChargeTool=new ChargeScoreTool("muon",muon_version,DataEra);
   eChargeTool=new ChargeScoreTool("electron",electron_version,DataEra);
   jChargeTool=new ChargeScoreTool("jet",jet_version,DataEra);
@@ -3276,73 +3729,55 @@ void JHAnalyzerBase::LoadChargeScoreTool(TString muon_version,TString electron_v
   //void TMVATool::AddVariable(TString _formula, float *_this_var_address)
 
   ///---Muon---//
-  mChargeTool->AddVariable("bmuon_P_jetrest",&bmuon_ChargeTool.P_jetrest);
-  mChargeTool->AddVariable("bmuon_ptwrtbjet",&bmuon_ChargeTool.ptwrtjet);
+  
+  mChargeTool->AddVariable("bmuon_nsip3d<10.?bmuon_nsip3d:10.",&bmuon_ChargeTool.nsip3d);
+  mChargeTool->AddVariable("bmuon_reliso<10.?bmuon_reliso:10.",&bmuon_ChargeTool.reliso);
   mChargeTool->AddVariable("bmuon_dR_l_j",&bmuon_ChargeTool.dR_l_j);
-  mChargeTool->AddVariable("bmuon_nsip3d",&bmuon_ChargeTool.nsip3d);
-  mChargeTool->AddVariable("bmuon_reltrkiso",&bmuon_ChargeTool.reltrkiso);
-  mChargeTool->AddVariable("bmuon_reliso",&bmuon_ChargeTool.reliso);
-  mChargeTool->AddVariable("bmuon_palongjet",&bmuon_ChargeTool.palongjet);
-  mChargeTool->AddVariable("bmuon_palongjetratio",&bmuon_ChargeTool.palongjetratio);
-  mChargeTool->AddVariable("bmuon_pt",&bmuon_ChargeTool.pt);
-  mChargeTool->AddVariable("bmuon_aeta",&bmuon_ChargeTool.aeta);
-  mChargeTool->AddVariable("bmuon_normchi2",&bmuon_ChargeTool.normchi2);
-  mChargeTool->AddVariable("bmuon_ntracklayers",&bmuon_ChargeTool.ntracklayers);
-  mChargeTool->AddVariable("bmuon_ntrackhits",&bmuon_ChargeTool.ntrackhits);
-  mChargeTool->AddVariable("bmuon_nvalidmuonhits",&bmuon_ChargeTool.nvalidmuonhits);
-  mChargeTool->AddVariable("bmuon_nmatchedstations",&bmuon_ChargeTool.nmatchedstations);
-  mChargeTool->AddVariable("bjet_charge*bmuon_charge",&bmuon_ChargeTool.bjet_charge_dot_bmuon_charge);
-  mChargeTool->AddVariable("bjet_pt",&bjet_ChargeTool.pt);
-  mChargeTool->AddVariable("bjet_aeta",&bjet_ChargeTool.aeta);
-  mChargeTool->AddVariable("bjet_ChargedHadronEnergyFraction",&bjet_ChargeTool.ChargedHadronEnergyFraction);
-  mChargeTool->AddVariable("bjet_NeutralHadronEnergyFraction",&bjet_ChargeTool.NeutralHadronEnergyFraction);
+  mChargeTool->AddVariable("bmuon_ptwrtbjet<10.?bmuon_ptwrtbjet:10.",&bmuon_ChargeTool.ptwrtjet);
+  mChargeTool->AddVariable("bmuon_P_jetrest<10.?bmuon_P_jetrest:10.",&bmuon_ChargeTool.P_jetrest);  
+  mChargeTool->AddVariable("bmuon_palongjet<50.?bmuon_palongjet:50.",&bmuon_ChargeTool.palongjet);  
+  mChargeTool->AddVariable("bjet_charge*bmuon_charge<0.6?bjet_charge*bmuon_charge:0.6",&bmuon_ChargeTool.bjet_charge_dot_bmuon_charge);
+
+
+  mChargeTool->AddVariable("bjet_ChargedHadronEnergyFraction>0.2?bjet_ChargedHadronEnergyFraction:0.2",&bjet_ChargeTool.ChargedHadronEnergyFraction);
+  mChargeTool->AddVariable("bjet_NeutralHadronEnergyFraction>0.06?bjet_NeutralHadronEnergyFraction:0.06",&bjet_ChargeTool.NeutralHadronEnergyFraction);
   mChargeTool->AddVariable("bjet_NeutralEmEnergyFraction",&bjet_ChargeTool.NeutralEmEnergyFraction);
-  mChargeTool->AddVariable("bjet_ChargedEmEnergyFraction",&bjet_ChargeTool.ChargedEmEnergyFraction);
-  mChargeTool->AddVariable("bjet_MuonEnergyFraction",&bjet_ChargeTool.MuonEnergyFraction);
-  mChargeTool->AddVariable("fabs(bjet_charge)",&bjet_ChargeTool.abs_charge);
-  mChargeTool->AddVariable("bjet_ChargedMultiplicity",&bjet_ChargeTool.ChargedMultiplicity);
+  mChargeTool->AddVariable("bjet_MuonEnergyFraction>0.08?bjet_MuonEnergyFraction:0.08",&bjet_ChargeTool.MuonEnergyFraction);
+  mChargeTool->AddVariable("(bjet_ChargedMultiplicity>19)?20:(bjet_ChargedMultiplicity<11)?11:bjet_ChargedMultiplicity",&bjet_ChargeTool.ChargedMultiplicity);
   mChargeTool->AddVariable("bjet_NeutralMultiplicity",&bjet_ChargeTool.NeutralMultiplicity);
+  mChargeTool->AddVariable("fabs(bjet_charge)<0.6?fabs(bjet_charge):0.6",&bjet_ChargeTool.abs_charge);
+
+
   mChargeTool->SetupTMVA();
 
+
   //---Electron---//
-  eChargeTool->AddVariable("belectron_P_jetrest",&belectron_ChargeTool.P_jetrest);
-  eChargeTool->AddVariable("belectron_ptwrtbjet",&belectron_ChargeTool.ptwrtjet);
-  eChargeTool->AddVariable("belectron_dR_l_j",&belectron_ChargeTool.dR_l_j);
-  eChargeTool->AddVariable("belectron_nsip3d",&belectron_ChargeTool.nsip3d);
-  eChargeTool->AddVariable("belectron_reltrkiso",&belectron_ChargeTool.reltrkiso);
-  eChargeTool->AddVariable("belectron_reliso",&belectron_ChargeTool.reliso);
-  eChargeTool->AddVariable("belectron_palongjet",&belectron_ChargeTool.palongjet);
-  eChargeTool->AddVariable("belectron_palongjetratio",&belectron_ChargeTool.palongjetratio);
-  eChargeTool->AddVariable("belectron_pt",&belectron_ChargeTool.pt);
-  eChargeTool->AddVariable("belectron_aeta",&belectron_ChargeTool.aeta);
-  eChargeTool->AddVariable("belectron_full5x5sigmaietaieta",&belectron_ChargeTool.full5x5sigmaietaieta);
-  eChargeTool->AddVariable("fabs(belectron_detaseed)",&belectron_ChargeTool.abs_detaseed);
-  eChargeTool->AddVariable("belectron_HoverE",&belectron_ChargeTool.HoverE);
-  eChargeTool->AddVariable("belectron_InvEminusInvP",&belectron_ChargeTool.InvEminusInvP);
-  eChargeTool->AddVariable("bjet_charge*belectron_charge",&belectron_ChargeTool.bjet_charge_dot_belectron_charge);
-  eChargeTool->AddVariable("bjet_pt",&bjet_ChargeTool.pt);
-  eChargeTool->AddVariable("bjet_aeta",&bjet_ChargeTool.aeta);
-  eChargeTool->AddVariable("bjet_ChargedHadronEnergyFraction",&bjet_ChargeTool.ChargedHadronEnergyFraction);
-  eChargeTool->AddVariable("bjet_NeutralHadronEnergyFraction",&bjet_ChargeTool.NeutralHadronEnergyFraction);
-  eChargeTool->AddVariable("bjet_NeutralEmEnergyFraction",&bjet_ChargeTool.NeutralEmEnergyFraction);
-  eChargeTool->AddVariable("bjet_ChargedEmEnergyFraction",&bjet_ChargeTool.ChargedEmEnergyFraction);
-  eChargeTool->AddVariable("bjet_MuonEnergyFraction",&bjet_ChargeTool.MuonEnergyFraction);
-  eChargeTool->AddVariable("fabs(bjet_charge)",&bjet_ChargeTool.abs_charge);
-  eChargeTool->AddVariable("bjet_ChargedMultiplicity",&bjet_ChargeTool.ChargedMultiplicity);
-  eChargeTool->AddVariable("bjet_NeutralMultiplicity",&bjet_ChargeTool.NeutralMultiplicity);
+
+  eChargeTool->AddVariable("belectron_nsip3d<10.?belectron_nsip3d:10.",&belectron_ChargeTool.nsip3d);
+  eChargeTool->AddVariable("(belectron_reliso<1.)?1:(belectron_reliso>10)?10:belectron_reliso",&belectron_ChargeTool.reliso);
+  eChargeTool->AddVariable("belectron_ptwrtbjet<10.?belectron_ptwrtbjet:10.",&belectron_ChargeTool.ptwrtjet);
+  eChargeTool->AddVariable("belectron_P_jetrest<10.?belectron_P_jetrest:10.",&belectron_ChargeTool.P_jetrest);
+  eChargeTool->AddVariable("bjet_charge*belectron_charge<0.4?bjet_charge*belectron_charge:0.4",&belectron_ChargeTool.bjet_charge_dot_belectron_charge);
+
+  eChargeTool->AddVariable("bjet_ChargedHadronEnergyFraction>0.35?bjet_ChargedHadronEnergyFraction:0.35",&bjet_ChargeTool.ChargedHadronEnergyFraction);
+  eChargeTool->AddVariable("bjet_NeutralHadronEnergyFraction>0.1?bjet_NeutralHadronEnergyFraction:0.1",&bjet_ChargeTool.NeutralHadronEnergyFraction);
+  eChargeTool->AddVariable("bjet_NeutralEmEnergyFraction>0.1?bjet_NeutralEmEnergyFraction:0.1",&bjet_ChargeTool.NeutralEmEnergyFraction);
+  eChargeTool->AddVariable("bjet_ChargedEmEnergyFraction<0.3?bjet_ChargedEmEnergyFraction:0.3",&bjet_ChargeTool.ChargedEmEnergyFraction);
+  eChargeTool->AddVariable("(bjet_ChargedMultiplicity>20)?21:(bjet_ChargedMultiplicity<15)?14:bjet_ChargedMultiplicity",&bjet_ChargeTool.ChargedMultiplicity);
+  eChargeTool->AddVariable("bjet_NeutralMultiplicity>9?bjet_NeutralMultiplicity:9",&bjet_ChargeTool.NeutralMultiplicity);  
+  eChargeTool->AddVariable("fabs(bjet_charge)<0.5?fabs(bjet_charge):0.5",&bjet_ChargeTool.abs_charge);
   eChargeTool->SetupTMVA();
 
   //---Jet----//
-  jChargeTool->AddVariable("bjet_pt",&bjet_ChargeTool.pt);
-  jChargeTool->AddVariable("bjet_aeta",&bjet_ChargeTool.aeta);
+
   jChargeTool->AddVariable("bjet_ChargedHadronEnergyFraction",&bjet_ChargeTool.ChargedHadronEnergyFraction);
   jChargeTool->AddVariable("bjet_NeutralHadronEnergyFraction",&bjet_ChargeTool.NeutralHadronEnergyFraction);
   jChargeTool->AddVariable("bjet_NeutralEmEnergyFraction",&bjet_ChargeTool.NeutralEmEnergyFraction);
-  jChargeTool->AddVariable("bjet_ChargedEmEnergyFraction",&bjet_ChargeTool.ChargedEmEnergyFraction);
-  jChargeTool->AddVariable("bjet_MuonEnergyFraction",&bjet_ChargeTool.MuonEnergyFraction);
-  jChargeTool->AddVariable("fabs(bjet_charge)",&bjet_ChargeTool.abs_charge);
-  jChargeTool->AddVariable("bjet_ChargedMultiplicity",&bjet_ChargeTool.ChargedMultiplicity);
-  jChargeTool->AddVariable("bjet_NeutralMultiplicity",&bjet_ChargeTool.NeutralMultiplicity);
+  jChargeTool->AddVariable("(bjet_ChargedMultiplicity>19)?20:(bjet_ChargedMultiplicity<12)?11:bjet_ChargedMultiplicity",&bjet_ChargeTool.ChargedMultiplicity);
+  jChargeTool->AddVariable("bjet_NeutralMultiplicity>4?bjet_NeutralMultiplicity:4",&bjet_ChargeTool.NeutralMultiplicity);
+  jChargeTool->AddVariable("fabs(bjet_charge)<0.5?fabs(bjet_charge):0.5",&bjet_ChargeTool.abs_charge);
+			   
+
   jChargeTool->SetupTMVA();
 
 
@@ -3359,54 +3794,174 @@ void JHAnalyzerBase::LoadChargeScoreTool(TString muon_version,TString electron_v
 }
 
 
-void JHAnalyzerBase::LoadChargeScoreTool_temp(TString muon_version,TString electron_version, TString jet_version, bool applycut){
+
+
+
+
+void JHAnalyzerBase::LoadChargeScoreTool_2512_3(bool applycut){
   IsChargeScoreToolOn=1;
-
+  TString muon_version="2512.3";
+  TString electron_version="2512.3";
+  TString jet_version="2512.3";
+  mChargeTool=new ChargeScoreTool("muon",muon_version,DataEra);
   eChargeTool=new ChargeScoreTool("electron",electron_version,DataEra);
-
+  jChargeTool=new ChargeScoreTool("jet",jet_version,DataEra);
   //Link variables
   //void TMVATool::AddVariable(TString _formula, float *_this_var_address)
 
   ///---Muon---//
+  
+  mChargeTool->AddVariable("bmuon_nsip3d<10.?bmuon_nsip3d:10.",&bmuon_ChargeTool.nsip3d);
+  mChargeTool->AddVariable("bmuon_reliso<10.?bmuon_reliso:10.",&bmuon_ChargeTool.reliso);
+  mChargeTool->AddVariable("bmuon_dR_l_j",&bmuon_ChargeTool.dR_l_j);
+  mChargeTool->AddVariable("bmuon_ptwrtbjet<10.?bmuon_ptwrtbjet:10.",&bmuon_ChargeTool.ptwrtjet);
+  mChargeTool->AddVariable("bmuon_P_jetrest<10.?bmuon_P_jetrest:10.",&bmuon_ChargeTool.P_jetrest);  
+  mChargeTool->AddVariable("bmuon_palongjet<50.?bmuon_palongjet:50.",&bmuon_ChargeTool.palongjet);  
+  mChargeTool->AddVariable("bjet_charge*bmuon_charge",&bmuon_ChargeTool.bjet_charge_dot_bmuon_charge);
+
+
+  mChargeTool->AddVariable("bjet_ChargedHadronEnergyFraction>0.2?bjet_ChargedHadronEnergyFraction:0.2",&bjet_ChargeTool.ChargedHadronEnergyFraction);
+  mChargeTool->AddVariable("bjet_NeutralHadronEnergyFraction>0.06?bjet_NeutralHadronEnergyFraction:0.06",&bjet_ChargeTool.NeutralHadronEnergyFraction);
+  mChargeTool->AddVariable("bjet_NeutralEmEnergyFraction",&bjet_ChargeTool.NeutralEmEnergyFraction);
+  mChargeTool->AddVariable("bjet_MuonEnergyFraction>0.08?bjet_MuonEnergyFraction:0.08",&bjet_ChargeTool.MuonEnergyFraction);
+  mChargeTool->AddVariable("(bjet_ChargedMultiplicity>19)?20:(bjet_ChargedMultiplicity<11)?11:bjet_ChargedMultiplicity",&bjet_ChargeTool.ChargedMultiplicity);
+  mChargeTool->AddVariable("bjet_NeutralMultiplicity",&bjet_ChargeTool.NeutralMultiplicity);
+  mChargeTool->AddVariable("fabs(bjet_charge)",&bjet_ChargeTool.abs_charge);
+
+
+  mChargeTool->SetupTMVA();
+
 
   //---Electron---//
-  eChargeTool->AddVariable("belectron_P_jetrest",&belectron_ChargeTool.P_jetrest);
-  eChargeTool->AddVariable("belectron_ptwrtbjet",&belectron_ChargeTool.ptwrtjet);
-  eChargeTool->AddVariable("belectron_dR_l_j",&belectron_ChargeTool.dR_l_j);
-  eChargeTool->AddVariable("belectron_nsip3d",&belectron_ChargeTool.nsip3d);
-  eChargeTool->AddVariable("belectron_reltrkiso",&belectron_ChargeTool.reltrkiso);
-  eChargeTool->AddVariable("belectron_reliso",&belectron_ChargeTool.reliso);
-  eChargeTool->AddVariable("belectron_palongjet",&belectron_ChargeTool.palongjet);
-  eChargeTool->AddVariable("belectron_palongjetratio",&belectron_ChargeTool.palongjetratio);
-  eChargeTool->AddVariable("belectron_pt",&belectron_ChargeTool.pt);
-  eChargeTool->AddVariable("belectron_aeta",&belectron_ChargeTool.aeta);
-  eChargeTool->AddVariable("belectron_full5x5sigmaietaieta",&belectron_ChargeTool.full5x5sigmaietaieta);
-  eChargeTool->AddVariable("fabs(belectron_detaseed)",&belectron_ChargeTool.abs_detaseed);
-  eChargeTool->AddVariable("belectron_HoverE",&belectron_ChargeTool.HoverE);
-  eChargeTool->AddVariable("belectron_InvEminusInvP",&belectron_ChargeTool.InvEminusInvP);
+
+  eChargeTool->AddVariable("belectron_nsip3d<10.?belectron_nsip3d:10.",&belectron_ChargeTool.nsip3d);
+  eChargeTool->AddVariable("(belectron_reliso<1.)?1:(belectron_reliso>10)?10:belectron_reliso",&belectron_ChargeTool.reliso);
+  eChargeTool->AddVariable("belectron_ptwrtbjet<10.?belectron_ptwrtbjet:10.",&belectron_ChargeTool.ptwrtjet);
+  eChargeTool->AddVariable("belectron_P_jetrest<10.?belectron_P_jetrest:10.",&belectron_ChargeTool.P_jetrest);
   eChargeTool->AddVariable("bjet_charge*belectron_charge",&belectron_ChargeTool.bjet_charge_dot_belectron_charge);
-  eChargeTool->AddVariable("bjet_pt",&bjet_ChargeTool.pt);
-  eChargeTool->AddVariable("bjet_aeta",&bjet_ChargeTool.aeta);
-  eChargeTool->AddVariable("bjet_ChargedHadronEnergyFraction",&bjet_ChargeTool.ChargedHadronEnergyFraction);
-  eChargeTool->AddVariable("bjet_NeutralHadronEnergyFraction",&bjet_ChargeTool.NeutralHadronEnergyFraction);
-  eChargeTool->AddVariable("bjet_NeutralEmEnergyFraction",&bjet_ChargeTool.NeutralEmEnergyFraction);
-  eChargeTool->AddVariable("bjet_ChargedEmEnergyFraction",&bjet_ChargeTool.ChargedEmEnergyFraction);
-  eChargeTool->AddVariable("bjet_MuonEnergyFraction",&bjet_ChargeTool.MuonEnergyFraction);
+
+  eChargeTool->AddVariable("bjet_ChargedHadronEnergyFraction>0.35?bjet_ChargedHadronEnergyFraction:0.35",&bjet_ChargeTool.ChargedHadronEnergyFraction);
+  eChargeTool->AddVariable("bjet_NeutralHadronEnergyFraction>0.1?bjet_NeutralHadronEnergyFraction:0.1",&bjet_ChargeTool.NeutralHadronEnergyFraction);
+  eChargeTool->AddVariable("bjet_NeutralEmEnergyFraction>0.1?bjet_NeutralEmEnergyFraction:0.1",&bjet_ChargeTool.NeutralEmEnergyFraction);
+  eChargeTool->AddVariable("bjet_ChargedEmEnergyFraction<0.3?bjet_ChargedEmEnergyFraction:0.3",&bjet_ChargeTool.ChargedEmEnergyFraction);
+  eChargeTool->AddVariable("(bjet_ChargedMultiplicity>20)?21:(bjet_ChargedMultiplicity<15)?14:bjet_ChargedMultiplicity",&bjet_ChargeTool.ChargedMultiplicity);
+  eChargeTool->AddVariable("bjet_NeutralMultiplicity>9?bjet_NeutralMultiplicity:9",&bjet_ChargeTool.NeutralMultiplicity);  
   eChargeTool->AddVariable("fabs(bjet_charge)",&bjet_ChargeTool.abs_charge);
-  eChargeTool->AddVariable("bjet_ChargedMultiplicity",&bjet_ChargeTool.ChargedMultiplicity);
-  eChargeTool->AddVariable("bjet_NeutralMultiplicity",&bjet_ChargeTool.NeutralMultiplicity);
   eChargeTool->SetupTMVA();
 
+  //---Jet----//
+
+  jChargeTool->AddVariable("bjet_ChargedHadronEnergyFraction",&bjet_ChargeTool.ChargedHadronEnergyFraction);
+  jChargeTool->AddVariable("bjet_NeutralHadronEnergyFraction",&bjet_ChargeTool.NeutralHadronEnergyFraction);
+  jChargeTool->AddVariable("bjet_NeutralEmEnergyFraction",&bjet_ChargeTool.NeutralEmEnergyFraction);
+  jChargeTool->AddVariable("(bjet_ChargedMultiplicity>19)?20:(bjet_ChargedMultiplicity<12)?11:bjet_ChargedMultiplicity",&bjet_ChargeTool.ChargedMultiplicity);
+  jChargeTool->AddVariable("bjet_NeutralMultiplicity>4?bjet_NeutralMultiplicity:4",&bjet_ChargeTool.NeutralMultiplicity);
+  jChargeTool->AddVariable("fabs(bjet_charge)",&bjet_ChargeTool.abs_charge);
+			   
+
+  jChargeTool->SetupTMVA();
 
 
   if (applycut)SetChargeScoreCut(muon_version);
   for(int i = 0 ; i < 10 ; i++){
     cout << "i=" << i << endl;
+    mChargeTool->SetScore();
+    cout << "mChargeTool->GetScore()=" << mChargeTool->GetScore() << endl;    
     eChargeTool->SetScore();
     cout << "eChargeTool->GetScore()=" << eChargeTool->GetScore() << endl;
-
+    jChargeTool->SetScore();
+    cout << "jChargeTool->GetScore()=" << jChargeTool->GetScore() << endl;
   }
 }
+
+
+
+void JHAnalyzerBase::LoadChargeScoreTool_2409_2(bool applycut){
+  IsChargeScoreToolOn=1;
+  TString muon_version="2409.2";
+  TString electron_version="2409.2";
+  TString jet_version="2409.2";
+  mChargeTool=new ChargeScoreTool("muon",muon_version,DataEra);
+  eChargeTool=new ChargeScoreTool("electron",electron_version,DataEra);
+  jChargeTool=new ChargeScoreTool("jet",jet_version,DataEra);
+  //Link variables
+  //void TMVATool::AddVariable(TString _formula, float *_this_var_address)
+  
+  //bmuon_var=["bmuon_nsip3d<10. ? bmuon_nsip3d : 10.","bmuon_reliso","bmuon_ptwrtbjet < 10. ? bmuon_ptwrtbjet : 10.","bmuon_P_jetrest < 10. ? bmuon_P_jetrest : 10.","bmuon_palongjet < 100. ? bmuon_palongjet: 100.", "bmuon_palongjetratio < 1. ? bmuon_palongjetratio : 1." , "bjet_charge*bmuon_charge", ]  
+  //bjet_var=["bjet_ChargedHadronEnergyFraction","bjet_NeutralHadronEnergyFraction","bjet_NeutralEmEnergyFraction","bjet_ChargedEmEnergyFraction","bjet_MuonEnergyFraction","bjet_ChargedMultiplicity","bjet_NeutralMultiplicity","fabs(bjet_charge)"]
+
+  ///---Muon---//
+  
+
+  mChargeTool->AddVariable("bmuon_nsip3d<10.?bmuon_nsip3d:10.",&bmuon_ChargeTool.nsip3d);
+  mChargeTool->AddVariable("bmuon_reliso",&bmuon_ChargeTool.reliso);
+  mChargeTool->AddVariable("bmuon_ptwrtbjet<10.?bmuon_ptwrtbjet:10.",&bmuon_ChargeTool.ptwrtjet);
+  mChargeTool->AddVariable("bmuon_P_jetrest<10.?bmuon_P_jetrest:10.",&bmuon_ChargeTool.P_jetrest);  
+  mChargeTool->AddVariable("bmuon_palongjet<100.?bmuon_palongjet:100.",&bmuon_ChargeTool.palongjet);
+  mChargeTool->AddVariable("bmuon_palongjetratio<1.?bmuon_palongjetratio:1.",&bmuon_ChargeTool.palongjetratio);
+  mChargeTool->AddVariable("bjet_charge*bmuon_charge",&bmuon_ChargeTool.bjet_charge_dot_bmuon_charge);
+  //mChargeTool->AddVariable("bmuon_dR_l_j",&bmuon_ChargeTool.dR_l_j);
+
+
+
+  mChargeTool->AddVariable("bjet_ChargedHadronEnergyFraction",&bjet_ChargeTool.ChargedHadronEnergyFraction);
+  mChargeTool->AddVariable("bjet_NeutralHadronEnergyFraction",&bjet_ChargeTool.NeutralHadronEnergyFraction);
+  mChargeTool->AddVariable("bjet_NeutralEmEnergyFraction",&bjet_ChargeTool.NeutralEmEnergyFraction);
+  mChargeTool->AddVariable("bjet_ChargedEmEnergyFraction",&bjet_ChargeTool.ChargedEmEnergyFraction);
+  mChargeTool->AddVariable("bjet_MuonEnergyFraction",&bjet_ChargeTool.MuonEnergyFraction);
+  mChargeTool->AddVariable("fabs(bjet_charge)",&bjet_ChargeTool.abs_charge);
+  mChargeTool->AddVariable("bjet_ChargedMultiplicity",&bjet_ChargeTool.ChargedMultiplicity);
+  mChargeTool->AddVariable("bjet_NeutralMultiplicity",&bjet_ChargeTool.NeutralMultiplicity);
+  mChargeTool->SetupTMVA();
+
+
+  //---Electron---//
+  //belectron_var=["belectron_nsip3d < 30. ? belectron_nsip3d : 30.","belectron_reliso","belectron_ptwrtbjet < 10. ? belectron_ptwrtbjet : 10.","belectron_P_jetrest < 10. ? belectron_P_jetrest : 10.","belectron_palongjet < 100. ? belectron_palongjet : 100.","belectron_palongjetratio < 1. ? belectron_palongjetratio : 1.","bjet_charge*belectron_charge"]
+  //bjet_var=["bjet_ChargedHadronEnergyFraction","bjet_NeutralHadronEnergyFraction","bjet_NeutralEmEnergyFraction","bjet_ChargedEmEnergyFraction","bjet_MuonEnergyFraction","bjet_ChargedMultiplicity","bjet_NeutralMultiplicity","fabs(bjet_charge)"]  
+  eChargeTool->AddVariable("belectron_nsip3d<30.?belectron_nsip3d:30.",&belectron_ChargeTool.nsip3d);
+  eChargeTool->AddVariable("belectron_reliso",&belectron_ChargeTool.reliso);
+eChargeTool->AddVariable("belectron_ptwrtbjet<10.?belectron_ptwrtbjet:10.",&belectron_ChargeTool.ptwrtjet);
+ eChargeTool->AddVariable("belectron_P_jetrest<10.?belectron_P_jetrest:10.",&belectron_ChargeTool.P_jetrest);
+ eChargeTool->AddVariable("belectron_palongjet<100.?belectron_palongjet:100.",&belectron_ChargeTool.palongjet);
+ eChargeTool->AddVariable("belectron_palongjetratio<1.?belectron_palongjetratio:1.",&belectron_ChargeTool.palongjetratio);
+ //eChargeTool->AddVariable("belectron_dR_l_j",&belectron_ChargeTool.dR_l_j);
+ eChargeTool->AddVariable("bjet_charge*belectron_charge",&belectron_ChargeTool.bjet_charge_dot_belectron_charge);
+ 
+ eChargeTool->AddVariable("bjet_ChargedHadronEnergyFraction",&bjet_ChargeTool.ChargedHadronEnergyFraction);
+ eChargeTool->AddVariable("bjet_NeutralHadronEnergyFraction",&bjet_ChargeTool.NeutralHadronEnergyFraction);
+ eChargeTool->AddVariable("bjet_NeutralEmEnergyFraction",&bjet_ChargeTool.NeutralEmEnergyFraction);
+ eChargeTool->AddVariable("bjet_ChargedEmEnergyFraction",&bjet_ChargeTool.ChargedEmEnergyFraction);
+ eChargeTool->AddVariable("bjet_MuonEnergyFraction",&bjet_ChargeTool.MuonEnergyFraction);
+ eChargeTool->AddVariable("bjet_ChargedMultiplicity",&bjet_ChargeTool.ChargedMultiplicity);
+ eChargeTool->AddVariable("bjet_NeutralMultiplicity",&bjet_ChargeTool.NeutralMultiplicity);
+ eChargeTool->AddVariable("fabs(bjet_charge)",&bjet_ChargeTool.abs_charge);
+ eChargeTool->SetupTMVA();
+
+  //---Jet----//
+  //bjet_var=["bjet_ChargedHadronEnergyFraction","bjet_NeutralHadronEnergyFraction","bjet_NeutralEmEnergyFraction","bjet_ChargedEmEnergyFraction","bjet_MuonEnergyFraction","bjet_ChargedMultiplicity","bjet_NeutralMultiplicity","fabs(bjet_charge)"]  
+  jChargeTool->AddVariable("bjet_ChargedHadronEnergyFraction",&bjet_ChargeTool.ChargedHadronEnergyFraction);
+  jChargeTool->AddVariable("bjet_NeutralHadronEnergyFraction",&bjet_ChargeTool.NeutralHadronEnergyFraction);
+  jChargeTool->AddVariable("bjet_NeutralEmEnergyFraction",&bjet_ChargeTool.NeutralEmEnergyFraction);
+  jChargeTool->AddVariable("bjet_ChargedEmEnergyFraction",&bjet_ChargeTool.ChargedEmEnergyFraction);
+  jChargeTool->AddVariable("bjet_MuonEnergyFraction",&bjet_ChargeTool.MuonEnergyFraction);
+  jChargeTool->AddVariable("bjet_ChargedMultiplicity",&bjet_ChargeTool.ChargedMultiplicity);
+  jChargeTool->AddVariable("bjet_NeutralMultiplicity",&bjet_ChargeTool.NeutralMultiplicity);
+  jChargeTool->AddVariable("fabs(bjet_charge)",&bjet_ChargeTool.abs_charge);
+  jChargeTool->SetupTMVA();
+
+
+  if (applycut)SetChargeScoreCut(muon_version);
+  for(int i = 0 ; i < 10 ; i++){
+    cout << "i=" << i << endl;
+    mChargeTool->SetScore();
+    cout << "mChargeTool->GetScore()=" << mChargeTool->GetScore() << endl;    
+    eChargeTool->SetScore();
+    cout << "eChargeTool->GetScore()=" << eChargeTool->GetScore() << endl;
+    jChargeTool->SetScore();
+    cout << "jChargeTool->GetScore()=" << jChargeTool->GetScore() << endl;
+  }
+}
+
 
 void JHAnalyzerBase::SetChargeScoreCut(TString version){
   if(version=="2409.2"){
@@ -3417,94 +3972,7 @@ void JHAnalyzerBase::SetChargeScoreCut(TString version){
     exit(1);
   }
 
-}/*
-void JHAnalyzerBase::SetChargeScoreCut_2405_2(){
-  map<TString,float> map_muon_mincut;
-  map_muon_mincut["2016preVFP"]=0.66021;  map_muon_mincut["2016postVFP"]=0.69413;  map_muon_mincut["2017"]=0.72347; map_muon_mincut["2018"]=0.68502;
-  map<TString,float> map_muon_maxcut;
-  map_muon_maxcut["2016preVFP"]=0.22267;  map_muon_maxcut["2016postVFP"]=0.21844;  map_muon_maxcut["2017"]=0.20754; map_muon_maxcut["2018"]=0.19887;
-  map<TString,float> map_electron_mincut;
-  map_electron_mincut["2016preVFP"]=0.59829;  map_electron_mincut["2016postVFP"]=0.67093;  map_electron_mincut["2017"]=0.64708; map_electron_mincut["2018"]=0.60382;
-  map<TString,float> map_electron_maxcut;
-  map_electron_maxcut["2016preVFP"]=0.27022;  map_electron_maxcut["2016postVFP"]=0.21447;  map_electron_maxcut["2017"]=0.24956; map_electron_maxcut["2018"]=0.28016;
-  map<TString,float> map_jet_mincut;
-  map_jet_mincut["2016preVFP"]=0.63517;  map_jet_mincut["2016postVFP"]=0.60850;  map_jet_mincut["2017"]=0.61464; map_jet_mincut["2018"]=0.60843;
-  map<TString,float> map_jet_maxcut;//Turn off this region
-  map_jet_maxcut["2016preVFP"]=-1.;  map_jet_maxcut["2016postVFP"]=-1.;  map_jet_maxcut["2017"]=-1.; map_jet_maxcut["2018"]=-1.;
-
-
-  
-  mChargeTool->SetMinCut(map_muon_mincut[DataEra]);
-  mChargeTool->SetMaxCut(map_muon_maxcut[DataEra]);
-  eChargeTool->SetMinCut(map_electron_mincut[DataEra]);
-  eChargeTool->SetMaxCut(map_electron_maxcut[DataEra]);
-  jChargeTool->SetMinCut(map_jet_mincut[DataEra]);
-  jChargeTool->SetMaxCut(map_jet_maxcut[DataEra]);
-
-
 }
-
-
-void JHAnalyzerBase::SetChargeScoreCut_2405_4(){
-  map<TString,float> map_muon_mincut;
-  map_muon_mincut["2016preVFP"]=0.431;  map_muon_mincut["2016postVFP"]=0.464;  map_muon_mincut["2017"]=0.427; map_muon_mincut["2018"]=0.442;
-  map<TString,float> map_muon_maxcut;
-  map_muon_maxcut["2016preVFP"]=0.216;  map_muon_maxcut["2016postVFP"]=0.183;  map_muon_maxcut["2017"]=0.223; map_muon_maxcut["2018"]=0.226;
-  map<TString,float> map_electron_mincut;
-  map_electron_mincut["2016preVFP"]=0.489;  map_electron_mincut["2016postVFP"]=0.498;  map_electron_mincut["2017"]=0.445; map_electron_mincut["2018"]=0.506;
-  map<TString,float> map_electron_maxcut;
-  map_electron_maxcut["2016preVFP"]=0.241;  map_electron_maxcut["2016postVFP"]=0.179;  map_electron_maxcut["2017"]=0.215; map_electron_maxcut["2018"]=0.25;
-  map<TString,float> map_jet_mincut;
-  map_jet_mincut["2016preVFP"]=0.446;  map_jet_mincut["2016postVFP"]=0.469;  map_jet_mincut["2017"]=0.478; map_jet_mincut["2018"]=0.473;
-  map<TString,float> map_jet_maxcut;//Turn off this region
-  map_jet_maxcut["2016preVFP"]=0.366;  map_jet_maxcut["2016postVFP"]=0.356;  map_jet_maxcut["2017"]=0.375; map_jet_maxcut["2018"]=0.386;
-
-
-  cout << "[JHAnalyzerBase::SetChargeScoreCut_2405_4] " << endl;
-  cout << "Muon" << endl;
-  mChargeTool->SetMinCut(map_muon_mincut[DataEra]);
-  mChargeTool->SetMaxCut(map_muon_maxcut[DataEra]);
-  cout << "Electron" << endl;
-  eChargeTool->SetMinCut(map_electron_mincut[DataEra]);
-  eChargeTool->SetMaxCut(map_electron_maxcut[DataEra]);
-  cout << "Jet" << endl;
-  jChargeTool->SetMinCut(map_jet_mincut[DataEra]);
-  jChargeTool->SetMaxCut(map_jet_maxcut[DataEra]);
-
-
-}
-
-
-
-void JHAnalyzerBase::SetChargeScoreCut_2405_4_3(){
-  map<TString,float> map_muon_mincut;
-  map_muon_mincut["2016preVFP"]=0.47;  map_muon_mincut["2016postVFP"]=0.54;  map_muon_mincut["2017"]=0.50; map_muon_mincut["2018"]=0.53;
-  map<TString,float> map_muon_maxcut;
-  map_muon_maxcut["2016preVFP"]=0.21;  map_muon_maxcut["2016postVFP"]=0.22;  map_muon_maxcut["2017"]=0.24; map_muon_maxcut["2018"]=0.21;
-  map<TString,float> map_electron_mincut;
-  map_electron_mincut["2016preVFP"]=0.52;  map_electron_mincut["2016postVFP"]=0.57;  map_electron_mincut["2017"]=0.55; map_electron_mincut["2018"]=0.55;
-  map<TString,float> map_electron_maxcut;
-  map_electron_maxcut["2016preVFP"]=0.23;  map_electron_maxcut["2016postVFP"]=0.21;  map_electron_maxcut["2017"]=0.20; map_electron_maxcut["2018"]=0.21;
-  map<TString,float> map_jet_mincut;
-  map_jet_mincut["2016preVFP"]=0.47;  map_jet_mincut["2016postVFP"]=0.45;  map_jet_mincut["2017"]=0.45; map_jet_mincut["2018"]=0.46;
-  map<TString,float> map_jet_maxcut;//Turn off this region
-  map_jet_maxcut["2016preVFP"]=0.0;  map_jet_maxcut["2016postVFP"]=0.0;  map_jet_maxcut["2017"]=0.0; map_jet_maxcut["2018"]=0.0;
-
-
-  cout << "[JHAnalyzerBase::SetChargeScoreCut_2405_4_3] " << endl;
-  cout << "Muon" << endl;
-  mChargeTool->SetMinCut(map_muon_mincut[DataEra]);
-  mChargeTool->SetMaxCut(map_muon_maxcut[DataEra]);
-  cout << "Electron" << endl;
-  eChargeTool->SetMinCut(map_electron_mincut[DataEra]);
-  eChargeTool->SetMaxCut(map_electron_maxcut[DataEra]);
-  cout << "Jet" << endl;
-  jChargeTool->SetMinCut(map_jet_mincut[DataEra]);
-  jChargeTool->SetMaxCut(map_jet_maxcut[DataEra]);
-
-
-}
- */
 
 void JHAnalyzerBase::SetChargeScoreCut_2409_2(){
   map<TString,float> map_muon_mincut;
@@ -3538,16 +4006,10 @@ void JHAnalyzerBase::SetChargeScoreCut_2409_2(){
 
 void JHAnalyzerBase::SetMuonChargeScore(Muon &_this_bmuon, Jet &_this_bjet){
   //cout << "JHAnalyzerBase::SetMuonChargeScore" << endl;
-
-  //bjet_ChargeTool=Get_bjetvar(_this_bjet);
-
-  //jhchoitemp
+  bjet_ChargeTool=Get_bjetvar(_this_bjet);
   bmuon_ChargeTool=Get_bmuonvar(_this_bmuon,_this_bjet);//Change input variable value //set inputvariable
-
-  //cout << "[SetMuonChargeScore]SetScore" << endl;
+  
   mChargeTool->SetScore();
-  //cout << "[SetMuonChargeScore]SetScore DONE" << endl;
-  //cout << "[END]JHAnalyzerBase::SetMuonChargeScore" << endl;
 }
 double JHAnalyzerBase::GetMuonChargeScore(){
   return mChargeTool->GetScore();
@@ -3559,11 +4021,14 @@ double JHAnalyzerBase::GetMuonChargeScoreCoeff(){
 
 void JHAnalyzerBase::SetElectronChargeScore(Electron &_this_belectron, Jet &_this_bjet){
   //cout << "JHAnalyzerBase::SetElectronChargeScore" << endl;
-  //bjet_ChargeTool=Get_bjetvar(_this_bjet);
+  bjet_ChargeTool=Get_bjetvar(_this_bjet);
 
-  //jhchoitemp
   belectron_ChargeTool=Get_belectronvar(_this_belectron,_this_bjet);//Change input variable value //set inputvariable
-  eChargeTool->SetScore();
+
+
+
+  
+  eChargeTool->SetScore();  
   //cout << "[END]JHAnalyzerBase::SetElectronChargeScore" << endl;
 }
 double JHAnalyzerBase::GetElectronChargeScore(){
@@ -3576,9 +4041,9 @@ double JHAnalyzerBase::GetElectronChargeScoreCoeff(){
 
 void JHAnalyzerBase::SetJetChargeScore(Jet &_this_bjet){
   //cout << "JHAnalyzerBase::SetJetChargeScore" << endl;
-
+  
   //jhchoitemp
-  bjet_ChargeTool=Get_bjetvar(_this_bjet);//Change input variable value 
+  bjet_ChargeTool=Get_bjetvar(_this_bjet);//Change input variable value
   jChargeTool->SetScore();
   //cout << "[END]JHAnalyzerBase::SetJetChargeScore" << endl;
 }

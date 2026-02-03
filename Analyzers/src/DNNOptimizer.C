@@ -47,9 +47,12 @@ void DNNOptimizer::initializeAnalyzer(){
 
 
   //charge
-  TString v_muonScore="2503.2";
-  TString v_electronScore="2503.2";
-  TString v_jetScore="2503.2";
+  TString v_muonScore="2409.2";
+  TString v_electronScore="2409.2";
+  TString v_jetScore="2409.2";
+  //TString v_muonScore="2503.2";
+  //TString v_electronScore="2503.2";
+  //TString v_jetScore="2503.2";
   /*
   if(HasFlag("dnn_v2405.4")){
     v_muonScore="2405.4";
@@ -209,7 +212,7 @@ void DNNOptimizer::RunBasicZregion(){
   }
   //----Jet---//
   v_tightlep={l1,l2};
-  v_tightjet=GetTightJet(v_tightlep,30,2.4,"tight",_JETPUID);
+  v_tightjet=GetTightJet(v_tightlep,30,jetetacut,"tight",_JETPUID);
   v_bjet=GetBJet(v_tightjet);
 
   njet=v_tightjet.size();

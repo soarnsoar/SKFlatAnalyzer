@@ -144,7 +144,7 @@ void bbbarAnalyzer::SetEventWeight(){
   weight=1;
   if(IsDATA) return;
 
-  weight=MCweight()*ev.GetTriggerLumi("Full")*GetPileUpWeight(nPileUp,0)*GetPrefireWeight(0)*zptweight*weakweight*z0weight*topptweight*btagsf*jetpuidsf;
+  weight=MCweight()*ev.GetTriggerLumi("Full")*GetPileUpWeight(nPileUp,0)*GetPrefireWeight(0)*weakweight*z0weight*topptweight*btagsf*jetpuidsf;
   
   if(IsDiMuonChannel){
     weight*=w_MuonID[0][0]*w_MuonRECO[0][0]*w_MuonTrk[0][0]*w_MuonTrigger[0][0];
@@ -196,7 +196,7 @@ void bbbarAnalyzer::RunBasicZregion(){
   }
   //----Jet---//
   v_tightlep={l1,l2};
-  v_tightjet=GetTightJet(v_tightlep,30,2.4,"tight",_JETPUID);
+  v_tightjet=GetTightJet(v_tightlep,30,jetetacut,"tight",_JETPUID);
   v_bjet=GetBJet(v_tightjet);
 
   njet=v_tightjet.size();

@@ -331,13 +331,16 @@ AnalyzerCore::~AnalyzerCore(){
 
   //let's skip this 
   //cout << "skip delete TH objects. Let ROOT release each memory. It's much faster way in ROOT 6.14" << endl;
+  cout << "skip delete TH objects. Let ROOT release each memory. It's much faster way in ROOT 6.30" << endl;
   
   for(std::map< TString, TH1D* >::iterator mapit = maphist_TH1D.begin(); mapit!=maphist_TH1D.end(); mapit++){
+
+    continue;
     //cout<<"mapit->second->GetDirectory() =>" <<mapit->second->GetDirectory() << endl;
     delete mapit->second;
     mapit->second=nullptr;
   }
-  maphist_TH1D.clear();
+  //maphist_TH1D.clear();
   
   for(std::map< TString, TH2D* >::iterator mapit = maphist_TH2D.begin(); mapit!=maphist_TH2D.end(); mapit++){
     delete mapit->second;
@@ -449,7 +452,6 @@ AnalyzerCore::~AnalyzerCore(){
   cout << "[DONE]clear JECMap" << endl;
   cout << printcurrunttime() << endl;
     
-
 
 }
 
@@ -1603,8 +1605,11 @@ bool AnalyzerCore::PassMETFilter(){
   return true;
 
 }
-void AnalyzerCore::SetBTagMCEff_Filename(TString _btagmceff_filename){
+void AnalyzerCore::SetBTagMCEff_Filename(TString _btagmceff_filename, bool _Use_dAsym){
+  if(_Use_dAsym) cout << "[SetBTagMCEff_Filename] Try Using dAsym Factor!!" << endl;
   btagmceff_filename=_btagmceff_filename;
+  Use_dAsym=_Use_dAsym;
+
 }
 void AnalyzerCore::initializeAnalyzerTools(){
   //==== MCCorrection
@@ -1615,7 +1620,7 @@ void AnalyzerCore::initializeAnalyzerTools(){
   mcCorr->SetIsFastSim(IsFastSim);
   if(!IsDATA){
     mcCorr->ReadHistograms();
-    mcCorr->SetupJetTagging(btagmceff_filename);
+    mcCorr->SetupJetTagging(btagmceff_filename,Use_dAsym);
   }
 
   puppiCorr->SetEra(GetEra());
@@ -3518,4 +3523,3 @@ double AnalyzerCore::GetTopPtReweight2(const std::vector<Gen>& gens){
   pt_reweight = sqrt(pt_reweight);
   return pt_reweight;
 }
-

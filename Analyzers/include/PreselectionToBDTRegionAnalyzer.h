@@ -1,9 +1,9 @@
-#ifndef PreselectionAnalyzer_h
-#define PreselectionAnalyzer_h
+#ifndef PreselectionToBDTRegionAnalyzer_h
+#define PreselectionToBDTRegionAnalyzer_h
 
 #include "JHAnalyzerBase.h"
 
-class PreselectionAnalyzer : public JHAnalyzerBase {
+class PreselectionToBDTRegionAnalyzer : public JHAnalyzerBase {
 
 public:
 
@@ -56,8 +56,8 @@ public:
 
   TString suffix_true_nb;
   int i_proc; //1:dyb 2:dyothers 3: bkg 0 :data
-  PreselectionAnalyzer();
-  ~PreselectionAnalyzer();
+  PreselectionToBDTRegionAnalyzer();
+  ~PreselectionToBDTRegionAnalyzer();
 
   std::map<TString,double> N_1_weightmap;
   double met_pt,z_pt;
@@ -74,9 +74,7 @@ public:
 
   double x_b,x_g;
   double bjet_y,bjet_eta,z_eta,z_y;
-  vector<pair<double,double>> m_score_region;
-  vector<pair<double,double>> e_score_region;
-  vector<pair<double,double>> j_score_region; 
+
   //for optimization
   bool IsDYbplus,IsDYbminus,IsBKG;
   vector<double> v_muonscore;
