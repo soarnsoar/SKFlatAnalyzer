@@ -3,7 +3,7 @@ mkdir -p logs/
 mkdir -p syslogs/
 SKIM="--skim SkimTree_SingleLepton"
 SKIM=""
-FLAG="--userflags runSys"
+#FLAG="--userflags TopMassWindow"
 FLAG=""
 YEAR=2018
 MAXJOB=" --nmax 120 "

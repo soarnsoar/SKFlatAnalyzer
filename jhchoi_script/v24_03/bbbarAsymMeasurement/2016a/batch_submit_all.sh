@@ -2,7 +2,7 @@
 mkdir -p logs/
 
 SKIM="--skim SkimTree_Dilepton"
-FLAG="--userflags runSys"
+#FLAG="--userflags "
 FLAG=""
 YEAR=2016a
 SKFlat.py -a bbbarAsymMeasurement  ${SKIM} -l  inputlist_major.txt -n 50 -e ${YEAR} $FLAG &> logs/major.log&

@@ -1,19 +1,17 @@
 Submitting job(s)..........
-10 job(s) submitted to cluster 2028.
+10 job(s) submitted to cluster 77002.
 Submitting job(s)..........
-10 job(s) submitted to cluster 2029.
+10 job(s) submitted to cluster 77003.
 Submitting job(s)..........
-10 job(s) submitted to cluster 2030.
+10 job(s) submitted to cluster 77004.
 Submitting job(s)..........
-10 job(s) submitted to cluster 2031.
+10 job(s) submitted to cluster 77005.
 Submitting job(s)..........
-10 job(s) submitted to cluster 2032.
+10 job(s) submitted to cluster 77006.
 Submitting job(s)..........
-10 job(s) submitted to cluster 2033.
+10 job(s) submitted to cluster 77007.
 Submitting job(s)..........
-10 job(s) submitted to cluster 2034.
-Submitting job(s)..........
-10 job(s) submitted to cluster 2035.
+10 job(s) submitted to cluster 77008.
 condor_submit WORKDIR_HADD/run.jds > WORKDIR_HADD/run.jid
 condor_submit WORKDIR_HADD/run.jds > WORKDIR_HADD/run.jid
 condor_submit WORKDIR_HADD/run.jds > WORKDIR_HADD/run.jid
@@ -21,3 +19,57 @@ condor_submit WORKDIR_HADD/run.jds > WORKDIR_HADD/run.jid
 condor_submit WORKDIR_HADD/run.jds > WORKDIR_HADD/run.jid
 condor_submit WORKDIR_HADD/run.jds > WORKDIR_HADD/run.jid
 condor_submit WORKDIR_HADD/run.jds > WORKDIR_HADD/run.jid
+##################################################
+Submission Finished
+- JobID = 960184
+- Analyzer = DiLeptonAnalyzer
+- Skim = 
+- InputSamples = ['QCD_bEnriched_HT100to200', 'QCD_bEnriched_HT200to300', 'QCD_bEnriched_HT300to500', 'QCD_bEnriched_HT500to700', 'QCD_bEnriched_HT700to1000', 'QCD_bEnriched_HT1000to1500', 'QCD_bEnriched_HT1500to2000']
+- NJobs = 10
+- Era = 2017
+- UserFlags = ['cmssw14']
+- RunDir = /data6/Users/jhchoi/SKFlatRunlog//2025_04_11_132800__960184__DiLeptonAnalyzer__Era2017__cmssw14__TAMSA1/QCD_bEnriched_HT1500to2000/
+- output will be send to : /data6/Users/jhchoi/SKFlatOutput//Run2UltraLegacy_v3/DiLeptonAnalyzer/2017/cmssw14__
+##################################################
+submit hadd
+CheckOutputSize...
+Submit Hadd
+ExportShellCondorSetup_tamsa.py -c "cd /data6/Users/jhchoi/SKFlatRunlog//2025_04_11_132800__960184__DiLeptonAnalyzer__Era2017__cmssw14__TAMSA1/QCD_bEnriched_HT1000to1500/&&echo "RunHadd"&&hadd -j 10 -f DiLeptonAnalyzer_QCD_bEnriched_HT1000to1500.root output/*.root&&mv DiLeptonAnalyzer_QCD_bEnriched_HT1000to1500.root /data6/Users/jhchoi/SKFlatOutput//Run2UltraLegacy_v3/DiLeptonAnalyzer/2017/cmssw14__" -d WORKDIR_HADD -n hadd_DiLeptonAnalyzer_QCD_bEnriched_HT1000to15002017 -m 10 -r "60000" -s
+<AFTER hadd fin. please rm remainings..>
+rm /data6/Users/jhchoi/SKFlatRunlog//2025_04_11_132800__960184__DiLeptonAnalyzer__Era2017__cmssw14__TAMSA1/QCD_bEnriched_HT1000to1500//output/*.root
+submit hadd
+CheckOutputSize...
+Submit Hadd
+ExportShellCondorSetup_tamsa.py -c "cd /data6/Users/jhchoi/SKFlatRunlog//2025_04_11_132800__960184__DiLeptonAnalyzer__Era2017__cmssw14__TAMSA1/QCD_bEnriched_HT1500to2000/&&echo "RunHadd"&&hadd -j 10 -f DiLeptonAnalyzer_QCD_bEnriched_HT1500to2000.root output/*.root&&mv DiLeptonAnalyzer_QCD_bEnriched_HT1500to2000.root /data6/Users/jhchoi/SKFlatOutput//Run2UltraLegacy_v3/DiLeptonAnalyzer/2017/cmssw14__" -d WORKDIR_HADD -n hadd_DiLeptonAnalyzer_QCD_bEnriched_HT1500to20002017 -m 10 -r "60000" -s
+<AFTER hadd fin. please rm remainings..>
+rm /data6/Users/jhchoi/SKFlatRunlog//2025_04_11_132800__960184__DiLeptonAnalyzer__Era2017__cmssw14__TAMSA1/QCD_bEnriched_HT1500to2000//output/*.root
+submit hadd
+CheckOutputSize...
+Submit Hadd
+ExportShellCondorSetup_tamsa.py -c "cd /data6/Users/jhchoi/SKFlatRunlog//2025_04_11_132800__960184__DiLeptonAnalyzer__Era2017__cmssw14__TAMSA1/QCD_bEnriched_HT700to1000/&&echo "RunHadd"&&hadd -j 10 -f DiLeptonAnalyzer_QCD_bEnriched_HT700to1000.root output/*.root&&mv DiLeptonAnalyzer_QCD_bEnriched_HT700to1000.root /data6/Users/jhchoi/SKFlatOutput//Run2UltraLegacy_v3/DiLeptonAnalyzer/2017/cmssw14__" -d WORKDIR_HADD -n hadd_DiLeptonAnalyzer_QCD_bEnriched_HT700to10002017 -m 10 -r "60000" -s
+<AFTER hadd fin. please rm remainings..>
+rm /data6/Users/jhchoi/SKFlatRunlog//2025_04_11_132800__960184__DiLeptonAnalyzer__Era2017__cmssw14__TAMSA1/QCD_bEnriched_HT700to1000//output/*.root
+submit hadd
+CheckOutputSize...
+Submit Hadd
+ExportShellCondorSetup_tamsa.py -c "cd /data6/Users/jhchoi/SKFlatRunlog//2025_04_11_132800__960184__DiLeptonAnalyzer__Era2017__cmssw14__TAMSA1/QCD_bEnriched_HT500to700/&&echo "RunHadd"&&hadd -j 10 -f DiLeptonAnalyzer_QCD_bEnriched_HT500to700.root output/*.root&&mv DiLeptonAnalyzer_QCD_bEnriched_HT500to700.root /data6/Users/jhchoi/SKFlatOutput//Run2UltraLegacy_v3/DiLeptonAnalyzer/2017/cmssw14__" -d WORKDIR_HADD -n hadd_DiLeptonAnalyzer_QCD_bEnriched_HT500to7002017 -m 10 -r "60000" -s
+<AFTER hadd fin. please rm remainings..>
+rm /data6/Users/jhchoi/SKFlatRunlog//2025_04_11_132800__960184__DiLeptonAnalyzer__Era2017__cmssw14__TAMSA1/QCD_bEnriched_HT500to700//output/*.root
+submit hadd
+CheckOutputSize...
+Submit Hadd
+ExportShellCondorSetup_tamsa.py -c "cd /data6/Users/jhchoi/SKFlatRunlog//2025_04_11_132800__960184__DiLeptonAnalyzer__Era2017__cmssw14__TAMSA1/QCD_bEnriched_HT200to300/&&echo "RunHadd"&&hadd -j 10 -f DiLeptonAnalyzer_QCD_bEnriched_HT200to300.root output/*.root&&mv DiLeptonAnalyzer_QCD_bEnriched_HT200to300.root /data6/Users/jhchoi/SKFlatOutput//Run2UltraLegacy_v3/DiLeptonAnalyzer/2017/cmssw14__" -d WORKDIR_HADD -n hadd_DiLeptonAnalyzer_QCD_bEnriched_HT200to3002017 -m 10 -r "60000" -s
+<AFTER hadd fin. please rm remainings..>
+rm /data6/Users/jhchoi/SKFlatRunlog//2025_04_11_132800__960184__DiLeptonAnalyzer__Era2017__cmssw14__TAMSA1/QCD_bEnriched_HT200to300//output/*.root
+submit hadd
+CheckOutputSize...
+Submit Hadd
+ExportShellCondorSetup_tamsa.py -c "cd /data6/Users/jhchoi/SKFlatRunlog//2025_04_11_132800__960184__DiLeptonAnalyzer__Era2017__cmssw14__TAMSA1/QCD_bEnriched_HT300to500/&&echo "RunHadd"&&hadd -j 10 -f DiLeptonAnalyzer_QCD_bEnriched_HT300to500.root output/*.root&&mv DiLeptonAnalyzer_QCD_bEnriched_HT300to500.root /data6/Users/jhchoi/SKFlatOutput//Run2UltraLegacy_v3/DiLeptonAnalyzer/2017/cmssw14__" -d WORKDIR_HADD -n hadd_DiLeptonAnalyzer_QCD_bEnriched_HT300to5002017 -m 10 -r "60000" -s
+<AFTER hadd fin. please rm remainings..>
+rm /data6/Users/jhchoi/SKFlatRunlog//2025_04_11_132800__960184__DiLeptonAnalyzer__Era2017__cmssw14__TAMSA1/QCD_bEnriched_HT300to500//output/*.root
+submit hadd
+CheckOutputSize...
+Submit Hadd
+ExportShellCondorSetup_tamsa.py -c "cd /data6/Users/jhchoi/SKFlatRunlog//2025_04_11_132800__960184__DiLeptonAnalyzer__Era2017__cmssw14__TAMSA1/QCD_bEnriched_HT100to200/&&echo "RunHadd"&&hadd -j 10 -f DiLeptonAnalyzer_QCD_bEnriched_HT100to200.root output/*.root&&mv DiLeptonAnalyzer_QCD_bEnriched_HT100to200.root /data6/Users/jhchoi/SKFlatOutput//Run2UltraLegacy_v3/DiLeptonAnalyzer/2017/cmssw14__" -d WORKDIR_HADD -n hadd_DiLeptonAnalyzer_QCD_bEnriched_HT100to2002017 -m 10 -r "60000" -s
+<AFTER hadd fin. please rm remainings..>
+rm /data6/Users/jhchoi/SKFlatRunlog//2025_04_11_132800__960184__DiLeptonAnalyzer__Era2017__cmssw14__TAMSA1/QCD_bEnriched_HT100to200//output/*.root

@@ -1,0 +1,8 @@
+SKIM="--skim SkimTree_SingleLepton"
+SKIM=""
+FLAG="--userflags runSys,TopMassWindow"
+
+REDUCTION="--reduction 100"
+SKFlat.py -a TTsemiLepBtagChargeAsymEfficiencyMeasurement_BINNING -i TTLJ_powheg $SKIM -n 1 --no_exec ${REDUCTION} $FLAG
+
+

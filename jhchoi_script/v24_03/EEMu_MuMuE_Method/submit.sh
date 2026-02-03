@@ -5,13 +5,13 @@ SKIM=""
 FLAG=""
 #FLAG="--userflags runSys"
 #FLAG="--userflags simple_lepscale,runSys"
-#FLAG="--userflags cut_v2405.1"
+FLAG="--userflags cut_v2405.2"
 
 #REDUCTION="--reduction 1000"
 #YEAR=2018
 ARR_YEAR=(2017 2016a 2016b 2018)
 NMAX=" --nmax 120 "
-njob=" -n 6 "
+njob=" -n 20 "
 for YEAR in ${ARR_YEAR[@]};do
 
     SKFlat.py -a EEMu_MuMuE_Method -i DYJetsToMuMu_MiNNLO $NMAX $SKIM -e ${YEAR} $njob $FLAG &> logs/DYNNLO_MuMu_${YEAR}.log&

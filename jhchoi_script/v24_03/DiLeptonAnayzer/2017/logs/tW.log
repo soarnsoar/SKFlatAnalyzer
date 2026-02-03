@@ -1,26 +1,30 @@
 Submitting job(s)..........
-10 job(s) submitted to cluster 2042.
+10 job(s) submitted to cluster 77016.
 Submitting job(s)..........
-10 job(s) submitted to cluster 2043.
+10 job(s) submitted to cluster 77017.
 condor_submit WORKDIR_HADD/run.jds > WORKDIR_HADD/run.jid
 condor_submit WORKDIR_HADD/run.jds > WORKDIR_HADD/run.jid
 ##################################################
 Submission Finished
-- JobID = 85438
+- JobID = 467277
 - Analyzer = DiLeptonAnalyzer
 - Skim = SkimTree_Dilepton
 - InputSamples = ['SingleTop_tW_antitop_NoFullyHad', 'SingleTop_tW_top_NoFullyHad']
 - NJobs = 10
 - Era = 2017
-- UserFlags = []
-- RunDir = /data6/Users/jhchoi/SKFlatRunlog//2025_03_25_120436__85438__DiLeptonAnalyzer__Era2017__SkimTree_Dilepton__TAMSA1/SingleTop_tW_top_NoFullyHad/
-- output will be send to : /data6/Users/jhchoi/SKFlatOutput//Run2UltraLegacy_v3/DiLeptonAnalyzer/2017/
+- UserFlags = ['cmssw14']
+- RunDir = /data6/Users/jhchoi/SKFlatRunlog//2025_04_11_132830__467277__DiLeptonAnalyzer__Era2017__SkimTree_Dilepton__cmssw14__TAMSA1/SingleTop_tW_top_NoFullyHad/
+- output will be send to : /data6/Users/jhchoi/SKFlatOutput//Run2UltraLegacy_v3/DiLeptonAnalyzer/2017/cmssw14__
 ##################################################
 submit hadd
 CheckOutputSize...
+Submit Hadd
+ExportShellCondorSetup_tamsa.py -c "cd /data6/Users/jhchoi/SKFlatRunlog//2025_04_11_132830__467277__DiLeptonAnalyzer__Era2017__SkimTree_Dilepton__cmssw14__TAMSA1/SingleTop_tW_antitop_NoFullyHad/&&echo "RunHadd"&&hadd -j 10 -f DiLeptonAnalyzer_SkimTree_Dilepton_SingleTop_tW_antitop_NoFullyHad.root output/*.root&&mv DiLeptonAnalyzer_SkimTree_Dilepton_SingleTop_tW_antitop_NoFullyHad.root /data6/Users/jhchoi/SKFlatOutput//Run2UltraLegacy_v3/DiLeptonAnalyzer/2017/cmssw14__" -d WORKDIR_HADD -n hadd_DiLeptonAnalyzer_SkimTree_Dilepton_SingleTop_tW_antitop_NoFullyHad2017 -m 10 -r "60000" -s
 <AFTER hadd fin. please rm remainings..>
-rm /data6/Users/jhchoi/SKFlatRunlog//2025_03_25_120436__85438__DiLeptonAnalyzer__Era2017__SkimTree_Dilepton__TAMSA1/SingleTop_tW_top_NoFullyHad//output/*.root
+rm /data6/Users/jhchoi/SKFlatRunlog//2025_04_11_132830__467277__DiLeptonAnalyzer__Era2017__SkimTree_Dilepton__cmssw14__TAMSA1/SingleTop_tW_antitop_NoFullyHad//output/*.root
 submit hadd
 CheckOutputSize...
+Submit Hadd
+ExportShellCondorSetup_tamsa.py -c "cd /data6/Users/jhchoi/SKFlatRunlog//2025_04_11_132830__467277__DiLeptonAnalyzer__Era2017__SkimTree_Dilepton__cmssw14__TAMSA1/SingleTop_tW_top_NoFullyHad/&&echo "RunHadd"&&hadd -j 10 -f DiLeptonAnalyzer_SkimTree_Dilepton_SingleTop_tW_top_NoFullyHad.root output/*.root&&mv DiLeptonAnalyzer_SkimTree_Dilepton_SingleTop_tW_top_NoFullyHad.root /data6/Users/jhchoi/SKFlatOutput//Run2UltraLegacy_v3/DiLeptonAnalyzer/2017/cmssw14__" -d WORKDIR_HADD -n hadd_DiLeptonAnalyzer_SkimTree_Dilepton_SingleTop_tW_top_NoFullyHad2017 -m 10 -r "60000" -s
 <AFTER hadd fin. please rm remainings..>
-rm /data6/Users/jhchoi/SKFlatRunlog//2025_03_25_120436__85438__DiLeptonAnalyzer__Era2017__SkimTree_Dilepton__TAMSA1/SingleTop_tW_antitop_NoFullyHad//output/*.root
+rm /data6/Users/jhchoi/SKFlatRunlog//2025_04_11_132830__467277__DiLeptonAnalyzer__Era2017__SkimTree_Dilepton__cmssw14__TAMSA1/SingleTop_tW_top_NoFullyHad//output/*.root

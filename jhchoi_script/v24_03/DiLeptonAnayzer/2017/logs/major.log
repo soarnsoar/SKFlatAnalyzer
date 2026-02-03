@@ -1,5 +1,30 @@
-Submitting job(s)..........
-10 job(s) submitted to cluster 2026.
-Submitting job(s)..........
-10 job(s) submitted to cluster 2027.
+Submitting job(s)............................................................
+60 job(s) submitted to cluster 77065.
+Submitting job(s)............................................................
+60 job(s) submitted to cluster 77066.
 condor_submit WORKDIR_HADD/run.jds > WORKDIR_HADD/run.jid
+condor_submit WORKDIR_HADD/run.jds > WORKDIR_HADD/run.jid
+##################################################
+Submission Finished
+- JobID = 438778
+- Analyzer = DiLeptonAnalyzer
+- Skim = SkimTree_Dilepton
+- InputSamples = ['DYJetsToEE_MiNNLO', 'DYJetsToMuMu_MiNNLO']
+- NJobs = 60
+- Era = 2017
+- UserFlags = ['cmssw14']
+- RunDir = /data6/Users/jhchoi/SKFlatRunlog//2025_04_11_143742__438778__DiLeptonAnalyzer__Era2017__SkimTree_Dilepton__cmssw14__TAMSA1/DYJetsToMuMu_MiNNLO/
+- output will be send to : /data6/Users/jhchoi/SKFlatOutput//Run2UltraLegacy_v3/DiLeptonAnalyzer/2017/cmssw14__
+##################################################
+submit hadd
+CheckOutputSize...
+Submit Hadd
+ExportShellCondorSetup_tamsa.py -c "cd /data6/Users/jhchoi/SKFlatRunlog//2025_04_11_143742__438778__DiLeptonAnalyzer__Era2017__SkimTree_Dilepton__cmssw14__TAMSA1/DYJetsToMuMu_MiNNLO/&&echo "RunHadd"&&hadd -j 10 -f DiLeptonAnalyzer_SkimTree_Dilepton_DYJetsToMuMu_MiNNLO.root output/*.root&&mv DiLeptonAnalyzer_SkimTree_Dilepton_DYJetsToMuMu_MiNNLO.root /data6/Users/jhchoi/SKFlatOutput//Run2UltraLegacy_v3/DiLeptonAnalyzer/2017/cmssw14__" -d WORKDIR_HADD -n hadd_DiLeptonAnalyzer_SkimTree_Dilepton_DYJetsToMuMu_MiNNLO2017 -m 10 -r "60000" -s
+<AFTER hadd fin. please rm remainings..>
+rm /data6/Users/jhchoi/SKFlatRunlog//2025_04_11_143742__438778__DiLeptonAnalyzer__Era2017__SkimTree_Dilepton__cmssw14__TAMSA1/DYJetsToMuMu_MiNNLO//output/*.root
+submit hadd
+CheckOutputSize...
+Submit Hadd
+ExportShellCondorSetup_tamsa.py -c "cd /data6/Users/jhchoi/SKFlatRunlog//2025_04_11_143742__438778__DiLeptonAnalyzer__Era2017__SkimTree_Dilepton__cmssw14__TAMSA1/DYJetsToEE_MiNNLO/&&echo "RunHadd"&&hadd -j 10 -f DiLeptonAnalyzer_SkimTree_Dilepton_DYJetsToEE_MiNNLO.root output/*.root&&mv DiLeptonAnalyzer_SkimTree_Dilepton_DYJetsToEE_MiNNLO.root /data6/Users/jhchoi/SKFlatOutput//Run2UltraLegacy_v3/DiLeptonAnalyzer/2017/cmssw14__" -d WORKDIR_HADD -n hadd_DiLeptonAnalyzer_SkimTree_Dilepton_DYJetsToEE_MiNNLO2017 -m 10 -r "60000" -s
+<AFTER hadd fin. please rm remainings..>
+rm /data6/Users/jhchoi/SKFlatRunlog//2025_04_11_143742__438778__DiLeptonAnalyzer__Era2017__SkimTree_Dilepton__cmssw14__TAMSA1/DYJetsToEE_MiNNLO//output/*.root

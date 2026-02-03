@@ -6,7 +6,7 @@ FLAG=""
 #FLAG="--userflags jetpuid_tight"
 #FLAG="--userflags check_tmva_input"
 #FLAG="--userflags runSys,dnn_v2405.4.3"
-FLAG="--userflags apply_bchargeeff"
+FLAG="--userflags apply_bchargeeff,runSys"
 
 
 
