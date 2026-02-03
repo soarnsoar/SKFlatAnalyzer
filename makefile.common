@@ -6,9 +6,12 @@ MAKEFLAGS = --no-print-directory -r -s
 VPATH    += $(OBJDIR) $(SRCDIR)
 INCLUDES += -Iinclude -I./
 INCLUDES += -I/cvmfs/cms.cern.ch/slc6_amd64_gcc630/external/lhapdf/6.2.1-fmblme/include/
-INCLUDES += -I/cvmfs/cms.cern.ch/el9_amd64_gcc12/external/boost/1.80.0-ee7655da280415252b8b334e18473a5c/include/
+
 
 CXXFLAGS += -Wall -Wextra -Wno-overloaded-virtual -Wno-ignored-qualifiers -Wno-unused-parameter
+##--jhchoi 
+#CXXFLAGS += -std=c++17
+##--end jhchoi
 #-Wno-ignored-qualifiers -Wno-unused-parameter
 # -Wparentheses-equality #-Wno-unused
 
@@ -41,9 +44,14 @@ OLIST = $(patsubst %.C,%.o,$(notdir $(CPPLIST)))
 	@$(CXX) $(CXXFLAGS) -c $< -o $(OBJDIR)/$(notdir $@) $(INCLUDES)
 
 # Rule to create the dictionary
+
 $(DICTFILE): $(HLIST) $(DICTLDEF)
 	@echo "Generating dictionary $@"
 	@$(shell root-config --exec-prefix)/bin/rootcint -f $(DICTFILE) -rmf lib$(LIBRARY).rootmap -rml lib$(LIBRARY).so $(ADDITIONAL_ROOTMAPLIBRARY) $(INCLUDES) $^
+
+
+
+
 
 # Rule to comile the dictionary
 $(DICTOBJ): $(DICTFILE)

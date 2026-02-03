@@ -10,11 +10,11 @@
 #ARR_MODEL+=($(ls $SKFlat_WD/data/Run2UltraLegacy_v3/201*/TMVA/TTSemilepJetAssignment/*/model.h5))
 
 
-#ARR_MODEL=($(ls $SKFlat_WD/data/Run2UltraLegacy_v3/201*/TMVA/ChargeScore/v2409.2/*/TrainedModel_DNN.h5))
-#ARR_MODEL+=($(ls $SKFlat_WD/data/Run2UltraLegacy_v3/201*/TMVA/ChargeScore/v2409.2/*/model.h5))
+ARR_MODEL=($(ls $SKFlat_WD/data/Run2UltraLegacy_v3/201*/TMVA/ChargeScore/v2409.2/*/TrainedModel_DNN.h5))
+ARR_MODEL+=($(ls $SKFlat_WD/data/Run2UltraLegacy_v3/201*/TMVA/ChargeScore/v2409.2/*/model.h5))
 
-ARR_MODEL=($(ls $SKFlat_WD/data/Run2UltraLegacy_v3/2018/TMVA/ChargeScore/v2409.2/*/TrainedModel_DNN.h5))
-ARR_MODEL+=($(ls $SKFlat_WD/data/Run2UltraLegacy_v3/2018/TMVA/ChargeScore/v2409.2/*/model.h5))
+#ARR_MODEL=($(ls $SKFlat_WD/data/Run2UltraLegacy_v3/2018/TMVA/ChargeScore/v2409.2/*/TrainedModel_DNN.h5))
+#ARR_MODEL+=($(ls $SKFlat_WD/data/Run2UltraLegacy_v3/2018/TMVA/ChargeScore/v2409.2/*/model.h5))
 
 
 

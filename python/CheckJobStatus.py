@@ -77,6 +77,25 @@ def CheckJobStatus(logfiledir, cycle, jobnumber, hostname):
       continue
     elif "Using TensorFlow backend" in e_l:
       continue
+    elif "UserWarning: The value of the smallest subnormal for" in e_l:
+      ##tensorflow warning
+      continue
+    elif "return self._float_to_str" in e_l:
+      ##tensorflow warning
+      continue
+    elif "use the following CPU instructions in performance-critical operations" in e_l:
+      ##tensorflow warning
+      continue
+    elif "To enable them in other operations, rebuild TensorFlow" in e_l:
+      continue
+    elif 'tensorflow/stream_executor/cuda/cuda_driver.cc:271] failed call to cuInit: UNKNOWN ERROR' in e_l:
+      continue
+    elif 'tensorflow/stream_executor/cuda/cuda_diagnostics.cc:156] kernel driver does not appear' in e_l:
+      continue
+    elif 'tensorflow/compiler/mlir/mlir_graph_optimization_pass.cc:185] None of the MLIR Optimization' in e_l:
+      continue
+    elif 'setattr(self, word, getattr(machar, word).flat[0])' in e_l:
+      continue
     elif "\n"==e_l:
       continue
     else:

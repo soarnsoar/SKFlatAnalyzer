@@ -3,8 +3,9 @@
 
 #include <iostream>
 #include <TString.h>
-#include <boost/math/special_functions/erf.hpp>
-
+#include "/usr/include/boost/math/tools/cxx03_warn.hpp" // to detour c++03 bug during compiling
+#include "boost/math/special_functions/erf.hpp"
+//#include <cmath>
 class AsymCrystalBall{
     friend class Aepcor;
     private:
@@ -265,7 +266,7 @@ class AsymExpGausExp{
 	    double n = norm();
 	    if(u<fkL) return (log(u*n*_kL/(1-_a)/_s) - 0.5*_kL*_kL)/_kL*_s*(1-_a) + _m;
 	    if(u<fm0) return _m-_s*(1-_a)*sqrt_2*boost::math::erf_inv((nL(-_kL)+nM(-_kL) - u*n)/sqrt_piover2/_s/(1-_a));
-	    if(u<fkH) return _m+sqrt_2*_s*(1+_a)*boost::math::erf_inv((u*n-nL(-_kL)-nM(-_kL))/sqrt_piover2/_s/(1+_a));
+	    if(u<fkH) return _m+sqrt_2*_s*(1+_a)*boost::math::erf_inv((u*n-nL(-_kL)-nM(-_kL))/sqrt_piover2/_s/(1+_a));	    
 	    return _m + _s*(1+_a)*(0.5*_kH*_kH - log((nL(-_kL) + nM(-_kL) + nP(_kH) + nH(_kH) - u*n)*_kH/(1+_a)/_s))/_kH;
 	}
 };

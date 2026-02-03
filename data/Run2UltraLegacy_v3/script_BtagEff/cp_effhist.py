@@ -11,9 +11,13 @@ SKFlat_WD=os.getenv("SKFlat_WD")
 list_year=["2016preVFP", "2016postVFP", "2017", "2018"]
 #list_year=["2018"]
 
-ANANAME="TTsemiLepChargeScoreEfficiencyMeasurement_TightMatch"
+#ANANAME="TTsemiLepChargeScoreEfficiencyMeasurement_TightMatch"
+#ANANAME="TTsemiLepBtagChargeAsymEfficiencyMeasurement_BINNING"
+ANANAME="PreselectionAnalyzer"
+suffix="jetpuid_loose__lepveto__measure_btageff__"
 for YEAR in list_year:
-    from_dir="/data6/Users/jhchoi/SKFlatOutput/Run2UltraLegacy_v3/"+ANANAME+"/"+str(YEAR)+"/measure_btageff__"
+    #from_dir="/data6/Users/jhchoi/SKFlatOutput/Run2UltraLegacy_v3/"+ANANAME+"/"+str(YEAR)+"/measure_btageff__"
+    from_dir="/data6/Users/jhchoi/SKFlatOutput/Run2UltraLegacy_v3/"+ANANAME+"/"+str(YEAR)+"/"+suffix
     to_dir=SKFlat_WD+"/data/Run2UltraLegacy_v3/"+str(YEAR)+"/BTag/"
 
     #os.system("ls "+from_dir)
@@ -21,7 +25,7 @@ for YEAR in list_year:
     for rootfile in list_rootfile:
         rootfile_new=rootfile.replace("_SkimTree_Dilepton","").replace("_SkimTree_SingleLepton","")
         rootfile_new=rootfile_new.split("/")[-1]
-        print "#"+rootfile_new
+        print("#"+rootfile_new)
         #os.system("cp "+rootfile+" "+to_dir+"/"+rootfile_new)
         source1=rootfile
         source2=YEAR+"__empty.root"
@@ -32,9 +36,9 @@ for YEAR in list_year:
         os.system("cp "+source2+" "+tempdir)
 
         source1_to_hadd=source1.split("/")[-1]
-        print "cd "+tempdir
+        print("cd "+tempdir)
         command="hadd -f combine.root "+source2+" "+source1_to_hadd+" &> hadd.log"
-        print command
-        print "cp combine.root "+to_dir+"/"+rootfile_new
-        print "cd -"
+        print(command)
+        print("cp combine.root "+to_dir+"/"+rootfile_new)
+        print("cd -")
         #os.system(command)

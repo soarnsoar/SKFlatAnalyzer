@@ -12,13 +12,23 @@ export CMS_PATH=/cvmfs/cms.cern.ch
 source $CMS_PATH/cmsset_default.sh
 #export SCRAM_ARCH=slc7_amd64_gcc900
 #export SCRAM_ARCH=slc7_amd64_gcc820
-export SCRAM_ARCH=el9_amd64_gcc12 ## after tamsa os update
+#export SCRAM_ARCH=el9_amd64_gcc12 ## after tamsa os update
+
 #export SCRAM_ARCH=slc7_amd64_gcc630
 #export SCRAM_ARCH=slc7_amd64_gcc700
 #export cmsswrel='cmssw/CMSSW_11_2_5'
 #export cmsswrel='cmssw/CMSSW_10_6_4' ##current//TMVA is working
-#export cmsswrel='cmssw/CMSSW_15_0_1' ## after tamsa os update
-export cmsswrel='cmssw/CMSSW_14_1_0_pre4' ## after tamsa os update//jihunkim recom
+export SCRAM_ARCH=el9_amd64_gcc12
+export cmsswrel='cmssw/CMSSW_15_0_1' ## after tamsa os update
+#export SCRAM_ARCH=el9_amd64_gcc12 ## after tamsa os update
+#export cmsswrel='cmssw/CMSSW_14_1_0_pre4' ## after tamsa os update//jihunkim recom
+#export cmsswrel='cmssw/CMSSW_13_0_2' ## after tamsa os update, test for multi pykeras
+#export cmsswrel='cmssw/CMSSW_12_6_3' ## after tamsa os update, test for multi pykeras
+
+
+#export SCRAM_ARCH=el9_amd64_gcc11 ## after tamsa os update, for multiple pykeras, CMSSW_13_2_9
+#export cmsswrel='cmssw/CMSSW_13_2_9' ## after tamsa os update, test for multi pykeras
+
 #export cmsswrel='cmssw/CMSSW_10_2_0'
 #export cmsswrel='cmssw/CMSSW_10_2_6'
 #export cmsswrel='cmssw/CMSSW_10_2_19'
@@ -39,6 +49,12 @@ export LD_LIBRARY_PATH=$(root-config --libdir):$LD_LIBRARY_PATH ##jhchoi
 ##For TF 1.6 py3-tensorflow/1.6.0/lib
 #export PYTHONPATH=/cvmfs/cms.cern.ch/slc7_amd64_gcc900/external/py3-tensorflow/1.6.0/lib/python3.6/site-packages:$PYTHONPATH
 #export LD_LIBRARY_PATH=/cvmfs/cms.cern.ch/slc7_amd64_gcc900/external/py3-tensorflow/1.6.0/lib:$LD_LIBRARY_PATH
+##--TMVA cpu limit
+export OMP_NUM_THREADS=1
+export OPENBLAS_NUM_THREADS=1
+export MKL_NUM_THREADS=1
+export VECLIB_MAXIMUM_THREADS=1
+export NUMEXPR_NUM_THREADS=1
 
 
 if [[ $HOSTNAME == *"ui"*".sdfarm.kr"* ]]; then

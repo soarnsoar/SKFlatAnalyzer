@@ -30,6 +30,9 @@ parser.add_argument('--nmax', dest='NMax', default=0, type=int, help="maximum ru
 parser.add_argument('--reduction', dest='Reduction', default=1, type=float)
 parser.add_argument('--memory', dest='Memory', default=0, type=float)
 parser.add_argument('--batchname',dest='BatchName', default="")
+##jhchoi
+parser.add_argument('--req_cpus', dest='req_cpus', default=0, type=int, help="request_cpus in condor submission file")
+
 args = parser.parse_args()
 
 if args.Year!="":
@@ -427,6 +430,10 @@ queue {0}
       request_memory=''
       if args.Memory:
         request_memory='request_memory = '+str(args.Memory)+"MB"
+      ##jhchoi
+      request_cpus=''
+      if args.req_cpus:
+        request_cpus='request_cpus = '+str(args.req_cpus)
       print>>submit_command,'''executable = {1}.sh
 jobbatchname = {1}
 universe   = vanilla
@@ -440,8 +447,9 @@ error = job_$(Process).err
 transfer_output_remaps = "hists.root = output/hists_$(Process).root"
 {2}
 {3}
+{4}
 queue {0}
-'''.format(str(NJobs), commandsfilename,concurrency_limits,request_memory)
+'''.format(str(NJobs), commandsfilename,concurrency_limits,request_memory,request_cpus)
       submit_command.close()
 
   CheckTotalNFile=0
@@ -925,14 +933,15 @@ try:
                 #if os.getenv("$CMSSW_BASE"):
                 #  if "CMSSW_10_6_30" in os.getenv("$CMSSW_BASE"):
                 #    command_cmssw_setup="source "+SKFlat_WD+"/bin/setup_cmssw_11_2_5.sh"
-                ##----OLD HADD----##
-                #print "Submit Hadd"
+                ##----HADD----##
+                print "Submit Hadd"
                 #submit_hadd="ExportShellCondorSetup_tamsa.py -c \"cd "+base_rundir+"&&"+command_cmssw_setup+"&&hadd -j "+str(_nhadd)+" -f "+outputname+".root output/*.root&&mv "+outputname+".root "+FinalOutputPath+"\" -d WORKDIR_HADD -n hadd_"+outputname+str(args.Era)+" -m "+str(_nhadd)+" -r \""+str(_req_memory)+"\" -s"
-                ##--[END]OLD HADD---##
+                ##--[END]HADD---##
 
-                ##---HADD USING condor_submit_dag
+                ##---HADD USING condor_submit_dag --> skip
                 submit_hadd="submit_hadd_condor_dag.py -n DAG_hadd_"+outputname+str(args.Era)+' -i "output/*.root"' + " -f "+FinalOutputPath+"/"+outputname+".root -s"                 
-                print submit_hadd
+                #print submit_hadd
+                ##---[END]HADD USING condor_submit_dag
                 os.system(submit_hadd)
                 #os.system("submit_hadd.sh")
                 #os.system('hadd -f '+outputname+'.root output/*.root >> JobStatus.log')

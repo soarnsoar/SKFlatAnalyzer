@@ -15,9 +15,10 @@ SKFlatTools
 alt_keras
 *#
 *.log
-data/Run2UltraLegacy_v*/201*/TMVA/ChargeScore/*/*/*.root
+data/Run2UltraLegacy_v*/201*/TMVA/ChargeScore/*/*/*/*.root
 *_backup
 data/Run2UltraLegacy_v*/201*/TMVA/*/*/*/*_backup
 data/Run2UltraLegacy_v*/201*/TMVA/*/*/*_backup
 data/Run2UltraLegacy_v3/script_BtagEff/output
 data/Run2UltraLegacy_v3/script_BtagEff/*.tar
+data/Run2UltraLegacy_v3/201*/TMVA/ChargeScore/BDT/*/*/*.root

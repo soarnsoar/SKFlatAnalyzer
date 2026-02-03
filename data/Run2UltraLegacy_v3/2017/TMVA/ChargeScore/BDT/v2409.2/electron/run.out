@@ -1,0 +1,387 @@
+/home/condor/dir_3493656
+DataSetInfo              : [FIN_BDT_2017] : Added class "Signal"
+                         : Add Tree OutTree/sig of type Signal with 903237 events
+                         : Add Tree OutTree/sig of type Signal with 1201756 events
+DataSetInfo              : [FIN_BDT_2017] : Added class "Background"
+                         : Add Tree OutTree/bkg of type Background with 594513 events
+                         : Add Tree OutTree/bkg of type Background with 789045 events
+Factory                  : Booking method: [1mBDT[0m
+                         : 
+                         : Parsing option string: 
+                         : ... "!H:V:NTrees=500:MinNodeSize=0.5%:MaxDepth=4:Shrinkage=0.01:BoostType=Grad:AdaBoostBeta=:UseBaggedBoost=True:BaggedSampleFraction=0.2:SeparationType=GiniIndex:nCuts=50:IgnoreNegWeightsInTraining=True:VarTransform=U"
+                         : The following options are set:
+                         : - By User:
+                         :     <none>
+                         : - Default:
+                         :     Boost_num: "0" [Number of times the classifier will be boosted]
+                         : Parsing option string: 
+                         : ... "!H:V:NTrees=500:MinNodeSize=0.5%:MaxDepth=4:Shrinkage=0.01:BoostType=Grad:AdaBoostBeta=:UseBaggedBoost=True:BaggedSampleFraction=0.2:SeparationType=GiniIndex:nCuts=50:IgnoreNegWeightsInTraining=True:VarTransform=U"
+                         : The following options are set:
+                         : - By User:
+                         :     V: "True" [Verbose output (short form of "VerbosityLevel" below - overrides the latter one)]
+                         :     VarTransform: "U" [List of variable transformations performed before training, e.g., "D_Background,P_Signal,G,N_AllClasses" for: "Decorrelation, PCA-transformation, Gaussianisation, Normalisation, each for the given class of events ('AllClasses' denotes all events of all classes, if no class indication is given, 'All' is assumed)"]
+                         :     H: "False" [Print method-specific help message]
+                         :     IgnoreNegWeightsInTraining: "True" [Events with negative weights are ignored in the training (but are included for testing and performance evaluation)]
+                         :     NTrees: "500" [Number of trees in the forest]
+                         :     MaxDepth: "4" [Max depth of the decision tree allowed]
+                         :     MinNodeSize: "0.5%" [Minimum percentage of training events required in a leaf node (default: Classification: 5%, Regression: 0.2%)]
+                         :     nCuts: "50" [Number of grid points in variable range used in finding optimal cut in node splitting]
+                         :     BoostType: "Grad" [Boosting type for the trees in the forest (note: AdaCost is still experimental)]
+                         :     UseBaggedBoost: "True" [Use only a random subsample of all events for growing the trees in each boost iteration.]
+                         :     Shrinkage: "1.000000e-02" [Learning rate for BoostType=Grad algorithm]
+                         :     AdaBoostBeta: "5.000000e-01" [Learning rate  for AdaBoost algorithm]
+                         :     BaggedSampleFraction: "2.000000e-01" [Relative size of bagged event sample to original size of the data sample (used whenever bagging is used (i.e. UseBaggedBoost, Bagging,)]
+                         :     SeparationType: "GiniIndex" [Separation criterion for node splitting]
+                         : - Default:
+                         :     VerbosityLevel: "Default" [Verbosity level]
+                         :     CreateMVAPdfs: "False" [Create PDFs for classifier outputs (signal and background)]
+                         :     AdaBoostR2Loss: "Quadratic" [Type of Loss function in AdaBoostR2]
+                         :     UseRandomisedTrees: "False" [Determine at each node splitting the cut variable only as the best out of a random subset of variables (like in RandomForests)]
+                         :     UseNvars: "4" [Size of the subset of variables used with RandomisedTree option]
+                         :     UsePoissonNvars: "True" [Interpret "UseNvars" not as fixed number but as mean of a Poisson distribution in each split with RandomisedTree option]
+                         :     UseYesNoLeaf: "True" [Use Sig or Bkg categories, or the purity=S/(S+B) as classification of the leaf node -> Real-AdaBoost]
+                         :     NegWeightTreatment: "InverseBoostNegWeights" [How to treat events with negative weights in the BDT training (particular the boosting) : IgnoreInTraining;  Boost With inverse boostweight; Pair events with negative and positive weights in training sample and *annihilate* them (experimental!)]
+                         :     Css: "1.000000e+00" [AdaCost: cost of true signal selected signal]
+                         :     Cts_sb: "1.000000e+00" [AdaCost: cost of true signal selected bkg]
+                         :     Ctb_ss: "1.000000e+00" [AdaCost: cost of true bkg    selected signal]
+                         :     Cbb: "1.000000e+00" [AdaCost: cost of true bkg    selected bkg ]
+                         :     NodePurityLimit: "5.000000e-01" [In boosting/pruning, nodes with purity > NodePurityLimit are signal; background otherwise.]
+                         :     RegressionLossFunctionBDTG: "Huber" [Loss function for BDTG regression.]
+                         :     HuberQuantile: "7.000000e-01" [In the Huber loss function this is the quantile that separates the core from the tails in the residuals distribution.]
+                         :     DoBoostMonitor: "False" [Create control plot with ROC integral vs tree number]
+                         :     UseFisherCuts: "False" [Use multivariate splits using the Fisher criterion]
+                         :     MinLinCorrForFisher: "8.000000e-01" [The minimum linear correlation between two variables demanded for use in Fisher criterion in node splitting]
+                         :     UseExclusiveVars: "False" [Variables already used in fisher criterion are not anymore analysed individually for node splitting]
+                         :     DoPreselection: "False" [and and apply automatic pre-selection for 100% efficient signal (bkg) cuts prior to training]
+                         :     SigToBkgFraction: "1.000000e+00" [Sig to Bkg ratio used in Training (similar to NodePurityLimit, which cannot be used in real adaboost]
+                         :     PruneMethod: "NoPruning" [Note: for BDTs use small trees (e.g.MaxDepth=3) and NoPruning:  Pruning: Method used for pruning (removal) of statistically insignificant branches ]
+                         :     PruneStrength: "0.000000e+00" [Pruning strength]
+                         :     PruningValFraction: "5.000000e-01" [Fraction of events to use for optimizing automatic pruning.]
+                         :     SkipNormalization: "False" [Skip normalization at initialization, to keep expectation value of BDT output according to the fraction of events]
+                         :     nEventsMin: "0" [deprecated: Use MinNodeSize (in % of training events) instead]
+                         :     UseBaggedGrad: "False" [deprecated: Use *UseBaggedBoost* instead:  Use only a random subsample of all events for growing the trees in each iteration.]
+                         :     GradBaggingFraction: "2.000000e-01" [deprecated: Use *BaggedSampleFraction* instead: Defines the fraction of events to be used in each iteration, e.g. when UseBaggedGrad=kTRUE. ]
+                         :     UseNTrainEvents: "0" [deprecated: Use *BaggedSampleFraction* instead: Number of randomly picked training events used in randomised (and bagged) trees]
+                         :     NNodesMax: "0" [deprecated: Use MaxDepth instead to limit the tree size]
+BDT                      : [FIN_BDT_2017] : Create Transformation "U" with events from all classes.
+                         : 
+                         : Transformation, Variable selection : 
+                         : Input : variable 'belectron_nsip3d<30.?belectron_nsip3d:30.' <---> Output : variable 'belectron_nsip3d<30.?belectron_nsip3d:30.'
+                         : Input : variable 'belectron_reliso' <---> Output : variable 'belectron_reliso'
+                         : Input : variable 'belectron_ptwrtbjet<10.?belectron_ptwrtbjet:10.' <---> Output : variable 'belectron_ptwrtbjet<10.?belectron_ptwrtbjet:10.'
+                         : Input : variable 'belectron_P_jetrest<10.?belectron_P_jetrest:10.' <---> Output : variable 'belectron_P_jetrest<10.?belectron_P_jetrest:10.'
+                         : Input : variable 'belectron_palongjet<100.?belectron_palongjet:100.' <---> Output : variable 'belectron_palongjet<100.?belectron_palongjet:100.'
+                         : Input : variable 'belectron_palongjetratio<1.?belectron_palongjetratio:1.' <---> Output : variable 'belectron_palongjetratio<1.?belectron_palongjetratio:1.'
+                         : Input : variable 'bjet_charge*belectron_charge' <---> Output : variable 'bjet_charge*belectron_charge'
+                         : Input : variable 'bjet_ChargedHadronEnergyFraction' <---> Output : variable 'bjet_ChargedHadronEnergyFraction'
+                         : Input : variable 'bjet_NeutralHadronEnergyFraction' <---> Output : variable 'bjet_NeutralHadronEnergyFraction'
+                         : Input : variable 'bjet_NeutralEmEnergyFraction' <---> Output : variable 'bjet_NeutralEmEnergyFraction'
+                         : Input : variable 'bjet_ChargedEmEnergyFraction' <---> Output : variable 'bjet_ChargedEmEnergyFraction'
+                         : Input : variable 'bjet_MuonEnergyFraction' <---> Output : variable 'bjet_MuonEnergyFraction'
+                         : Input : variable 'bjet_ChargedMultiplicity' <---> Output : variable 'bjet_ChargedMultiplicity'
+                         : Input : variable 'bjet_NeutralMultiplicity' <---> Output : variable 'bjet_NeutralMultiplicity'
+                         : Input : variable 'fabs(bjet_charge)' <---> Output : variable 'fabs(bjet_charge)'
+                         : the option NegWeightTreatment=InverseBoostNegWeights does not exist for BoostType=Grad
+                         : --> change to new default NegWeightTreatment=Pray
+                         : Rebuilding Dataset FIN_BDT_2017
+                         : Building event vectors for type 1 Signal
+                         : Dataset[FIN_BDT_2017] :  create input formulas for tree sig
+                         : Dataset[FIN_BDT_2017] :  create input formulas for tree sig
+                         : Dataset[FIN_BDT_2017] :  create input formulas for tree sig
+                         : Building event vectors for type 0 Signal
+                         : Dataset[FIN_BDT_2017] :  create input formulas for tree sig
+                         : Dataset[FIN_BDT_2017] :  create input formulas for tree sig
+                         : Building event vectors for type 1 Background
+                         : Dataset[FIN_BDT_2017] :  create input formulas for tree bkg
+                         : Dataset[FIN_BDT_2017] :  create input formulas for tree bkg
+                         : Dataset[FIN_BDT_2017] :  create input formulas for tree bkg
+                         : Building event vectors for type 0 Background
+                         : Dataset[FIN_BDT_2017] :  create input formulas for tree bkg
+                         : Dataset[FIN_BDT_2017] :  create input formulas for tree bkg
+DataSetFactory           : [FIN_BDT_2017] : Number of events in input trees
+                         : Dataset[FIN_BDT_2017] :     Signal     requirement: "(belectron_charge*bjet_partonFlavour < 0)&&(Has_bElectron)"
+                         : Dataset[FIN_BDT_2017] :     Signal          -- number of events passed: 93487  / sum of weights: 62148.8
+                         : Dataset[FIN_BDT_2017] :     Signal          -- efficiency             : 0.0487113
+                         : Dataset[FIN_BDT_2017] :     Background requirement: "(belectron_charge*bjet_partonFlavour > 0)&&(Has_bElectron)"
+                         : Dataset[FIN_BDT_2017] :     Background      -- number of events passed: 53888  / sum of weights: 35624.4
+                         : Dataset[FIN_BDT_2017] :     Background      -- efficiency             : 0.041886
+                         : Dataset[FIN_BDT_2017] :  you have opted for interpreting the requested number of training/testing events
+                         :  to be the number of events AFTER your preselection cuts
+                         : 
+                         : Dataset[FIN_BDT_2017] :  you have opted for interpreting the requested number of training/testing events
+                         :  to be the number of events AFTER your preselection cuts
+                         : 
+                         : Dataset[FIN_BDT_2017] : Weight renormalisation mode: "EqualNumEvents": renormalises all event classes ...
+                         : Dataset[FIN_BDT_2017] :  such that the effective (weighted) number of events in each class is the same 
+                         : Dataset[FIN_BDT_2017] :  (and equals the number of events (entries) given for class=0 )
+                         : Dataset[FIN_BDT_2017] : ... i.e. such that Sum[i=1..N_j]{w_i} = N_classA, j=classA, classB, ...
+                         : Dataset[FIN_BDT_2017] : ... (note that N_j is the sum of TRAINING events
+                         : Dataset[FIN_BDT_2017] :  ..... Testing events are not renormalised nor included in the renormalisation factor!)
+                         : Number of training and testing events
+                         : ---------------------------------------------------------------------------
+                         : Signal     -- training events            : 49656
+                         : Signal     -- testing events             : 43831
+                         : Signal     -- training and testing events: 93487
+                         : Dataset[FIN_BDT_2017] : Signal     -- due to the preselection a scaling factor has been applied to the numbers of requested events: 0.044412
+                         : Background -- training events            : 28341
+                         : Background -- testing events             : 25547
+                         : Background -- training and testing events: 53888
+                         : Dataset[FIN_BDT_2017] : Background -- due to the preselection a scaling factor has been applied to the numbers of requested events: 0.0389489
+                         : 
+DataSetInfo              : Correlation matrix (Signal):
+                         : ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+                         :                                                          belectron_nsip3d_30._belectron_nsip3d:30. belectron_reliso belectron_ptwrtbjet_10._belectron_ptwrtbjet:10. belectron_P_jetrest_10._belectron_P_jetrest:10. belectron_palongjet_100._belectron_palongjet:100. belectron_palongjetratio_1._belectron_palongjetratio:1. bjet_charge_T_belectron_charge bjet_ChargedHadronEnergyFraction bjet_NeutralHadronEnergyFraction bjet_NeutralEmEnergyFraction bjet_ChargedEmEnergyFraction bjet_MuonEnergyFraction bjet_ChargedMultiplicity bjet_NeutralMultiplicity fabs_bjet_charge_
+                         :               belectron_nsip3d_30._belectron_nsip3d:30.:                                    +1.000           +0.050                                          +0.117                                          -0.001                                            -0.057                                                  -0.100                         -0.065                           -0.015                           +0.051                       +0.003                       -0.016                  +0.010                   -0.041                   -0.011            -0.045
+                         :                                        belectron_reliso:                                    +0.050           +1.000                                          -0.211                                          -0.436                                            -0.442                                                  -0.697                         -0.311                           +0.283                           +0.123                       +0.212                       -0.446                  -0.075                   +0.239                   +0.277            -0.285
+                         :         belectron_ptwrtbjet_10._belectron_ptwrtbjet:10.:                                    +0.117           -0.211                                          +1.000                                          +0.715                                            +0.256                                                  +0.128                         +0.063                           -0.100                           +0.004                       -0.029                       +0.073                  +0.098                   +0.074                   +0.018            +0.069
+                         :         belectron_P_jetrest_10._belectron_P_jetrest:10.:                                    -0.001           -0.436                                          +0.715                                          +1.000                                            +0.619                                                  +0.554                         +0.225                           -0.236                           -0.032                       -0.070                       +0.286                  +0.009                   +0.114                   +0.046            +0.212
+                         :       belectron_palongjet_100._belectron_palongjet:100.:                                    -0.057           -0.442                                          +0.256                                          +0.619                                            +1.000                                                  +0.559                         +0.207                           -0.216                           +0.028                       -0.171                       +0.330                  -0.039                   +0.046                   -0.221            +0.197
+                         : belectron_palongjetratio_1._belectron_palongjetratio:1.:                                    -0.100           -0.697                                          +0.128                                          +0.554                                            +0.559                                                  +1.000                         +0.432                           -0.444                           -0.118                       -0.215                       +0.687                  -0.132                   -0.317                   -0.242            +0.392
+                         :                          bjet_charge_T_belectron_charge:                                    -0.065           -0.311                                          +0.063                                          +0.225                                            +0.207                                                  +0.432                         +1.000                           -0.269                           +0.002                       -0.072                       +0.350                  -0.099                   -0.234                   -0.078            +0.782
+                         :                        bjet_ChargedHadronEnergyFraction:                                    -0.015           +0.283                                          -0.100                                          -0.236                                            -0.216                                                  -0.444                         -0.269                           +1.000                           -0.357                       -0.055                       -0.664                  -0.218                   +0.412                   -0.024            -0.310
+                         :                        bjet_NeutralHadronEnergyFraction:                                    +0.051           +0.123                                          +0.004                                          -0.032                                            +0.028                                                  -0.118                         +0.002                           -0.357                           +1.000                       -0.193                       +0.040                  -0.071                   -0.137                   +0.078            -0.001
+                         :                            bjet_NeutralEmEnergyFraction:                                    +0.003           +0.212                                          -0.029                                          -0.070                                            -0.171                                                  -0.215                         -0.072                           -0.055                           -0.193                       +1.000                       -0.497                  -0.137                   -0.024                   +0.471            -0.105
+                         :                            bjet_ChargedEmEnergyFraction:                                    -0.016           -0.446                                          +0.073                                          +0.286                                            +0.330                                                  +0.687                         +0.350                           -0.664                           +0.040                       -0.497                       +1.000                  -0.083                   -0.303                   -0.308            +0.336
+                         :                                 bjet_MuonEnergyFraction:                                    +0.010           -0.075                                          +0.098                                          +0.009                                            -0.039                                                  -0.132                         -0.099                           -0.218                           -0.071                       -0.137                       -0.083                  +1.000                   -0.027                   -0.079            +0.086
+                         :                                bjet_ChargedMultiplicity:                                    -0.041           +0.239                                          +0.074                                          +0.114                                            +0.046                                                  -0.317                         -0.234                           +0.412                           -0.137                       -0.024                       -0.303                  -0.027                   +1.000                   +0.131            -0.284
+                         :                                bjet_NeutralMultiplicity:                                    -0.011           +0.277                                          +0.018                                          +0.046                                            -0.221                                                  -0.242                         -0.078                           -0.024                           +0.078                       +0.471                       -0.308                  -0.079                   +0.131                   +1.000            -0.106
+                         :                                       fabs_bjet_charge_:                                    -0.045           -0.285                                          +0.069                                          +0.212                                            +0.197                                                  +0.392                         +0.782                           -0.310                           -0.001                       -0.105                       +0.336                  +0.086                   -0.284                   -0.106            +1.000
+                         : ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+DataSetInfo              : Correlation matrix (Background):
+                         : ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+                         :                                                          belectron_nsip3d_30._belectron_nsip3d:30. belectron_reliso belectron_ptwrtbjet_10._belectron_ptwrtbjet:10. belectron_P_jetrest_10._belectron_P_jetrest:10. belectron_palongjet_100._belectron_palongjet:100. belectron_palongjetratio_1._belectron_palongjetratio:1. bjet_charge_T_belectron_charge bjet_ChargedHadronEnergyFraction bjet_NeutralHadronEnergyFraction bjet_NeutralEmEnergyFraction bjet_ChargedEmEnergyFraction bjet_MuonEnergyFraction bjet_ChargedMultiplicity bjet_NeutralMultiplicity fabs_bjet_charge_
+                         :               belectron_nsip3d_30._belectron_nsip3d:30.:                                    +1.000           -0.058                                          +0.122                                          +0.038                                            -0.029                                                  +0.012                         -0.008                           -0.085                           +0.015                       -0.030                       +0.099                  +0.029                   -0.099                   -0.047            +0.060
+                         :                                        belectron_reliso:                                    -0.058           +1.000                                          -0.249                                          -0.426                                            -0.441                                                  -0.668                         -0.263                           +0.211                           +0.100                       +0.108                       -0.321                  -0.130                   +0.197                   +0.252            -0.109
+                         :         belectron_ptwrtbjet_10._belectron_ptwrtbjet:10.:                                    +0.122           -0.249                                          +1.000                                          +0.775                                            +0.303                                                  +0.212                         +0.051                           -0.115                           -0.019                       +0.032                       +0.060                  +0.096                   +0.109                   +0.057            +0.061
+                         :         belectron_P_jetrest_10._belectron_P_jetrest:10.:                                    +0.038           -0.426                                          +0.775                                          +1.000                                            +0.615                                                  +0.565                         +0.158                           -0.179                           -0.019                       +0.042                       +0.183                  +0.006                   +0.163                   +0.092            +0.086
+                         :       belectron_palongjet_100._belectron_palongjet:100.:                                    -0.029           -0.441                                          +0.303                                          +0.615                                            +1.000                                                  +0.600                         +0.159                           -0.165                           +0.066                       -0.086                       +0.261                  -0.051                   +0.074                   -0.191            +0.080
+                         : belectron_palongjetratio_1._belectron_palongjetratio:1.:                                    +0.012           -0.668                                          +0.212                                          +0.565                                            +0.600                                                  +1.000                         +0.343                           -0.315                           -0.060                       -0.053                       +0.536                  -0.133                   -0.252                   -0.201            +0.147
+                         :                          bjet_charge_T_belectron_charge:                                    -0.008           -0.263                                          +0.051                                          +0.158                                            +0.159                                                  +0.343                         +1.000                           -0.138                           +0.039                       +0.055                       +0.201                  -0.176                   -0.057                   -0.011            +0.228
+                         :                        bjet_ChargedHadronEnergyFraction:                                    -0.085           +0.211                                          -0.115                                          -0.179                                            -0.165                                                  -0.315                         -0.138                           +1.000                           -0.422                       -0.160                       -0.590                  -0.308                   +0.382                   -0.072            -0.199
+                         :                        bjet_NeutralHadronEnergyFraction:                                    +0.015           +0.100                                          -0.019                                          -0.019                                            +0.066                                                  -0.060                         +0.039                           -0.422                           +1.000                       -0.236                       +0.147                  -0.088                   -0.153                   +0.061            +0.023
+                         :                            bjet_NeutralEmEnergyFraction:                                    -0.030           +0.108                                          +0.032                                          +0.042                                            -0.086                                                  -0.053                         +0.055                           -0.160                           -0.236                       +1.000                       -0.419                  -0.185                   -0.036                   +0.449            -0.081
+                         :                            bjet_ChargedEmEnergyFraction:                                    +0.099           -0.321                                          +0.060                                          +0.183                                            +0.261                                                  +0.536                         +0.201                           -0.590                           +0.147                       -0.419                       +1.000                  -0.050                   -0.269                   -0.266            +0.140
+                         :                                 bjet_MuonEnergyFraction:                                    +0.029           -0.130                                          +0.096                                          +0.006                                            -0.051                                                  -0.133                         -0.176                           -0.308                           -0.088                       -0.185                       -0.050                  +1.000                   -0.089                   -0.119            +0.239
+                         :                                bjet_ChargedMultiplicity:                                    -0.099           +0.197                                          +0.109                                          +0.163                                            +0.074                                                  -0.252                         -0.057                           +0.382                           -0.153                       -0.036                       -0.269                  -0.089                   +1.000                   +0.148            -0.187
+                         :                                bjet_NeutralMultiplicity:                                    -0.047           +0.252                                          +0.057                                          +0.092                                            -0.191                                                  -0.201                         -0.011                           -0.072                           +0.061                       +0.449                       -0.266                  -0.119                   +0.148                   +1.000            -0.074
+                         :                                       fabs_bjet_charge_:                                    +0.060           -0.109                                          +0.061                                          +0.086                                            +0.080                                                  +0.147                         +0.228                           -0.199                           +0.023                       -0.081                       +0.140                  +0.239                   -0.187                   -0.074            +1.000
+                         : ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+DataSetFactory           : [FIN_BDT_2017] :  
+                         : 
+Factory                  : [1mTrain all methods[0m
+Factory                  : [FIN_BDT_2017] : Create Transformation "I" with events from all classes.
+                         : 
+                         : Transformation, Variable selection : 
+                         : Input : variable 'belectron_nsip3d<30.?belectron_nsip3d:30.' <---> Output : variable 'belectron_nsip3d<30.?belectron_nsip3d:30.'
+                         : Input : variable 'belectron_reliso' <---> Output : variable 'belectron_reliso'
+                         : Input : variable 'belectron_ptwrtbjet<10.?belectron_ptwrtbjet:10.' <---> Output : variable 'belectron_ptwrtbjet<10.?belectron_ptwrtbjet:10.'
+                         : Input : variable 'belectron_P_jetrest<10.?belectron_P_jetrest:10.' <---> Output : variable 'belectron_P_jetrest<10.?belectron_P_jetrest:10.'
+                         : Input : variable 'belectron_palongjet<100.?belectron_palongjet:100.' <---> Output : variable 'belectron_palongjet<100.?belectron_palongjet:100.'
+                         : Input : variable 'belectron_palongjetratio<1.?belectron_palongjetratio:1.' <---> Output : variable 'belectron_palongjetratio<1.?belectron_palongjetratio:1.'
+                         : Input : variable 'bjet_charge*belectron_charge' <---> Output : variable 'bjet_charge*belectron_charge'
+                         : Input : variable 'bjet_ChargedHadronEnergyFraction' <---> Output : variable 'bjet_ChargedHadronEnergyFraction'
+                         : Input : variable 'bjet_NeutralHadronEnergyFraction' <---> Output : variable 'bjet_NeutralHadronEnergyFraction'
+                         : Input : variable 'bjet_NeutralEmEnergyFraction' <---> Output : variable 'bjet_NeutralEmEnergyFraction'
+                         : Input : variable 'bjet_ChargedEmEnergyFraction' <---> Output : variable 'bjet_ChargedEmEnergyFraction'
+                         : Input : variable 'bjet_MuonEnergyFraction' <---> Output : variable 'bjet_MuonEnergyFraction'
+                         : Input : variable 'bjet_ChargedMultiplicity' <---> Output : variable 'bjet_ChargedMultiplicity'
+                         : Input : variable 'bjet_NeutralMultiplicity' <---> Output : variable 'bjet_NeutralMultiplicity'
+                         : Input : variable 'fabs(bjet_charge)' <---> Output : variable 'fabs(bjet_charge)'
+TFHandler_Factory        :                                                Variable                                                       Mean                                                       RMS                                               [        Min                                                       Max ]
+                         : ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+                         :               belectron_nsip3d<30.?belectron_nsip3d:30.:                                                   9.3006                                                   8.9783   [                                                 0.015903                                                   30.000 ]
+                         :                                        belectron_reliso:                                                   2.1917                                                   1.8819   [                                                   0.0000                                                   9.9992 ]
+                         :         belectron_ptwrtbjet<10.?belectron_ptwrtbjet:10.:                                                   1.0363                                                  0.73495   [                                                0.0031914                                                   10.000 ]
+                         :         belectron_P_jetrest<10.?belectron_P_jetrest:10.:                                                   1.5708                                                  0.93398   [                                                  0.23541                                                   10.000 ]
+                         :       belectron_palongjet<100.?belectron_palongjet:100.:                                                   29.341                                                   24.398   [                                                   4.7259                                                   100.00 ]
+                         : belectron_palongjetratio<1.?belectron_palongjetratio:1.:                                                  0.27554                                                  0.14941   [                                                 0.012035                                                   1.0000 ]
+                         :                            bjet_charge*belectron_charge:                                                  0.14957                                                  0.29978   [                                                 -0.98155                                                   1.0000 ]
+                         :                        bjet_ChargedHadronEnergyFraction:                                                  0.47467                                                  0.19837   [                                                   0.0000                                                   1.0000 ]
+                         :                        bjet_NeutralHadronEnergyFraction:                                                 0.083618                                                 0.098989   [                                                   0.0000                                                  0.83864 ]
+                         :                            bjet_NeutralEmEnergyFraction:                                                  0.21789                                                  0.14547   [                                                   0.0000                                                  0.98518 ]
+                         :                            bjet_ChargedEmEnergyFraction:                                                  0.19434                                                  0.19107   [                                                   0.0000                                                  0.97597 ]
+                         :                                 bjet_MuonEnergyFraction:                                                 0.029485                                                 0.096262   [                                                   0.0000                                                  0.92965 ]
+                         :                                bjet_ChargedMultiplicity:                                                   11.185                                                   4.0925   [                                                   1.0000                                                   40.000 ]
+                         :                                bjet_NeutralMultiplicity:                                                   10.470                                                   5.3172   [                                                   0.0000                                                   47.000 ]
+                         :                                       fabs(bjet_charge):                                                  0.27104                                                  0.19693   [                                               5.4467e-06                                                   1.0000 ]
+                         : ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+                         : Ranking input variables (method unspecific)...
+IdTransformation         : Ranking result (top variable is best ranked)
+                         : --------------------------------------------------------------------------------
+                         : Rank : Variable                                                : Separation
+                         : --------------------------------------------------------------------------------
+                         :    1 : bjet_charge*belectron_charge                            : 1.249e-01
+                         :    2 : fabs(bjet_charge)                                       : 4.714e-02
+                         :    3 : bjet_ChargedEmEnergyFraction                            : 3.790e-02
+                         :    4 : belectron_P_jetrest<10.?belectron_P_jetrest:10.         : 3.777e-02
+                         :    5 : belectron_palongjetratio<1.?belectron_palongjetratio:1. : 3.329e-02
+                         :    6 : belectron_reliso                                        : 2.603e-02
+                         :    7 : belectron_ptwrtbjet<10.?belectron_ptwrtbjet:10.         : 2.590e-02
+                         :    8 : belectron_palongjet<100.?belectron_palongjet:100.       : 1.136e-02
+                         :    9 : bjet_ChargedHadronEnergyFraction                        : 1.079e-02
+                         :   10 : bjet_ChargedMultiplicity                                : 4.279e-03
+                         :   11 : bjet_NeutralEmEnergyFraction                            : 3.670e-03
+                         :   12 : bjet_NeutralMultiplicity                                : 3.528e-03
+                         :   13 : bjet_MuonEnergyFraction                                 : 2.928e-03
+                         :   14 : belectron_nsip3d<30.?belectron_nsip3d:30.               : 1.942e-03
+                         :   15 : bjet_NeutralHadronEnergyFraction                        : 1.413e-03
+                         : --------------------------------------------------------------------------------
+Factory                  : Train method: BDT for Classification
+                         : 
+                         : Preparing the Gaussian transformation...
+TFHandler_BDT            :                                                Variable                                                       Mean                                                       RMS                                               [        Min                                                       Max ]
+                         : ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+                         :               belectron_nsip3d<30.?belectron_nsip3d:30.:                                                  0.53982                                                  0.30788   [                                               0.00047333                                                   1.0000 ]
+                         :                                        belectron_reliso:                                                  0.49722                                                  0.29015   [                                                0.0010228                                                   1.0000 ]
+                         :         belectron_ptwrtbjet<10.?belectron_ptwrtbjet:10.:                                                  0.50037                                                  0.28845   [                                               0.00042572                                                   1.0000 ]
+                         :         belectron_P_jetrest<10.?belectron_P_jetrest:10.:                                                  0.50104                                                  0.28883   [                                               0.00046231                                                   1.0000 ]
+                         :       belectron_palongjet<100.?belectron_palongjet:100.:                                                  0.52165                                                  0.29972   [                                               0.00050692                                                   1.0000 ]
+                         : belectron_palongjetratio<1.?belectron_palongjetratio:1.:                                                  0.50054                                                  0.28857   [                                               0.00045789                                                   1.0000 ]
+                         :                            bjet_charge*belectron_charge:                                                  0.50065                                                  0.28854   [                                               0.00046613                                                   1.0000 ]
+                         :                        bjet_ChargedHadronEnergyFraction:                                                  0.50036                                                  0.28860   [                                               0.00044397                                                   1.0000 ]
+                         :                        bjet_NeutralHadronEnergyFraction:                                                  0.38566                                                  0.32917   [                                               0.00051678                                                   1.0000 ]
+                         :                            bjet_NeutralEmEnergyFraction:                                                  0.49792                                                  0.29000   [                                               0.00050018                                                   1.0000 ]
+                         :                            bjet_ChargedEmEnergyFraction:                                                  0.33861                                                  0.33309   [                                               0.00073253                                                   1.0000 ]
+                         :                                 bjet_MuonEnergyFraction:                                                 0.076377                                                  0.20728   [                                                0.0037198                                                   1.0000 ]
+                         :                                bjet_ChargedMultiplicity:                                                  0.50046                                                  0.28759   [                                               1.8432e-08                                                   1.0000 ]
+                         :                                bjet_NeutralMultiplicity:                                                  0.49983                                                  0.28883   [                                               1.6296e-07                                                   1.0000 ]
+                         :                                       fabs(bjet_charge):                                                  0.50052                                                  0.28853   [                                               0.00062148                                                   1.0000 ]
+                         : ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+                         : Events with weight == 0 are going to be simply ignored 
+BDT                      : #events: (reweighted) sig: 26830.5 bkg: 26830.5
+                         : #events: (unweighted) sig: 34189 bkg: 19472
+                         : Training 500 Decision Trees ... patience please
+                         : Elapsed time for training with 77997 events: 37.3 sec         
+BDT                      : [FIN_BDT_2017] : Evaluation of BDT on training sample (77997 events)
+                         : Elapsed time for evaluation of 77997 events: 8.12 sec       
+                         : Creating xml weight file: [0;36mFIN_BDT_2017/weights/FIN_BDT_2017_BDT.weights.xml[0m
+                         : Creating standalone class: [0;36mFIN_BDT_2017/weights/FIN_BDT_2017_BDT.class.C[0m
+                         : FIN_BDT_2017.root:/FIN_BDT_2017/Method_BDT/BDT
+Factory                  : Training finished
+                         : 
+                         : Ranking input variables (method specific)...
+BDT                      : Ranking result (top variable is best ranked)
+                         : -----------------------------------------------------------------------------------------
+                         : Rank : Variable                                                : Variable Importance
+                         : -----------------------------------------------------------------------------------------
+                         :    1 : bjet_charge*belectron_charge                            : 1.823e-01
+                         :    2 : belectron_nsip3d<30.?belectron_nsip3d:30.               : 7.644e-02
+                         :    3 : belectron_ptwrtbjet<10.?belectron_ptwrtbjet:10.         : 7.625e-02
+                         :    4 : bjet_ChargedEmEnergyFraction                            : 6.487e-02
+                         :    5 : bjet_ChargedHadronEnergyFraction                        : 6.352e-02
+                         :    6 : belectron_P_jetrest<10.?belectron_P_jetrest:10.         : 6.329e-02
+                         :    7 : belectron_palongjet<100.?belectron_palongjet:100.       : 5.930e-02
+                         :    8 : bjet_NeutralHadronEnergyFraction                        : 5.900e-02
+                         :    9 : belectron_palongjetratio<1.?belectron_palongjetratio:1. : 5.866e-02
+                         :   10 : bjet_NeutralEmEnergyFraction                            : 5.500e-02
+                         :   11 : belectron_reliso                                        : 5.444e-02
+                         :   12 : fabs(bjet_charge)                                       : 5.046e-02
+                         :   13 : bjet_ChargedMultiplicity                                : 4.775e-02
+                         :   14 : bjet_NeutralMultiplicity                                : 4.483e-02
+                         :   15 : bjet_MuonEnergyFraction                                 : 4.387e-02
+                         : -----------------------------------------------------------------------------------------
+Factory                  : === Destroy and recreate all methods via weight files for testing ===
+                         : 
+                         : Reading weight file: [0;36mFIN_BDT_2017/weights/FIN_BDT_2017_BDT.weights.xml[0m
+Factory                  : [1mTest all methods[0m
+Factory                  : Test method: BDT for Classification performance
+                         : 
+BDT                      : [FIN_BDT_2017] : Evaluation of BDT on testing sample (69378 events)
+                         : Elapsed time for evaluation of 69378 events: 5.77 sec       
+Factory                  : [1mEvaluate all methods[0m
+Factory                  : Evaluate classifier: BDT
+                         : 
+TFHandler_BDT            :                                                Variable                                                       Mean                                                       RMS                                               [        Min                                                       Max ]
+                         : ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+                         :               belectron_nsip3d<30.?belectron_nsip3d:30.:                                                  0.53699                                                  0.30663   [                                               0.00030021                                                   1.0000 ]
+                         :                                        belectron_reliso:                                                  0.48998                                                  0.29068   [                                                0.0010228                                                   1.0000 ]
+                         :         belectron_ptwrtbjet<10.?belectron_ptwrtbjet:10.:                                                  0.51585                                                  0.28962   [                                               0.00037545                                                   1.0000 ]
+                         :         belectron_P_jetrest<10.?belectron_P_jetrest:10.:                                                  0.52426                                                  0.29024   [                                               0.00064359                                                   1.0000 ]
+                         :       belectron_palongjet<100.?belectron_palongjet:100.:                                                  0.53484                                                  0.30019   [                                               0.00059577                                                   1.0000 ]
+                         : belectron_palongjetratio<1.?belectron_palongjetratio:1.:                                                  0.51200                                                  0.29298   [                                               0.00033121                                                   1.0000 ]
+                         :                            bjet_charge*belectron_charge:                                                  0.52766                                                  0.28768   [                                               0.00037698                                                   1.0000 ]
+                         :                        bjet_ChargedHadronEnergyFraction:                                                  0.49280                                                  0.28819   [                                               0.00044397                                                   1.0000 ]
+                         :                        bjet_NeutralHadronEnergyFraction:                                                  0.38334                                                  0.32873   [                                               0.00051678                                                   1.0000 ]
+                         :                            bjet_NeutralEmEnergyFraction:                                                  0.49655                                                  0.29186   [                                               0.00050018                                                   1.0000 ]
+                         :                            bjet_ChargedEmEnergyFraction:                                                  0.35199                                                  0.33917   [                                               0.00073253                                                   1.0000 ]
+                         :                                 bjet_MuonEnergyFraction:                                                 0.071287                                                  0.19818   [                                                0.0037198                                                   1.0000 ]
+                         :                                bjet_ChargedMultiplicity:                                                  0.50527                                                  0.28971   [                                               1.8432e-08                                                   1.0000 ]
+                         :                                bjet_NeutralMultiplicity:                                                  0.50359                                                  0.28953   [                                               1.6296e-07                                                   1.0000 ]
+                         :                                       fabs(bjet_charge):                                                  0.51729                                                  0.28999   [                                               0.00062876                                                   1.0000 ]
+                         : ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+BDT                      : [FIN_BDT_2017] : Loop over test events and fill histograms with classifier response...
+                         : 
+TFHandler_BDT            :                                                Variable                                                       Mean                                                       RMS                                               [        Min                                                       Max ]
+                         : ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+                         :               belectron_nsip3d<30.?belectron_nsip3d:30.:                                                  0.53699                                                  0.30663   [                                               0.00030021                                                   1.0000 ]
+                         :                                        belectron_reliso:                                                  0.48998                                                  0.29068   [                                                0.0010228                                                   1.0000 ]
+                         :         belectron_ptwrtbjet<10.?belectron_ptwrtbjet:10.:                                                  0.51585                                                  0.28962   [                                               0.00037545                                                   1.0000 ]
+                         :         belectron_P_jetrest<10.?belectron_P_jetrest:10.:                                                  0.52426                                                  0.29024   [                                               0.00064359                                                   1.0000 ]
+                         :       belectron_palongjet<100.?belectron_palongjet:100.:                                                  0.53484                                                  0.30019   [                                               0.00059577                                                   1.0000 ]
+                         : belectron_palongjetratio<1.?belectron_palongjetratio:1.:                                                  0.51200                                                  0.29298   [                                               0.00033121                                                   1.0000 ]
+                         :                            bjet_charge*belectron_charge:                                                  0.52766                                                  0.28768   [                                               0.00037698                                                   1.0000 ]
+                         :                        bjet_ChargedHadronEnergyFraction:                                                  0.49280                                                  0.28819   [                                               0.00044397                                                   1.0000 ]
+                         :                        bjet_NeutralHadronEnergyFraction:                                                  0.38334                                                  0.32873   [                                               0.00051678                                                   1.0000 ]
+                         :                            bjet_NeutralEmEnergyFraction:                                                  0.49655                                                  0.29186   [                                               0.00050018                                                   1.0000 ]
+                         :                            bjet_ChargedEmEnergyFraction:                                                  0.35199                                                  0.33917   [                                               0.00073253                                                   1.0000 ]
+                         :                                 bjet_MuonEnergyFraction:                                                 0.071287                                                  0.19818   [                                                0.0037198                                                   1.0000 ]
+                         :                                bjet_ChargedMultiplicity:                                                  0.50527                                                  0.28971   [                                               1.8432e-08                                                   1.0000 ]
+                         :                                bjet_NeutralMultiplicity:                                                  0.50359                                                  0.28953   [                                               1.6296e-07                                                   1.0000 ]
+                         :                                       fabs(bjet_charge):                                                  0.51729                                                  0.28999   [                                               0.00062876                                                   1.0000 ]
+                         : ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+                         : 
+                         : Evaluation results ranked by best signal efficiency and purity (area)
+                         : -------------------------------------------------------------------------------------------------------------------
+                         : DataSet       MVA                       
+                         : Name:         Method:          ROC-integ
+                         : FIN_BDT_2017  BDT            : 0.725
+                         : -------------------------------------------------------------------------------------------------------------------
+                         : 
+                         : Testing efficiency compared to training efficiency (overtraining check)
+                         : -------------------------------------------------------------------------------------------------------------------
+                         : DataSet              MVA              Signal efficiency: from test sample (from training sample) 
+                         : Name:                Method:          @B=0.01             @B=0.10            @B=0.30   
+                         : -------------------------------------------------------------------------------------------------------------------
+                         : FIN_BDT_2017         BDT            : 0.079 (0.086)       0.340 (0.376)      0.627 (0.654)
+                         : -------------------------------------------------------------------------------------------------------------------
+                         : 
+Dataset:FIN_BDT_2017     : Created tree 'TestTree' with 69378 events
+                         : 
+Dataset:FIN_BDT_2017     : Created tree 'TrainTree' with 77997 events
+                         : 
+Factory                  : [1mThank you for using TMVA![0m
+                         : [1mFor citation information, please visit: http://tmva.sf.net/citeTMVA.html[0m
+['bmuon_nsip3d<10. ? bmuon_nsip3d : 10.', 'bmuon_reliso', 'bmuon_ptwrtbjet < 10. ? bmuon_ptwrtbjet : 10.', 'bmuon_P_jetrest < 10. ? bmuon_P_jetrest : 10.', 'bmuon_palongjet < 100. ? bmuon_palongjet : 100.', 'bmuon_palongjetratio < 1. ? bmuon_palongjetratio : 1.', 'bjet_charge*bmuon_charge'] ['belectron_nsip3d < 30. ? belectron_nsip3d : 30.', 'belectron_reliso', 'belectron_ptwrtbjet < 10. ? belectron_ptwrtbjet : 10.', 'belectron_P_jetrest < 10. ? belectron_P_jetrest : 10.', 'belectron_palongjet < 100. ? belectron_palongjet : 100.', 'belectron_palongjetratio < 1. ? belectron_palongjetratio : 1.', 'bjet_charge*belectron_charge'] ['bjet_ChargedHadronEnergyFraction', 'bjet_NeutralHadronEnergyFraction', 'bjet_NeutralEmEnergyFraction', 'bjet_ChargedEmEnergyFraction', 'bjet_MuonEnergyFraction', 'bjet_ChargedMultiplicity', 'bjet_NeutralMultiplicity', 'fabs(bjet_charge)']
+(bmuon_charge*bjet_partonFlavour < 0)&&Has_bMuon (bmuon_charge*bjet_partonFlavour > 0)&&Has_bMuon (belectron_charge*bjet_partonFlavour < 0)&&(Has_bElectron) (belectron_charge*bjet_partonFlavour > 0)&&(Has_bElectron) (bjet_charge*bjet_partonFlavour < 0)&&(!Has_bElectron)&&(!Has_bMuon) (bjet_charge*bjet_partonFlavour > 0)&&(!Has_bElectron)&&(!Has_bMuon)
+sigcut= (belectron_charge*bjet_partonFlavour < 0)&&(Has_bElectron)
+bkgcut= (belectron_charge*bjet_partonFlavour > 0)&&(Has_bElectron)
+<sig cut>= (belectron_charge*bjet_partonFlavour < 0)&&(Has_bElectron)
+<bkg cut>= (belectron_charge*bjet_partonFlavour > 0)&&(Has_bElectron)
+---sig_test---
+<self.testtree_sig> OutTree/sig
+/pnfs/knu.ac.kr/data/cms/store/user/jhchoi/JetChargeTagScore/TMVA_TOOL/inputs/EEMu_MuMuE_Method/v2409.2/2017/EEMu_MuMuE_Method_DYJetsToEE_MiNNLO.root
+/pnfs/knu.ac.kr/data/cms/store/user/jhchoi/JetChargeTagScore/TMVA_TOOL/inputs/EEMu_MuMuE_Method/v2409.2/2017/EEMu_MuMuE_Method_DYJetsToMuMu_MiNNLO.root
+--bkg_test---
+<self.testtree_bkg> OutTree/bkg
+/pnfs/knu.ac.kr/data/cms/store/user/jhchoi/JetChargeTagScore/TMVA_TOOL/inputs/EEMu_MuMuE_Method/v2409.2/2017/EEMu_MuMuE_Method_DYJetsToEE_MiNNLO.root
+/pnfs/knu.ac.kr/data/cms/store/user/jhchoi/JetChargeTagScore/TMVA_TOOL/inputs/EEMu_MuMuE_Method/v2409.2/2017/EEMu_MuMuE_Method_DYJetsToMuMu_MiNNLO.root
+---sig_train---
+<self.traintree_sig> OutTree/sig
+/pnfs/knu.ac.kr/data/cms/store/user/jhchoi/JetChargeTagScore/TMVA_TOOL/inputs/EEMu_MuMuE_Method/v2409.2/2017/EEMu_MuMuE_Method_DYJets.root
+---bkg_train---
+<self.traintree_bkg> OutTree/bkg
+/pnfs/knu.ac.kr/data/cms/store/user/jhchoi/JetChargeTagScore/TMVA_TOOL/inputs/EEMu_MuMuE_Method/v2409.2/2017/EEMu_MuMuE_Method_DYJets.root
+>>>>self.dataloader.PrepareTrainingAndTestTree
+Set sig cut -> (belectron_charge*bjet_partonFlavour < 0)&&(Has_bElectron)
+Set bkg cut -> (belectron_charge*bjet_partonFlavour > 0)&&(Has_bElectron)
+auc= 0.7248828379937224
+END of RUNNING...run_single
+FIN_BDT_2017
+FIN_BDT_2017.root
+_condor_stderr
+_condor_stdout
+run.sh
+tmp
+var
+myerr=0
+[ntry=1]
