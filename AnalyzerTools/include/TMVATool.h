@@ -18,12 +18,19 @@ class TMVATool{
  public:
   TMVATool(TString _xmlfile);
   ~TMVATool();
-  std::map<TString, float*> map_InputVariables;
+  struct VarSlot {
+    float* addr;
+    float min;
+    float max;
+};
+
+  //std::map<TString, float*> map_InputVariables;
+  std::map<TString, VarSlot> map_InputVariables;
   std::vector<TString> vInputVariables;
-  TString xmlfile;
+  
   void ReadXML();
-  void AddVariable(TString _formula, float *_this_var_address);
-  void SetupTMVA();
+  void AddVariable(TString _formula, float *_this_var_address,float min = -std::numeric_limits<float>::infinity(), float max = std::numeric_limits<float>::infinity());
+  void SetupTMVA(TString type="BDT::BDT");//PyKeras::DNN
   float GetScore();
   void SetScore();
   TMVA::Reader * reader;
@@ -32,5 +39,10 @@ class TMVATool{
   float GetCoefficient();
   float mincut,maxcut;
   float score;
+  int TotalCall=0;
+  int TotalCallTime=0;
+  TString Type;
+private:
+  TString this_xmlfile;
 };
 #endif

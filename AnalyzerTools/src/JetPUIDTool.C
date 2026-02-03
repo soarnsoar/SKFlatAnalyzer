@@ -118,6 +118,7 @@ vector<Jet> JetPUIDTool::GetJetsPassPUID(vector<Jet> &jetcoll){
 	SFtotal_up*=(_SF+_SFerr);
 	SFtotal_down*=(_SF-_SFerr);
       }
+      /*
       else{
 	double _SF=GetSF_Fail(pt,eta);
 	//double _SFerr=GetSF_err_Fail(pt,eta);
@@ -125,6 +126,7 @@ vector<Jet> JetPUIDTool::GetJetsPassPUID(vector<Jet> &jetcoll){
 	SFtotal_up*=GetSF_Fail_Up(pt,eta);
 	SFtotal_down*=GetSF_Fail_Down(pt,eta);
       }
+      */ // do not care failed jet
     }
     
     else if(pt > 30.){
@@ -136,6 +138,7 @@ vector<Jet> JetPUIDTool::GetJetsPassPUID(vector<Jet> &jetcoll){
 	SFtotal_up*=(_SF+_SFerr);
 	SFtotal_down*=(_SF-_SFerr);
       }
+      /*
       else{
 	double _SF=GetSF_Fail(pt,eta);
 	SFtotal*=_SF;
@@ -143,6 +146,7 @@ vector<Jet> JetPUIDTool::GetJetsPassPUID(vector<Jet> &jetcoll){
 	SFtotal_down*=GetSF_Fail_Down(pt,eta);
 
       }
+      */ //do not care failed jet
     }
     else if(pt > 20.){
       if(this_score > arr_cut[1]){
@@ -153,12 +157,14 @@ vector<Jet> JetPUIDTool::GetJetsPassPUID(vector<Jet> &jetcoll){
 	SFtotal_up*=(_SF+_SFerr);
 	SFtotal_down*=(_SF-_SFerr);
       }
+      /*
       else{
 	double _SF=GetSF_Fail(pt,eta);
 	SFtotal*=_SF;
 	SFtotal_up*=GetSF_Fail_Up(pt,eta);
 	SFtotal_down*=GetSF_Fail_Down(pt,eta);
       }
+      */ //do not care failed jet
     }
     else if(pt > 10.){
       if(this_score > arr_cut[0]){
@@ -169,12 +175,14 @@ vector<Jet> JetPUIDTool::GetJetsPassPUID(vector<Jet> &jetcoll){
 	SFtotal_up*=(_SF+_SFerr);
 	SFtotal_down*=(_SF-_SFerr);
       }
+      /*
       else{
 	double _SF=GetSF_Fail(pt,eta);
 	SFtotal*=_SF;
 	SFtotal_up*=GetSF_Fail_Up(pt,eta);
 	SFtotal_down*=GetSF_Fail_Down(pt,eta);
       }
+      */ ////do not care failed jet 
     }
     else{//pt under 10
       jet_pass.push_back(jet);

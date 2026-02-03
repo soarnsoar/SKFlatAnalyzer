@@ -1,6 +1,6 @@
 #ifndef ElectroWeakAnalysis_RoccoR_H
 #define ElectroWeakAnalysis_RoccoR_H
-
+#include "/usr/include/boost/math/tools/cxx03_warn.hpp" // to detour the c++03 bug
 #include <boost/math/special_functions/erf.hpp>
 
 struct CrystalBall{

@@ -1,13 +1,34 @@
 #include "TMVATool.h"
 #include "TFile.h"
+#include <chrono>
+using namespace std::chrono;
+
 TMVATool::TMVATool(TString _xmlfile){
   //TMVA::PyMethodBase::PyInitialize();
   //std::cout << "Check python version" << std::endl; 
   //gSystem->Exec("python3 --version");
-  xmlfile=_xmlfile;
-  ReadXML();
-  reader=new TMVA::Reader("V");
+
+  //ROOT::DisableImplicitMT();
+
   
+  setenv("OMP_NUM_THREADS", "1", 1);
+  setenv("OPENBLAS_NUM_THREADS", "1", 1);
+  setenv("MKL_NUM_THREADS", "1", 1);
+  setenv("VECLIB_MAXIMUM_THREADS", "1", 1);
+  setenv("NUMEXPR_NUM_THREADS", "1", 1);
+  std::cout << "[TMVATool] _xmlfile=" << _xmlfile << std::endl;
+
+  this_xmlfile=_xmlfile;
+  ReadXML();
+  //reader=new TMVA::Reader("V");
+  reader=new TMVA::Reader("!Color:!Silent");
+  setenv("OMP_NUM_THREADS", "1", 1);
+  setenv("OPENBLAS_NUM_THREADS", "1", 1);
+  setenv("MKL_NUM_THREADS", "1", 1);
+  setenv("VECLIB_MAXIMUM_THREADS", "1", 1);
+  setenv("NUMEXPR_NUM_THREADS", "1", 1);
+  //TotalCall=0;
+  //TotalCallTime=0.;
 }
 TMVATool::~TMVATool(){
   std::cout << "[TMVATool] Delete reader" << std::endl;
@@ -27,8 +48,8 @@ TMVATool::~TMVATool(){
 void TMVATool::ReadXML(){
   std::cout << "[TMVATool::ReadXML]" << std::endl;
   TXMLEngine* xml = new TXMLEngine;
-
-  XMLDocPointer_t xmldoc = xml->ParseFile(xmlfile);
+  std::cout << "this_xmlfile=" << this_xmlfile << std::endl;
+  XMLDocPointer_t xmldoc = xml->ParseFile(this_xmlfile);
   if (!xmldoc) {
     std::cerr << "Error: Could not parse XML file!" << std::endl;
     if(xml){
@@ -63,7 +84,7 @@ void TMVATool::ReadXML(){
     }
   }
   if(!FindVariables){
-    std::cout << "!!Fail to find Variables in xml->" << xmlfile << std::endl;
+    std::cout << "!!Fail to find Variables in xml->" << this_xmlfile << std::endl;
     exit(1);
   }
   //ChildPointer=Variables
@@ -87,11 +108,20 @@ void TMVATool::ReadXML(){
   }
   std::cout << "END TMVATool::ReadXML" << std::endl;
 }
-void TMVATool::AddVariable(TString _formula, float *_this_var_address){//
-  map_InputVariables[_formula]=_this_var_address;
+void TMVATool::AddVariable(TString _formula, float *_this_var_address,float min, float max){//
+  /*
+  struct VarSlot {
+    float* addr;
+    float min;
+    float max;
+};
+
+   */
+  map_InputVariables[_formula]={_this_var_address,min,max};
 }
 
-void TMVATool::SetupTMVA(){
+void TMVATool::SetupTMVA(TString type){
+  Type=type;
   std::cout << "[TMVATool::InitTMVA] Check all input variables are added" << std::endl;
   for(auto& exp : vInputVariables){
     if(map_InputVariables.find(exp) == map_InputVariables.end()){//if there's no exp in map
@@ -100,15 +130,18 @@ void TMVATool::SetupTMVA(){
     }
   }
   ///Now all variables are checked
+  std::cout << "[TMVATool::SetupTMVA] Printout variable for this model " << std::endl;
   for(auto& exp : vInputVariables){
-    reader->AddVariable(exp,map_InputVariables[exp]);
+    std::cout << exp << std::endl;
+    reader->AddVariable(exp,map_InputVariables[exp].addr);
   }
 
   //setenv("KERAS_BACKEND", "tensorflow", true); 
   //std::cout << "[TMVATool::SetupTMVA]TMVA::PyMethodBase::PyInitialize()" << std::endl;
   //TMVA::PyMethodBase::PyInitialize();
 
-  reader->BookMVA("PyKeras::DNN",xmlfile);
+  //reader->BookMVA("PyKeras::DNN",xmlfile);
+  reader->BookMVA(Type,this_xmlfile);
 
 
   
@@ -119,8 +152,20 @@ void TMVATool::SetScore(){
   //  //reader->AddVariable(exp,map_InputVariables[exp]);
   //  std::cout << exp << "=" << *map_InputVariables[exp] << std::endl;
   //}
+  //TotalCall+=1;
+  //auto t0 = high_resolution_clock::now();
 
-  score= reader->EvaluateMVA("PyKeras::DNN");
+  for (auto& [expr, slot] : map_InputVariables) {
+    *(slot.addr) = std::clamp(*(slot.addr), slot.min, slot.max);
+    //std::cout << "[expr]" << expr << ",min=" << slot.min << ",max=" << slot.max << std::endl;
+  }
+
+  
+  score= reader->EvaluateMVA(Type);
+  //auto t1 = high_resolution_clock::now();
+  //auto duration = duration_cast<microseconds>(t1 - t0).count()/1000./1000.;
+  //TotalCallTime+=duration;
+    
   //std::cout << "[TMVATool::SetScore]score=" << score << std::endl;
   
   //std::cout << "[END]TMVATool::SetScore" << std::endl;

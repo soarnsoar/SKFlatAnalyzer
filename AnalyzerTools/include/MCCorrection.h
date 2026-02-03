@@ -101,7 +101,7 @@ public:
   void SetJetTaggingParameters(std::vector<JetTagging::Parameters> v);
 
   std::map< std::string, BTagCalibrationReader* > map_BTagCalibrationReader;
-  void SetupJetTagging(TString _btagmceff_filename);
+  void SetupJetTagging(TString _btagmceff_filename,bool _use_dasym=false);
 
   TH2D *hist_JetTagEff_B;
   TH2D *hist_JetTagEff_C;
@@ -109,19 +109,47 @@ public:
 
   std::map< TString, TH2F* > map_hist_mcjet;
   void SetupMCJetTagEff(TString _btagmceff_filename);
+  void SetupMCJetTagEffWithAsym(TString _btagmceff_filename);
   double GetMCJetTagEff(JetTagging::Tagger tagger, JetTagging::WP wp, int JetFlavor, double JetPt, double JetEta, int sys=0);
   double GetJetTaggingSF(JetTagging::Parameters jtp, int JetFlavor, double JetPt, double JetEta, double Jetdiscr, string Syst="central");
 
   //==== https://twiki.cern.ch/twiki/bin/viewauth/CMS/BTagSFMethods
 
   //==== 1a) Event reweighting using scale factors and MC b-tagging efficiencies
-  double GetBTaggingReweight_1a(const vector<Jet>& jets, JetTagging::Parameters jtp, string Syst="central");
+  double GetBTaggingReweight_1a(const vector<Jet>& jets, JetTagging::Parameters jtp, string Syst="central", int iptbinsys=-1, int ietabinsys=-1);
   //==== 1d) Event reweighting using discriminator-dependent scale factors
   double GetBTaggingReweight_1d(const vector<Jet>& jets, JetTagging::Parameters jtp, string Syst="central");
 
   //==== 2a) Jet-by-jet updating of the b-tagging status
   bool IsBTagged_2a(JetTagging::Parameters jtp, const Jet& jet, string Syst="central");
 
+
+  //----jhchoi
+  //dAsymFactor
+  void InitBtagChargeAsymFactor();
+  double GetdAsymResult(double JetPt, double JetEta, int SystDir, int iptbinsys=-1, int ietabinsys=-1);
+  double GetMCJetTagEffWithAsym(JetTagging::Tagger tagger, JetTagging::WP wp, int JetPartonFlavour ,int JetHadronFlavour, double JetPt, double JetEta, int sys=0);
+  double GetJetTaggingSF_dAsymCharge(JetTagging::Parameters jtp, int partonFlavour, int JetFlavor, double JetPt, double JetEta, int SystDir, int iptbinsys=-1, int ietabinsys=-1);
+  int GetPtBinIndex(const std::string& ptbin);
+  int GetEtaBinIndex(const std::string& etabin);
+
+
+
+  enum PtBin { kPT30To50 = 0, kPT50To70, kPT70To100, kPT100To140, kPT140ToInf, nPtBin };
+  enum EtaBin { kEta0To0p8 = 0, kEta0p8To1p6, kEta1p6To2, kEta2To2p5, nEtaBin};
+
+
+
+  std::unordered_map<std::string,std::unordered_map<std::string,std::unordered_map<std::string,std::unordered_map<int, double> > > >  dAsym_result_all;
+
+
+
+  double this_dAsym_result[nPtBin][nEtaBin][3];
+ 
+  bool use_dasym=false;
+
+
+  
 };
 
 #endif

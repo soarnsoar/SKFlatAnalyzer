@@ -3,11 +3,570 @@
 MCCorrection::MCCorrection() : 
 IgnoreNoHist(false)
 {
-
+  cout << "[MCCorrection::MCCorrection] jhchoi!!" << endl;
   histDir = TDirectoryHelper::GetTempDirectory("MCCorrection");
 
   genFinderDY = new GenFinderForDY();
+  //jhchoi
+  //InitBtagChargeAsymFactor();
+  
+}
+void MCCorrection::InitBtagChargeAsymFactor(){
+  cout << "jhchoi[InitBtagChargeAsymFactor]" << endl;
+  //2016preVFP
+  dAsym_result_all["2016preVFP"]["PT30To50"]["Eta0To0p8"][-1]=-0.01;                           
+  dAsym_result_all["2016preVFP"]["PT30To50"]["Eta0To0p8"][0]=0.0;                    
+  dAsym_result_all["2016preVFP"]["PT30To50"]["Eta0To0p8"][1]=0.01;                   
+  dAsym_result_all["2016preVFP"]["PT30To50"]["Eta0p8To1p6"][-1]=-0.002;             
+  dAsym_result_all["2016preVFP"]["PT30To50"]["Eta0p8To1p6"][0]=0.012;                          
+  dAsym_result_all["2016preVFP"]["PT30To50"]["Eta0p8To1p6"][1]=0.026000000000000002;
+  dAsym_result_all["2016preVFP"]["PT30To50"]["Eta1p6To2"][-1]=-0.027;                
+  dAsym_result_all["2016preVFP"]["PT30To50"]["Eta1p6To2"][0]=-0.003;                   
+  dAsym_result_all["2016preVFP"]["PT30To50"]["Eta1p6To2"][1]=0.021;                            
+  dAsym_result_all["2016preVFP"]["PT30To50"]["Eta2To2p5"][-1]=0.027000000000000003;   
+  dAsym_result_all["2016preVFP"]["PT30To50"]["Eta2To2p5"][0]=0.067;                
+  dAsym_result_all["2016preVFP"]["PT30To50"]["Eta2To2p5"][1]=0.10700000000000001;   
+  dAsym_result_all["2016preVFP"]["PT30To50"]["Eta0To0p8"][-1]=-0.01;                           
+  dAsym_result_all["2016preVFP"]["PT30To50"]["Eta0To0p8"][0]=0.0;                              
+  dAsym_result_all["2016preVFP"]["PT30To50"]["Eta0To0p8"][1]=0.01;                             
+  dAsym_result_all["2016preVFP"]["PT30To50"]["Eta0p8To1p6"][-1]=-0.002;                        
+  dAsym_result_all["2016preVFP"]["PT30To50"]["Eta0p8To1p6"][0]=0.012;                          
+  dAsym_result_all["2016preVFP"]["PT30To50"]["Eta0p8To1p6"][1]=0.026000000000000002;           
+  dAsym_result_all["2016preVFP"]["PT30To50"]["Eta1p6To2"][-1]=-0.027;                          
+  dAsym_result_all["2016preVFP"]["PT30To50"]["Eta1p6To2"][0]=-0.003;
+  dAsym_result_all["2016preVFP"]["PT30To50"]["Eta1p6To2"][1]=0.021;
+  dAsym_result_all["2016preVFP"]["PT30To50"]["Eta2To2p5"][-1]=0.027000000000000003;
+  dAsym_result_all["2016preVFP"]["PT30To50"]["Eta2To2p5"][0]=0.067;
+  dAsym_result_all["2016preVFP"]["PT30To50"]["Eta2To2p5"][1]=0.10700000000000001;
+  
 
+  dAsym_result_all["2016preVFP"]["PT50To70"]["Eta0To0p8"][-1]=-0.013999999999999999;
+  dAsym_result_all["2016preVFP"]["PT50To70"]["Eta0To0p8"][0]=0.001;
+  dAsym_result_all["2016preVFP"]["PT50To70"]["Eta0To0p8"][1]=0.016;
+  dAsym_result_all["2016preVFP"]["PT50To70"]["Eta0p8To1p6"][-1]=-0.019;
+  dAsym_result_all["2016preVFP"]["PT50To70"]["Eta0p8To1p6"][0]=-0.004;
+  dAsym_result_all["2016preVFP"]["PT50To70"]["Eta0p8To1p6"][1]=0.011;
+  dAsym_result_all["2016preVFP"]["PT50To70"]["Eta1p6To2"][-1]=-0.015;
+  dAsym_result_all["2016preVFP"]["PT50To70"]["Eta1p6To2"][0]=0.017;
+  dAsym_result_all["2016preVFP"]["PT50To70"]["Eta1p6To2"][1]=0.048;
+  dAsym_result_all["2016preVFP"]["PT50To70"]["Eta2To2p5"][-1]=-0.095;
+  dAsym_result_all["2016preVFP"]["PT50To70"]["Eta2To2p5"][0]=-0.062;
+  dAsym_result_all["2016preVFP"]["PT50To70"]["Eta2To2p5"][1]=-0.028999999999999998;
+  dAsym_result_all["2016preVFP"]["PT50To70"]["Eta0To0p8"][-1]=-0.013999999999999999;
+  dAsym_result_all["2016preVFP"]["PT50To70"]["Eta0To0p8"][0]=0.001;
+  dAsym_result_all["2016preVFP"]["PT50To70"]["Eta0To0p8"][1]=0.016;
+  dAsym_result_all["2016preVFP"]["PT50To70"]["Eta0p8To1p6"][-1]=-0.019;
+  dAsym_result_all["2016preVFP"]["PT50To70"]["Eta0p8To1p6"][0]=-0.004;
+  dAsym_result_all["2016preVFP"]["PT50To70"]["Eta0p8To1p6"][1]=0.011;
+  dAsym_result_all["2016preVFP"]["PT50To70"]["Eta1p6To2"][-1]=-0.015;
+  dAsym_result_all["2016preVFP"]["PT50To70"]["Eta1p6To2"][0]=0.017;
+  dAsym_result_all["2016preVFP"]["PT50To70"]["Eta1p6To2"][1]=0.048;
+  dAsym_result_all["2016preVFP"]["PT50To70"]["Eta2To2p5"][-1]=-0.095;
+  dAsym_result_all["2016preVFP"]["PT50To70"]["Eta2To2p5"][0]=-0.062;
+  dAsym_result_all["2016preVFP"]["PT50To70"]["Eta2To2p5"][1]=-0.028999999999999998;
+
+  dAsym_result_all["2016preVFP"]["PT70To100"]["Eta0To0p8"][-1]=-0.003000000000000001;          
+dAsym_result_all["2016preVFP"]["PT70To100"]["Eta0To0p8"][0]=0.009;                           
+dAsym_result_all["2016preVFP"]["PT70To100"]["Eta0To0p8"][1]=0.020999999999999998;            
+dAsym_result_all["2016preVFP"]["PT70To100"]["Eta0p8To1p6"][-1]=-0.025;                       
+dAsym_result_all["2016preVFP"]["PT70To100"]["Eta0p8To1p6"][0]=-0.01;                         
+dAsym_result_all["2016preVFP"]["PT70To100"]["Eta0p8To1p6"][1]=0.004999999999999999;          
+dAsym_result_all["2016preVFP"]["PT70To100"]["Eta1p6To2"][-1]=-0.022;                         
+dAsym_result_all["2016preVFP"]["PT70To100"]["Eta1p6To2"][0]=0.015;                           
+dAsym_result_all["2016preVFP"]["PT70To100"]["Eta1p6To2"][1]=0.052;                           
+dAsym_result_all["2016preVFP"]["PT70To100"]["Eta2To2p5"][-1]=-0.015;              
+dAsym_result_all["2016preVFP"]["PT70To100"]["Eta2To2p5"][0]=0.037;                 
+dAsym_result_all["2016preVFP"]["PT70To100"]["Eta2To2p5"][1]=0.09;                    
+dAsym_result_all["2016preVFP"]["PT70To100"]["Eta0To0p8"][-1]=-0.003000000000000001;          
+dAsym_result_all["2016preVFP"]["PT70To100"]["Eta0To0p8"][0]=0.009;                  
+dAsym_result_all["2016preVFP"]["PT70To100"]["Eta0To0p8"][1]=0.020999999999999998;
+dAsym_result_all["2016preVFP"]["PT70To100"]["Eta0p8To1p6"][-1]=-0.025;            
+dAsym_result_all["2016preVFP"]["PT70To100"]["Eta0p8To1p6"][0]=-0.01;                         
+dAsym_result_all["2016preVFP"]["PT70To100"]["Eta0p8To1p6"][1]=0.004999999999999999;          
+dAsym_result_all["2016preVFP"]["PT70To100"]["Eta1p6To2"][-1]=-0.022;                         
+dAsym_result_all["2016preVFP"]["PT70To100"]["Eta1p6To2"][0]=0.015;                           
+dAsym_result_all["2016preVFP"]["PT70To100"]["Eta1p6To2"][1]=0.052;                           
+dAsym_result_all["2016preVFP"]["PT70To100"]["Eta2To2p5"][-1]=-0.015;                         
+dAsym_result_all["2016preVFP"]["PT70To100"]["Eta2To2p5"][0]=0.037;                           
+dAsym_result_all["2016preVFP"]["PT70To100"]["Eta2To2p5"][1]=0.09; 
+
+dAsym_result_all["2016preVFP"]["PT100To140"]["Eta0To0p8"][-1]=-0.043;            
+dAsym_result_all["2016preVFP"]["PT100To140"]["Eta0To0p8"][0]=-0.026;
+dAsym_result_all["2016preVFP"]["PT100To140"]["Eta0To0p8"][1]=-0.008999999999999998;
+dAsym_result_all["2016preVFP"]["PT100To140"]["Eta0p8To1p6"][-1]=-0.051000000000000004;       
+dAsym_result_all["2016preVFP"]["PT100To140"]["Eta0p8To1p6"][0]=-0.024;            
+dAsym_result_all["2016preVFP"]["PT100To140"]["Eta0p8To1p6"][1]=0.002999999999999999;
+dAsym_result_all["2016preVFP"]["PT100To140"]["Eta1p6To2"][-1]=-0.022;
+dAsym_result_all["2016preVFP"]["PT100To140"]["Eta1p6To2"][0]=0.022;  
+dAsym_result_all["2016preVFP"]["PT100To140"]["Eta1p6To2"][1]=0.066; 
+dAsym_result_all["2016preVFP"]["PT100To140"]["Eta2To2p5"][-1]=-0.098;
+dAsym_result_all["2016preVFP"]["PT100To140"]["Eta2To2p5"][0]=-0.028;
+dAsym_result_all["2016preVFP"]["PT100To140"]["Eta2To2p5"][1]=0.043;
+dAsym_result_all["2016preVFP"]["PT100To140"]["Eta0To0p8"][-1]=-0.043;
+dAsym_result_all["2016preVFP"]["PT100To140"]["Eta0To0p8"][0]=-0.026;
+dAsym_result_all["2016preVFP"]["PT100To140"]["Eta0To0p8"][1]=-0.008999999999999998;
+dAsym_result_all["2016preVFP"]["PT100To140"]["Eta0p8To1p6"][-1]=-0.051000000000000004;
+dAsym_result_all["2016preVFP"]["PT100To140"]["Eta0p8To1p6"][0]=-0.024;            
+dAsym_result_all["2016preVFP"]["PT100To140"]["Eta0p8To1p6"][1]=0.002999999999999999;
+dAsym_result_all["2016preVFP"]["PT100To140"]["Eta1p6To2"][-1]=-0.022;
+dAsym_result_all["2016preVFP"]["PT100To140"]["Eta1p6To2"][0]=0.022;  
+dAsym_result_all["2016preVFP"]["PT100To140"]["Eta1p6To2"][1]=0.066; 
+dAsym_result_all["2016preVFP"]["PT100To140"]["Eta2To2p5"][-1]=-0.098;
+dAsym_result_all["2016preVFP"]["PT100To140"]["Eta2To2p5"][0]=-0.028;
+dAsym_result_all["2016preVFP"]["PT100To140"]["Eta2To2p5"][1]=0.043;
+
+ dAsym_result_all["2016preVFP"]["PT140ToInf"]["Eta0To0p8"][-1]=-0.021;                        
+dAsym_result_all["2016preVFP"]["PT140ToInf"]["Eta0To0p8"][0]=0.007;                          
+dAsym_result_all["2016preVFP"]["PT140ToInf"]["Eta0To0p8"][1]=0.035;                          
+dAsym_result_all["2016preVFP"]["PT140ToInf"]["Eta0p8To1p6"][-1]=-0.07400000000000001;        
+dAsym_result_all["2016preVFP"]["PT140ToInf"]["Eta0p8To1p6"][0]=-0.032;                       
+dAsym_result_all["2016preVFP"]["PT140ToInf"]["Eta0p8To1p6"][1]=0.010000000000000002;         
+dAsym_result_all["2016preVFP"]["PT140ToInf"]["Eta1p6To2"][-1]=0.256;                         
+dAsym_result_all["2016preVFP"]["PT140ToInf"]["Eta1p6To2"][0]=0.357;                          
+dAsym_result_all["2016preVFP"]["PT140ToInf"]["Eta1p6To2"][1]=0.45499999999999996;            
+dAsym_result_all["2016preVFP"]["PT140ToInf"]["Eta2To2p5"][-1]=-0.45099999999999996;          
+dAsym_result_all["2016preVFP"]["PT140ToInf"]["Eta2To2p5"][0]=-0.286;                         
+dAsym_result_all["2016preVFP"]["PT140ToInf"]["Eta2To2p5"][1]=-0.09399999999999997;           
+dAsym_result_all["2016preVFP"]["PT140ToInf"]["Eta0To0p8"][-1]=-0.021;                        
+dAsym_result_all["2016preVFP"]["PT140ToInf"]["Eta0To0p8"][0]=0.007;               
+dAsym_result_all["2016preVFP"]["PT140ToInf"]["Eta0To0p8"][1]=0.035;                
+dAsym_result_all["2016preVFP"]["PT140ToInf"]["Eta0p8To1p6"][-1]=-0.07400000000000001;
+dAsym_result_all["2016preVFP"]["PT140ToInf"]["Eta0p8To1p6"][0]=-0.032;                       
+dAsym_result_all["2016preVFP"]["PT140ToInf"]["Eta0p8To1p6"][1]=0.010000000000000002;
+dAsym_result_all["2016preVFP"]["PT140ToInf"]["Eta1p6To2"][-1]=0.256;             
+dAsym_result_all["2016preVFP"]["PT140ToInf"]["Eta1p6To2"][0]=0.357;               
+dAsym_result_all["2016preVFP"]["PT140ToInf"]["Eta1p6To2"][1]=0.45499999999999996;            
+dAsym_result_all["2016preVFP"]["PT140ToInf"]["Eta2To2p5"][-1]=-0.45099999999999996;          
+dAsym_result_all["2016preVFP"]["PT140ToInf"]["Eta2To2p5"][0]=-0.286;                         
+dAsym_result_all["2016preVFP"]["PT140ToInf"]["Eta2To2p5"][1]=-0.09399999999999997;           
+
+
+  //2016postVFP
+dAsym_result_all["2016postVFP"]["PT30To50"]["Eta0To0p8"][-1]=-0.011;                         
+dAsym_result_all["2016postVFP"]["PT30To50"]["Eta0To0p8"][0]=0.0;                             
+dAsym_result_all["2016postVFP"]["PT30To50"]["Eta0To0p8"][1]=0.011;
+dAsym_result_all["2016postVFP"]["PT30To50"]["Eta0p8To1p6"][-1]=-0.011;                       
+dAsym_result_all["2016postVFP"]["PT30To50"]["Eta0p8To1p6"][0]=0.004;             
+dAsym_result_all["2016postVFP"]["PT30To50"]["Eta0p8To1p6"][1]=0.02; 
+dAsym_result_all["2016postVFP"]["PT30To50"]["Eta1p6To2"][-1]=0.0010000000000000009;
+dAsym_result_all["2016postVFP"]["PT30To50"]["Eta1p6To2"][0]=0.031;                           
+dAsym_result_all["2016postVFP"]["PT30To50"]["Eta1p6To2"][1]=0.062;                
+dAsym_result_all["2016postVFP"]["PT30To50"]["Eta2To2p5"][-1]=-0.024;                
+dAsym_result_all["2016postVFP"]["PT30To50"]["Eta2To2p5"][0]=0.006;   
+dAsym_result_all["2016postVFP"]["PT30To50"]["Eta2To2p5"][1]=0.036;   
+dAsym_result_all["2016postVFP"]["PT30To50"]["Eta0To0p8"][-1]=-0.011;
+dAsym_result_all["2016postVFP"]["PT30To50"]["Eta0To0p8"][0]=0.0;
+dAsym_result_all["2016postVFP"]["PT30To50"]["Eta0To0p8"][1]=0.011;
+dAsym_result_all["2016postVFP"]["PT30To50"]["Eta0p8To1p6"][-1]=-0.011;
+dAsym_result_all["2016postVFP"]["PT30To50"]["Eta0p8To1p6"][0]=0.004;
+dAsym_result_all["2016postVFP"]["PT30To50"]["Eta0p8To1p6"][1]=0.02;
+dAsym_result_all["2016postVFP"]["PT30To50"]["Eta1p6To2"][-1]=0.0010000000000000009;
+dAsym_result_all["2016postVFP"]["PT30To50"]["Eta1p6To2"][0]=0.031;
+dAsym_result_all["2016postVFP"]["PT30To50"]["Eta1p6To2"][1]=0.062;
+dAsym_result_all["2016postVFP"]["PT30To50"]["Eta2To2p5"][-1]=-0.024;
+dAsym_result_all["2016postVFP"]["PT30To50"]["Eta2To2p5"][0]=0.006;
+dAsym_result_all["2016postVFP"]["PT30To50"]["Eta2To2p5"][1]=0.036;
+
+ 
+dAsym_result_all["2016postVFP"]["PT50To70"]["Eta0To0p8"][-1]=0.008;
+dAsym_result_all["2016postVFP"]["PT50To70"]["Eta0To0p8"][0]=0.02;
+dAsym_result_all["2016postVFP"]["PT50To70"]["Eta0To0p8"][1]=0.032;
+dAsym_result_all["2016postVFP"]["PT50To70"]["Eta0p8To1p6"][-1]=-0.004;
+dAsym_result_all["2016postVFP"]["PT50To70"]["Eta0p8To1p6"][0]=0.01;
+dAsym_result_all["2016postVFP"]["PT50To70"]["Eta0p8To1p6"][1]=0.024;
+dAsym_result_all["2016postVFP"]["PT50To70"]["Eta1p6To2"][-1]=-0.051000000000000004;
+dAsym_result_all["2016postVFP"]["PT50To70"]["Eta1p6To2"][0]=-0.021;
+dAsym_result_all["2016postVFP"]["PT50To70"]["Eta1p6To2"][1]=0.008999999999999998;
+dAsym_result_all["2016postVFP"]["PT50To70"]["Eta2To2p5"][-1]=-0.064;
+dAsym_result_all["2016postVFP"]["PT50To70"]["Eta2To2p5"][0]=-0.023;
+dAsym_result_all["2016postVFP"]["PT50To70"]["Eta2To2p5"][1]=0.018000000000000002;
+dAsym_result_all["2016postVFP"]["PT50To70"]["Eta0To0p8"][-1]=0.008;
+dAsym_result_all["2016postVFP"]["PT50To70"]["Eta0To0p8"][0]=0.02;
+dAsym_result_all["2016postVFP"]["PT50To70"]["Eta0To0p8"][1]=0.032;
+dAsym_result_all["2016postVFP"]["PT50To70"]["Eta0p8To1p6"][-1]=-0.004;
+dAsym_result_all["2016postVFP"]["PT50To70"]["Eta0p8To1p6"][0]=0.01;
+dAsym_result_all["2016postVFP"]["PT50To70"]["Eta0p8To1p6"][1]=0.024;
+dAsym_result_all["2016postVFP"]["PT50To70"]["Eta1p6To2"][-1]=-0.051000000000000004;
+dAsym_result_all["2016postVFP"]["PT50To70"]["Eta1p6To2"][0]=-0.021;
+dAsym_result_all["2016postVFP"]["PT50To70"]["Eta1p6To2"][1]=0.008999999999999998;
+dAsym_result_all["2016postVFP"]["PT50To70"]["Eta2To2p5"][-1]=-0.064;
+dAsym_result_all["2016postVFP"]["PT50To70"]["Eta2To2p5"][0]=-0.023;
+dAsym_result_all["2016postVFP"]["PT50To70"]["Eta2To2p5"][1]=0.018000000000000002;
+
+dAsym_result_all["2016postVFP"]["PT70To100"]["Eta0To0p8"][-1]=-0.015;
+dAsym_result_all["2016postVFP"]["PT70To100"]["Eta0To0p8"][0]=-0.002;
+dAsym_result_all["2016postVFP"]["PT70To100"]["Eta0To0p8"][1]=0.011;
+dAsym_result_all["2016postVFP"]["PT70To100"]["Eta0p8To1p6"][-1]=-0.02;
+dAsym_result_all["2016postVFP"]["PT70To100"]["Eta0p8To1p6"][0]=0.0;
+dAsym_result_all["2016postVFP"]["PT70To100"]["Eta0p8To1p6"][1]=0.02;
+dAsym_result_all["2016postVFP"]["PT70To100"]["Eta1p6To2"][-1]=-0.015000000000000003;
+dAsym_result_all["2016postVFP"]["PT70To100"]["Eta1p6To2"][0]=0.02;
+dAsym_result_all["2016postVFP"]["PT70To100"]["Eta1p6To2"][1]=0.05500000000000001;
+dAsym_result_all["2016postVFP"]["PT70To100"]["Eta2To2p5"][-1]=0.042;
+dAsym_result_all["2016postVFP"]["PT70To100"]["Eta2To2p5"][0]=0.093;
+dAsym_result_all["2016postVFP"]["PT70To100"]["Eta2To2p5"][1]=0.144;
+dAsym_result_all["2016postVFP"]["PT70To100"]["Eta0To0p8"][-1]=-0.015;
+dAsym_result_all["2016postVFP"]["PT70To100"]["Eta0To0p8"][0]=-0.002;
+dAsym_result_all["2016postVFP"]["PT70To100"]["Eta0To0p8"][1]=0.011;
+dAsym_result_all["2016postVFP"]["PT70To100"]["Eta0p8To1p6"][-1]=-0.02;
+dAsym_result_all["2016postVFP"]["PT70To100"]["Eta0p8To1p6"][0]=0.0;
+dAsym_result_all["2016postVFP"]["PT70To100"]["Eta0p8To1p6"][1]=0.02;
+dAsym_result_all["2016postVFP"]["PT70To100"]["Eta1p6To2"][-1]=-0.015000000000000003;
+dAsym_result_all["2016postVFP"]["PT70To100"]["Eta1p6To2"][0]=0.02;
+dAsym_result_all["2016postVFP"]["PT70To100"]["Eta1p6To2"][1]=0.05500000000000001;
+dAsym_result_all["2016postVFP"]["PT70To100"]["Eta2To2p5"][-1]=0.042;
+dAsym_result_all["2016postVFP"]["PT70To100"]["Eta2To2p5"][0]=0.093;
+dAsym_result_all["2016postVFP"]["PT70To100"]["Eta2To2p5"][1]=0.144;
+
+ dAsym_result_all["2016postVFP"]["PT100To140"]["Eta0To0p8"][-1]=0.004;
+dAsym_result_all["2016postVFP"]["PT100To140"]["Eta0To0p8"][0]=0.021;
+dAsym_result_all["2016postVFP"]["PT100To140"]["Eta0To0p8"][1]=0.038000000000000006;
+dAsym_result_all["2016postVFP"]["PT100To140"]["Eta0p8To1p6"][-1]=0.03;
+dAsym_result_all["2016postVFP"]["PT100To140"]["Eta0p8To1p6"][0]=0.052;
+dAsym_result_all["2016postVFP"]["PT100To140"]["Eta0p8To1p6"][1]=0.074;
+dAsym_result_all["2016postVFP"]["PT100To140"]["Eta1p6To2"][-1]=0.04700000000000001;
+dAsym_result_all["2016postVFP"]["PT100To140"]["Eta1p6To2"][0]=0.101;
+dAsym_result_all["2016postVFP"]["PT100To140"]["Eta1p6To2"][1]=0.157;
+dAsym_result_all["2016postVFP"]["PT100To140"]["Eta2To2p5"][-1]=-0.121;
+dAsym_result_all["2016postVFP"]["PT100To140"]["Eta2To2p5"][0]=-0.037;
+dAsym_result_all["2016postVFP"]["PT100To140"]["Eta2To2p5"][1]=0.04700000000000001;
+dAsym_result_all["2016postVFP"]["PT100To140"]["Eta0To0p8"][-1]=0.004;
+dAsym_result_all["2016postVFP"]["PT100To140"]["Eta0To0p8"][0]=0.021;
+dAsym_result_all["2016postVFP"]["PT100To140"]["Eta0To0p8"][1]=0.038000000000000006;
+dAsym_result_all["2016postVFP"]["PT100To140"]["Eta0p8To1p6"][-1]=0.03;
+dAsym_result_all["2016postVFP"]["PT100To140"]["Eta0p8To1p6"][0]=0.052;
+dAsym_result_all["2016postVFP"]["PT100To140"]["Eta0p8To1p6"][1]=0.074;
+dAsym_result_all["2016postVFP"]["PT100To140"]["Eta1p6To2"][-1]=0.04700000000000001;
+dAsym_result_all["2016postVFP"]["PT100To140"]["Eta1p6To2"][0]=0.101;
+dAsym_result_all["2016postVFP"]["PT100To140"]["Eta1p6To2"][1]=0.157;
+dAsym_result_all["2016postVFP"]["PT100To140"]["Eta2To2p5"][-1]=-0.121;
+dAsym_result_all["2016postVFP"]["PT100To140"]["Eta2To2p5"][0]=-0.037;
+dAsym_result_all["2016postVFP"]["PT100To140"]["Eta2To2p5"][1]=0.04700000000000001;
+
+ dAsym_result_all["2016postVFP"]["PT140ToInf"]["Eta0To0p8"][-1]=0.009000000000000001;
+dAsym_result_all["2016postVFP"]["PT140ToInf"]["Eta0To0p8"][0]=0.041;
+dAsym_result_all["2016postVFP"]["PT140ToInf"]["Eta0To0p8"][1]=0.07300000000000001;
+dAsym_result_all["2016postVFP"]["PT140ToInf"]["Eta0p8To1p6"][-1]=0.059000000000000004;
+dAsym_result_all["2016postVFP"]["PT140ToInf"]["Eta0p8To1p6"][0]=0.099;
+dAsym_result_all["2016postVFP"]["PT140ToInf"]["Eta0p8To1p6"][1]=0.14;
+dAsym_result_all["2016postVFP"]["PT140ToInf"]["Eta1p6To2"][-1]=-0.132;
+dAsym_result_all["2016postVFP"]["PT140ToInf"]["Eta1p6To2"][0]=-0.051;
+dAsym_result_all["2016postVFP"]["PT140ToInf"]["Eta1p6To2"][1]=0.031000000000000007;
+dAsym_result_all["2016postVFP"]["PT140ToInf"]["Eta2To2p5"][-1]=-0.207;
+dAsym_result_all["2016postVFP"]["PT140ToInf"]["Eta2To2p5"][0]=0.001;
+dAsym_result_all["2016postVFP"]["PT140ToInf"]["Eta2To2p5"][1]=0.214;
+dAsym_result_all["2016postVFP"]["PT140ToInf"]["Eta0To0p8"][-1]=0.009000000000000001;
+dAsym_result_all["2016postVFP"]["PT140ToInf"]["Eta0To0p8"][0]=0.041;
+dAsym_result_all["2016postVFP"]["PT140ToInf"]["Eta0To0p8"][1]=0.07300000000000001;
+dAsym_result_all["2016postVFP"]["PT140ToInf"]["Eta0p8To1p6"][-1]=0.059000000000000004;
+dAsym_result_all["2016postVFP"]["PT140ToInf"]["Eta0p8To1p6"][0]=0.099;
+dAsym_result_all["2016postVFP"]["PT140ToInf"]["Eta0p8To1p6"][1]=0.14;
+dAsym_result_all["2016postVFP"]["PT140ToInf"]["Eta1p6To2"][-1]=-0.132;
+dAsym_result_all["2016postVFP"]["PT140ToInf"]["Eta1p6To2"][0]=-0.051;
+dAsym_result_all["2016postVFP"]["PT140ToInf"]["Eta1p6To2"][1]=0.031000000000000007;
+dAsym_result_all["2016postVFP"]["PT140ToInf"]["Eta2To2p5"][-1]=-0.207;
+dAsym_result_all["2016postVFP"]["PT140ToInf"]["Eta2To2p5"][0]=0.001;
+dAsym_result_all["2016postVFP"]["PT140ToInf"]["Eta2To2p5"][1]=0.214;
+
+//2017
+dAsym_result_all["2017"]["PT30To50"]["Eta0To0p8"][-1]=-0.005;                                
+dAsym_result_all["2017"]["PT30To50"]["Eta0To0p8"][0]=0.002;                                  
+dAsym_result_all["2017"]["PT30To50"]["Eta0To0p8"][1]=0.009000000000000001;                   
+dAsym_result_all["2017"]["PT30To50"]["Eta0p8To1p6"][-1]=-0.005999999999999999;               
+dAsym_result_all["2017"]["PT30To50"]["Eta0p8To1p6"][0]=0.003;                                
+dAsym_result_all["2017"]["PT30To50"]["Eta0p8To1p6"][1]=0.012;                                
+dAsym_result_all["2017"]["PT30To50"]["Eta1p6To2"][-1]=0.018000000000000002;                  
+dAsym_result_all["2017"]["PT30To50"]["Eta1p6To2"][0]=0.034;                                  
+dAsym_result_all["2017"]["PT30To50"]["Eta1p6To2"][1]=0.05;            
+dAsym_result_all["2017"]["PT30To50"]["Eta2To2p5"][-1]=0.035;          
+dAsym_result_all["2017"]["PT30To50"]["Eta2To2p5"][0]=0.057;                        
+dAsym_result_all["2017"]["PT30To50"]["Eta2To2p5"][1]=0.081;         
+dAsym_result_all["2017"]["PT30To50"]["Eta0To0p8"][-1]=-0.005;       
+dAsym_result_all["2017"]["PT30To50"]["Eta0To0p8"][0]=0.002;           
+dAsym_result_all["2017"]["PT30To50"]["Eta0To0p8"][1]=0.009000000000000001;
+dAsym_result_all["2017"]["PT30To50"]["Eta0p8To1p6"][-1]=-0.005999999999999999;    
+dAsym_result_all["2017"]["PT30To50"]["Eta0p8To1p6"][0]=0.003;        
+dAsym_result_all["2017"]["PT30To50"]["Eta0p8To1p6"][1]=0.012;       
+dAsym_result_all["2017"]["PT30To50"]["Eta1p6To2"][-1]=0.018000000000000002;        
+dAsym_result_all["2017"]["PT30To50"]["Eta1p6To2"][0]=0.034;           
+dAsym_result_all["2017"]["PT30To50"]["Eta1p6To2"][1]=0.05;            
+dAsym_result_all["2017"]["PT30To50"]["Eta2To2p5"][-1]=0.035;          
+dAsym_result_all["2017"]["PT30To50"]["Eta2To2p5"][0]=0.057;                        
+dAsym_result_all["2017"]["PT30To50"]["Eta2To2p5"][1]=0.081;         
+
+ dAsym_result_all["2017"]["PT50To70"]["Eta0To0p8"][-1]=-0.01;          
+dAsym_result_all["2017"]["PT50To70"]["Eta0To0p8"][0]=-0.002;         
+dAsym_result_all["2017"]["PT50To70"]["Eta0To0p8"][1]=0.006;                       
+dAsym_result_all["2017"]["PT50To70"]["Eta0p8To1p6"][-1]=-0.001999999999999999;               
+dAsym_result_all["2017"]["PT50To70"]["Eta0p8To1p6"][0]=0.007;                       
+dAsym_result_all["2017"]["PT50To70"]["Eta0p8To1p6"][1]=0.016;       
+dAsym_result_all["2017"]["PT50To70"]["Eta1p6To2"][-1]=-0.005999999999999998;      
+dAsym_result_all["2017"]["PT50To70"]["Eta1p6To2"][0]=0.012;                           
+dAsym_result_all["2017"]["PT50To70"]["Eta1p6To2"][1]=0.03;            
+dAsym_result_all["2017"]["PT50To70"]["Eta2To2p5"][-1]=-0.025;        
+dAsym_result_all["2017"]["PT50To70"]["Eta2To2p5"][0]=-0.001;          
+dAsym_result_all["2017"]["PT50To70"]["Eta2To2p5"][1]=0.023;          
+dAsym_result_all["2017"]["PT50To70"]["Eta0To0p8"][-1]=-0.01;                       
+dAsym_result_all["2017"]["PT50To70"]["Eta0To0p8"][0]=-0.002;          
+dAsym_result_all["2017"]["PT50To70"]["Eta0To0p8"][1]=0.006;         
+dAsym_result_all["2017"]["PT50To70"]["Eta0p8To1p6"][-1]=-0.001999999999999999;
+dAsym_result_all["2017"]["PT50To70"]["Eta0p8To1p6"][0]=0.007;
+dAsym_result_all["2017"]["PT50To70"]["Eta0p8To1p6"][1]=0.016;
+dAsym_result_all["2017"]["PT50To70"]["Eta1p6To2"][-1]=-0.005999999999999998;
+dAsym_result_all["2017"]["PT50To70"]["Eta1p6To2"][0]=0.012;
+dAsym_result_all["2017"]["PT50To70"]["Eta1p6To2"][1]=0.03;
+dAsym_result_all["2017"]["PT50To70"]["Eta2To2p5"][-1]=-0.025;
+dAsym_result_all["2017"]["PT50To70"]["Eta2To2p5"][0]=-0.001;
+dAsym_result_all["2017"]["PT50To70"]["Eta2To2p5"][1]=0.023;
+
+
+ dAsym_result_all["2017"]["PT70To100"]["Eta0To0p8"][-1]=-0.012;                               
+dAsym_result_all["2017"]["PT70To100"]["Eta0To0p8"][0]=-0.004;                                
+dAsym_result_all["2017"]["PT70To100"]["Eta0To0p8"][1]=0.004;                                 
+dAsym_result_all["2017"]["PT70To100"]["Eta0p8To1p6"][-1]=-0.015;                             
+dAsym_result_all["2017"]["PT70To100"]["Eta0p8To1p6"][0]=-0.003;                              
+dAsym_result_all["2017"]["PT70To100"]["Eta0p8To1p6"][1]=0.009000000000000001;                
+dAsym_result_all["2017"]["PT70To100"]["Eta1p6To2"][-1]=-0.015;                               
+dAsym_result_all["2017"]["PT70To100"]["Eta1p6To2"][0]=0.012;                                 
+dAsym_result_all["2017"]["PT70To100"]["Eta1p6To2"][1]=0.039;                                 
+dAsym_result_all["2017"]["PT70To100"]["Eta2To2p5"][-1]=0.020999999999999998;                 
+dAsym_result_all["2017"]["PT70To100"]["Eta2To2p5"][0]=0.059;                                 
+dAsym_result_all["2017"]["PT70To100"]["Eta2To2p5"][1]=0.097;                                 
+dAsym_result_all["2017"]["PT70To100"]["Eta0To0p8"][-1]=-0.012;        
+dAsym_result_all["2017"]["PT70To100"]["Eta0To0p8"][0]=-0.004;         
+dAsym_result_all["2017"]["PT70To100"]["Eta0To0p8"][1]=0.004;                       
+dAsym_result_all["2017"]["PT70To100"]["Eta0p8To1p6"][-1]=-0.015;    
+dAsym_result_all["2017"]["PT70To100"]["Eta0p8To1p6"][0]=-0.003;     
+dAsym_result_all["2017"]["PT70To100"]["Eta0p8To1p6"][1]=0.009000000000000001;
+dAsym_result_all["2017"]["PT70To100"]["Eta1p6To2"][-1]=-0.015;            
+dAsym_result_all["2017"]["PT70To100"]["Eta1p6To2"][0]=0.012;                      
+dAsym_result_all["2017"]["PT70To100"]["Eta1p6To2"][1]=0.039;         
+dAsym_result_all["2017"]["PT70To100"]["Eta2To2p5"][-1]=0.020999999999999998;
+dAsym_result_all["2017"]["PT70To100"]["Eta2To2p5"][0]=0.059;                       
+dAsym_result_all["2017"]["PT70To100"]["Eta2To2p5"][1]=0.097;          
+
+ dAsym_result_all["2017"]["PT100To140"]["Eta0To0p8"][-1]=-0.04;        
+dAsym_result_all["2017"]["PT100To140"]["Eta0To0p8"][0]=-0.027;                     
+dAsym_result_all["2017"]["PT100To140"]["Eta0To0p8"][1]=-0.014;      
+dAsym_result_all["2017"]["PT100To140"]["Eta0p8To1p6"][-1]=0.009000000000000001;              
+dAsym_result_all["2017"]["PT100To140"]["Eta0p8To1p6"][0]=0.025;       
+dAsym_result_all["2017"]["PT100To140"]["Eta0p8To1p6"][1]=0.041;      
+dAsym_result_all["2017"]["PT100To140"]["Eta1p6To2"][-1]=-0.08399999999999999;     
+dAsym_result_all["2017"]["PT100To140"]["Eta1p6To2"][0]=-0.052;                               
+dAsym_result_all["2017"]["PT100To140"]["Eta1p6To2"][1]=-0.019999999999999997;       
+dAsym_result_all["2017"]["PT100To140"]["Eta2To2p5"][-1]=0.008;      
+dAsym_result_all["2017"]["PT100To140"]["Eta2To2p5"][0]=0.064;                     
+dAsym_result_all["2017"]["PT100To140"]["Eta2To2p5"][1]=0.12;                          
+dAsym_result_all["2017"]["PT100To140"]["Eta0To0p8"][-1]=-0.04;        
+dAsym_result_all["2017"]["PT100To140"]["Eta0To0p8"][0]=-0.027;       
+dAsym_result_all["2017"]["PT100To140"]["Eta0To0p8"][1]=-0.014;        
+dAsym_result_all["2017"]["PT100To140"]["Eta0p8To1p6"][-1]=0.009000000000000001;
+dAsym_result_all["2017"]["PT100To140"]["Eta0p8To1p6"][0]=0.025;                    
+dAsym_result_all["2017"]["PT100To140"]["Eta0p8To1p6"][1]=0.041;       
+dAsym_result_all["2017"]["PT100To140"]["Eta1p6To2"][-1]=-0.08399999999999999;
+dAsym_result_all["2017"]["PT100To140"]["Eta1p6To2"][0]=-0.052;                
+dAsym_result_all["2017"]["PT100To140"]["Eta1p6To2"][1]=-0.019999999999999997;
+dAsym_result_all["2017"]["PT100To140"]["Eta2To2p5"][-1]=0.008;
+dAsym_result_all["2017"]["PT100To140"]["Eta2To2p5"][0]=0.064;               
+dAsym_result_all["2017"]["PT100To140"]["Eta2To2p5"][1]=0.12;
+
+ dAsym_result_all["2017"]["PT140ToInf"]["Eta0To0p8"][-1]=-0.031;                              
+dAsym_result_all["2017"]["PT140ToInf"]["Eta0To0p8"][0]=-0.015;                               
+dAsym_result_all["2017"]["PT140ToInf"]["Eta0To0p8"][1]=0.0010000000000000009;                
+dAsym_result_all["2017"]["PT140ToInf"]["Eta0p8To1p6"][-1]=0.009999999999999998;              
+dAsym_result_all["2017"]["PT140ToInf"]["Eta0p8To1p6"][0]=0.036;                              
+dAsym_result_all["2017"]["PT140ToInf"]["Eta0p8To1p6"][1]=0.062;                              
+dAsym_result_all["2017"]["PT140ToInf"]["Eta1p6To2"][-1]=-0.153;                              
+dAsym_result_all["2017"]["PT140ToInf"]["Eta1p6To2"][0]=-0.093;                               
+dAsym_result_all["2017"]["PT140ToInf"]["Eta1p6To2"][1]=-0.033;                               
+dAsym_result_all["2017"]["PT140ToInf"]["Eta2To2p5"][-1]=-0.145;                              
+dAsym_result_all["2017"]["PT140ToInf"]["Eta2To2p5"][0]=-0.053;                               
+dAsym_result_all["2017"]["PT140ToInf"]["Eta2To2p5"][1]=0.039;                                
+dAsym_result_all["2017"]["PT140ToInf"]["Eta0To0p8"][-1]=-0.031;                              
+dAsym_result_all["2017"]["PT140ToInf"]["Eta0To0p8"][0]=-0.015;                               
+dAsym_result_all["2017"]["PT140ToInf"]["Eta0To0p8"][1]=0.0010000000000000009;                
+dAsym_result_all["2017"]["PT140ToInf"]["Eta0p8To1p6"][-1]=0.009999999999999998;              
+dAsym_result_all["2017"]["PT140ToInf"]["Eta0p8To1p6"][0]=0.036;       
+dAsym_result_all["2017"]["PT140ToInf"]["Eta0p8To1p6"][1]=0.062;       
+dAsym_result_all["2017"]["PT140ToInf"]["Eta1p6To2"][-1]=-0.153;                    
+dAsym_result_all["2017"]["PT140ToInf"]["Eta1p6To2"][0]=-0.093;      
+dAsym_result_all["2017"]["PT140ToInf"]["Eta1p6To2"][1]=-0.033;      
+dAsym_result_all["2017"]["PT140ToInf"]["Eta2To2p5"][-1]=-0.145;              
+dAsym_result_all["2017"]["PT140ToInf"]["Eta2To2p5"][0]=-0.053;            
+dAsym_result_all["2017"]["PT140ToInf"]["Eta2To2p5"][1]=0.039;                     
+
+  //2018
+dAsym_result_all["2018"]["PT30To50"]["Eta0To0p8"][-1]=0.006999999999999999;                  
+dAsym_result_all["2018"]["PT30To50"]["Eta0To0p8"][0]=0.013;                                  
+dAsym_result_all["2018"]["PT30To50"]["Eta0To0p8"][1]=0.019;                                  
+dAsym_result_all["2018"]["PT30To50"]["Eta0p8To1p6"][-1]=0.009000000000000001;                
+dAsym_result_all["2018"]["PT30To50"]["Eta0p8To1p6"][0]=0.017;                                
+dAsym_result_all["2018"]["PT30To50"]["Eta0p8To1p6"][1]=0.025;                                
+dAsym_result_all["2018"]["PT30To50"]["Eta1p6To2"][-1]=-0.013999999999999999;                 
+dAsym_result_all["2018"]["PT30To50"]["Eta1p6To2"][0]=-0.001;                                 
+dAsym_result_all["2018"]["PT30To50"]["Eta1p6To2"][1]=0.012;                                  
+dAsym_result_all["2018"]["PT30To50"]["Eta2To2p5"][-1]=-0.025;                                
+dAsym_result_all["2018"]["PT30To50"]["Eta2To2p5"][0]=-0.009;                                 
+dAsym_result_all["2018"]["PT30To50"]["Eta2To2p5"][1]=0.007000000000000001;                   
+dAsym_result_all["2018"]["PT30To50"]["Eta0To0p8"][-1]=0.006999999999999999;                  
+dAsym_result_all["2018"]["PT30To50"]["Eta0To0p8"][0]=0.013;                                  
+dAsym_result_all["2018"]["PT30To50"]["Eta0To0p8"][1]=0.019;                                  
+dAsym_result_all["2018"]["PT30To50"]["Eta0p8To1p6"][-1]=0.009000000000000001;                
+dAsym_result_all["2018"]["PT30To50"]["Eta0p8To1p6"][0]=0.017;                                
+dAsym_result_all["2018"]["PT30To50"]["Eta0p8To1p6"][1]=0.025;                                
+dAsym_result_all["2018"]["PT30To50"]["Eta1p6To2"][-1]=-0.013999999999999999;                 
+dAsym_result_all["2018"]["PT30To50"]["Eta1p6To2"][0]=-0.001;                                 
+dAsym_result_all["2018"]["PT30To50"]["Eta1p6To2"][1]=0.012;                                  
+dAsym_result_all["2018"]["PT30To50"]["Eta2To2p5"][-1]=-0.025;                                
+dAsym_result_all["2018"]["PT30To50"]["Eta2To2p5"][0]=-0.009;                                 
+dAsym_result_all["2018"]["PT30To50"]["Eta2To2p5"][1]=0.007000000000000001;                   
+
+ dAsym_result_all["2018"]["PT50To70"]["Eta0To0p8"][-1]=-0.026;                                
+dAsym_result_all["2018"]["PT50To70"]["Eta0To0p8"][0]=-0.018;                                 
+dAsym_result_all["2018"]["PT50To70"]["Eta0To0p8"][1]=-0.011;                                 
+dAsym_result_all["2018"]["PT50To70"]["Eta0p8To1p6"][-1]=-0.002;                              
+dAsym_result_all["2018"]["PT50To70"]["Eta0p8To1p6"][0]=0.006;                                
+dAsym_result_all["2018"]["PT50To70"]["Eta0p8To1p6"][1]=0.014;                                
+dAsym_result_all["2018"]["PT50To70"]["Eta1p6To2"][-1]=0.005000000000000001;                  
+dAsym_result_all["2018"]["PT50To70"]["Eta1p6To2"][0]=0.02;                                   
+dAsym_result_all["2018"]["PT50To70"]["Eta1p6To2"][1]=0.034;                                  
+dAsym_result_all["2018"]["PT50To70"]["Eta2To2p5"][-1]=-0.004;                                
+dAsym_result_all["2018"]["PT50To70"]["Eta2To2p5"][0]=0.018;                                  
+dAsym_result_all["2018"]["PT50To70"]["Eta2To2p5"][1]=0.040999999999999995;                   
+dAsym_result_all["2018"]["PT50To70"]["Eta0To0p8"][-1]=-0.026;
+dAsym_result_all["2018"]["PT50To70"]["Eta0To0p8"][0]=-0.018;
+dAsym_result_all["2018"]["PT50To70"]["Eta0To0p8"][1]=-0.011;
+dAsym_result_all["2018"]["PT50To70"]["Eta0p8To1p6"][-1]=-0.002;
+dAsym_result_all["2018"]["PT50To70"]["Eta0p8To1p6"][0]=0.006;
+dAsym_result_all["2018"]["PT50To70"]["Eta0p8To1p6"][1]=0.014;
+dAsym_result_all["2018"]["PT50To70"]["Eta1p6To2"][-1]=0.005000000000000001;
+dAsym_result_all["2018"]["PT50To70"]["Eta1p6To2"][0]=0.02;
+dAsym_result_all["2018"]["PT50To70"]["Eta1p6To2"][1]=0.034;
+dAsym_result_all["2018"]["PT50To70"]["Eta2To2p5"][-1]=-0.004;
+dAsym_result_all["2018"]["PT50To70"]["Eta2To2p5"][0]=0.018;
+dAsym_result_all["2018"]["PT50To70"]["Eta2To2p5"][1]=0.040999999999999995;
+
+ dAsym_result_all["2018"]["PT70To100"]["Eta0To0p8"][-1]=-0.013000000000000001;                
+dAsym_result_all["2018"]["PT70To100"]["Eta0To0p8"][0]=-0.006;                                
+dAsym_result_all["2018"]["PT70To100"]["Eta0To0p8"][1]=0.001;                                 
+dAsym_result_all["2018"]["PT70To100"]["Eta0p8To1p6"][-1]=-0.006999999999999999;              
+dAsym_result_all["2018"]["PT70To100"]["Eta0p8To1p6"][0]=0.002;                               
+dAsym_result_all["2018"]["PT70To100"]["Eta0p8To1p6"][1]=0.011;                               
+dAsym_result_all["2018"]["PT70To100"]["Eta1p6To2"][-1]=-0.026000000000000002;                
+dAsym_result_all["2018"]["PT70To100"]["Eta1p6To2"][0]=-0.009;                                
+dAsym_result_all["2018"]["PT70To100"]["Eta1p6To2"][1]=0.008000000000000002;                  
+dAsym_result_all["2018"]["PT70To100"]["Eta2To2p5"][-1]=-0.043;                               
+dAsym_result_all["2018"]["PT70To100"]["Eta2To2p5"][0]=-0.016;                                
+dAsym_result_all["2018"]["PT70To100"]["Eta2To2p5"][1]=0.011;                                 
+dAsym_result_all["2018"]["PT70To100"]["Eta0To0p8"][-1]=-0.013000000000000001;                
+dAsym_result_all["2018"]["PT70To100"]["Eta0To0p8"][0]=-0.006;                                
+dAsym_result_all["2018"]["PT70To100"]["Eta0To0p8"][1]=0.001;                                 
+dAsym_result_all["2018"]["PT70To100"]["Eta0p8To1p6"][-1]=-0.006999999999999999;              
+dAsym_result_all["2018"]["PT70To100"]["Eta0p8To1p6"][0]=0.002;                               
+dAsym_result_all["2018"]["PT70To100"]["Eta0p8To1p6"][1]=0.011;                               
+dAsym_result_all["2018"]["PT70To100"]["Eta1p6To2"][-1]=-0.026000000000000002;                
+dAsym_result_all["2018"]["PT70To100"]["Eta1p6To2"][0]=-0.009;                                
+dAsym_result_all["2018"]["PT70To100"]["Eta1p6To2"][1]=0.008000000000000002;                  
+dAsym_result_all["2018"]["PT70To100"]["Eta2To2p5"][-1]=-0.043;                               
+dAsym_result_all["2018"]["PT70To100"]["Eta2To2p5"][0]=-0.016;                                
+dAsym_result_all["2018"]["PT70To100"]["Eta2To2p5"][1]=0.011;                                 
+dAsym_result_all["2018"]["PT100To140"]["Eta0To0p8"][-1]=-0.008;                              
+dAsym_result_all["2018"]["PT100To140"]["Eta0To0p8"][0]=0.003;                                
+dAsym_result_all["2018"]["PT100To140"]["Eta0To0p8"][1]=0.013999999999999999;                 
+dAsym_result_all["2018"]["PT100To140"]["Eta0p8To1p6"][-1]=0.0;                               
+dAsym_result_all["2018"]["PT100To140"]["Eta0p8To1p6"][0]=0.015;                              
+dAsym_result_all["2018"]["PT100To140"]["Eta0p8To1p6"][1]=0.028999999999999998;               
+dAsym_result_all["2018"]["PT100To140"]["Eta1p6To2"][-1]=-0.07300000000000001;                
+dAsym_result_all["2018"]["PT100To140"]["Eta1p6To2"][0]=-0.049;                               
+dAsym_result_all["2018"]["PT100To140"]["Eta1p6To2"][1]=-0.025;                               
+dAsym_result_all["2018"]["PT100To140"]["Eta2To2p5"][-1]=-0.078;                              
+dAsym_result_all["2018"]["PT100To140"]["Eta2To2p5"][0]=-0.037;                               
+dAsym_result_all["2018"]["PT100To140"]["Eta2To2p5"][1]=0.0050000000000000044;                
+dAsym_result_all["2018"]["PT100To140"]["Eta0To0p8"][-1]=-0.008;                              
+dAsym_result_all["2018"]["PT100To140"]["Eta0To0p8"][0]=0.003;                                
+dAsym_result_all["2018"]["PT100To140"]["Eta0To0p8"][1]=0.013999999999999999;                 
+dAsym_result_all["2018"]["PT100To140"]["Eta0p8To1p6"][-1]=0.0;                               
+dAsym_result_all["2018"]["PT100To140"]["Eta0p8To1p6"][0]=0.015;
+dAsym_result_all["2018"]["PT100To140"]["Eta0p8To1p6"][1]=0.028999999999999998;
+dAsym_result_all["2018"]["PT100To140"]["Eta1p6To2"][-1]=-0.07300000000000001;
+dAsym_result_all["2018"]["PT100To140"]["Eta1p6To2"][0]=-0.049;
+dAsym_result_all["2018"]["PT100To140"]["Eta1p6To2"][1]=-0.025;
+dAsym_result_all["2018"]["PT100To140"]["Eta2To2p5"][-1]=-0.078;
+dAsym_result_all["2018"]["PT100To140"]["Eta2To2p5"][0]=-0.037;
+dAsym_result_all["2018"]["PT100To140"]["Eta2To2p5"][1]=0.0050000000000000044;
+
+ dAsym_result_all["2018"]["PT140ToInf"]["Eta0To0p8"][-1]=-0.032;
+dAsym_result_all["2018"]["PT140ToInf"]["Eta0To0p8"][0]=-0.019;
+dAsym_result_all["2018"]["PT140ToInf"]["Eta0To0p8"][1]=-0.006;
+dAsym_result_all["2018"]["PT140ToInf"]["Eta0p8To1p6"][-1]=0.008;
+dAsym_result_all["2018"]["PT140ToInf"]["Eta0p8To1p6"][0]=0.027;
+dAsym_result_all["2018"]["PT140ToInf"]["Eta0p8To1p6"][1]=0.046;
+dAsym_result_all["2018"]["PT140ToInf"]["Eta1p6To2"][-1]=0.049;
+dAsym_result_all["2018"]["PT140ToInf"]["Eta1p6To2"][0]=0.099;
+dAsym_result_all["2018"]["PT140ToInf"]["Eta1p6To2"][1]=0.15;
+dAsym_result_all["2018"]["PT140ToInf"]["Eta2To2p5"][-1]=-0.083;
+dAsym_result_all["2018"]["PT140ToInf"]["Eta2To2p5"][0]=-0.019;
+dAsym_result_all["2018"]["PT140ToInf"]["Eta2To2p5"][1]=0.045;
+dAsym_result_all["2018"]["PT140ToInf"]["Eta0To0p8"][-1]=-0.032;
+dAsym_result_all["2018"]["PT140ToInf"]["Eta0To0p8"][0]=-0.019;
+dAsym_result_all["2018"]["PT140ToInf"]["Eta0To0p8"][1]=-0.006;
+dAsym_result_all["2018"]["PT140ToInf"]["Eta0p8To1p6"][-1]=0.008;
+dAsym_result_all["2018"]["PT140ToInf"]["Eta0p8To1p6"][0]=0.027;
+dAsym_result_all["2018"]["PT140ToInf"]["Eta0p8To1p6"][1]=0.046;
+dAsym_result_all["2018"]["PT140ToInf"]["Eta1p6To2"][-1]=0.049;
+dAsym_result_all["2018"]["PT140ToInf"]["Eta1p6To2"][0]=0.099;
+dAsym_result_all["2018"]["PT140ToInf"]["Eta1p6To2"][1]=0.15;
+dAsym_result_all["2018"]["PT140ToInf"]["Eta2To2p5"][-1]=-0.083;
+dAsym_result_all["2018"]["PT140ToInf"]["Eta2To2p5"][0]=-0.019;
+dAsym_result_all["2018"]["PT140ToInf"]["Eta2To2p5"][1]=0.045;
+
+ 
+  //---Use only this DataEra
+  cout << "define values of [this_dAsym_result]" << endl;
+  cout << "DataEra" << DataEra << endl;
+  const auto& refMap = dAsym_result_all[std::string(DataEra)];
+  for (const auto& [ptbin_str, etamap] : refMap) {
+    int ptidx = GetPtBinIndex(ptbin_str);
+    if (ptidx < 0) 1/0;
+    //cout << ptbin_str << endl;
+    for (const auto& [etabin_str, systmap] : etamap) {
+      int etaidx = GetEtaBinIndex(etabin_str);
+      if (etaidx < 0) 1/0;
+      //cout << etabin_str << endl;
+      for (const auto& [systDir, value] : systmap) {
+        int systidx = systDir + 1;
+        if (systidx < 0 || systidx > 2) 1/0;
+	//cout << systDir << endl;
+        this_dAsym_result[ptidx][etaidx][systidx] = value;
+	
+	//cout << ptbin_str <<"/" << etabin_str << "/" << systDir << value << endl;
+	if(value > 1){
+	  cout << "!!!Tooo Large dAsymSF ->" << value << "BIN info. pt:" << ptidx << " eta:" << etaidx << endl;
+	}
+      }
+    }
+  }
+
+  
+}
+
+int MCCorrection::GetPtBinIndex(const std::string& ptbin) {
+  if (ptbin == "PT30To50") return 0;
+  if (ptbin == "PT50To70") return 1;
+  if (ptbin == "PT70To100") return 2;
+  if (ptbin == "PT100To140") return 3;
+  if (ptbin == "PT140ToInf") return 4;
+
+  return -1;
+
+}
+int MCCorrection::GetEtaBinIndex(const std::string& etabin) {
+  if (etabin == "Eta0To0p8") return 0;
+  if (etabin == "Eta0p8To1p6") return 1;
+  if (etabin == "Eta1p6To2") return 2;
+  if (etabin == "Eta2To2p5") return 3;
+  return -1;
+  
 }
 vector<TString> MCCorrection::Split(TString s,TString del){
   TObjArray* array=s.Tokenize(del);
@@ -871,10 +1430,12 @@ void MCCorrection::SetJetTaggingParameters(std::vector<JetTagging::Parameters> v
   jetTaggingPars = v;
 }
 
-void MCCorrection::SetupJetTagging(TString _btagmceff_filename){
-
+void MCCorrection::SetupJetTagging(TString _btagmceff_filename,bool _Use_dAsym){
+  
   if(IsDATA) return;
 
+
+  
   TString datapath = getenv("DATA_DIR");
   TString btagpath = datapath+"/"+GetEra()+"/BTag/";
 
@@ -973,9 +1534,75 @@ void MCCorrection::SetupJetTagging(TString _btagmceff_filename){
   for(std::map< std::string, BTagCalibrationReader* >::iterator it=map_BTagCalibrationReader.begin(); it!=map_BTagCalibrationReader.end(); it++){
     cout << "[MCCorrection::SetJetTaggingParameters] key = " << it->first << endl;
   }
-  SetupMCJetTagEff(_btagmceff_filename);
-
+  if(_Use_dAsym){
+    cout << "[MCCorrection::SetupJetTagging]Setup MCJetTagEff With dAsym!!" << endl;
+    use_dasym=true;
+    InitBtagChargeAsymFactor();
+    //SetupMCJetTagEffWithAsym(_btagmceff_filename);
+    SetupMCJetTagEff(_btagmceff_filename);
+  }else{
+    cout << "[MCCorrection::SetupJetTagging]Setup MCJetTagEff. NO dAsym!!" << endl;
+    SetupMCJetTagEff(_btagmceff_filename);
+  }
 }
+
+double MCCorrection::GetdAsymResult(double JetPt, double JetEta, int SystDir, int iptbinsys, int ietabinsys){
+  int JetPtBIN=-1;
+  int JetEtaBIN=-1;
+  if(JetPt < 30.){
+    return 0.;
+  }else if(JetPt < 50.){
+    JetPtBIN=kPT30To50;
+  }else if(JetPt < 70.){
+    JetPtBIN=kPT50To70;
+  }else if(JetPt < 100.){
+    JetPtBIN=kPT70To100;
+  }else if(JetPt < 140.){
+    JetPtBIN=kPT100To140;
+  }else{
+    JetPtBIN=kPT140ToInf;
+  }
+
+  if(JetEta < 0.8){
+    JetEtaBIN=kEta0To0p8;
+  }else if(JetEta < 1.6){
+    JetEtaBIN=kEta0p8To1p6;
+  }else if(JetEta < 2.){
+    JetEtaBIN=kEta1p6To2;
+  }else if(JetEta < 2.5){
+    JetEtaBIN=kEta2To2p5;
+  }else{
+    return 0.;
+  }
+  if(SystDir!=0){//syst var
+    if(JetPtBIN!=iptbinsys) SystDir=0; // if the variation is not matched to current jet's pt
+    if(JetEtaBIN!=ietabinsys) SystDir=0; // if the variation is not matched to current jet's pt
+  }
+  
+  int idx_SystDir=SystDir+1;
+  
+  return this_dAsym_result[JetPtBIN][JetEtaBIN][idx_SystDir];
+}
+
+
+double MCCorrection::GetJetTaggingSF_dAsymCharge(JetTagging::Parameters jtp, int partonFlavour, int JetFlavor, double JetPt, double JetEta, int SystDir, int iptbinsys, int ietabinsys){
+  ///---OnlyFor DeepJet/Tigh
+  //---Choose HardCoding for speeed
+  if(IsDATA) return 0.;
+  if(jtp.j_Tagger != JetTagging::DeepJet) return 0.;
+  if(jtp.j_WP != JetTagging::Tight) return 0.;
+  if(abs(partonFlavour)!=5) return 0.;
+  if(JetFlavor!=5) return 0.;
+  
+  JetEta=fabs(JetEta);
+  //return 0;
+  //cout << "[MCCorrection::GetJetTaggingSF_dAsymCharge]Get dAsymSF!!" << endl;
+  return GetdAsymResult(JetPt, JetEta, SystDir, iptbinsys,ietabinsys);
+
+  
+}
+
+
 
 double MCCorrection::GetJetTaggingSF(JetTagging::Parameters jtp, int JetFlavor, double JetPt, double JetEta, double Jetdiscr, string Syst){
 
@@ -1016,6 +1643,8 @@ double MCCorrection::GetJetTaggingSF(JetTagging::Parameters jtp, int JetFlavor, 
   return this_SF;
 
 }
+
+
 
 double MCCorrection::GetJetTaggingCutValue(JetTagging::Tagger tagger, JetTagging::WP wp){
 
@@ -1215,6 +1844,75 @@ void MCCorrection::SetupMCJetTagEff(TString _btagmceff_filename){
   }
 }
 
+
+
+//---DO NOT USE SetupMCJetTagEffWithAsym
+void MCCorrection::SetupMCJetTagEffWithAsym(TString _btagmceff_filename){
+  cout<<"[MCCorrection::SetupMCJetTagEffWithAsym] setting MCJetTagEff with dasym"<<endl;
+  cout << "_btagmceff_filename=" << _btagmceff_filename << endl;
+  
+  TString default_btageff_file="MeasureJetTaggingEfficiency_TTLL_TTLJ_hadded.root";
+  TString datapath=getenv("DATA_DIR");
+  
+  if(_btagmceff_filename==""){
+    cout << "[jhchoi]Use default btag mc eff---> No dAsym!!!" << endl;
+    _btagmceff_filename=default_btageff_file;
+    SetupMCJetTagEff(_btagmceff_filename);
+    use_dasym=false;
+    return;
+  }
+  else{
+    TString mcjetpath1=datapath+"/"+DataEra+"/BTagWithAsym/"+_btagmceff_filename;
+    cout << "[jhchoi]Use  btag mc eff-->" << mcjetpath1 << endl;
+    ifstream fcheck1(mcjetpath1);
+    if(!fcheck1.good()){
+      cout << "[jhchoi]FAIL!!! to load  btag mc eff-->" << mcjetpath1 << endl;
+      cout << "Use default file --> No dAsym!!" << endl;
+      _btagmceff_filename=default_btageff_file;
+      use_dasym=false;
+      SetupMCJetTagEff(_btagmceff_filename);
+      return;
+    }
+  }
+
+  use_dasym=true;
+  TString mcjetpath=datapath+"/"+DataEra+"/BTagWithAsym/"+_btagmceff_filename;
+  cout << "[jhchoi]mcjetpath----->" << mcjetpath << endl;
+  ifstream fcheck(mcjetpath);
+  if(!fcheck.good()){
+    cout<<"[MCCorrection::SetupMCJetTagEff] no "+mcjetpath<<endl;
+    return;
+  }
+  TFile fmcjet(mcjetpath);
+  // Denominator histogram setup first
+  vector<TString> jfs = {"Bminus","Bplus","B", "C", "Light"};
+  for(unsigned int i=0; i<jfs.size(); i++){
+    TString hden="Jet_"+DataEra+"_eff_"+jfs.at(i)+"_denom";
+    TH2F* this_hist=(TH2F*)fmcjet.Get(hden);
+    map_hist_mcjet[hden]=this_hist;
+    this_hist->SetDirectory(0);
+    cout<<"[MCCorrection::SetupMCJetTagEff] setting "<<hden<<endl;
+  }
+  // Numerator histogram setup and divided using "binomial option"
+  for(const auto& obj:*(fmcjet.GetListOfKeys())){
+    TH2F* this_hist=(TH2F*)((TKey*)obj)->ReadObj();
+    TString hnum=this_hist->GetName();
+    if(!hnum.Contains("num")) continue;
+    TString hden="";
+    if(hnum.Contains("_B_")) hden="Jet_"+DataEra+"_eff_B_denom";
+    else if(hnum.Contains("_Bminus_")) hden="Jet_"+DataEra+"_eff_Bminus_denom";
+    else if(hnum.Contains("_Bplus_")) hden="Jet_"+DataEra+"_eff_Bplus_denom";
+    else if(hnum.Contains("_C_")) hden="Jet_"+DataEra+"_eff_C_denom";
+    else hden="Jet_"+DataEra+"_eff_Light_denom";
+
+    this_hist->Divide(this_hist,map_hist_mcjet[hden],1.,1.,"b");
+    map_hist_mcjet[hnum]=this_hist;
+    this_hist->SetDirectory(0);
+    cout<<"[MCCorrection::SetupMCJetTagEff] setting "<<hnum<<endl;
+  }
+}
+
+
 double MCCorrection::GetMCJetTagEff(JetTagging::Tagger tagger, JetTagging::WP wp, int JetFlavor, double JetPt, double JetEta, int sys){
 
   if(IsDATA) return 1.;
@@ -1246,12 +1944,59 @@ double MCCorrection::GetMCJetTagEff(JetTagging::Tagger tagger, JetTagging::WP wp
   return out;
 }
 
-double MCCorrection::GetBTaggingReweight_1a(const vector<Jet>& jets, JetTagging::Parameters jtp, string Syst){
-//Syst. usage ex.: "SystUpHTag"(all component variation for heavy flav(b,c).), 
-//                 "SystUpHTagCorr"(variation of heavy flav(b,c) sf only for yearly correlated components)
-//change H->L for light flav., Up->Down for downward variation, Corr->UnCorr for yearly independent components
- 
+
+//jhchoi
+double MCCorrection::GetMCJetTagEffWithAsym(JetTagging::Tagger tagger, JetTagging::WP wp, int JetPartonFlavour ,int JetHadronFlavour, double JetPt, double JetEta, int sys){
+
   if(IsDATA) return 1.;
+
+  if(JetPt<20) JetPt = 20.;
+  if(JetPt>=1000.) JetPt = 999.;
+  if(JetEta>=2.5) JetEta = 2.49;
+  if(JetEta<-2.5) JetEta = -2.5;
+
+  TString jf = "";
+  if(JetHadronFlavour == 5){
+    if(JetPartonFlavour == 5){
+      jf = "Bminus";
+    }else if(JetPartonFlavour == -5 ){
+      jf = "Bplus";
+    }else{
+      jf = "B";
+    }
+    
+  }
+  else if(JetHadronFlavour == 4) jf = "C";
+  else if(JetHadronFlavour == 0) jf = "Light";
+  else{
+    cout<<"[MCCorrection::GetMCJetTagEff] no JetHadronFlavour"<<endl;
+    exit(EXIT_FAILURE);
+  }
+  //cout << "jf=" << jf << endl;
+  double value = 1., error = 0., out = 1.;
+  TString hnum="Jet_"+DataEra+"_"+JetTagging::TaggerToString(tagger)+"_"+JetTagging::WPToString(wp)+"_eff_"+jf+"_num";
+  TH2F *this_hist = map_hist_mcjet[hnum];
+  int this_bin = this_hist->FindBin(fabs(JetEta),JetPt);
+  value = this_hist->GetBinContent(this_bin);
+  error = this_hist->GetBinError(this_bin);
+
+  out = value+double(sys)*error;
+  if(out<=0.) out = 1E-10;
+  if(out>=1.) out = 1.-1E-10;
+  return out;
+}
+
+
+double MCCorrection::GetBTaggingReweight_1a(const vector<Jet>& jets, JetTagging::Parameters jtp, string Syst, int iptbinsys, int ietabinsys){
+  //Syst. usage ex.: "SystUpHTag"(all component variation for heavy flav(b,c).), 
+  //                 "SystUpHTagCorr"(variation of heavy flav(b,c) sf only for yearly correlated components)
+  //change H->L for light flav., Up->Down for downward variation, Corr->UnCorr for yearly independent components
+  
+  //jhchoi
+  //bTagChargeAsymFactor -> partonFlavour==5 || -5 and hadronFlavour==5
+  //global var -> use_dasym(MC bTag with parton+-5 origin)
+  if(IsDATA) return 1.;
+
 
   TString SystStr(Syst);
   double Prob_MC(1.), Prob_DATA(1.), SF(1.);
@@ -1266,6 +2011,9 @@ double MCCorrection::GetBTaggingReweight_1a(const vector<Jet>& jets, JetTagging:
     else if(SystStr.Contains("Corr"))   CorrType= 1;
     if(SystDir==0){ cout<<"SystStr in not correct form"<<endl; exit(ENODATA); }
     if(!(Syst_HTag or Syst_LTag)){ cout<<"SystMode but no H/L mode assigned"<<endl; exit(ENODATA); }
+  }else if(SystStr.Contains("dAsym")){
+    if     (SystStr.Contains("Up")  ) SystDir= 1;
+    else if(SystStr.Contains("Down")) SystDir=-1;
   }
 
   for(unsigned int i=0; i<jets.size(); i++){
@@ -1279,7 +2027,9 @@ double MCCorrection::GetBTaggingReweight_1a(const vector<Jet>& jets, JetTagging:
     else if(ApplySyst && CorrType <0) SystKey=SystDir>0? "up_uncorrelated":"down_uncorrelated";
     else                              SystKey="central";
 
-
+    ///need to fix to one with parton Flavour
+    //double this_MC_Eff = use_dasym ? GetMCJetTagEffWithAsym(jtp.j_Tagger, jtp.j_WP, jets.at(i).partonFlavour(),jets.at(i).hadronFlavour(), jets.at(i).Pt(), jets.at(i).Eta())
+    //  : GetMCJetTagEff(jtp.j_Tagger, jtp.j_WP, jets.at(i).hadronFlavour(), jets.at(i).Pt(), jets.at(i).Eta());
     double this_MC_Eff = GetMCJetTagEff(jtp.j_Tagger, jtp.j_WP, jets.at(i).hadronFlavour(), jets.at(i).Pt(), jets.at(i).Eta());
     double this_SF = GetJetTaggingSF(jtp,
                                      jets.at(i).hadronFlavour(),
@@ -1287,9 +2037,26 @@ double MCCorrection::GetBTaggingReweight_1a(const vector<Jet>& jets, JetTagging:
                                      jets.at(i).Eta(),
                                      jets.at(i).GetTaggerResult(jtp.j_Tagger),
                                      SystKey );
-    double this_DATA_Eff = this_MC_Eff*this_SF;
 
+
+    
+    //jhchoi
+    double this_dAsym_SF=0.;
+    if(use_dasym) this_dAsym_SF=GetJetTaggingSF_dAsymCharge(jtp,
+						     jets.at(i).partonFlavour(),
+						     jets.at(i).hadronFlavour(),
+						     jets.at(i).Pt(),
+						     jets.at(i).Eta(),
+							    SystDir,
+							    iptbinsys,
+							    ietabinsys
+						     );
+
+    
+    double this_DATA_Eff = this_MC_Eff*this_SF*(1.+this_dAsym_SF);
+    
     bool isTagged = jets.at(i).GetTaggerResult(jtp.j_Tagger) > GetJetTaggingCutValue(jtp.j_Tagger, jtp.j_WP);
+
     if(isTagged){
       Prob_MC *= this_MC_Eff;
       Prob_DATA *= this_DATA_Eff;
@@ -1297,8 +2064,8 @@ double MCCorrection::GetBTaggingReweight_1a(const vector<Jet>& jets, JetTagging:
     else{
       Prob_MC *= 1.-this_MC_Eff;
       Prob_DATA *= 1.-this_DATA_Eff;
-    }
-  }
+    }//
+  }//end of jet loop
 
   if(Prob_MC>0. && Prob_DATA>0.) SF=Prob_DATA/Prob_MC;
   else SF=0.;
