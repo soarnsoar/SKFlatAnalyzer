@@ -27,11 +27,13 @@ parser.add_argument('--FastSim', action='store_true')
 parser.add_argument('--userflags', dest='Userflags', default="")
 parser.add_argument('--tagoutput', dest='TagOutput', default="")
 parser.add_argument('--nmax', dest='NMax', default=0, type=int, help="maximum running jobs")
+parser.add_argument('--count', dest='NMax_count', default="", help="occupying weight in maximum running jobs")
 parser.add_argument('--reduction', dest='Reduction', default=1, type=float)
 parser.add_argument('--memory', dest='Memory', default=0, type=float)
 parser.add_argument('--batchname',dest='BatchName', default="")
 ##jhchoi
 parser.add_argument('--req_cpus', dest='req_cpus', default=0, type=int, help="request_cpus in condor submission file")
+#parser.add_argument('--nonstrict',action='store_true' ,dest='nonstrict', default=False, )
 
 args = parser.parse_args()
 
@@ -427,6 +429,8 @@ queue {0}
       concurrency_limits=''
       if args.NMax:
         concurrency_limits='concurrency_limits = n'+str(args.NMax)+'.'+os.getenv("USER")
+        if args.NMax_count!="":
+          concurrency_limits='concurrency_limits = n'+str(args.NMax)+'.'+os.getenv("USER")+":"+args.NMax_count
       request_memory=''
       if args.Memory:
         request_memory='request_memory = '+str(args.Memory)+"MB"
@@ -434,6 +438,10 @@ queue {0}
       request_cpus=''
       if args.req_cpus:
         request_cpus='request_cpus = '+str(args.req_cpus)
+      #strict_resource='requirements =   (TARGET.RemoteUserResourcesInUse +    max(RequestCpus, RequestMemory/3200)) <= 400'
+      
+      #if args.nonstrict:
+      #  strict_resource=''
       print>>submit_command,'''executable = {1}.sh
 jobbatchname = {1}
 universe   = vanilla
@@ -940,7 +948,7 @@ try:
 
                 ##---HADD USING condor_submit_dag --> skip
                 submit_hadd="submit_hadd_condor_dag.py -n DAG_hadd_"+outputname+str(args.Era)+' -i "output/*.root"' + " -f "+FinalOutputPath+"/"+outputname+".root -s"                 
-                #print submit_hadd
+                print submit_hadd
                 ##---[END]HADD USING condor_submit_dag
                 os.system(submit_hadd)
                 #os.system("submit_hadd.sh")

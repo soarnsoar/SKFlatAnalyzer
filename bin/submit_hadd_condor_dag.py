@@ -79,10 +79,15 @@ class hadd_submitter:
         submit=0
         jobname=WORKDIR
         memory=self.GetMemoryForFileList(self.dict_group[j])
+        if 'runSys' in os.getcwd():
+            if memory < 30000 :memory = 30000
+        #memory=False
         nretry=3
         #ncpu=len(self.dict_group[j])
         ncpu=1
-        Export(WORKDIR,command,jobname,submit,ncpu,memory,nretry)
+        nmax=400
+        #def Export(WORKDIR,command,jobname,submit,ncpu,memory=False,nretry=3,nmax=False):
+        Export(WORKDIR,command,jobname,submit,ncpu,memory,nretry,nmax)
 
     def MakeJobFinalHadd(self,outputname,FinalOutputPathToMove):
         command="cd "+os.getcwd()
@@ -93,9 +98,13 @@ class hadd_submitter:
         submit=0
         jobname=WORKDIR
         memory=self.GetMemoryForFileList(glob(self.GetTempOutDir()+"/*.root"))
+        if 'runSys' in FinalOutputPathToMove:
+            if memory < 30000 : memory = 30000
+        #memory=False
         nretry=3
         ncpu=1
-        Export(WORKDIR,command,jobname,submit,ncpu,memory,nretry)
+        nmax=400
+        Export(WORKDIR,command,jobname,submit,ncpu,memory,nretry,nmax)
 
 
     def MakeDAG(self):

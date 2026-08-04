@@ -1,10 +1,11 @@
 #!/usr/bin/env python2.7                                                                                                                                        
 import optparse
 import os
+import math
 #export CMS_PATH=/cvmfs/cms.cern.ch
 #source $CMS_PATH/cmsset_default.sh
 
-def Export(WORKDIR,command,jobname,submit,ncpu,memory=False,nretry=3):
+def Export(WORKDIR,command,jobname,submit,ncpu,memory=False,nretry=3,nmax=False):
     command='('+command+')'
     os.system('mkdir -p '+WORKDIR)
     f=open(WORKDIR+'/run.sh','w')
@@ -14,12 +15,12 @@ def Export(WORKDIR,command,jobname,submit,ncpu,memory=False,nretry=3):
     #lines.append("export VO_CMS_SW_DIR="+os.getenv("VO_CMS_SW_DIR"))
     lines.append("export CMS_PATH=/cvmfs/cms.cern.ch")
     lines.append("source $CMS_PATH/cmsset_default.sh")
-    #lines.append("export SCRAM_ARCH="+os.getenv("SCRAM_ARCH"))
-    lines.append("export SCRAM_ARCH=el9_amd64_gcc12")
+    lines.append("export SCRAM_ARCH="+os.getenv("SCRAM_ARCH"))
+    #lines.append("export SCRAM_ARCH=el9_amd64_gcc12")
     #lines.append("source $VO_CMS_SW_DIR/cmsset_default.sh")
     #lines.append("export cmsswrel='cmssw/CMSSW_11_2_5'")
-    lines.append("export cmsswrel='cmssw/CMSSW_14_1_0_pre4'")
-    #lines.append("cd "+os.getenv("CMSSW_BASE"))
+    #lines.append("export cmsswrel='cmssw/CMSSW_14_1_0_pre4'")
+    lines.append("cd "+os.getenv("CMSSW_BASE"))
     lines.append("cd /cvmfs/cms.cern.ch/$SCRAM_ARCH/cms/$cmsswrel/src")
     lines.append("eval `scramv1 ru -sh`")
     lines.append('cd '+os.getcwd()+'/'+WORKDIR)
@@ -68,8 +69,11 @@ def Export(WORKDIR,command,jobname,submit,ncpu,memory=False,nretry=3):
     lines.append('output = '+os.getcwd()+'/'+WORKDIR+'/run.out')
     lines.append('error = '+os.getcwd()+'/'+WORKDIR+'/run.err')
     lines.append('log = '+os.getcwd()+'/'+WORKDIR+'/run.log')
+    consumption='1' ## consumption of concurrency limit 
     if memory:
         lines.append('request_memory = '+str(int(memory))+' MB \n')
+        consumption=math.ceil(float(memory)/3200)
+        consumption=str(int(consumption))
     #ncpu_criteria=int(memory/4096)+1
     #if int(ncpu) < int(ncpu_criteria):
     #    ncpu=ncpu_criteria
@@ -77,6 +81,10 @@ def Export(WORKDIR,command,jobname,submit,ncpu,memory=False,nretry=3):
     lines.append('request_cpus = '+str(ncpu))
     #lines.append('accounting_group=group_cms')
     lines.append('JobBatchName='+jobname)
+    #lines.append('+IsPreemptable = False')
+    if nmax:
+        user=os.getenv('USER')
+        lines.append('concurrency_limits = n'+str(nmax)+'.'+user+":"+consumption)
 
     lines.append('queue')
     for line in lines:
@@ -97,6 +105,8 @@ if __name__ == '__main__':
    parser.add_option("-m","--ncpu",   dest="ncpu", help="number of multicores",default=1)
    parser.add_option("-s","--submit",   dest="submit",action="store_true", help="submit",default=False)
    parser.add_option("-r","--memory",   dest="memory", help="memory")
+   parser.add_option("--nmax",   dest="nmax", help="nmax condor")
+
    (options, args) = parser.parse_args()
 
    command=options.command
@@ -104,9 +114,11 @@ if __name__ == '__main__':
    jobname=options.jobname
    submit=options.submit
    ncpu=options.ncpu
+   nmax=options.nmax
+   
    if options.memory:
        memory=int(options.memory)
    else:
        memory=False
-   Export(workdir,command,jobname,submit,ncpu,memory)
+   Export(workdir,command,jobname,submit,ncpu,memory,3,nmax)
 
