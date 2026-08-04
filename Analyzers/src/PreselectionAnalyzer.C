@@ -68,6 +68,12 @@ void PreselectionAnalyzer::initializeAnalyzer(){
     cout << "lepveto -> true" << endl;
   }
 
+  newlepveto=false;
+  if(HasFlag("newlepveto")){
+    newlepveto=true;
+    cout << "newlepveto -> true" << endl;
+  }
+  
   jetvetotest=HasFlag("jetvetotest");
   kincutopt=HasFlag("kincutopt");
   bdtopt=HasFlag("bdtopt");
@@ -82,6 +88,9 @@ void PreselectionAnalyzer::initializeAnalyzer(){
     jhchoi_newtree->Branch("bjet_y",&bjet_y);
     jhchoi_newtree->Branch("z_eta",&z_eta);
     jhchoi_newtree->Branch("z_y",&z_y);
+    jhchoi_newtree->Branch("zbjet_y",&zbjet_y);
+    jhchoi_newtree->Branch("zbjet_m",&zbjet_m);
+    
     jhchoi_newtree->Branch("x_b",&x_b);
     jhchoi_newtree->Branch("x_g",&x_g);
   }
@@ -189,34 +198,46 @@ void PreselectionAnalyzer::initializeAnalyzer(){
     cout << "Not Valid DataEra-->" << DataEra << endl;
   }
   */
+  //----
+  /*
   maxMET=70.0;
   min_dphi_z_b=-1;
   min_z_pt=5.0;
   max_ptzb=500.0;
-
+  */
+  //---newlepveto
+  maxMET=75.0;
+  min_dphi_z_b=-1;
+  min_z_pt=5.0;
+  max_ptzb=580.0;
   if(DataEra=="2016preVFP"){
     //m_score_region
     //e_score_region
     //j_score_region
+    /*
     m_score_region.push_back(std::make_pair(-1,-0.4));
     m_score_region.push_back(std::make_pair(0.65,1));
 
     e_score_region.push_back(std::make_pair(0.4,1));
     e_score_region.push_back(std::make_pair(-0.3,-0.25));
+    */
   }
   if(DataEra=="2016preVFP"){
+    /*
     e_score_region.push_back(std::make_pair(0.5,0.6));
     e_score_region.push_back(std::make_pair(-1,-0.6));
-
+    */
   }
   if(DataEra=="2017"){
+    /*
     m_score_region.push_back(std::make_pair(-1,-0.5));
     e_score_region.push_back(std::make_pair(0.4,0.6));
     
     j_score_region.push_back(std::make_pair(0.2,0.3));
-
+    */
   }
   if(DataEra=="2018"){
+    /*
     m_score_region.push_back(std::make_pair(-1,-0.6));
     m_score_region.push_back(std::make_pair(0.8,1));
 
@@ -224,7 +245,7 @@ void PreselectionAnalyzer::initializeAnalyzer(){
     e_score_region.push_back(std::make_pair(-1,-0.5));
     
     j_score_region.push_back(std::make_pair(0.2,1));
-    
+    */
   }
 }
 
@@ -238,14 +259,17 @@ void PreselectionAnalyzer::SetMuon(const Muon& _l1, const Muon& _l2){
 bool PreselectionAnalyzer::CheckIsDiMuonChannel(double min_mll,double max_mll){
   if (!ev.PassTrigger(MuonTriggerNames)) return 0;
   //vector<int> v_muonidx=GetIdxDiMuReco(TriggerSafeCut_muon1, TriggerSafeCut_muon2);
-  vector<Muon> v_muon=lepveto ?  GetDiMuReco(TriggerSafeCut_muon1, TriggerSafeCut_muon2) :  GetDiMuRecoNoVeto(TriggerSafeCut_muon1, TriggerSafeCut_muon2);
-  if( v_muon.size()<2) return 0;
-  double mll=(v_muon[0]+v_muon[1]).M();
+  //vector<Muon> v_muon=lepveto ?  GetDiMuReco(TriggerSafeCut_muon1, TriggerSafeCut_muon2) :  GetDiMuRecoNoVeto(TriggerSafeCut_muon1, TriggerSafeCut_muon2);
+  vector<int> v_muonidx=lepveto ?  GetDiMuRecoIdx(TriggerSafeCut_muon1, TriggerSafeCut_muon2) :  GetDiMuRecoNoVetoIdx(TriggerSafeCut_muon1, TriggerSafeCut_muon2);
+  if( v_muonidx.size()<2) return 0;
+  //double mll=(v_muon[0]+v_muon[1]).M();
+  double mll=(AllMuons[v_muonidx[0]] + AllMuons[v_muonidx[1]]).M();
   if (mll < min_mll) return 0;
   if (mll > max_mll) return 0;
 
-  SetMuon(v_muon[0],v_muon[1]);
-
+  //SetMuon(v_muon[0],v_muon[1]);
+  SetMuon(AllMuons[v_muonidx[0]],AllMuons[v_muonidx[1]]);
+  v_tightmuonidx={v_muonidx[0],v_muonidx[1]};
   return 1;
 }  
 
@@ -262,14 +286,16 @@ bool PreselectionAnalyzer::CheckIsDiElectronChannel(double min_mll,double max_ml
   if ( IsDATA && isElectronData && ev.PassTrigger(MuonTriggerNames)) return 0; // to avoid double count
   
   //vector<int> v_electronidx=GetIdxDiElReco(TriggerSafeCut_electron1, TriggerSafeCut_electron2);
-  vector<Electron> v_electron=lepveto ? GetDiElReco(TriggerSafeCut_electron1, TriggerSafeCut_electron2) :GetDiElRecoNoVeto(TriggerSafeCut_electron1, TriggerSafeCut_electron2); 
-  if( v_electron.size()<2) return 0;
+  //vector<Electron> v_electron=lepveto ? GetDiElReco(TriggerSafeCut_electron1, TriggerSafeCut_electron2) :GetDiElRecoNoVeto(TriggerSafeCut_electron1, TriggerSafeCut_electron2);
+  vector<int> v_electronidx=lepveto ? GetDiElRecoIdx(TriggerSafeCut_electron1, TriggerSafeCut_electron2) : GetDiElRecoNoVetoIdx(TriggerSafeCut_electron1, TriggerSafeCut_electron2); 
+  if( v_electronidx.size()<2) return 0;
   //SetElectronIdx(v_electronidx[0],v_electronidx[1]);
   
-  double mll=(v_electron[0]+v_electron[1]).M();
+  double mll=(AllElectrons[v_electronidx[0]]+AllElectrons[v_electronidx[1]]).M();
   if (mll < min_mll) return 0;
   if (mll > max_mll) return 0;
-  SetElectron(v_electron[0],v_electron[1]);
+  SetElectron(AllElectrons[v_electronidx[0]],AllElectrons[v_electronidx[1]]);
+  v_tightelectronidx={v_electronidx[0],v_electronidx[1]};
   return 1;
 }  
 
@@ -305,6 +331,9 @@ void PreselectionAnalyzer::RunBasicZregion(){
   }
   IsDiMuonChannel=false;
   IsDiElectronChannel=false;
+  v_tightmuonidx.clear();
+  v_tightelectronidx.clear();
+    
   double min_mll = 60;
   double max_mll = 120;
 
@@ -312,8 +341,6 @@ void PreselectionAnalyzer::RunBasicZregion(){
   if(!IsDiMuonChannel) IsDiElectronChannel=CheckIsDiElectronChannel(min_mll,max_mll);
 
   
-
-
 
   LepCh="";
   if(IsDiMuonChannel){
@@ -343,7 +370,11 @@ void PreselectionAnalyzer::RunBasicZregion(){
   v_tightlep={l1,l2};
   v_tightjet=GetTightJet(v_tightlep,30,jetetacut,"tight",_JETPUID);
   v_bjet=GetBJet(v_tightjet);
-
+  //v_bjetidx=GetBJetIdx(v_tightjet);
+  //v_bjet.clear();
+  //for( const int ij : v_bjetidx){
+  //  v_bjet.push_back(v_tightjet[ij]);
+  //}
   njet=v_tightjet.size();
   nbjet=v_bjet.size();
   met_pt=CurrentMET.Pt();
@@ -367,6 +398,10 @@ void PreselectionAnalyzer::RunBasicZregion(){
   //----Let's select and fillhist
   if(!runSys)FillHistAllChannel("BasicDYSelection");
   if(nbjet!=1) return ;
+  //  bool HasVetoLepton_NotTightLeps_NotWithinJets(const vector<int>& _v_tightmuonidx, const vector<int>& _v_tightelectronidx, const vector<TLorentzVector>& _v_jet);
+  if(newlepveto){
+    if (HasVetoLepton_NotTightLeps_NotWithinJets(v_tightmuonidx,v_tightelectronidx,&v_bjet[0])  ) return;
+  }
   dphi_z_b= fabs(v_bjet[0].DeltaPhi(vZ));
   ptzb=(v_bjet[0]+vZ).Pt();
 
@@ -417,6 +452,8 @@ void PreselectionAnalyzer::RunBasicZregion(){
       bjet_eta=v_bjet[0].Eta();
       z_eta=vZ.Eta();
       z_y=vZ.Rapidity();
+      zbjet_y=(vZ+v_bjet[0]).Rapidity();
+      zbjet_m=(vZ+v_bjet[0]).M();
       jhchoi_newtree->Fill();
 	
     }
@@ -443,11 +480,15 @@ void PreselectionAnalyzer::RunBasicZregion(){
   for(auto& muon : AllMuons){
     if(muon.Pt() < 5.) continue;
     if(muon.DeltaR(v_bjet[0]) > 0.4) continue;
+    /*
     if(muon.RelIso() > 10.) continue;
     if(muon.Chi2()>10) continue;
     if(muon.TrackerLayers()<1) continue;
     if(muon.MatchedStations() <1) continue;
-
+    */
+    bool isGlobalMuon__OR__isTrackerMuon= muon.IsType(Muon::GlobalMuon) || muon.IsType(Muon::TrackerMuon);
+    if(!isGlobalMuon__OR__isTrackerMuon) continue;
+    
 
 
     //this_bmuon=Get_bmuonvar(muon,v_bjet[0]);
@@ -477,13 +518,12 @@ void PreselectionAnalyzer::RunBasicZregion(){
   }//[end muon for loop]
   //belectronvar this_belectron;
   for(auto& electron : AllElectrons){
-    if(!electron.IsGsfCtfScPixChargeConsistent()) continue;
     if(electron.Pt() < 5.) continue;
     if(electron.DeltaR(v_bjet[0]) > 0.4) continue;
     if(!electron.IsGsfCtfScPixChargeConsistent()) continue;
     if(!electron.PassConversionVeto()) continue;
-    if(electron.RelIso() > 10.) continue;
-    if(electron.NMissingHits() != 0) continue;
+    //if(electron.RelIso() > 10.) continue;
+    //if(electron.NMissingHits() != 0) continue;
     electron_1belectron=&electron;
     //this_belectron=Get_belectronvar(electron,v_bjet[0]);
     nbelectron+=1;    
@@ -737,7 +777,7 @@ void PreselectionAnalyzer::FillHistAll(TString cutname){
   FillHist(cutname+"/met",CurrentMET.Pt(),weight,(int)maxMET,0,maxMET);
   if(nbjet>0){
     FillHist(cutname+"/dphi_z_b",dphi_z_b,weight,40,0,4);
-    FillHist(cutname+"/ptzb",ptzb,weight,100,0,500);
+    FillHist(cutname+"/ptzb",ptzb,weight,120,0,600);
     FillHist(cutname+"/Zpt",vZ.Pt(),weight,200,0,200);
   }
   

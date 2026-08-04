@@ -8,9 +8,7 @@ TTLJ_Truth::TTLJ_Truth(){
 
 TTLJ_Truth::~TTLJ_Truth(){
   //==== Destructor of this Analyzer
-  if(apply_bchargeeff_TT){
-    DeleteBChargeEff_TT();
-  }
+
 }
 
 void TTLJ_Truth::initializeAnalyzer(){

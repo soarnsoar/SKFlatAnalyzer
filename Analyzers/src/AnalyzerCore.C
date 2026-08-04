@@ -1,4 +1,6 @@
 #include "AnalyzerCore.h"
+#include <sys/resource.h>
+#include <iostream>
 
 AnalyzerCore::AnalyzerCore(){
 
@@ -401,11 +403,32 @@ AnalyzerCore::~AnalyzerCore(){
   //==== output rootfile
 
   if(outfile){
-    cout << "Delete outfile" << endl;
+
+    cout << "Close outfile" << endl;
+    if(1){
+      struct rusage usage;
+      getrusage(RUSAGE_SELF, &usage);
+      std::cout << "Max RSS: " << usage.ru_maxrss / 1024.0 << " MB\n"; // kilobytes
+      
+    }
     cout << printcurrunttime() << endl;
     outfile->Close();
+    if(1){
+      struct rusage usage;
+      getrusage(RUSAGE_SELF, &usage);
+      std::cout << "Max RSS: " << usage.ru_maxrss / 1024.0 << " MB\n"; // kilobytes
+      
+    }
+    cout << "Delete outfile" << endl;
+    cout << printcurrunttime() << endl;
     delete outfile;
-    outfile=nullptr;    
+    outfile=nullptr;
+    if(1){
+      struct rusage usage;
+      getrusage(RUSAGE_SELF, &usage);
+      std::cout << "Max RSS: " << usage.ru_maxrss / 1024.0 << " MB\n"; // kilobytes
+      
+    }
     cout << "[DONE]Delete outfile" << endl;
     cout << printcurrunttime() << endl;
   }
@@ -1001,9 +1024,73 @@ std::vector<Photon> AnalyzerCore::GetPhotons(TString id, double ptmin, double fe
   }
   return out;
 }
+//jhchoi---MET jer smear
+TLorentzVector AnalyzerCore::UpdateMETByJERsmearing_given_MET(double met_orig_pt, double met_orig_phi, double dmet_x, double dmet_y){
+  TLorentzVector met_orig;
+  met_orig.SetPtEtaPhiM(met_orig_pt,0.,met_orig_phi,0.);
+  double met_x = met_orig.Px();
+  double met_y = met_orig.Py();
+  met_x = met_x + dmet_x;
+  met_y = met_y + dmet_y;
+  TLorentzVector METout;
+  METout.SetPxPyPzE(met_x,met_y,0,sqrt(met_x*met_x+met_y*met_y));
+  return METout;
+  
+}
+void AnalyzerCore::UpdateMETBySmearNominal(){
+  InitMETSmeared();
+  double px_orig=0., py_orig=0.;
+  double px_corrected=0., py_corrected=0.;
+  
+  for(unsigned int i=0; i<jet_pt->size(); i++){
+    Jet jet;
+    jet.SetPtEtaPhiM(jet_pt->at(i), jet_eta->at(i), jet_phi->at(i), jet_m->at(i));
+    px_orig+= jet.Px();
+    py_orig+= jet.Py();
 
+    Jet jet_smeared= jet;
+    jet_smeared*=jet_smearedRes->at(i);
+    px_corrected += jet.Px()*jet_smearedRes->at(i);
+    py_corrected += jet.Py()*jet_smearedRes->at(i);
+    
+  }
+  double dmet_x=px_orig - px_corrected;
+  double dmet_y=py_orig - py_corrected;
 
+  //pfMET,pfMET_Type1,pfMET_Type1_PhiCor,PuppiMET,PuppiMET_Type1,PuppiMET_Type1_PhiCor
+  TLorentzVector pfMET_JerSmear=UpdateMETByJERsmearing_given_MET(pfMET_pt,pfMET_phi,dmet_x,dmet_y);
+  pfMET_JerSmear_pt=pfMET_JerSmear.Pt(); pfMET_JerSmear_phi=pfMET_JerSmear.Phi();
 
+  TLorentzVector pfMET_Type1_JerSmear=UpdateMETByJERsmearing_given_MET(pfMET_Type1_pt,pfMET_Type1_phi,dmet_x,dmet_y);
+  pfMET_Type1_JerSmear_pt=pfMET_Type1_JerSmear.Pt(); pfMET_Type1_JerSmear_phi=pfMET_Type1_JerSmear.Phi();
+    
+  TLorentzVector pfMET_Type1_PhiCor_JerSmear=UpdateMETByJERsmearing_given_MET(pfMET_Type1_PhiCor_pt,pfMET_Type1_PhiCor_phi,dmet_x,dmet_y);
+  pfMET_Type1_PhiCor_JerSmear_pt=pfMET_Type1_PhiCor_JerSmear.Pt(); pfMET_Type1_PhiCor_JerSmear_phi=pfMET_Type1_PhiCor_JerSmear.Phi();
+  
+  TLorentzVector PuppiMET_JerSmear=UpdateMETByJERsmearing_given_MET(PuppiMET_pt,PuppiMET_phi,dmet_x,dmet_y);
+  PuppiMET_JerSmear_pt=PuppiMET_JerSmear.Pt(); PuppiMET_JerSmear_phi=PuppiMET_JerSmear.Phi();
+  
+  TLorentzVector PuppiMET_Type1_JerSmear=UpdateMETByJERsmearing_given_MET(PuppiMET_Type1_pt,PuppiMET_Type1_phi,dmet_x,dmet_y);
+  PuppiMET_Type1_JerSmear_pt=PuppiMET_Type1_JerSmear.Pt(); PuppiMET_Type1_JerSmear_phi=PuppiMET_Type1_JerSmear.Phi();
+  
+  TLorentzVector PuppiMET_Type1_PhiCor_JerSmear=UpdateMETByJERsmearing_given_MET(PuppiMET_Type1_PhiCor_pt,PuppiMET_Type1_PhiCor_phi,dmet_x,dmet_y);
+  PuppiMET_Type1_PhiCor_JerSmear_pt=PuppiMET_Type1_PhiCor_JerSmear.Pt(); PuppiMET_Type1_PhiCor_JerSmear_phi=PuppiMET_Type1_PhiCor_JerSmear.Phi();
+}
+void AnalyzerCore::InitMETSmeared(){
+  pfMET_JerSmear_pt=pfMET_pt;
+  pfMET_JerSmear_phi=pfMET_phi;
+  pfMET_Type1_JerSmear_pt=pfMET_Type1_pt;
+  pfMET_Type1_JerSmear_phi=pfMET_Type1_phi;
+  pfMET_Type1_PhiCor_JerSmear_pt=pfMET_Type1_PhiCor_pt;
+  pfMET_Type1_PhiCor_JerSmear_phi=pfMET_Type1_PhiCor_phi;
+  PuppiMET_JerSmear_pt=PuppiMET_pt;
+  PuppiMET_JerSmear_phi=PuppiMET_phi;
+  PuppiMET_Type1_JerSmear_pt=PuppiMET_Type1_pt;
+  PuppiMET_Type1_JerSmear_phi=PuppiMET_Type1_phi;
+  PuppiMET_Type1_PhiCor_JerSmear_pt=PuppiMET_Type1_PhiCor_pt;
+  PuppiMET_Type1_PhiCor_JerSmear_phi=PuppiMET_Type1_PhiCor_phi;
+}
+//---[end]met jer smear 
 std::vector<Jet> AnalyzerCore::GetAllJets(){
 
   std::vector<Jet> out;
@@ -1014,8 +1101,25 @@ std::vector<Jet> AnalyzerCore::GetAllJets(){
     //==== Jet energy up and down are 1.xx or 0.99, not energy
     jet.SetEnShift( jet_shiftedEnUp->at(i), jet_shiftedEnDown->at(i) );
     if(!IsDATA){
+      
+
       jet *= jet_smearedRes->at(i);
-      jet.SetResShift( jet_smearedResUp->at(i)/jet_smearedRes->at(i), jet_smearedResDown->at(i)/jet_smearedRes->at(i) );
+
+      //jhchoi
+      //---need to correct--// jer nom jer up jer down must have the same random seed. But skflat maker assigns the seed independently....
+      double ResShiftUp=jet_smearedResUp->at(i)/jet_smearedRes->at(i);
+      double ResShiftDown=jet_smearedResDown->at(i)/jet_smearedRes->at(i);
+      /*
+      bool ResNomBetweenUpDown=true;
+
+      if(  (ResShiftUp-1)*(ResShiftDown-1) > 0){
+	ResNomBetweenUpDown=false;
+	ResShiftUp=1;
+	ResShiftDown=1;//no jer syst is applied temporarilty
+      }
+      */
+      //jet.SetResShift( jet_smearedResUp->at(i)/jet_smearedRes->at(i), jet_smearedResDown->at(i)/jet_smearedRes->at(i) ); //orig
+      jet.SetResShift(ResShiftUp,ResShiftDown);
       jet.SetGenFlavours(jet_partonFlavour->at(i), jet_hadronFlavour->at(i));
       jet.SetGenHFHadronMatcher(jet_GenHFHadronMatcher_flavour->at(i),jet_GenHFHadronMatcher_origin->at(i));
     }
@@ -2765,21 +2869,56 @@ void AnalyzerCore::JSFillHist(TString suffix, TString histname,
 void AnalyzerCore::WriteHist(){
   cout << "[AnalyzerCore::WriteHist] Start" << endl;
   cout << printcurrunttime() << endl;
+  //outfile->SetCompressionLevel(0);
+  
+  cout << "maphist_TH1D.size()=" << maphist_TH1D.size() << endl;
+
 
   outfile->cd();
+
+  int th1d_idx = 0;
+  std::vector<TH1D*> toDelete;
+
   for(std::map< TString, TH1D* >::iterator mapit = maphist_TH1D.begin(); mapit!=maphist_TH1D.end(); mapit++){
     TString this_fullname=mapit->second->GetName();
     TString this_name=this_fullname(this_fullname.Last('/')+1,this_fullname.Length());
     TString this_suffix=this_fullname(0,this_fullname.Last('/'));
+
     TDirectory *dir = outfile->GetDirectory(this_suffix);
     
     if(!dir){
       outfile->mkdir(this_suffix);
     }
+
     outfile->cd(this_suffix);
-    mapit->second->Write(this_name);
+    mapit->second->Write(this_name); //TEMP
+    
     outfile->cd();
+    //if(th1d_idx % 1000 == 1 )outfile->Flush();//jhchoi add this line
+    if(th1d_idx % 10000 == 1 ){
+      if(th1d_idx % 100000 == 1){
+	cout << "th1d_idx=" << th1d_idx << endl;
+	struct rusage usage;
+	getrusage(RUSAGE_SELF, &usage);
+	std::cout << "Max RSS: " << usage.ru_maxrss / 1024.0 << " MB\n"; // kilobytes
+	cout << "close and reopen tfile" <<endl;
+      }
+      //close and reopen the out
+      TString outfilepath=outfile->GetName();
+      outfile->Close();
+      outfile = new TFile(outfilepath,"UPDATE");
+      //cout << "[done]close and reopen tfile" <<endl;
+      
+    }
+    th1d_idx+=1;
+
+    //    delete mapit->second;
   }
+ 
+  outfile->Flush();//jhchoi add this line
+  cout << "[AnalyzerCore::WriteHist] done th1d" << endl;
+  cout << printcurrunttime() << endl;
+
   for(std::map< TString, TH2D* >::iterator mapit = maphist_TH2D.begin(); mapit!=maphist_TH2D.end(); mapit++){
     TString this_fullname=mapit->second->GetName();
     TString this_name=this_fullname(this_fullname.Last('/')+1,this_fullname.Length());

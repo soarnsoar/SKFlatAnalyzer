@@ -51,9 +51,13 @@
 //#pragma link C++ class TTSemiLepJetAssignment_ProduceTrainingTree+;
 
 #pragma link C++ class TTSemiLepAnalyzer+;
-//#pragma link C++ class TTsemiLepChargeScoreEfficiencyMeasurement+;
-#pragma link C++ class TTsemiLepChargeScoreEfficiencyMeasurement_TightMatch+;
-#pragma link C++ class TTsemiLepChargeScoreEfficiencyMeasurement_partonFlavour;
+
+#pragma link C++ class TTsemiLep_JES_Asym_TEST+;
+
+#pragma link C++ class TTsemiLepChargeScoreEfficiencyMeasurement+;
+#pragma link C++ class TTsemiLepChargeScoreAccuracyMeasurement+;
+//#pragma link C++ class TTsemiLepChargeScoreEfficiencyMeasurement_TightMatch+;
+//#pragma link C++ class TTsemiLepChargeScoreEfficiencyMeasurement_partonFlavour;
 //#pragma link C++ class TTdiLepChargeScoreEfficiencyMeasurement+;
 #pragma link C++ class TwoBjets+;
 #pragma link C++ class OneBjet+;
@@ -66,7 +70,7 @@
 
 #pragma link C++ class TrueBJetAnalyzer_AddRecoSel+;
 
-#pragma link C++ class Preselection_To_bjet+;
+//#pragma link C++ class Preselection_To_bjet+;
 
 //#pragma link C++ class TTsemiLepBtagChargeAsymEfficiencyMeasurement+;
 #pragma link C++ class TTsemiLepBtagChargeAsymEfficiencyMeasurement_BINNING+;

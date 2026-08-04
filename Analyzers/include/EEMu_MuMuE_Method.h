@@ -18,6 +18,7 @@ public:
   void RunMuonInJet_v2405_3();
   void RunMuonInJet_v2503_1();
   void RunMuonInJet_v2503_2();
+  void RunMuonInJet_v2608_1();
   
   void RunElectronInJet();
   void RunElectronInJet_v2405_1();
@@ -25,6 +26,7 @@ public:
   void RunElectronInJet_v2405_3();
   void RunElectronInJet_v2503_1();
   void RunElectronInJet_v2503_2();
+  void RunElectronInJet_v2608_1();
   
   void FillHistMuon(TString cutname,Muon &muon);
   void FillHistElectron(TString cutname,Electron &electron);
@@ -61,11 +63,13 @@ public:
   int n_mu,n_e;
   int n_mup,n_ep;
   int n_mum,n_em;
+
   bool is_cut_v2405_1;
   bool is_cut_v2405_2;
   bool is_cut_v2405_3;
   bool is_cut_v2503_1;
   bool is_cut_v2503_2;
+  bool is_cut_v2608_1;
   bool isTreeMode;
   bool Has_bMuon;
   bool Has_bElectron;

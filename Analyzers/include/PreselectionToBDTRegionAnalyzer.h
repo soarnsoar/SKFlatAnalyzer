@@ -25,6 +25,7 @@ public:
   void RunBasicZregion();
   void RunBasicZregion_CheckSF();
   void FillHistAll(TString cutname);
+  void FillHistAll2(TString cutname);
   void FillHist(TString histname, double value, double weight, int n_bin, double x_min, double x_max);
   void FillHistAllChannel(TString cutname);
   void FillHistAllChannelWithSuffix(TString cutname);
@@ -46,7 +47,9 @@ public:
   TLorentzVector l1_uncorr, l2_uncorr;
   unsigned int njet, nbjet;
   vector<Lepton> v_tightlep;
-
+  vector<int> v_tightmuonidx;
+  vector<int> v_tightelectronidx;
+  
   vector<int> v_jetidx;
   vector<int> v_bjetidx;
 
@@ -65,11 +68,16 @@ public:
   TString _JETPUID;
   bool check_tmva_input;
   bool lepveto;
+  bool newlepveto;
   bool jetvetotest;
   bool kincutopt;
   bool bdtopt;
   bool doxrange,xrangetree;
   bool bdtcut;
+  bool apply_chargeid_eff_corr;
+  bool apply_chargeid_acc_corr;
+  bool addxsuffix;
+  bool addregionsuffix;
   double maxMET,min_dphi_z_b,min_z_pt,max_ptzb;
 
   double x_b,x_g;
@@ -82,6 +90,10 @@ public:
   vector<double> v_electronscore;
   vector<double> v_electroncharge;  
   double jetscore,jetcharge;
+
+
+  //---xragne
+  TString suffix_xscale;
 };
 
 

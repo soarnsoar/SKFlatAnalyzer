@@ -367,8 +367,20 @@ public:
   bool IsTTSample;
   bool IsTTLJSample;
   bool IsQCDSample;
+  
+  //met updated by jet smeared
+  double pfMET_JerSmear_pt,pfMET_JerSmear_phi;
+  double pfMET_Type1_JerSmear_pt,pfMET_Type1_JerSmear_phi;
+  double pfMET_Type1_PhiCor_JerSmear_pt,pfMET_Type1_PhiCor_JerSmear_phi;
 
 
+  double PuppiMET_JerSmear_pt,PuppiMET_JerSmear_phi;
+  double PuppiMET_Type1_JerSmear_pt,PuppiMET_Type1_JerSmear_phi;
+  double PuppiMET_Type1_PhiCor_JerSmear_pt,PuppiMET_Type1_PhiCor_JerSmear_phi;
+
+  void InitMETSmeared();
+  void UpdateMETBySmearNominal();
+  TLorentzVector UpdateMETByJERsmearing_given_MET(double met_orig_pt, double met_orig_phi, double dmet_x, double dmet_y);
   //--[end]jhchoi
   //==== Quick Plotters
   void FillLeptonPlots(std::vector<Lepton *> leps, TString this_region, double weight);

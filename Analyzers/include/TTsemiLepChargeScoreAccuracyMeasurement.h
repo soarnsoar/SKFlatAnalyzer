@@ -1,9 +1,9 @@
-#ifndef TTsemiLepBtagChargeAsymEfficiencyMeasurement_BINNING_h
-#define TTsemiLepBtagChargeAsymEfficiencyMeasurement_BINNING_h
+#ifndef TTsemiLepChargeScoreAccuracyMeasurement_h
+#define TTsemiLepChargeScoreAccuracyMeasurement_h
 
 #include "JHAnalyzerBase.h"
 
-class TTsemiLepBtagChargeAsymEfficiencyMeasurement_BINNING : public JHAnalyzerBase {
+class TTsemiLepChargeScoreAccuracyMeasurement : public JHAnalyzerBase {
 
 public:
 
@@ -21,7 +21,6 @@ public:
   
   void SetMuon(const Muon& _l1);
   void SetElectron(const Electron& _l1);
-
   
   void RunReco();
 
@@ -39,7 +38,7 @@ public:
   void FillHistOtherObject(TString cutname);
 
   void FillHistBJet(TString cutname, int bjetidx, int bgenidx, TLorentzVector &Tcand);
-  TString GetCutSuffix(double this_bjet_pt, double this_bjet_eta);
+  TString GetCutSuffix(double this_bjet_pt, double this_bjet_eta,bool ignore_etabin=false);
   TString cut_suffix;
 
   
@@ -77,10 +76,11 @@ public:
   Lepton el1;
   TLorentzVector vtW;
   Lepton l1;
-  vector<int> v_tightmuonidx;
-  vector<int> v_tightelectronidx;
   unsigned int njet, nbjet;
   vector<Lepton> v_tightlep;
+  vector<int> v_tightmuonidx;
+  vector<int> v_tightelectronidx;
+
 
   vector<int> v_jetidx;
   vector<int> v_bjetidx;
@@ -88,8 +88,8 @@ public:
   vector<Jet> v_tightjet;
   vector<Jet> v_bjet;
 
-  TTsemiLepBtagChargeAsymEfficiencyMeasurement_BINNING();
-  ~TTsemiLepBtagChargeAsymEfficiencyMeasurement_BINNING();
+  TTsemiLepChargeScoreAccuracyMeasurement();
+  ~TTsemiLepChargeScoreAccuracyMeasurement();
 
   //flags
   bool noveto;
@@ -97,7 +97,9 @@ public:
   bool newlepveto;
   //bool TopMassWindow;
   bool chi2kincut;
-  bool ApplyBtagSF;
+  //bool ApplyBtagSF;
+  bool splitcharge;
+  bool noetabin;
   bool RunBasicObjectOnly;
   bool NoJetVeto;
   bool use_dasym;
@@ -138,7 +140,7 @@ public:
 
   TString current_bjetname;
 
-
+  double jetscore,jetcharge;
 
   
 

@@ -26,6 +26,8 @@ void EEMu_MuMuE_Method::initializeAnalyzer(){
 
 
 
+    
+
   is_cut_v2405_1=false;
   if(HasFlag("cut_v2405.1")){
     is_cut_v2405_1=true;
@@ -58,11 +60,19 @@ void EEMu_MuMuE_Method::initializeAnalyzer(){
     MuonMinPt=5.;//no ptcut
   }
 
+  is_cut_v2608_1=false;
+  if(HasFlag("cut_v2608.1")){
+    is_cut_v2608_1=true;
+
+
+  }
+
+  
   isTreeMode=false;
   if(HasFlag("treemode")){
     isTreeMode=true;
   }
-  if(isTreeMode && !is_cut_v2405_1 && !is_cut_v2405_2 && !is_cut_v2405_3 && !is_cut_v2503_1 && !is_cut_v2503_2){
+  if(isTreeMode && !is_cut_v2405_1 && !is_cut_v2405_2 && !is_cut_v2405_3 && !is_cut_v2503_1 && !is_cut_v2503_2 && !is_cut_v2608_1){
     cout << "!!!![EEMu_MuMuE_Method::initializeAnalyzer] In basic setup, treemode is not allowed!!!! EXIT!!!" << endl;
     exit(1);
   }
@@ -320,7 +330,19 @@ void EEMu_MuMuE_Method::FillHist_1bmuon(TString SigORBkg){
   FillHist(SigORBkg+"_1bmuon/muon_ValidMuonHits",bmuon.nvalidmuonhits,weight,60,0,60);
   FillHist(SigORBkg+"_1bmuon/muon_MatchedStations",bmuon.nmatchedstations,weight,6,0,6);
 
-  /*
+  FillHist(SigORBkg+"_1bmuon/muon_isGlobalMuon",bmuon.isGlobalMuon,weight,2,0,2);
+  FillHist(SigORBkg+"_1bmuon/muon_isTrackerMuon",bmuon.isTrackerMuon,weight,2,0,2);
+
+  FillHist(SigORBkg+"_1bmuon/muon_isGlobalMuon_OR_isTrackerMuon",bmuon.isGlobalMuon||bmuon.isTrackerMuon,weight,2,0,2);
+  FillHist(SigORBkg+"_1bmuon/muon_isGlobalMuon_OR_isTrackerMuon_OR_isStandAloneMuon",bmuon.isGlobalMuon||bmuon.isTrackerMuon||bmuon.isStandAloneMuon,weight,2,0,2);
+  
+  FillHist(SigORBkg+"_1bmuon/muon_isStandAloneMuon",bmuon.isStandAloneMuon,weight,2,0,2);
+  FillHist(SigORBkg+"_1bmuon/muon_isCaloMuon",bmuon.isCaloMuon,weight,2,0,2);
+  FillHist(SigORBkg+"_1bmuon/muon_isRPCMuon",bmuon.isRPCMuon,weight,2,0,2);
+  FillHist(SigORBkg+"_1bmuon/muon_isGEMMuon",bmuon.isGEMMuon,weight,2,0,2);
+  FillHist(SigORBkg+"_1bmuon/muon_isME0Muon",bmuon.isME0Muon,weight,2,0,2);
+    
+    /*
   this_Tree->Branch("bjet_pt",&bjet.pt);
   this_Tree->Branch("bjet_aeta",&bjet.aeta);
   this_Tree->Branch("bjet_ChargedHadronEnergyFraction",&bjet.ChargedHadronEnergyFraction);
@@ -436,6 +458,14 @@ void EEMu_MuMuE_Method::FillHist_1belectron(TString SigORBkg){
   */
   FillHist(SigORBkg+"_1belectron/bjet_ChargedMultiplicity",bjet.ChargedMultiplicity,weight,60,0,60);
   FillHist(SigORBkg+"_1belectron/bjet_NeutralMultiplicity",bjet.NeutralMultiplicity,weight,60,0,60);
+  
+  //id related
+  FillHist(SigORBkg+"_1belectron/electron_IsGsfCtfScPixChargeConsistent",belectron.IsGsfCtfScPixChargeConsistent,weight,2,0,2);
+  FillHist(SigORBkg+"_1belectron/electron_PassConversionVeto",belectron.PassConversionVeto,weight,2,0,2);
+  FillHist(SigORBkg+"_1belectron/electron_nmissinghits",belectron.nmissinghits,weight,20,0,20);
+  FillHist(SigORBkg+"_1belectron/electron_passVetoID",belectron.passVetoID,weight,2,0,2);
+  FillHist(SigORBkg+"_1belectron/electron_passVetoIDnoIso",belectron.passVetoIDnoIso,weight,2,0,2);
+  FillHist(SigORBkg+"_1belectron/electron_passLooseID",belectron.passLooseID,weight,2,0,2);
 
 
 }
@@ -648,16 +678,20 @@ void EEMu_MuMuE_Method::RunMuonInJet_v2503_1(){
 
 
 
-void EEMu_MuMuE_Method::RunMuonInJet_v2503_2(){
+void EEMu_MuMuE_Method::RunMuonInJet_v2608_1(){
   //updated : matchedstats > 0
   nbmuon=0;
   for(auto& muon : AllMuons){
     if(muon.Pt() < 5.) continue;
     if(AllJets[jetidx_b].DeltaR(muon)>0.4) continue;
     //if(muon.RelIso() > 10.) continue;
-    if(muon.Chi2()>10) continue;
-    if(muon.TrackerLayers()<1) continue;
-    if(muon.MatchedStations() <1) continue;
+    //if(muon.Chi2()>10) continue;
+    //if(muon.TrackerLayers()<1) continue;
+    //if(muon.MatchedStations() <1) continue;
+    bool isGlobalMuon__OR__isTrackerMuon= muon.IsType(Muon::GlobalMuon) || muon.IsType(Muon::TrackerMuon);
+    if(!isGlobalMuon__OR__isTrackerMuon) continue;
+
+
     nbmuon+=1;
     current_bmuon=muon;
     if(muon.Charge() > 0) {
@@ -678,7 +712,11 @@ void EEMu_MuMuE_Method::RunMuonInJet(){
   //FillHist by MuonCharge
   //ll_str,bcharge_str
   if(isTreeMode && !IsEE) return;
-  if (is_cut_v2405_1){
+  if(is_cut_v2608_1){
+    RunMuonInJet_v2608_1();
+    return;
+  }
+  else if (is_cut_v2405_1){
     RunMuonInJet_v2405_1();
     return;
   }
@@ -796,6 +834,26 @@ void EEMu_MuMuE_Method::RunElectronInJet_v2503_1(){
 
 
 
+void EEMu_MuMuE_Method::RunElectronInJet_v2608_1(){
+  //FillHist by ElectronCharge
+  nbelectron=0;
+  for(auto& electron : AllElectrons){
+    if(!electron.IsGsfCtfScPixChargeConsistent()) continue;
+    if(!electron.PassConversionVeto()) continue;
+    if(AllJets[jetidx_b].DeltaR(electron)>0.4) continue;
+    nbelectron+=1;
+    current_belectron=electron;
+    if(electron.Charge() > 0) {
+      FillHistElectron(ll_str+"__"+bcharge_str+"__electronPlus",electron);
+      FillHistBJet(ll_str+"__"+bcharge_str+"__electronPlus",AllJets[jetidx_b]);
+    }
+    if(electron.Charge() < 0) {
+      FillHistBJet(ll_str+"__"+bcharge_str+"__electronMinus",AllJets[jetidx_b]);
+      FillHistElectron(ll_str+"__"+bcharge_str+"__electronMinus",electron);
+    }
+  }
+}
+
 void EEMu_MuMuE_Method::RunElectronInJet_v2503_2(){
   //FillHist by ElectronCharge
   nbelectron=0;
@@ -820,7 +878,6 @@ void EEMu_MuMuE_Method::RunElectronInJet_v2503_2(){
 
 
 
-
 void EEMu_MuMuE_Method::RunElectronInJet_v2405_3(){
   RunElectronInJet_v2405_2();//variation only in muon
 }
@@ -828,7 +885,11 @@ void EEMu_MuMuE_Method::RunElectronInJet_v2405_3(){
 
 void EEMu_MuMuE_Method::RunElectronInJet(){
   if(isTreeMode && !IsMuMu) return;
-  if(is_cut_v2405_1){
+  if(is_cut_v2608_1){
+    RunElectronInJet_v2608_1();
+    return;
+  }
+  else if(is_cut_v2405_1){
     RunElectronInJet_v2405_1();
     return;
   }  

@@ -44,6 +44,7 @@ class JHAnalyzerBase : public AnalyzerCore {
   bool measure_btageff_partonFlavour=false;
   bool measure_btageff_partonFlavour_bonly=false;
   bool measure_bchargeeff=false;
+  bool measure_bchargeacc=false;
   //--end flags
   //--flag for test
   bool muonscale00event;
@@ -154,6 +155,12 @@ class JHAnalyzerBase : public AnalyzerCore {
   void FillHistBtagChargeAsym(TString histname, double value, double this_weight, int n_bin, double x_min, double x_max);
   void FillHistBtagChargeAsym(TString histname, double value, double this_weight, int n_bin, double *xbins);
 
+  void FillHistChargeIDEff(TString histname, double value, double this_weight, int n_bin, double x_min, double x_max);
+  void FillHistChargeIDEff(TString histname, double value, double this_weight, int n_bin, double *xbins);
+
+  void FillHistChargeAcc(TString histname, double value, double this_weight, int n_bin, double x_min, double x_max);
+  void FillHistChargeAcc(TString histname, double value, double this_weight, int n_bin, double *xbins);  
+  
   void FillHistZptWeight(TString histname, double value, double this_weight, int n_bin, double x_min, double x_max);
   void FillHistZptWeight(TString histname, double value, double this_weight, int n_bin, double *xbins);
 
@@ -250,19 +257,32 @@ class JHAnalyzerBase : public AnalyzerCore {
   //vector<Muon> GetSingleMuReco(double ptmin, double etacut=2.4, double ptveto=10.);
   vector<Muon> GetSingleMuReco(double ptmin, double etacut=2.4, double ptveto=10, double ptveto2=15., double etacut2=2.5);//ptveto2,etacut2 == for electron
   vector<Muon> GetSingleMuRecoNoVeto(double ptmin, double etacut=2.4);
+
+  vector<int> GetSingleMuRecoIdx(double ptmin, double etacut=2.4, double ptveto=10., double ptveto2=15., double etacut2=2.5);//
+  vector<int> GetSingleMuRecoNoVetoIdx(double ptmin, double etacut=2.4);
+
   //vector<Lepton*> GetPointerSingleMuReco(double ptmin, double etacut=2.4, double ptveto=10.);
-  int GetIdxSingleElReco(double ptmin, double etacut=2.5, double ptveto=15.);
+  //int GetIdxSingleElReco(double ptmin, double etacut=2.5, double ptveto=15.);
   //vector<Electron> GetSingleElReco(double ptmin, double etacut=2.5, double ptveto=15.);
   vector<Electron> GetSingleElReco(double ptmin, double etacut=2.5, double ptveto=15., double ptveto2=10., double etacut2=2.4);//ptveto2 and etacut2 -->for add. muon
   vector<Electron> GetSingleElRecoNoVeto(double ptmin, double etacut=2.5);
+  
+  vector<int> GetSingleElRecoIdx(double ptmin, double etacut=2.5, double ptveto=15., double ptveto2=10., double etacut2=2.4);//ptveto2 and etacut2 -->for add. muon
+  vector<int> GetSingleElRecoNoVetoIdx(double ptmin, double etacut=2.5);
+
   //vector<Lepton*> GetPointerSingleElReco(double ptmin, double etacut=2.5, double ptveto=15.);
   //vector<int> GetIdxDiMuReco(double ptmin1, double ptmin2, double etacut=2.4, double ptveto=10. );
-  vector<Muon> GetDiMuReco(double ptmin1, double ptmin2, double etacut=2.4, double ptveto=10. );
+  vector<Muon> GetDiMuReco(double ptmin1, double ptmin2, double etacut=2.4, double ptveto=10., double ptveto2=15., double etacut2=2.5 );
+  vector<int> GetDiMuRecoIdx(double ptmin1, double ptmin2, double etacut=2.4, double ptveto=10., double ptveto2=15., double etacut2=2.5 );
   vector<Muon> GetDiMuRecoNoVeto(double ptmin1, double ptmin2, double etacut=2.4);
+  vector<int> GetDiMuRecoNoVetoIdx(double ptmin1, double ptmin2, double etacut=2.4);
   //vector<Lepton*> GetPointerDiMuReco(double ptmin1, double ptmin2, double etacut=2.4, double ptveto=10. );
   //vector<int> GetIdxDiElReco(double ptmin1, double ptmin2, double etacut=2.5, double ptveto=15. );
-  vector<Electron> GetDiElReco(double ptmin1, double ptmin2, double etacut=2.5, double ptveto=15. );
+  vector<Electron> GetDiElReco(double ptmin1, double ptmin2, double etacut=2.5, double ptveto=15., double ptveto2=10., double etacut2=2.4 );
+  vector<int> GetDiElRecoIdx(double ptmin1, double ptmin2, double etacut=2.5, double ptveto=15., double ptveto2=10., double etacut2=2.4 );
   vector<Electron> GetDiElRecoNoVeto(double ptmin1, double ptmin2, double etacut=2.5);
+  vector<int> GetDiElRecoNoVetoIdx(double ptmin1, double ptmin2, double etacut=2.5);
+
   //vector<Lepton*> GetPointerDiElReco(double ptmin1, double ptmin2, double etacut=2.5, double ptveto=15. );
   void SetupSingleLeptonChannel();
   void SetupDiLeptonChannel();
@@ -376,6 +396,7 @@ class JHAnalyzerBase : public AnalyzerCore {
   };
 
 
+
   
   //vector<double> v_r_ChargedAsymDown;
   //puidsf
@@ -417,9 +438,9 @@ class JHAnalyzerBase : public AnalyzerCore {
   bool is_mumu_lhe, is_ee_lhe;
   //bool TagWbLHE();
   //---functions for lep in bjet
-  double GetP_JetRestFrame(TLorentzVector &lep, TLorentzVector &jet);
-  double GetPt_wrt_Jet(TLorentzVector &lep, TLorentzVector &jet);
-  double GetP_along_Jet(TLorentzVector &lep, TLorentzVector &jet);
+  double GetP_JetRestFrame(TLorentzVector &lep, const TLorentzVector &jet);
+  double GetPt_wrt_Jet(TLorentzVector &lep, const TLorentzVector &jet);
+  double GetP_along_Jet(TLorentzVector &lep, const TLorentzVector &jet);
 
   struct bmuonvar{
     float P_jetrest=0;
@@ -461,6 +482,7 @@ class JHAnalyzerBase : public AnalyzerCore {
     float charge=0;
     float relecalPFClusterIso=0;
     float IsGsfCtfScPixChargeConsistent=0;
+    float PassConversionVeto=0;
     float pt=0;
     float aeta=0;
     float full5x5sigmaietaieta=0;
@@ -559,9 +581,9 @@ class JHAnalyzerBase : public AnalyzerCore {
 
   
 
-  JHAnalyzerBase::bmuonvar Get_bmuonvar(Muon &this_muon, Jet &this_jet);
-  JHAnalyzerBase::belectronvar Get_belectronvar(Electron &this_electron, Jet &this_jet);
-  JHAnalyzerBase::bjetvar Get_bjetvar(Jet &this_jet);
+  JHAnalyzerBase::bmuonvar Get_bmuonvar(Muon &this_muon,const Jet &this_jet);
+  JHAnalyzerBase::belectronvar Get_belectronvar(Electron &this_electron, const Jet &this_jet);
+  JHAnalyzerBase::bjetvar Get_bjetvar(const Jet &this_jet);
   /*
   enum class MuonScoreVer {
     v2409_2,
@@ -620,9 +642,9 @@ class JHAnalyzerBase : public AnalyzerCore {
   //void SetChargeScoreCut_2405_4();
   //void SetChargeScoreCut_2405_4_3();
   void SetChargeScoreCut_2409_2();
-  void SetMuonChargeScore(Muon &_this_bmuon, Jet &_this_bjet);
-  void SetElectronChargeScore(Electron &_this_belectron, Jet &_this_bjet);
-  void SetJetChargeScore(Jet &_this_bjet);
+  void SetMuonChargeScore(Muon &_this_bmuon, const Jet &_this_bjet);
+  void SetElectronChargeScore(Electron &_this_belectron, const Jet &_this_bjet);
+  void SetJetChargeScore(const Jet &_this_bjet);
   double GetMuonChargeScore();
   double GetMuonChargeScoreCoeff();
   double GetElectronChargeScore();
@@ -751,36 +773,123 @@ class JHAnalyzerBase : public AnalyzerCore {
   void SetJetVetoMap();
   
 
-  //bChargeID
-  void Get_bChargeID_SF(Jet& this_jet, int abs_charge, int bchargeID);
-  void Measure_MCbChargeIDEff(Jet& this_jet,TString _suffix="");
+  //--bChargeTagID--//
+  //enum PtBin { kPT30To50 = 0, kPT50To70, kPT70To100, kPT100To140, kPT140ToInf, nPtBin };
+  //enum EtaBin { kEta0To0p8 = 0, kEta0p8To1p6, kEta1p6To2, kEta2To2p5, nEtaBin};
+
+  enum SLT { k_muH=0, k_muL, k_eH, k_eL, nSLT};
+  enum JetOrigin{ k_bplus=0, k_bminus, nJetOrigin };
+  enum SYSDIR{ k_central=0, k_uncorrUp, k_uncorrDown, k_corrUp, k_corrDown, nSYSDIR };
+
+  inline static const char* SLTName[nSLT] ={
+    "muH",
+    "muL",
+    "eH",
+    "eL"
+  };
+  enum bChargeID{k_1muHOnly,k_1muLOnly,k_1eHOnly,k_1eLOnly,k_NoSL_jH,k_NoSL_jOthers};
+  inline static const char* bChargeAccIDName[6]={
+    "1muHOnly",
+    "1muLOnly",
+    "1eHOnly",
+    "1eLOnly",
+    "NoSL_jH",
+    "NoSL_jOthers"
+  };
+  double SF_bChargeTagID_SLT[nJetOrigin][nSLT][nPtBin][nSYSDIR];
+  double SF_bChargeTagID_Jet[nJetOrigin][nPtBin][nEtaBin][nSYSDIR];
+
+  double SF_bChargeAcc_SLT[nJetOrigin][nSLT][nPtBin][nSYSDIR];
+  double SF_bChargeAcc_Jet[nJetOrigin][2][nPtBin][nEtaBin][nSYSDIR];
+
   
-  map<TString,TH1D*> map_hist_bchargeIDEff;
-  std::map<TString, std::map<TString, std::map<TString, double>>> map_bChargeEffSF;
-
-  double Get_bChargeID_SF_TT(double this_pt, TString bchargeID, TString orig_parton, TString bLepbHad);
-  double Get_bChargeID_Eff_Measure_TT(double this_pt, TString bchargeID, TString orig_parton,TString bLepbHad);
-  TString Get_PTBINNAME_bChargeID_Eff_TT(double this_pt);
-  double Get_bChargeID_Eff_MC_TT(double this_pt, TString bchargeID, TString orig_parton,TString bLepbHad);
-  double Get_bChargeID_N_MC_TT(double this_pt, TString bchargeID, TString orig_parton, TString bLepbHad);
-  void initializeBChargeEffSF();
-  void DeleteBChargeEff_TT();
-  void initializeBChargeEff_TT(TString EffFileName);
+  void Read_bChargeID_SF(bool readsltonly=false);
+  void Read_bChargeAcc_SF();
+  int getB(const std::string& s);
+  int getLep(const std::string& s);
+  int getIDAcc(const std::string& s);
+  int getPT(const std::string& s);
+  int getSysDir(const std::string& s);
+  int getEta(const std::string& s);
 
 
-  double Get_bChargeID_SF(double this_pt, TString bchargeID, TString orig_parton);
-  double Get_bChargeID_Eff_Measure(double this_pt, TString bchargeID, TString orig_parton);
-  TString Get_PTBINNAME_bChargeID_Eff(double this_pt);
-  double Get_bChargeID_Eff_MC(double this_pt, TString bchargeID, TString orig_parton);
-  double Get_bChargeID_N_MC(double this_pt, TString bchargeID, TString orig_parton);
-  void DeleteBChargeEff();
-  void initializeBChargeEff(TString EffFileName);
+  
+  void Setup_bChargeIDEff(TString _bchargeid_mceff_filename="",bool readsltonly=false);
+  void Setup_bChargeAcc(TString _bchargeacc_mc_filename="");
+  bool Is_bChargeIDEffOn=false;
+  bool Is_bChargeAccOn=false;
+  void MeasureMC_bChargeIDEff(vector<Jet> vJets);
+  void MeasureMC_bChargeAcc(vector<Jet> vJets);
+  //void JHAnalyzerBase::MeasureMC_bChargeAcc(vector<Jet> vJets )
+  vector<int> Count_SLT(const Jet& this_Jet);
+  map<TString,TH2D*> map_effhist_bchargeID_mcjet;
+  map<TString,TH2D*> map_acchist_bchargeID_mcjet;
 
-  TString Get_bChargeID(Jet& this_bjet);
-  TString Get_orig_parton_bChargeID(Jet& this_bjet);
- private:
+  vector<double> Get_bChargeTagID_MCEffs_SLT( int partonFlavour, double JetPt);
+  double Get_SLTEff_Corr_givenJet(const Jet& thisJet, const bool Has_muH, const bool Has_muL, const bool Has_eH, const bool Has_eL,
+				  JHAnalyzerBase::SYSDIR SystDir=k_central, JHAnalyzerBase::PtBin SystPtBin=nPtBin, JHAnalyzerBase::SLT SystID=nSLT);
+  
+  double Get_bChargeTagID_MCEffs_jH(int partonFlavour, double JetPt, double JetEta);
+  double Get_HighScoreChargeTagID_Eff_Corr_givenJet(const Jet& thisJet, const bool pass_jH,
+						    JHAnalyzerBase::SYSDIR SystDir=k_central, JHAnalyzerBase::PtBin SystPtBin=nPtBin, JHAnalyzerBase::EtaBin SystEtaBin=nEtaBin);
+  double Get_bChargeAcc_MC(int partonFlavour, int thisChargeID,double JetPt, double JetEta);
+  ////-----bchargetagid----////
+  //---Corrleated Component---//
+  double arr_r_bChargeID_SLT_CorrUp[nSLT][nPtBin];
+  double arr_r_bChargeID_SLT_CorrDown[nSLT][nPtBin];
+  //---Uncorr. Component
+  double arr_r_bChargeID_SLT_UnCorr_bPlusUp[nSLT][nPtBin];
+  double arr_r_bChargeID_SLT_UnCorr_bPlusDown[nSLT][nPtBin];
+
+  double arr_r_bChargeID_SLT_UnCorr_bMinusUp[nSLT][nPtBin];
+  double arr_r_bChargeID_SLT_UnCorr_bMinusDown[nSLT][nPtBin];
+
+  //---Corrleated Component--//
+  double arr_r_bChargeID_Jet_CorrUp[nPtBin][nEtaBin];
+  double arr_r_bChargeID_Jet_CorrDown[nPtBin][nEtaBin];
+  //---Uncorr. Component
+  double arr_r_bChargeID_Jet_UnCorr_bPlusUp[nPtBin][nEtaBin];
+  double arr_r_bChargeID_Jet_UnCorr_bPlusDown[nPtBin][nEtaBin];
+
+  double arr_r_bChargeID_Jet_UnCorr_bMinusUp[nPtBin][nEtaBin];
+  double arr_r_bChargeID_Jet_UnCorr_bMinusDown[nPtBin][nEtaBin];
+
+
+  ////-----bchargeacc----////
+  //---Corrleated Component---//
+  double arr_r_bChargeAcc_SLT_CorrUp[nSLT][nPtBin];
+  double arr_r_bChargeAcc_SLT_CorrDown[nSLT][nPtBin];
+  //---Uncorr. Component
+  double arr_r_bChargeAcc_SLT_UnCorr_bPlusUp[nSLT][nPtBin];
+  double arr_r_bChargeAcc_SLT_UnCorr_bPlusDown[nSLT][nPtBin];
+
+  double arr_r_bChargeAcc_SLT_UnCorr_bMinusUp[nSLT][nPtBin];
+  double arr_r_bChargeAcc_SLT_UnCorr_bMinusDown[nSLT][nPtBin];
+
+  //---Corrleated Component--//
+  double arr_r_bChargeAcc_Jet_CorrUp[2][nPtBin][nEtaBin];
+  double arr_r_bChargeAcc_Jet_CorrDown[2][nPtBin][nEtaBin];
+  //---Uncorr. Component
+  double arr_r_bChargeAcc_Jet_UnCorr_bPlusUp[2][nPtBin][nEtaBin];
+  double arr_r_bChargeAcc_Jet_UnCorr_bPlusDown[2][nPtBin][nEtaBin];
+
+  double arr_r_bChargeAcc_Jet_UnCorr_bMinusUp[2][nPtBin][nEtaBin];
+  double arr_r_bChargeAcc_Jet_UnCorr_bMinusDown[2][nPtBin][nEtaBin];  
+
+
+  double Get_HighScoreChargeTagID_Eff_Corr(const vector<Jet> &_v_Jet, const vector<bool> _v_pass_jH);
+  double Get_SLTEff_Corr(const vector<Jet> &_v_Jet, const vector<bool> _v_Has_muH, const vector<bool> _v_Has_muL, const vector<bool> _v_Has_eH, const vector<bool> _v_Has_eL);
+  pair<int,int> GetMeasuredChargeAndID(const Jet& thisJet, bool ApplyAccCorr=true);
+  double GetChargeAccCorr(const Jet& thisJet, int thisChargeID,int measured_charge);  
+
+  //---new add. lepton veto
+  bool HasVetoLepton_NotTightLeps_NotWithinJets(const vector<int>& _v_tightmuonidx, const vector<int>& _v_tightelectronidx,     const TLorentzVector* _jet1, const TLorentzVector* _jet2 = nullptr);
+
+
+private:
   MomentumVar _CurrentSys;
   JetTagging::Parameters jtp;
+
 
 
 

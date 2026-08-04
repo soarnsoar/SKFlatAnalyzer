@@ -70,6 +70,12 @@ void PreselectionToBDTRegionAnalyzer::initializeAnalyzer(){
     cout << "lepveto -> true" << endl;
   }
 
+  newlepveto=false;
+  if(HasFlag("newlepveto")){
+    newlepveto=true;
+    cout << "newlepveto -> true" << endl;
+  }  
+
 
   //kincutopt=HasFlag("kincutopt");
   //bdtopt=HasFlag("bdtopt");
@@ -88,7 +94,8 @@ void PreselectionToBDTRegionAnalyzer::initializeAnalyzer(){
     jhchoi_newtree->Branch("x_g",&x_g);
   }
 
-  
+  addxsuffix=HasFlag("addxsuffix");
+  addregionsuffix=HasFlag("addregionsuffix");
   //charge
   cout << "[LoadChargeScoreTool]" << endl;
   //void LoadChargeScoreTool(TString muon_version="2512.4",TString electron_version="2512.4", TString jet_version="2512.4", bool applycut=false);
@@ -144,6 +151,19 @@ void PreselectionToBDTRegionAnalyzer::initializeAnalyzer(){
   min_z_pt=5.0;
   max_ptzb=500.0;
 
+  apply_chargeid_eff_corr=HasFlag("apply_chargeid_eff_corr");
+  if(apply_chargeid_eff_corr){
+    cout << "apply_chargeid_eff_corr!!" << endl;
+    //Setup_bChargeIDEff("PreselectionToBDTRegionAnalyzer_"+MCSample+".root");
+    Setup_bChargeIDEff();
+  }
+
+  apply_chargeid_acc_corr=HasFlag("apply_chargeid_acc_corr");
+  
+  if(apply_chargeid_acc_corr){
+    cout << "apply_chargeid_acc_corr!!" << endl;
+    Setup_bChargeAcc();
+  }
 }
 
 
@@ -156,14 +176,15 @@ void PreselectionToBDTRegionAnalyzer::SetMuon(const Muon& _l1, const Muon& _l2){
 bool PreselectionToBDTRegionAnalyzer::CheckIsDiMuonChannel(double min_mll,double max_mll){
   if (!ev.PassTrigger(MuonTriggerNames)) return 0;
   //vector<int> v_muonidx=GetIdxDiMuReco(TriggerSafeCut_muon1, TriggerSafeCut_muon2);
-  vector<Muon> v_muon=lepveto ?  GetDiMuReco(TriggerSafeCut_muon1, TriggerSafeCut_muon2) :  GetDiMuRecoNoVeto(TriggerSafeCut_muon1, TriggerSafeCut_muon2);
-  if( v_muon.size()<2) return 0;
-  double mll=(v_muon[0]+v_muon[1]).M();
+  //vector<Muon> v_muon=lepveto ?  GetDiMuReco(TriggerSafeCut_muon1, TriggerSafeCut_muon2) :  GetDiMuRecoNoVeto(TriggerSafeCut_muon1, TriggerSafeCut_muon2);
+  vector<int> v_muonidx=lepveto ?  GetDiMuRecoIdx(TriggerSafeCut_muon1, TriggerSafeCut_muon2) :  GetDiMuRecoNoVetoIdx(TriggerSafeCut_muon1, TriggerSafeCut_muon2);
+  if( v_muonidx.size()<2) return 0;
+  double mll=(AllMuons[v_muonidx[0]]+AllMuons[v_muonidx[1]]).M();
   if (mll < min_mll) return 0;
   if (mll > max_mll) return 0;
 
-  SetMuon(v_muon[0],v_muon[1]);
-
+  SetMuon(AllMuons[v_muonidx[0]],AllMuons[v_muonidx[1]]);
+  v_tightmuonidx={v_muonidx[0],v_muonidx[1]};
   return 1;
 }  
 
@@ -180,14 +201,16 @@ bool PreselectionToBDTRegionAnalyzer::CheckIsDiElectronChannel(double min_mll,do
   if ( IsDATA && isElectronData && ev.PassTrigger(MuonTriggerNames)) return 0; // to avoid double count
   
   //vector<int> v_electronidx=GetIdxDiElReco(TriggerSafeCut_electron1, TriggerSafeCut_electron2);
-  vector<Electron> v_electron=lepveto ? GetDiElReco(TriggerSafeCut_electron1, TriggerSafeCut_electron2) :GetDiElRecoNoVeto(TriggerSafeCut_electron1, TriggerSafeCut_electron2); 
-  if( v_electron.size()<2) return 0;
+  //vector<Electron> v_electron=lepveto ? GetDiElReco(TriggerSafeCut_electron1, TriggerSafeCut_electron2) :GetDiElRecoNoVeto(TriggerSafeCut_electron1, TriggerSafeCut_electron2);
+  vector<int> v_electronidx=lepveto ? GetDiElRecoIdx(TriggerSafeCut_electron1, TriggerSafeCut_electron2) :GetDiElRecoNoVetoIdx(TriggerSafeCut_electron1, TriggerSafeCut_electron2); 
+  if( v_electronidx.size()<2) return 0;
   //SetElectronIdx(v_electronidx[0],v_electronidx[1]);
   
-  double mll=(v_electron[0]+v_electron[1]).M();
+  double mll=(AllElectrons[v_electronidx[0]]+AllElectrons[v_electronidx[1]]).M();
   if (mll < min_mll) return 0;
   if (mll > max_mll) return 0;
-  SetElectron(v_electron[0],v_electron[1]);
+  SetElectron(AllElectrons[v_electronidx[0]],AllElectrons[v_electronidx[1]]);
+  v_tightelectronidx={v_electronidx[0],v_electronidx[1]};  
   return 1;
 }  
 
@@ -223,6 +246,8 @@ void PreselectionToBDTRegionAnalyzer::RunBasicZregion(){
   }
   IsDiMuonChannel=false;
   IsDiElectronChannel=false;
+  v_tightmuonidx.clear();
+  v_tightelectronidx.clear();
   double min_mll = 60;
   double max_mll = 120;
 
@@ -262,6 +287,7 @@ void PreselectionToBDTRegionAnalyzer::RunBasicZregion(){
   v_tightjet=GetTightJet(v_tightlep,30,jetetacut,"tight",_JETPUID);
   v_bjet=GetBJet(v_tightjet);
 
+
   njet=v_tightjet.size();
   nbjet=v_bjet.size();
   met_pt=CurrentMET.Pt();
@@ -273,6 +299,12 @@ void PreselectionToBDTRegionAnalyzer::RunBasicZregion(){
   //----Let's select and fillhist
   
   if(nbjet!=1) return ;
+  //  bool HasVetoLepton_NotTightLeps_NotWithinJets(const vector<int>& _v_tightmuonidx, const vector<int>& _v_tightelectronidx, const vector<TLorentzVector>& _v_jet);
+  if(newlepveto){
+    if (HasVetoLepton_NotTightLeps_NotWithinJets(v_tightmuonidx,v_tightelectronidx,&v_bjet[0])  ) return;
+  }
+
+  
   dphi_z_b= fabs(v_bjet[0].DeltaPhi(vZ));
   ptzb=(v_bjet[0]+vZ).Pt();  
   if(met_pt > maxMET) return;//updated 251222
@@ -285,18 +317,42 @@ void PreselectionToBDTRegionAnalyzer::RunBasicZregion(){
     return;
   }
 
-  if(IsDYbplus || IsDYbminus){
-    if(xrangetree){
-      bjet_y=v_bjet[0].Rapidity();
-      bjet_eta=v_bjet[0].Eta();
-      z_eta=vZ.Eta();
-      z_y=vZ.Rapidity();
-      jhchoi_newtree->Fill();
-	
-    }
-
+  if(measure_bchargeeff){
+    //vector<Jet> v_bjet=GetBJet(v_tightjet);
+    MeasureMC_bChargeIDEff(v_bjet);
+    return;
   }
 
+  
+  bjet_y=v_bjet[0].Rapidity();
+  bjet_eta=v_bjet[0].Eta();
+  z_eta=vZ.Eta();
+  z_y=vZ.Rapidity();
+  if(IsDYbplus || IsDYbminus){
+    if(xrangetree){    
+      jhchoi_newtree->Fill();	
+    }
+  }
+  //-------xregion-----//
+  TString suffix_rapidity_region="";
+  int suffix_rapidity_region_idx=-1;
+  if((bjet_y-z_y)*z_y>0 && fabs(bjet_y-z_y)>0.4){
+    suffix_rapidity_region="low_peak";
+    suffix_rapidity_region_idx=1;
+  }else if((bjet_y-z_y)*z_y>0 && fabs(bjet_y-z_y)<0.4){
+    suffix_rapidity_region="broad";
+    suffix_rapidity_region_idx=4;
+  }else if((bjet_y-z_y)*z_y<0 && fabs(z_y)>1.2){
+    suffix_rapidity_region="high_peak";
+    suffix_rapidity_region_idx=3;
+  }else{
+    suffix_rapidity_region="mid_peak";
+    suffix_rapidity_region_idx=2;
+  }
+  suffix_rapidity_region="__"+suffix_rapidity_region;
+  if(i_proc==1 && addregionsuffix) ProcessName+=suffix_rapidity_region;
+  //addxsuffix
+  //------
 
 
   v_muonscore.clear();
@@ -390,76 +446,170 @@ void PreselectionToBDTRegionAnalyzer::RunBasicZregion(){
   jetcharge=v_bjet[0].Charge();
 
   ///----determine the type of this event---//
+  if(n_muonHigh<10 && n_muonLow<10 && n_electronHigh<10 && n_electronLow<10){
+    if(!runSys)FillHist("ll_1b/nSLT",n_muonHigh+n_muonLow*10+n_electronHigh*100+n_electronLow*1000,weight,10000,0,10000);
+    if(!runSys)FillHist("ll_1b/HasSLT",(n_muonHigh>0)
+			+(n_muonLow>0)*2
+			+(n_electronHigh>0)*4
+			+(n_electronLow>0)*8
+			,weight,20,0,20);
+    
+  }
 
+  if(apply_chargeid_eff_corr){
+    //double JHAnalyzerBase::Get_SLTEff_Corr(vector<Jet> &_v_Jet, vector<bool> _v_Has_muH, vector<bool> _v_Has_muL, vector<bool> _v_Has_eH, vector<bool> _v_Has_eL){
+    weight*=Get_SLTEff_Corr({v_bjet[0]},{n_muonHigh>0},{n_muonLow>0},{n_electronHigh>0},{n_electronLow>0});
+  }
+
+  TString bChargeType="NOTUSE";
+  
   if(n_muonHigh==1 && n_muonLow==0 && n_electronHigh==0 && n_electronLow==0){
     //RunMuonHigh();
     //FillHistAll_bmuon(TString cutname,bmuonvar this_bmuon)
     //Get_bmuonvar(muon,v_bjet[0])
+    //double JHAnalyzerBase::Get_SLTEff_Corr_givenJet(Jet& thisJet, bool Has_muH, bool Has_muL, bool Has_eH,bool Has_eL,
+    //               JHAnalyzerBase::SYSDIR SystDir, JHAnalyzerBase::PtBin SystPtBin, JHAnalyzerBase::SLT SystID){
+
+
     bmuonvar this_bmuonvar=Get_bmuonvar(*muonHigh,v_bjet[0]);
     bjetvar this_bjetvar=Get_bjetvar(v_bjet[0]);
+    measured_charge=muonHigh->Charge();
+
+
+    if(apply_chargeid_acc_corr){
+      weight*=GetChargeAccCorr(v_bjet[0],0,measured_charge);
+    }
     FillHistAll_bmuon("ll__muonHigh",this_bmuonvar);
     FillHistAll_bjet("ll__muonHigh",this_bjetvar);
-    measured_charge=muonHigh->Charge();
+    FillHistAll2("ll__muonHigh");
+
+
     FillHist("ll__muonHigh/bmuon_chargescore",muonHigh_score,weight,240,-1.2,1.2);
     FillHist("ll__muonHigh/norm_bmuon_chargescore_dot_charge",(1+muonHigh_score)/2*muonHigh->Charge(),weight,240,-1.2,1.2);
-    
+    bChargeType="muH";
   }
   else if(n_muonHigh==0 && n_muonLow==1 && n_electronHigh==0 && n_electronLow==0){
     //RunMuonLow();
     bmuonvar this_bmuonvar=Get_bmuonvar(*muonLow,v_bjet[0]);
     bjetvar this_bjetvar=Get_bjetvar(v_bjet[0]);
+
+    measured_charge=-2*muonLow->Charge();
+    if(apply_chargeid_acc_corr){
+      weight*=GetChargeAccCorr(v_bjet[0],1,measured_charge);
+    }
     FillHistAll_bmuon("ll__muonLow",this_bmuonvar);
     FillHistAll_bjet("ll__muonLow",this_bjetvar);
-    measured_charge=-2*muonLow->Charge();
+    FillHistAll2("ll__muonLow");
+    
     FillHist("ll__muonLow/bmuon_chargescore",muonLow_score,weight,240,-1.2,1.2);    
     FillHist("ll__muonLow/norm_bmuon_chargescore_dot_charge",(1+muonLow_score)/2*muonLow->Charge(),weight,240,-1.2,1.2);    
+    bChargeType="muL";
   }
   else if(n_muonHigh==0 && n_muonLow==0 && n_electronHigh==1 && n_electronLow==0){
     //RunElectronHigh();
     belectronvar this_belectronvar=Get_belectronvar(*electronHigh,v_bjet[0]);
     bjetvar this_bjetvar=Get_bjetvar(v_bjet[0]);
+    
+    measured_charge=3*electronHigh->Charge();
+    if(apply_chargeid_acc_corr){
+      weight*=GetChargeAccCorr(v_bjet[0],2,measured_charge);
+    }
     FillHistAll_belectron("ll__electronHigh",this_belectronvar);
     FillHistAll_bjet("ll__electronHigh",this_bjetvar);
-    measured_charge=3*electronHigh->Charge();
+    FillHistAll2("ll__electronHigh");
     FillHist("ll__electronHigh/belectron_chargescore",electronHigh_score,weight,240,-1.2,1.2);
     FillHist("ll__electronHigh/norm_belectron_chargescore_dot_charge",(1+electronHigh_score)/2*electronHigh->Charge(),weight,240,-1.2,1.2);    
+    bChargeType="eH";
   }
   else if(n_muonHigh==0 && n_muonLow==0 && n_electronHigh==0 && n_electronLow==1){
     //RunElectronLow();
     belectronvar this_belectronvar=Get_belectronvar(*electronLow,v_bjet[0]);
     bjetvar this_bjetvar=Get_bjetvar(v_bjet[0]);
+
+    measured_charge=-4*electronLow->Charge();
+    if(apply_chargeid_acc_corr){
+      weight*=GetChargeAccCorr(v_bjet[0],3,measured_charge);
+    }
     FillHistAll_belectron("ll__electronLow",this_belectronvar);
     FillHistAll_bjet("ll__electronLow",this_bjetvar);
-    measured_charge=-4*electronLow->Charge();
+    FillHistAll2("ll__electronLow");
     FillHist("ll__electronLow/belectron_chargescore",electronLow_score,weight,240,-1.2,1.2);
     FillHist("ll__electronLow/norm_belectron_chargescore_dot_charge",(1+electronLow_score)/2*electronLow->Charge(),weight,240,-1.2,1.2);
-    
+    bChargeType="eL";
   }
   else if(n_muonHigh==0 && n_muonLow==0 && n_electronHigh==0 && n_electronLow==0){
     int jetcharge_coeff=GetJetChargeScoreCoeff();
+    if(apply_chargeid_eff_corr) weight*=Get_HighScoreChargeTagID_Eff_Corr({v_bjet[0]},{jetcharge_coeff==1});
+    FillHist("ll_1b_noSLT/jetHighPASS",(jetcharge_coeff==1),weight,2,0,2);
     if(jetcharge_coeff==1){
       //RunJetHigh();
+
+
       bjetvar this_bjetvar=Get_bjetvar(v_bjet[0]);
-      FillHistAll_bjet("ll__jetHigh",this_bjetvar);
+
       measured_charge=5*(jetcharge>0 ? 1 : -1);
+      if(apply_chargeid_acc_corr){
+	weight*=GetChargeAccCorr(v_bjet[0],4,measured_charge);
+      }
+      FillHistAll_bjet("ll__jetHigh",this_bjetvar);
+      FillHistAll2("ll__jetHigh");
       FillHist("ll__jetHigh/bjet_chargescore",jetscore,weight,240,-1.2,1.2);
       FillHist("ll__jetHigh/norm_bjet_chargescore_dot_charge",(1+jetscore)/2*(jetcharge > 0 ? 1 : -1),weight,240,-1.2,1.2);
-      
+      bChargeType="jH";   
     }
     else{
       //RunJetOthers();
+
       bjetvar this_bjetvar=Get_bjetvar(v_bjet[0]);
-      FillHistAll_bjet("ll__jetOthers",this_bjetvar);
+
       measured_charge=6*(jetcharge>0 ? 1 : -1);
+      if(apply_chargeid_acc_corr){
+	weight*=GetChargeAccCorr(v_bjet[0],5,measured_charge);
+      }
+      FillHistAll_bjet("ll__jetOthers",this_bjetvar);
+      FillHistAll2("ll__jetOthers");
       FillHist("ll__jetOthers/bjet_chargescore",jetscore,weight,240,-1.2,1.2);
       FillHist("ll__jetOthers/norm_bjet_chargescore_dot_charge",(1+jetscore)/2*(jetcharge > 0 ? 1 : -1),weight,240,-1.2,1.2);
-      
+      bChargeType="jOthers";
     }
   }
+  if(!runSys){
+    int jetcharge_coeff=GetJetChargeScoreCoeff();
+    FillHist("ll_1b/jetHighPASS",(jetcharge_coeff==1),weight,2,0,2);
+  }
+
+  FillHistAll2("AllEvents");
   FillHist("AllEvents/measured_charge_all",measured_charge,weight,13,-6.5,6.5);
   if(measured_charge!=0)FillHist("AllEvents/measured_charge",measured_charge,weight,13,-6.5,6.5);
-  
 
+  FillHist("AllEvents/bChargeID_all",fabs(measured_charge),weight,7,-0.5,6.5);
+  if(measured_charge!=0)FillHist("AllEvents/bChargeID",fabs(measured_charge),weight,7,-0.5,6.5);
+  FillHist("AllEvents__"+bChargeType+suffix_rapidity_region+"/measured_charge",measured_charge>0? +1 : -1,weight,3,-1.5,1.5);
+
+  if(addxsuffix || addregionsuffix){
+    FillHist("AllEvents/xcat_region",suffix_rapidity_region_idx,weight,5,-0.5,4.5);
+    FillHist("AllEvents"+suffix_rapidity_region+"/measured_charge_all",measured_charge,weight,13,-6.5,6.5);
+    if(measured_charge!=0){
+
+      FillHist("AllEvents"+suffix_rapidity_region+"/measured_charge",measured_charge,weight,13,-6.5,6.5);
+      FillHist("AllEvents__"+bChargeType+suffix_rapidity_region+"/measured_charge",measured_charge>0? +1 : -1,weight,3,-1.5,1.5);
+    }
+    FillHist(bChargeType+"/xcat_region_dot_measured_charge",suffix_rapidity_region_idx*(measured_charge>0 ? +1 : -1),weight,9,-4.5,4.5);    
+    
+    FillHist("AllEvents"+suffix_rapidity_region+"/bChargeID_all",fabs(measured_charge),weight,7,-0.5,6.5);
+    if(measured_charge!=0)FillHist("AllEvents"+suffix_rapidity_region+"/bChargeID",fabs(measured_charge),weight,7,-0.5,6.5);
+    ///---if is DYb
+    if(IsDYbplus || IsDYbminus){
+      FillHist("AllEvents"+suffix_rapidity_region+"/log_x_b",log(x_b),weight,80,-8,0);
+      FillHist("AllEvents/log_x_b",log(x_b),weight,80,-8,0);
+
+      FillHist("AllEvents"+suffix_rapidity_region+"/Q",genWeight_Q,weight,200,0,200);
+      FillHist("AllEvents/Q",genWeight_Q,weight,200,0,200);      
+    }
+  }//[end] if addsuffix
+
+
+  
   
 }//[end]RunBasic Zregion
 
@@ -592,6 +742,15 @@ void PreselectionToBDTRegionAnalyzer::FillHistAllChannelWithSuffix(TString cutna
 }
 */
 
+void PreselectionToBDTRegionAnalyzer::FillHistAll2(TString cutname){
+    FillHist(cutname+"/M_ll",vZ.M(),weight,60,60,120);
+    FillHist(cutname+"/Zpt",vZ.Pt(),weight,200,0,200);
+    FillHist(cutname+"/Zy",z_y,weight,50,-3,3);
+    FillHist(cutname+"/bjet_y",bjet_y,weight,50,-3,3);
+    
+    
+}
+
 void PreselectionToBDTRegionAnalyzer::FillHistAll(TString cutname){
 
   FillHist(cutname+"/event",1,weight,1,0,1);
@@ -679,6 +838,7 @@ void PreselectionToBDTRegionAnalyzer::EventLoop(){
 
 
 void PreselectionToBDTRegionAnalyzer::TruthLoop(){
+  suffix_xscale="";
   IsDYbplus=0;
   IsDYbminus=0;
   IsBKG=0;
@@ -739,7 +899,15 @@ void PreselectionToBDTRegionAnalyzer::TruthLoop(){
       x_g=genWeight_X1;
       
     }
-   
+    //suffix_xscale="";
+    if(log(x_b)<-4.5){
+      suffix_xscale="__logx_-InfTo-4.5";
+    }else if(log(x_b)<-3.5){
+      suffix_xscale="__logx_-4.5To-3.5";
+    }else{
+      suffix_xscale="__logx_-3.5To0";
+    }
+    
   }//end of DYb
   else{
     suffix_true_nb="_others"; //dy others
@@ -747,7 +915,7 @@ void PreselectionToBDTRegionAnalyzer::TruthLoop(){
     IsBKG=1;
   }
   ProcessName=MCSample+suffix_true_nb;
-
+  if(addxsuffix) ProcessName+=suffix_xscale;
 }
 
   

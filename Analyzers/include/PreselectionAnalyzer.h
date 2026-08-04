@@ -46,7 +46,10 @@ public:
   TLorentzVector l1_uncorr, l2_uncorr;
   unsigned int njet, nbjet;
   vector<Lepton> v_tightlep;
+  vector<int> v_tightmuonidx;
+  vector<int> v_tightelectronidx;
 
+  
   vector<int> v_jetidx;
   vector<int> v_bjetidx;
 
@@ -65,6 +68,7 @@ public:
   TString _JETPUID;
   bool check_tmva_input;
   bool lepveto;
+  bool newlepveto;
   bool jetvetotest;
   bool kincutopt;
   bool bdtopt;
@@ -73,7 +77,7 @@ public:
   double maxMET,min_dphi_z_b,min_z_pt,max_ptzb;
 
   double x_b,x_g;
-  double bjet_y,bjet_eta,z_eta,z_y;
+  double bjet_y,bjet_eta,z_eta,z_y,zbjet_y,zbjet_m;
   vector<pair<double,double>> m_score_region;
   vector<pair<double,double>> e_score_region;
   vector<pair<double,double>> j_score_region; 

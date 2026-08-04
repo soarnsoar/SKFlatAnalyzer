@@ -8,9 +8,7 @@ bbbarAsymMeasurement::bbbarAsymMeasurement(){
 
 bbbarAsymMeasurement::~bbbarAsymMeasurement(){
   //==== Destructor of this Analyzer
-  if(apply_bchargeeff){
-    DeleteBChargeEff();
-  }
+
 }
 
 void bbbarAsymMeasurement::initializeAnalyzer(){
@@ -80,12 +78,6 @@ void bbbarAsymMeasurement::initializeAnalyzer(){
   LoadChargeScoreTool(v_muonScore,v_electronScore,v_jetScore,apply_dnncut);
 
   apply_bchargeeff=false;
-  if(HasFlag("apply_bchargeeff")){
-    if(!IsDATA){
-      initializeBChargeEff("bbbarAsymMeasurement_"+MCSample+".root");
-      apply_bchargeeff=true;
-    }
-  }
 
 
 
@@ -225,10 +217,7 @@ void bbbarAsymMeasurement::RunBasicZregion(){
 
 
 
-  if(measure_bchargeeff){
-    Measure_MCbChargeIDEff(v_bjet[0]);
-    return;
-  }
+
 
 
 
@@ -274,14 +263,9 @@ void bbbarAsymMeasurement::RunBasicZregion(){
     cat_id=6;
   }
   //---orig parton
-  TString this_orig_parton=JHAnalyzerBase::Get_orig_parton_bChargeID(v_bjet[0]);
-  
-  if(apply_bchargeeff && !IsDATA){
-    //---SF
-    double SF_bChargeID=Get_bChargeID_SF(v_bjet[0].Pt(), this_bchargeID, this_orig_parton);
-    weight*=SF_bChargeID;
 
-  }
+  
+
 
   FillHist("FinalCut/MeasuredCharge_Total", bCand_Charge,weight,9,-4.5,4.5);
   FillHist("FinalCut/abs_MeasuredCharge_Total", abs(bCand_Charge),weight,5,-0.5,4.5);

@@ -44,7 +44,7 @@ bool OneBjet::CheckIsMuonChannel(){
   vector<Muon> v_muon;
   v_muon=noveto ? GetSingleMuRecoNoVeto(TriggerSafeCut_muon1) : GetSingleMuReco(TriggerSafeCut_muon1);
 
-  if( v_muon.size()!=1) return 0;
+  if( v_muon.size()<1) return 0;
   SetMuon(v_muon[0]);
 
   return 1;
@@ -62,7 +62,7 @@ bool OneBjet::CheckIsElectronChannel(){
   vector<Electron> v_electron;
   v_electron=noveto ? GetSingleElRecoNoVeto(TriggerSafeCut_electron1) : GetSingleElReco(TriggerSafeCut_electron1);
   
-  if( v_electron.size()!=1) return 0;
+  if( v_electron.size()<1) return 0;
   SetElectron(v_electron[0]);
   return 1;
 }  
