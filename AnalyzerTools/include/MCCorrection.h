@@ -127,6 +127,7 @@ public:
   //----jhchoi
   //dAsymFactor
   void InitBtagChargeAsymFactor();
+  void InitBtagChargeAsymFactor_OLD();
   double GetdAsymResult(double JetPt, double JetEta, int SystDir, int iptbinsys=-1, int ietabinsys=-1);
   double GetMCJetTagEffWithAsym(JetTagging::Tagger tagger, JetTagging::WP wp, int JetPartonFlavour ,int JetHadronFlavour, double JetPt, double JetEta, int sys=0);
   double GetJetTaggingSF_dAsymCharge(JetTagging::Parameters jtp, int partonFlavour, int JetFlavor, double JetPt, double JetEta, int SystDir, int iptbinsys=-1, int ietabinsys=-1);

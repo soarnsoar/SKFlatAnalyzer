@@ -33,8 +33,10 @@ TMVATool::TMVATool(TString _xmlfile){
 TMVATool::~TMVATool(){
   std::cout << "[TMVATool] Delete reader" << std::endl;
   if(reader){
-    delete reader;
-    reader=nullptr;
+    //delete reader;
+    //reader=nullptr;
+    std::cout << "[TMVATool] do not delete by my side. Too much Memory consumption" << std::endl;
+
   }
   //std::cout << "[TMVATool] SKIP Delete reader" << std::endl;
 

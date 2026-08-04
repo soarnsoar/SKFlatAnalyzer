@@ -11,514 +11,366 @@ IgnoreNoHist(false)
   //InitBtagChargeAsymFactor();
   
 }
+
 void MCCorrection::InitBtagChargeAsymFactor(){
-  cout << "jhchoi[InitBtagChargeAsymFactor]" << endl;
-  //2016preVFP
-  dAsym_result_all["2016preVFP"]["PT30To50"]["Eta0To0p8"][-1]=-0.01;                           
-  dAsym_result_all["2016preVFP"]["PT30To50"]["Eta0To0p8"][0]=0.0;                    
-  dAsym_result_all["2016preVFP"]["PT30To50"]["Eta0To0p8"][1]=0.01;                   
-  dAsym_result_all["2016preVFP"]["PT30To50"]["Eta0p8To1p6"][-1]=-0.002;             
-  dAsym_result_all["2016preVFP"]["PT30To50"]["Eta0p8To1p6"][0]=0.012;                          
-  dAsym_result_all["2016preVFP"]["PT30To50"]["Eta0p8To1p6"][1]=0.026000000000000002;
-  dAsym_result_all["2016preVFP"]["PT30To50"]["Eta1p6To2"][-1]=-0.027;                
-  dAsym_result_all["2016preVFP"]["PT30To50"]["Eta1p6To2"][0]=-0.003;                   
-  dAsym_result_all["2016preVFP"]["PT30To50"]["Eta1p6To2"][1]=0.021;                            
-  dAsym_result_all["2016preVFP"]["PT30To50"]["Eta2To2p5"][-1]=0.027000000000000003;   
-  dAsym_result_all["2016preVFP"]["PT30To50"]["Eta2To2p5"][0]=0.067;                
-  dAsym_result_all["2016preVFP"]["PT30To50"]["Eta2To2p5"][1]=0.10700000000000001;   
-  dAsym_result_all["2016preVFP"]["PT30To50"]["Eta0To0p8"][-1]=-0.01;                           
-  dAsym_result_all["2016preVFP"]["PT30To50"]["Eta0To0p8"][0]=0.0;                              
-  dAsym_result_all["2016preVFP"]["PT30To50"]["Eta0To0p8"][1]=0.01;                             
-  dAsym_result_all["2016preVFP"]["PT30To50"]["Eta0p8To1p6"][-1]=-0.002;                        
-  dAsym_result_all["2016preVFP"]["PT30To50"]["Eta0p8To1p6"][0]=0.012;                          
-  dAsym_result_all["2016preVFP"]["PT30To50"]["Eta0p8To1p6"][1]=0.026000000000000002;           
-  dAsym_result_all["2016preVFP"]["PT30To50"]["Eta1p6To2"][-1]=-0.027;                          
-  dAsym_result_all["2016preVFP"]["PT30To50"]["Eta1p6To2"][0]=-0.003;
-  dAsym_result_all["2016preVFP"]["PT30To50"]["Eta1p6To2"][1]=0.021;
-  dAsym_result_all["2016preVFP"]["PT30To50"]["Eta2To2p5"][-1]=0.027000000000000003;
-  dAsym_result_all["2016preVFP"]["PT30To50"]["Eta2To2p5"][0]=0.067;
-  dAsym_result_all["2016preVFP"]["PT30To50"]["Eta2To2p5"][1]=0.10700000000000001;
+  //--read values in txt
+  TString datapath = getenv("DATA_DIR");
+
+  TString filename=datapath+"/"+DataEra+"/btagasym/"+DataEra+"__Uncer__Cons__dAsym__x_eta.txt"; 
+  std::ifstream input(filename);
+  if (!input) {
+    throw std::runtime_error(
+			     "Cannot open file: " + filename
+			     );
+  }
+  
+  std::string line;
+  
+  while (std::getline(input, line)) {
+    if (line.empty() || line[0] == '#') {
+      continue;
+    }
+    std::istringstream stream(line);
+    
+    std::string year;
+    std::string ptbin;
+    std::string etabin;
+    
+    double nominal;
+    double up;
+    double down;
+    if (!(stream
+	  >> year
+	  >> ptbin
+	  >> etabin
+	  >> nominal
+	  >> up
+	  >> down)) {
+      throw std::runtime_error(
+			       "Invalid line: " + line
+			       );
+    }
+    
+    dAsym_result_all[year][ptbin][etabin][0]  = nominal;
+    dAsym_result_all[year][ptbin][etabin][1]  = up;
+    dAsym_result_all[year][ptbin][etabin][-1] = down;
+  }
+  
+  
+  
+    
+    
+    
+  //---Use only this DataEra
+  cout << "define values of [this_dAsym_result]" << endl;
+  cout << "DataEra" << DataEra << endl;
+  const auto& refMap = dAsym_result_all.at(std::string(DataEra));
+  for (const auto& [ptbin_str, etamap] : refMap) {
+    int ptidx = GetPtBinIndex(ptbin_str);
+    if (ptidx < 0) 1/0;
+    //cout << ptbin_str << endl;
+    for (const auto& [etabin_str, systmap] : etamap) {
+      int etaidx = GetEtaBinIndex(etabin_str);
+      if (etaidx < 0) 1/0;
+      //cout << etabin_str << endl;
+      for (const auto& [systDir, value] : systmap) {
+        int systidx = systDir + 1;
+        if (systidx < 0 || systidx > 2) 1/0;
+        //cout << systDir << endl;
+	this_dAsym_result[ptidx][etaidx][systidx] = value;
+        cout << ptbin_str <<"/" << etabin_str << "/" << systDir << "/" << value << endl;
+	if (fabs(value) > 1){
+          cout << "!!!Tooo Large dAsymSF ->" << value << "BIN info. pt:" << ptidx << " eta:" << etaidx << endl;
+        }
+      }
+    }
+  }
+
   
 
-  dAsym_result_all["2016preVFP"]["PT50To70"]["Eta0To0p8"][-1]=-0.013999999999999999;
-  dAsym_result_all["2016preVFP"]["PT50To70"]["Eta0To0p8"][0]=0.001;
-  dAsym_result_all["2016preVFP"]["PT50To70"]["Eta0To0p8"][1]=0.016;
-  dAsym_result_all["2016preVFP"]["PT50To70"]["Eta0p8To1p6"][-1]=-0.019;
-  dAsym_result_all["2016preVFP"]["PT50To70"]["Eta0p8To1p6"][0]=-0.004;
-  dAsym_result_all["2016preVFP"]["PT50To70"]["Eta0p8To1p6"][1]=0.011;
-  dAsym_result_all["2016preVFP"]["PT50To70"]["Eta1p6To2"][-1]=-0.015;
-  dAsym_result_all["2016preVFP"]["PT50To70"]["Eta1p6To2"][0]=0.017;
-  dAsym_result_all["2016preVFP"]["PT50To70"]["Eta1p6To2"][1]=0.048;
-  dAsym_result_all["2016preVFP"]["PT50To70"]["Eta2To2p5"][-1]=-0.095;
-  dAsym_result_all["2016preVFP"]["PT50To70"]["Eta2To2p5"][0]=-0.062;
-  dAsym_result_all["2016preVFP"]["PT50To70"]["Eta2To2p5"][1]=-0.028999999999999998;
-  dAsym_result_all["2016preVFP"]["PT50To70"]["Eta0To0p8"][-1]=-0.013999999999999999;
-  dAsym_result_all["2016preVFP"]["PT50To70"]["Eta0To0p8"][0]=0.001;
-  dAsym_result_all["2016preVFP"]["PT50To70"]["Eta0To0p8"][1]=0.016;
-  dAsym_result_all["2016preVFP"]["PT50To70"]["Eta0p8To1p6"][-1]=-0.019;
-  dAsym_result_all["2016preVFP"]["PT50To70"]["Eta0p8To1p6"][0]=-0.004;
-  dAsym_result_all["2016preVFP"]["PT50To70"]["Eta0p8To1p6"][1]=0.011;
-  dAsym_result_all["2016preVFP"]["PT50To70"]["Eta1p6To2"][-1]=-0.015;
-  dAsym_result_all["2016preVFP"]["PT50To70"]["Eta1p6To2"][0]=0.017;
-  dAsym_result_all["2016preVFP"]["PT50To70"]["Eta1p6To2"][1]=0.048;
-  dAsym_result_all["2016preVFP"]["PT50To70"]["Eta2To2p5"][-1]=-0.095;
-  dAsym_result_all["2016preVFP"]["PT50To70"]["Eta2To2p5"][0]=-0.062;
-  dAsym_result_all["2016preVFP"]["PT50To70"]["Eta2To2p5"][1]=-0.028999999999999998;
+}
+void MCCorrection::InitBtagChargeAsymFactor_OLD(){
+  cout << "jhchoi[InitBtagChargeAsymFactor]" << endl;
+  //2016preVFP
+dAsym_result_all["2016preVFP"]["PT30To50"]["Eta0To0p8"][-1]=-0.009927674461544009;
+dAsym_result_all["2016preVFP"]["PT30To50"]["Eta0To0p8"][0]=0.00016014180437196046;
+dAsym_result_all["2016preVFP"]["PT30To50"]["Eta0To0p8"][1]=0.010230875436166019;
+dAsym_result_all["2016preVFP"]["PT30To50"]["Eta0p8To1p6"][-1]=-0.0026573422192386724;
+dAsym_result_all["2016preVFP"]["PT30To50"]["Eta0p8To1p6"][0]=0.011892975308001041;
+dAsym_result_all["2016preVFP"]["PT30To50"]["Eta0p8To1p6"][1]=0.026504547206004134;
+dAsym_result_all["2016preVFP"]["PT30To50"]["Eta1p6To2"][-1]=0.0065547460065941004;
+dAsym_result_all["2016preVFP"]["PT30To50"]["Eta1p6To2"][0]=0.03860737383365631;
+dAsym_result_all["2016preVFP"]["PT30To50"]["Eta1p6To2"][1]=0.07076813752670881;
+dAsym_result_all["2016preVFP"]["PT30To50"]["Eta2To2p5"][-1]=0.02299635031197937;
+dAsym_result_all["2016preVFP"]["PT30To50"]["Eta2To2p5"][0]=0.06293671578168869;
+dAsym_result_all["2016preVFP"]["PT30To50"]["Eta2To2p5"][1]=0.10273732715699452;
 
-  dAsym_result_all["2016preVFP"]["PT70To100"]["Eta0To0p8"][-1]=-0.003000000000000001;          
-dAsym_result_all["2016preVFP"]["PT70To100"]["Eta0To0p8"][0]=0.009;                           
-dAsym_result_all["2016preVFP"]["PT70To100"]["Eta0To0p8"][1]=0.020999999999999998;            
-dAsym_result_all["2016preVFP"]["PT70To100"]["Eta0p8To1p6"][-1]=-0.025;                       
-dAsym_result_all["2016preVFP"]["PT70To100"]["Eta0p8To1p6"][0]=-0.01;                         
-dAsym_result_all["2016preVFP"]["PT70To100"]["Eta0p8To1p6"][1]=0.004999999999999999;          
-dAsym_result_all["2016preVFP"]["PT70To100"]["Eta1p6To2"][-1]=-0.022;                         
-dAsym_result_all["2016preVFP"]["PT70To100"]["Eta1p6To2"][0]=0.015;                           
-dAsym_result_all["2016preVFP"]["PT70To100"]["Eta1p6To2"][1]=0.052;                           
-dAsym_result_all["2016preVFP"]["PT70To100"]["Eta2To2p5"][-1]=-0.015;              
-dAsym_result_all["2016preVFP"]["PT70To100"]["Eta2To2p5"][0]=0.037;                 
-dAsym_result_all["2016preVFP"]["PT70To100"]["Eta2To2p5"][1]=0.09;                    
-dAsym_result_all["2016preVFP"]["PT70To100"]["Eta0To0p8"][-1]=-0.003000000000000001;          
-dAsym_result_all["2016preVFP"]["PT70To100"]["Eta0To0p8"][0]=0.009;                  
-dAsym_result_all["2016preVFP"]["PT70To100"]["Eta0To0p8"][1]=0.020999999999999998;
-dAsym_result_all["2016preVFP"]["PT70To100"]["Eta0p8To1p6"][-1]=-0.025;            
-dAsym_result_all["2016preVFP"]["PT70To100"]["Eta0p8To1p6"][0]=-0.01;                         
-dAsym_result_all["2016preVFP"]["PT70To100"]["Eta0p8To1p6"][1]=0.004999999999999999;          
-dAsym_result_all["2016preVFP"]["PT70To100"]["Eta1p6To2"][-1]=-0.022;                         
-dAsym_result_all["2016preVFP"]["PT70To100"]["Eta1p6To2"][0]=0.015;                           
-dAsym_result_all["2016preVFP"]["PT70To100"]["Eta1p6To2"][1]=0.052;                           
-dAsym_result_all["2016preVFP"]["PT70To100"]["Eta2To2p5"][-1]=-0.015;                         
-dAsym_result_all["2016preVFP"]["PT70To100"]["Eta2To2p5"][0]=0.037;                           
-dAsym_result_all["2016preVFP"]["PT70To100"]["Eta2To2p5"][1]=0.09; 
+ dAsym_result_all["2016preVFP"]["PT50To70"]["Eta0To0p8"][-1]=-0.01672285165360869;
+dAsym_result_all["2016preVFP"]["PT50To70"]["Eta0To0p8"][0]=-0.0010106186382472515;
+dAsym_result_all["2016preVFP"]["PT50To70"]["Eta0To0p8"][1]=0.014747742299661224;
+dAsym_result_all["2016preVFP"]["PT50To70"]["Eta0p8To1p6"][-1]=-0.04113087160801316;
+dAsym_result_all["2016preVFP"]["PT50To70"]["Eta0p8To1p6"][0]=-0.02250700257718563;
+dAsym_result_all["2016preVFP"]["PT50To70"]["Eta0p8To1p6"][1]=-0.004126247911804812;
+dAsym_result_all["2016preVFP"]["PT50To70"]["Eta1p6To2"][-1]=-0.010647556877706639;
+dAsym_result_all["2016preVFP"]["PT50To70"]["Eta1p6To2"][0]=0.021494943648576736;
+dAsym_result_all["2016preVFP"]["PT50To70"]["Eta1p6To2"][1]=0.05343547590021772;
+dAsym_result_all["2016preVFP"]["PT50To70"]["Eta2To2p5"][-1]=-0.09548851878868296;
+dAsym_result_all["2016preVFP"]["PT50To70"]["Eta2To2p5"][0]=-0.062472376972436905;
+dAsym_result_all["2016preVFP"]["PT50To70"]["Eta2To2p5"][1]=-0.029438587164043295;
 
-dAsym_result_all["2016preVFP"]["PT100To140"]["Eta0To0p8"][-1]=-0.043;            
-dAsym_result_all["2016preVFP"]["PT100To140"]["Eta0To0p8"][0]=-0.026;
-dAsym_result_all["2016preVFP"]["PT100To140"]["Eta0To0p8"][1]=-0.008999999999999998;
-dAsym_result_all["2016preVFP"]["PT100To140"]["Eta0p8To1p6"][-1]=-0.051000000000000004;       
-dAsym_result_all["2016preVFP"]["PT100To140"]["Eta0p8To1p6"][0]=-0.024;            
-dAsym_result_all["2016preVFP"]["PT100To140"]["Eta0p8To1p6"][1]=0.002999999999999999;
-dAsym_result_all["2016preVFP"]["PT100To140"]["Eta1p6To2"][-1]=-0.022;
-dAsym_result_all["2016preVFP"]["PT100To140"]["Eta1p6To2"][0]=0.022;  
-dAsym_result_all["2016preVFP"]["PT100To140"]["Eta1p6To2"][1]=0.066; 
-dAsym_result_all["2016preVFP"]["PT100To140"]["Eta2To2p5"][-1]=-0.098;
-dAsym_result_all["2016preVFP"]["PT100To140"]["Eta2To2p5"][0]=-0.028;
-dAsym_result_all["2016preVFP"]["PT100To140"]["Eta2To2p5"][1]=0.043;
-dAsym_result_all["2016preVFP"]["PT100To140"]["Eta0To0p8"][-1]=-0.043;
-dAsym_result_all["2016preVFP"]["PT100To140"]["Eta0To0p8"][0]=-0.026;
-dAsym_result_all["2016preVFP"]["PT100To140"]["Eta0To0p8"][1]=-0.008999999999999998;
-dAsym_result_all["2016preVFP"]["PT100To140"]["Eta0p8To1p6"][-1]=-0.051000000000000004;
-dAsym_result_all["2016preVFP"]["PT100To140"]["Eta0p8To1p6"][0]=-0.024;            
-dAsym_result_all["2016preVFP"]["PT100To140"]["Eta0p8To1p6"][1]=0.002999999999999999;
-dAsym_result_all["2016preVFP"]["PT100To140"]["Eta1p6To2"][-1]=-0.022;
-dAsym_result_all["2016preVFP"]["PT100To140"]["Eta1p6To2"][0]=0.022;  
-dAsym_result_all["2016preVFP"]["PT100To140"]["Eta1p6To2"][1]=0.066; 
-dAsym_result_all["2016preVFP"]["PT100To140"]["Eta2To2p5"][-1]=-0.098;
-dAsym_result_all["2016preVFP"]["PT100To140"]["Eta2To2p5"][0]=-0.028;
-dAsym_result_all["2016preVFP"]["PT100To140"]["Eta2To2p5"][1]=0.043;
+dAsym_result_all["2016preVFP"]["PT70To100"]["Eta0To0p8"][-1]=-0.0037668824110509216;
+dAsym_result_all["2016preVFP"]["PT70To100"]["Eta0To0p8"][0]=0.012088972143828869;
+dAsym_result_all["2016preVFP"]["PT70To100"]["Eta0To0p8"][1]=0.027992090242336037;
+dAsym_result_all["2016preVFP"]["PT70To100"]["Eta0p8To1p6"][-1]=-0.019585034303070924;
+dAsym_result_all["2016preVFP"]["PT70To100"]["Eta0p8To1p6"][0]=-0.0009576003067195415;
+dAsym_result_all["2016preVFP"]["PT70To100"]["Eta0p8To1p6"][1]=0.017657398049751378;
+dAsym_result_all["2016preVFP"]["PT70To100"]["Eta1p6To2"][-1]=-0.048450460076618386;
+dAsym_result_all["2016preVFP"]["PT70To100"]["Eta1p6To2"][0]=-0.007427786942571402;
+dAsym_result_all["2016preVFP"]["PT70To100"]["Eta1p6To2"][1]=0.03324841288132361;
+dAsym_result_all["2016preVFP"]["PT70To100"]["Eta2To2p5"][-1]=-0.0019867457651312898;
+dAsym_result_all["2016preVFP"]["PT70To100"]["Eta2To2p5"][0]=0.05138333514332771;
+dAsym_result_all["2016preVFP"]["PT70To100"]["Eta2To2p5"][1]=0.10496559054341899;
 
- dAsym_result_all["2016preVFP"]["PT140ToInf"]["Eta0To0p8"][-1]=-0.021;                        
-dAsym_result_all["2016preVFP"]["PT140ToInf"]["Eta0To0p8"][0]=0.007;                          
-dAsym_result_all["2016preVFP"]["PT140ToInf"]["Eta0To0p8"][1]=0.035;                          
-dAsym_result_all["2016preVFP"]["PT140ToInf"]["Eta0p8To1p6"][-1]=-0.07400000000000001;        
-dAsym_result_all["2016preVFP"]["PT140ToInf"]["Eta0p8To1p6"][0]=-0.032;                       
-dAsym_result_all["2016preVFP"]["PT140ToInf"]["Eta0p8To1p6"][1]=0.010000000000000002;         
-dAsym_result_all["2016preVFP"]["PT140ToInf"]["Eta1p6To2"][-1]=0.256;                         
-dAsym_result_all["2016preVFP"]["PT140ToInf"]["Eta1p6To2"][0]=0.357;                          
-dAsym_result_all["2016preVFP"]["PT140ToInf"]["Eta1p6To2"][1]=0.45499999999999996;            
-dAsym_result_all["2016preVFP"]["PT140ToInf"]["Eta2To2p5"][-1]=-0.45099999999999996;          
-dAsym_result_all["2016preVFP"]["PT140ToInf"]["Eta2To2p5"][0]=-0.286;                         
-dAsym_result_all["2016preVFP"]["PT140ToInf"]["Eta2To2p5"][1]=-0.09399999999999997;           
-dAsym_result_all["2016preVFP"]["PT140ToInf"]["Eta0To0p8"][-1]=-0.021;                        
-dAsym_result_all["2016preVFP"]["PT140ToInf"]["Eta0To0p8"][0]=0.007;               
-dAsym_result_all["2016preVFP"]["PT140ToInf"]["Eta0To0p8"][1]=0.035;                
-dAsym_result_all["2016preVFP"]["PT140ToInf"]["Eta0p8To1p6"][-1]=-0.07400000000000001;
-dAsym_result_all["2016preVFP"]["PT140ToInf"]["Eta0p8To1p6"][0]=-0.032;                       
-dAsym_result_all["2016preVFP"]["PT140ToInf"]["Eta0p8To1p6"][1]=0.010000000000000002;
-dAsym_result_all["2016preVFP"]["PT140ToInf"]["Eta1p6To2"][-1]=0.256;             
-dAsym_result_all["2016preVFP"]["PT140ToInf"]["Eta1p6To2"][0]=0.357;               
-dAsym_result_all["2016preVFP"]["PT140ToInf"]["Eta1p6To2"][1]=0.45499999999999996;            
-dAsym_result_all["2016preVFP"]["PT140ToInf"]["Eta2To2p5"][-1]=-0.45099999999999996;          
-dAsym_result_all["2016preVFP"]["PT140ToInf"]["Eta2To2p5"][0]=-0.286;                         
-dAsym_result_all["2016preVFP"]["PT140ToInf"]["Eta2To2p5"][1]=-0.09399999999999997;           
+ dAsym_result_all["2016preVFP"]["PT100To140"]["Eta0To0p8"][-1]=-0.04954994170883666;
+dAsym_result_all["2016preVFP"]["PT100To140"]["Eta0To0p8"][0]=-0.030039651319384575;
+dAsym_result_all["2016preVFP"]["PT100To140"]["Eta0To0p8"][1]=-0.010796061697198055;
+dAsym_result_all["2016preVFP"]["PT100To140"]["Eta0p8To1p6"][-1]=-0.05572701305905405;
+dAsym_result_all["2016preVFP"]["PT100To140"]["Eta0p8To1p6"][0]=-0.030031824484467506;
+dAsym_result_all["2016preVFP"]["PT100To140"]["Eta0p8To1p6"][1]=-0.004101706707465364;
+dAsym_result_all["2016preVFP"]["PT100To140"]["Eta1p6To2"][-1]=-0.02205865727116514;
+dAsym_result_all["2016preVFP"]["PT100To140"]["Eta1p6To2"][0]=0.0219557024538517;
+dAsym_result_all["2016preVFP"]["PT100To140"]["Eta1p6To2"][1]=0.06564271912408647;
+dAsym_result_all["2016preVFP"]["PT100To140"]["Eta2To2p5"][-1]=-0.0983677848374985;
+dAsym_result_all["2016preVFP"]["PT100To140"]["Eta2To2p5"][0]=-0.0281731765717268;
+dAsym_result_all["2016preVFP"]["PT100To140"]["Eta2To2p5"][1]=0.04238765566562294;
+
+
+ dAsym_result_all["2016preVFP"]["PT140ToInf"]["Eta0To0p8"][-1]=-0.03153844988326076;
+dAsym_result_all["2016preVFP"]["PT140ToInf"]["Eta0To0p8"][0]=-0.0023065030109137297;
+dAsym_result_all["2016preVFP"]["PT140ToInf"]["Eta0To0p8"][1]=0.02684694974933528;
+dAsym_result_all["2016preVFP"]["PT140ToInf"]["Eta0p8To1p6"][-1]=-0.07865925388702343;
+dAsym_result_all["2016preVFP"]["PT140ToInf"]["Eta0p8To1p6"][0]=-0.03462124243378639;
+dAsym_result_all["2016preVFP"]["PT140ToInf"]["Eta0p8To1p6"][1]=0.009073869305168812;
+dAsym_result_all["2016preVFP"]["PT140ToInf"]["Eta1p6To2"][-1]=0.16153999950975167;
+dAsym_result_all["2016preVFP"]["PT140ToInf"]["Eta1p6To2"][0]=0.27007898688316345;
+dAsym_result_all["2016preVFP"]["PT140ToInf"]["Eta1p6To2"][1]=0.3744562289556057;
+dAsym_result_all["2016preVFP"]["PT140ToInf"]["Eta2To2p5"][-1]=-0.4488290627098726;
+dAsym_result_all["2016preVFP"]["PT140ToInf"]["Eta2To2p5"][0]=-0.2861124873161316;
+dAsym_result_all["2016preVFP"]["PT140ToInf"]["Eta2To2p5"][1]=-0.08920688029640511;
 
 
   //2016postVFP
-dAsym_result_all["2016postVFP"]["PT30To50"]["Eta0To0p8"][-1]=-0.011;                         
-dAsym_result_all["2016postVFP"]["PT30To50"]["Eta0To0p8"][0]=0.0;                             
-dAsym_result_all["2016postVFP"]["PT30To50"]["Eta0To0p8"][1]=0.011;
-dAsym_result_all["2016postVFP"]["PT30To50"]["Eta0p8To1p6"][-1]=-0.011;                       
-dAsym_result_all["2016postVFP"]["PT30To50"]["Eta0p8To1p6"][0]=0.004;             
-dAsym_result_all["2016postVFP"]["PT30To50"]["Eta0p8To1p6"][1]=0.02; 
-dAsym_result_all["2016postVFP"]["PT30To50"]["Eta1p6To2"][-1]=0.0010000000000000009;
-dAsym_result_all["2016postVFP"]["PT30To50"]["Eta1p6To2"][0]=0.031;                           
-dAsym_result_all["2016postVFP"]["PT30To50"]["Eta1p6To2"][1]=0.062;                
-dAsym_result_all["2016postVFP"]["PT30To50"]["Eta2To2p5"][-1]=-0.024;                
-dAsym_result_all["2016postVFP"]["PT30To50"]["Eta2To2p5"][0]=0.006;   
-dAsym_result_all["2016postVFP"]["PT30To50"]["Eta2To2p5"][1]=0.036;   
-dAsym_result_all["2016postVFP"]["PT30To50"]["Eta0To0p8"][-1]=-0.011;
-dAsym_result_all["2016postVFP"]["PT30To50"]["Eta0To0p8"][0]=0.0;
-dAsym_result_all["2016postVFP"]["PT30To50"]["Eta0To0p8"][1]=0.011;
-dAsym_result_all["2016postVFP"]["PT30To50"]["Eta0p8To1p6"][-1]=-0.011;
-dAsym_result_all["2016postVFP"]["PT30To50"]["Eta0p8To1p6"][0]=0.004;
-dAsym_result_all["2016postVFP"]["PT30To50"]["Eta0p8To1p6"][1]=0.02;
-dAsym_result_all["2016postVFP"]["PT30To50"]["Eta1p6To2"][-1]=0.0010000000000000009;
-dAsym_result_all["2016postVFP"]["PT30To50"]["Eta1p6To2"][0]=0.031;
-dAsym_result_all["2016postVFP"]["PT30To50"]["Eta1p6To2"][1]=0.062;
-dAsym_result_all["2016postVFP"]["PT30To50"]["Eta2To2p5"][-1]=-0.024;
-dAsym_result_all["2016postVFP"]["PT30To50"]["Eta2To2p5"][0]=0.006;
-dAsym_result_all["2016postVFP"]["PT30To50"]["Eta2To2p5"][1]=0.036;
+dAsym_result_all["2016postVFP"]["PT30To50"]["Eta0To0p8"][-1]=-0.010823177165315934;
+dAsym_result_all["2016postVFP"]["PT30To50"]["Eta0To0p8"][0]=0.0004721073783002794;
+dAsym_result_all["2016postVFP"]["PT30To50"]["Eta0To0p8"][1]=0.011924056087537964;
+dAsym_result_all["2016postVFP"]["PT30To50"]["Eta0p8To1p6"][-1]=-0.007661127511931834;
+dAsym_result_all["2016postVFP"]["PT30To50"]["Eta0p8To1p6"][0]=0.008035285398364067;
+dAsym_result_all["2016postVFP"]["PT30To50"]["Eta0p8To1p6"][1]=0.024006849672220124;
+dAsym_result_all["2016postVFP"]["PT30To50"]["Eta1p6To2"][-1]=-0.015794016595435792;
+dAsym_result_all["2016postVFP"]["PT30To50"]["Eta1p6To2"][0]=0.006988563109189272;
+dAsym_result_all["2016postVFP"]["PT30To50"]["Eta1p6To2"][1]=0.029788077643274884;
+dAsym_result_all["2016postVFP"]["PT30To50"]["Eta2To2p5"][-1]=0.006547790441246815;
+dAsym_result_all["2016postVFP"]["PT30To50"]["Eta2To2p5"][0]=0.04512759670615196;
+dAsym_result_all["2016postVFP"]["PT30To50"]["Eta2To2p5"][1]=0.08384977418617352;
 
  
-dAsym_result_all["2016postVFP"]["PT50To70"]["Eta0To0p8"][-1]=0.008;
-dAsym_result_all["2016postVFP"]["PT50To70"]["Eta0To0p8"][0]=0.02;
-dAsym_result_all["2016postVFP"]["PT50To70"]["Eta0To0p8"][1]=0.032;
-dAsym_result_all["2016postVFP"]["PT50To70"]["Eta0p8To1p6"][-1]=-0.004;
-dAsym_result_all["2016postVFP"]["PT50To70"]["Eta0p8To1p6"][0]=0.01;
-dAsym_result_all["2016postVFP"]["PT50To70"]["Eta0p8To1p6"][1]=0.024;
-dAsym_result_all["2016postVFP"]["PT50To70"]["Eta1p6To2"][-1]=-0.051000000000000004;
-dAsym_result_all["2016postVFP"]["PT50To70"]["Eta1p6To2"][0]=-0.021;
-dAsym_result_all["2016postVFP"]["PT50To70"]["Eta1p6To2"][1]=0.008999999999999998;
-dAsym_result_all["2016postVFP"]["PT50To70"]["Eta2To2p5"][-1]=-0.064;
-dAsym_result_all["2016postVFP"]["PT50To70"]["Eta2To2p5"][0]=-0.023;
-dAsym_result_all["2016postVFP"]["PT50To70"]["Eta2To2p5"][1]=0.018000000000000002;
-dAsym_result_all["2016postVFP"]["PT50To70"]["Eta0To0p8"][-1]=0.008;
-dAsym_result_all["2016postVFP"]["PT50To70"]["Eta0To0p8"][0]=0.02;
-dAsym_result_all["2016postVFP"]["PT50To70"]["Eta0To0p8"][1]=0.032;
-dAsym_result_all["2016postVFP"]["PT50To70"]["Eta0p8To1p6"][-1]=-0.004;
-dAsym_result_all["2016postVFP"]["PT50To70"]["Eta0p8To1p6"][0]=0.01;
-dAsym_result_all["2016postVFP"]["PT50To70"]["Eta0p8To1p6"][1]=0.024;
-dAsym_result_all["2016postVFP"]["PT50To70"]["Eta1p6To2"][-1]=-0.051000000000000004;
-dAsym_result_all["2016postVFP"]["PT50To70"]["Eta1p6To2"][0]=-0.021;
-dAsym_result_all["2016postVFP"]["PT50To70"]["Eta1p6To2"][1]=0.008999999999999998;
-dAsym_result_all["2016postVFP"]["PT50To70"]["Eta2To2p5"][-1]=-0.064;
-dAsym_result_all["2016postVFP"]["PT50To70"]["Eta2To2p5"][0]=-0.023;
-dAsym_result_all["2016postVFP"]["PT50To70"]["Eta2To2p5"][1]=0.018000000000000002;
+dAsym_result_all["2016postVFP"]["PT50To70"]["Eta0To0p8"][-1]=0.02223661195859104;
+dAsym_result_all["2016postVFP"]["PT50To70"]["Eta0To0p8"][0]=0.03729364648461342;
+dAsym_result_all["2016postVFP"]["PT50To70"]["Eta0To0p8"][1]=0.052957212609969107;
+dAsym_result_all["2016postVFP"]["PT50To70"]["Eta0p8To1p6"][-1]=-0.005722867624995142;
+dAsym_result_all["2016postVFP"]["PT50To70"]["Eta0p8To1p6"][0]=0.008709479123353958;
+dAsym_result_all["2016postVFP"]["PT50To70"]["Eta0p8To1p6"][1]=0.02282305615076676;
+dAsym_result_all["2016postVFP"]["PT50To70"]["Eta1p6To2"][-1]=-0.04607068019916514;
+dAsym_result_all["2016postVFP"]["PT50To70"]["Eta1p6To2"][0]=-0.015306144021451473;
+dAsym_result_all["2016postVFP"]["PT50To70"]["Eta1p6To2"][1]=0.015713944957868667;
+dAsym_result_all["2016postVFP"]["PT50To70"]["Eta2To2p5"][-1]=-0.06447761438727716;
+dAsym_result_all["2016postVFP"]["PT50To70"]["Eta2To2p5"][0]=-0.018368743360042572;
+dAsym_result_all["2016postVFP"]["PT50To70"]["Eta2To2p5"][1]=0.027318363171983787;
 
-dAsym_result_all["2016postVFP"]["PT70To100"]["Eta0To0p8"][-1]=-0.015;
-dAsym_result_all["2016postVFP"]["PT70To100"]["Eta0To0p8"][0]=-0.002;
-dAsym_result_all["2016postVFP"]["PT70To100"]["Eta0To0p8"][1]=0.011;
-dAsym_result_all["2016postVFP"]["PT70To100"]["Eta0p8To1p6"][-1]=-0.02;
-dAsym_result_all["2016postVFP"]["PT70To100"]["Eta0p8To1p6"][0]=0.0;
-dAsym_result_all["2016postVFP"]["PT70To100"]["Eta0p8To1p6"][1]=0.02;
-dAsym_result_all["2016postVFP"]["PT70To100"]["Eta1p6To2"][-1]=-0.015000000000000003;
-dAsym_result_all["2016postVFP"]["PT70To100"]["Eta1p6To2"][0]=0.02;
-dAsym_result_all["2016postVFP"]["PT70To100"]["Eta1p6To2"][1]=0.05500000000000001;
-dAsym_result_all["2016postVFP"]["PT70To100"]["Eta2To2p5"][-1]=0.042;
-dAsym_result_all["2016postVFP"]["PT70To100"]["Eta2To2p5"][0]=0.093;
-dAsym_result_all["2016postVFP"]["PT70To100"]["Eta2To2p5"][1]=0.144;
-dAsym_result_all["2016postVFP"]["PT70To100"]["Eta0To0p8"][-1]=-0.015;
-dAsym_result_all["2016postVFP"]["PT70To100"]["Eta0To0p8"][0]=-0.002;
-dAsym_result_all["2016postVFP"]["PT70To100"]["Eta0To0p8"][1]=0.011;
-dAsym_result_all["2016postVFP"]["PT70To100"]["Eta0p8To1p6"][-1]=-0.02;
-dAsym_result_all["2016postVFP"]["PT70To100"]["Eta0p8To1p6"][0]=0.0;
-dAsym_result_all["2016postVFP"]["PT70To100"]["Eta0p8To1p6"][1]=0.02;
-dAsym_result_all["2016postVFP"]["PT70To100"]["Eta1p6To2"][-1]=-0.015000000000000003;
-dAsym_result_all["2016postVFP"]["PT70To100"]["Eta1p6To2"][0]=0.02;
-dAsym_result_all["2016postVFP"]["PT70To100"]["Eta1p6To2"][1]=0.05500000000000001;
-dAsym_result_all["2016postVFP"]["PT70To100"]["Eta2To2p5"][-1]=0.042;
-dAsym_result_all["2016postVFP"]["PT70To100"]["Eta2To2p5"][0]=0.093;
-dAsym_result_all["2016postVFP"]["PT70To100"]["Eta2To2p5"][1]=0.144;
 
- dAsym_result_all["2016postVFP"]["PT100To140"]["Eta0To0p8"][-1]=0.004;
-dAsym_result_all["2016postVFP"]["PT100To140"]["Eta0To0p8"][0]=0.021;
-dAsym_result_all["2016postVFP"]["PT100To140"]["Eta0To0p8"][1]=0.038000000000000006;
-dAsym_result_all["2016postVFP"]["PT100To140"]["Eta0p8To1p6"][-1]=0.03;
-dAsym_result_all["2016postVFP"]["PT100To140"]["Eta0p8To1p6"][0]=0.052;
-dAsym_result_all["2016postVFP"]["PT100To140"]["Eta0p8To1p6"][1]=0.074;
-dAsym_result_all["2016postVFP"]["PT100To140"]["Eta1p6To2"][-1]=0.04700000000000001;
-dAsym_result_all["2016postVFP"]["PT100To140"]["Eta1p6To2"][0]=0.101;
-dAsym_result_all["2016postVFP"]["PT100To140"]["Eta1p6To2"][1]=0.157;
-dAsym_result_all["2016postVFP"]["PT100To140"]["Eta2To2p5"][-1]=-0.121;
-dAsym_result_all["2016postVFP"]["PT100To140"]["Eta2To2p5"][0]=-0.037;
-dAsym_result_all["2016postVFP"]["PT100To140"]["Eta2To2p5"][1]=0.04700000000000001;
-dAsym_result_all["2016postVFP"]["PT100To140"]["Eta0To0p8"][-1]=0.004;
-dAsym_result_all["2016postVFP"]["PT100To140"]["Eta0To0p8"][0]=0.021;
-dAsym_result_all["2016postVFP"]["PT100To140"]["Eta0To0p8"][1]=0.038000000000000006;
-dAsym_result_all["2016postVFP"]["PT100To140"]["Eta0p8To1p6"][-1]=0.03;
-dAsym_result_all["2016postVFP"]["PT100To140"]["Eta0p8To1p6"][0]=0.052;
-dAsym_result_all["2016postVFP"]["PT100To140"]["Eta0p8To1p6"][1]=0.074;
-dAsym_result_all["2016postVFP"]["PT100To140"]["Eta1p6To2"][-1]=0.04700000000000001;
-dAsym_result_all["2016postVFP"]["PT100To140"]["Eta1p6To2"][0]=0.101;
-dAsym_result_all["2016postVFP"]["PT100To140"]["Eta1p6To2"][1]=0.157;
-dAsym_result_all["2016postVFP"]["PT100To140"]["Eta2To2p5"][-1]=-0.121;
-dAsym_result_all["2016postVFP"]["PT100To140"]["Eta2To2p5"][0]=-0.037;
-dAsym_result_all["2016postVFP"]["PT100To140"]["Eta2To2p5"][1]=0.04700000000000001;
 
- dAsym_result_all["2016postVFP"]["PT140ToInf"]["Eta0To0p8"][-1]=0.009000000000000001;
-dAsym_result_all["2016postVFP"]["PT140ToInf"]["Eta0To0p8"][0]=0.041;
-dAsym_result_all["2016postVFP"]["PT140ToInf"]["Eta0To0p8"][1]=0.07300000000000001;
-dAsym_result_all["2016postVFP"]["PT140ToInf"]["Eta0p8To1p6"][-1]=0.059000000000000004;
-dAsym_result_all["2016postVFP"]["PT140ToInf"]["Eta0p8To1p6"][0]=0.099;
-dAsym_result_all["2016postVFP"]["PT140ToInf"]["Eta0p8To1p6"][1]=0.14;
-dAsym_result_all["2016postVFP"]["PT140ToInf"]["Eta1p6To2"][-1]=-0.132;
-dAsym_result_all["2016postVFP"]["PT140ToInf"]["Eta1p6To2"][0]=-0.051;
-dAsym_result_all["2016postVFP"]["PT140ToInf"]["Eta1p6To2"][1]=0.031000000000000007;
-dAsym_result_all["2016postVFP"]["PT140ToInf"]["Eta2To2p5"][-1]=-0.207;
-dAsym_result_all["2016postVFP"]["PT140ToInf"]["Eta2To2p5"][0]=0.001;
-dAsym_result_all["2016postVFP"]["PT140ToInf"]["Eta2To2p5"][1]=0.214;
-dAsym_result_all["2016postVFP"]["PT140ToInf"]["Eta0To0p8"][-1]=0.009000000000000001;
-dAsym_result_all["2016postVFP"]["PT140ToInf"]["Eta0To0p8"][0]=0.041;
-dAsym_result_all["2016postVFP"]["PT140ToInf"]["Eta0To0p8"][1]=0.07300000000000001;
-dAsym_result_all["2016postVFP"]["PT140ToInf"]["Eta0p8To1p6"][-1]=0.059000000000000004;
-dAsym_result_all["2016postVFP"]["PT140ToInf"]["Eta0p8To1p6"][0]=0.099;
-dAsym_result_all["2016postVFP"]["PT140ToInf"]["Eta0p8To1p6"][1]=0.14;
-dAsym_result_all["2016postVFP"]["PT140ToInf"]["Eta1p6To2"][-1]=-0.132;
-dAsym_result_all["2016postVFP"]["PT140ToInf"]["Eta1p6To2"][0]=-0.051;
-dAsym_result_all["2016postVFP"]["PT140ToInf"]["Eta1p6To2"][1]=0.031000000000000007;
-dAsym_result_all["2016postVFP"]["PT140ToInf"]["Eta2To2p5"][-1]=-0.207;
-dAsym_result_all["2016postVFP"]["PT140ToInf"]["Eta2To2p5"][0]=0.001;
-dAsym_result_all["2016postVFP"]["PT140ToInf"]["Eta2To2p5"][1]=0.214;
+dAsym_result_all["2016postVFP"]["PT70To100"]["Eta0To0p8"][-1]=-0.021184575599342708;
+dAsym_result_all["2016postVFP"]["PT70To100"]["Eta0To0p8"][0]=-0.007681427989155054;
+dAsym_result_all["2016postVFP"]["PT70To100"]["Eta0To0p8"][1]=0.005672126811775931;
+dAsym_result_all["2016postVFP"]["PT70To100"]["Eta0p8To1p6"][-1]=-0.024151219513556175;
+dAsym_result_all["2016postVFP"]["PT70To100"]["Eta0p8To1p6"][0]=-0.0034359556157141924;
+dAsym_result_all["2016postVFP"]["PT70To100"]["Eta0p8To1p6"][1]=0.016936182361524815;
+dAsym_result_all["2016postVFP"]["PT70To100"]["Eta1p6To2"][-1]=-0.025264260335126187;
+dAsym_result_all["2016postVFP"]["PT70To100"]["Eta1p6To2"][0]=0.010374306701123714;
+dAsym_result_all["2016postVFP"]["PT70To100"]["Eta1p6To2"][1]=0.04605169766601319;
+dAsym_result_all["2016postVFP"]["PT70To100"]["Eta2To2p5"][-1]=0.017491878180153797;
+dAsym_result_all["2016postVFP"]["PT70To100"]["Eta2To2p5"][0]=0.07073305547237396;
+dAsym_result_all["2016postVFP"]["PT70To100"]["Eta2To2p5"][1]=0.12357300276893118;
+
+
+dAsym_result_all["2016postVFP"]["PT100To140"]["Eta0To0p8"][-1]=0.0014687724021152267;
+dAsym_result_all["2016postVFP"]["PT100To140"]["Eta0To0p8"][0]=0.01781371794641018;
+dAsym_result_all["2016postVFP"]["PT100To140"]["Eta0To0p8"][1]=0.03416394927108507;
+dAsym_result_all["2016postVFP"]["PT100To140"]["Eta0p8To1p6"][-1]=0.02465811820554723;
+dAsym_result_all["2016postVFP"]["PT100To140"]["Eta0p8To1p6"][0]=0.04585445299744606;
+dAsym_result_all["2016postVFP"]["PT100To140"]["Eta0p8To1p6"][1]=0.0670339818246322;
+dAsym_result_all["2016postVFP"]["PT100To140"]["Eta1p6To2"][-1]=0.02538714999474479;
+dAsym_result_all["2016postVFP"]["PT100To140"]["Eta1p6To2"][0]=0.0827891007065773;
+dAsym_result_all["2016postVFP"]["PT100To140"]["Eta1p6To2"][1]=0.13940307930480425;
+dAsym_result_all["2016postVFP"]["PT100To140"]["Eta2To2p5"][-1]=-0.16798622530708157;
+dAsym_result_all["2016postVFP"]["PT100To140"]["Eta2To2p5"][0]=-0.07070435583591461;
+dAsym_result_all["2016postVFP"]["PT100To140"]["Eta2To2p5"][1]=0.02986886170570295;
+
+
+dAsym_result_all["2016postVFP"]["PT140ToInf"]["Eta0To0p8"][-1]=0.00859240265823074;
+dAsym_result_all["2016postVFP"]["PT140ToInf"]["Eta0To0p8"][0]=0.040868256241083145;
+dAsym_result_all["2016postVFP"]["PT140ToInf"]["Eta0To0p8"][1]=0.07238844386217304;
+dAsym_result_all["2016postVFP"]["PT140ToInf"]["Eta0p8To1p6"][-1]=0.06167818003309371;
+dAsym_result_all["2016postVFP"]["PT140ToInf"]["Eta0p8To1p6"][0]=0.10550958663225174;
+dAsym_result_all["2016postVFP"]["PT140ToInf"]["Eta0p8To1p6"][1]=0.14974128696255531;
+dAsym_result_all["2016postVFP"]["PT140ToInf"]["Eta1p6To2"][-1]=-0.13214023631814575;
+dAsym_result_all["2016postVFP"]["PT140ToInf"]["Eta1p6To2"][0]=-0.051705025136470795;
+dAsym_result_all["2016postVFP"]["PT140ToInf"]["Eta1p6To2"][1]=0.029994767288567245;
+dAsym_result_all["2016postVFP"]["PT140ToInf"]["Eta2To2p5"][-1]=-0.2054722753888219;
+dAsym_result_all["2016postVFP"]["PT140ToInf"]["Eta2To2p5"][0]=0.0007972741150297225;
+dAsym_result_all["2016postVFP"]["PT140ToInf"]["Eta2To2p5"][1]=0.2152569974523346;
+
 
 //2017
-dAsym_result_all["2017"]["PT30To50"]["Eta0To0p8"][-1]=-0.005;                                
-dAsym_result_all["2017"]["PT30To50"]["Eta0To0p8"][0]=0.002;                                  
-dAsym_result_all["2017"]["PT30To50"]["Eta0To0p8"][1]=0.009000000000000001;                   
-dAsym_result_all["2017"]["PT30To50"]["Eta0p8To1p6"][-1]=-0.005999999999999999;               
-dAsym_result_all["2017"]["PT30To50"]["Eta0p8To1p6"][0]=0.003;                                
-dAsym_result_all["2017"]["PT30To50"]["Eta0p8To1p6"][1]=0.012;                                
-dAsym_result_all["2017"]["PT30To50"]["Eta1p6To2"][-1]=0.018000000000000002;                  
-dAsym_result_all["2017"]["PT30To50"]["Eta1p6To2"][0]=0.034;                                  
-dAsym_result_all["2017"]["PT30To50"]["Eta1p6To2"][1]=0.05;            
-dAsym_result_all["2017"]["PT30To50"]["Eta2To2p5"][-1]=0.035;          
-dAsym_result_all["2017"]["PT30To50"]["Eta2To2p5"][0]=0.057;                        
-dAsym_result_all["2017"]["PT30To50"]["Eta2To2p5"][1]=0.081;         
-dAsym_result_all["2017"]["PT30To50"]["Eta0To0p8"][-1]=-0.005;       
-dAsym_result_all["2017"]["PT30To50"]["Eta0To0p8"][0]=0.002;           
-dAsym_result_all["2017"]["PT30To50"]["Eta0To0p8"][1]=0.009000000000000001;
-dAsym_result_all["2017"]["PT30To50"]["Eta0p8To1p6"][-1]=-0.005999999999999999;    
-dAsym_result_all["2017"]["PT30To50"]["Eta0p8To1p6"][0]=0.003;        
-dAsym_result_all["2017"]["PT30To50"]["Eta0p8To1p6"][1]=0.012;       
-dAsym_result_all["2017"]["PT30To50"]["Eta1p6To2"][-1]=0.018000000000000002;        
-dAsym_result_all["2017"]["PT30To50"]["Eta1p6To2"][0]=0.034;           
-dAsym_result_all["2017"]["PT30To50"]["Eta1p6To2"][1]=0.05;            
-dAsym_result_all["2017"]["PT30To50"]["Eta2To2p5"][-1]=0.035;          
-dAsym_result_all["2017"]["PT30To50"]["Eta2To2p5"][0]=0.057;                        
-dAsym_result_all["2017"]["PT30To50"]["Eta2To2p5"][1]=0.081;         
+dAsym_result_all["2017"]["PT30To50"]["Eta0To0p8"][-1]=-0.00581086596728349;
+dAsym_result_all["2017"]["PT30To50"]["Eta0To0p8"][0]=0.0010965528199449182;
+dAsym_result_all["2017"]["PT30To50"]["Eta0To0p8"][1]=0.008016566214789658;
+dAsym_result_all["2017"]["PT30To50"]["Eta0p8To1p6"][-1]=-0.006162086524543062;
+dAsym_result_all["2017"]["PT30To50"]["Eta0p8To1p6"][0]=0.0029007133562117815;
+dAsym_result_all["2017"]["PT30To50"]["Eta0p8To1p6"][1]=0.012015137573653929;
+dAsym_result_all["2017"]["PT30To50"]["Eta1p6To2"][-1]=0.021919050388695113;
+dAsym_result_all["2017"]["PT30To50"]["Eta1p6To2"][0]=0.03685931861400604;
+dAsym_result_all["2017"]["PT30To50"]["Eta1p6To2"][1]=0.05181179732536213;
+dAsym_result_all["2017"]["PT30To50"]["Eta2To2p5"][-1]=0.0339962885189903;
+dAsym_result_all["2017"]["PT30To50"]["Eta2To2p5"][0]=0.05685530602931976;
+dAsym_result_all["2017"]["PT30To50"]["Eta2To2p5"][1]=0.07980137764346165;
 
- dAsym_result_all["2017"]["PT50To70"]["Eta0To0p8"][-1]=-0.01;          
-dAsym_result_all["2017"]["PT50To70"]["Eta0To0p8"][0]=-0.002;         
-dAsym_result_all["2017"]["PT50To70"]["Eta0To0p8"][1]=0.006;                       
-dAsym_result_all["2017"]["PT50To70"]["Eta0p8To1p6"][-1]=-0.001999999999999999;               
-dAsym_result_all["2017"]["PT50To70"]["Eta0p8To1p6"][0]=0.007;                       
-dAsym_result_all["2017"]["PT50To70"]["Eta0p8To1p6"][1]=0.016;       
-dAsym_result_all["2017"]["PT50To70"]["Eta1p6To2"][-1]=-0.005999999999999998;      
-dAsym_result_all["2017"]["PT50To70"]["Eta1p6To2"][0]=0.012;                           
-dAsym_result_all["2017"]["PT50To70"]["Eta1p6To2"][1]=0.03;            
-dAsym_result_all["2017"]["PT50To70"]["Eta2To2p5"][-1]=-0.025;        
-dAsym_result_all["2017"]["PT50To70"]["Eta2To2p5"][0]=-0.001;          
-dAsym_result_all["2017"]["PT50To70"]["Eta2To2p5"][1]=0.023;          
-dAsym_result_all["2017"]["PT50To70"]["Eta0To0p8"][-1]=-0.01;                       
-dAsym_result_all["2017"]["PT50To70"]["Eta0To0p8"][0]=-0.002;          
-dAsym_result_all["2017"]["PT50To70"]["Eta0To0p8"][1]=0.006;         
-dAsym_result_all["2017"]["PT50To70"]["Eta0p8To1p6"][-1]=-0.001999999999999999;
-dAsym_result_all["2017"]["PT50To70"]["Eta0p8To1p6"][0]=0.007;
-dAsym_result_all["2017"]["PT50To70"]["Eta0p8To1p6"][1]=0.016;
-dAsym_result_all["2017"]["PT50To70"]["Eta1p6To2"][-1]=-0.005999999999999998;
-dAsym_result_all["2017"]["PT50To70"]["Eta1p6To2"][0]=0.012;
-dAsym_result_all["2017"]["PT50To70"]["Eta1p6To2"][1]=0.03;
-dAsym_result_all["2017"]["PT50To70"]["Eta2To2p5"][-1]=-0.025;
-dAsym_result_all["2017"]["PT50To70"]["Eta2To2p5"][0]=-0.001;
-dAsym_result_all["2017"]["PT50To70"]["Eta2To2p5"][1]=0.023;
+dAsym_result_all["2017"]["PT50To70"]["Eta0To0p8"][-1]=-0.010186741841863077;
+dAsym_result_all["2017"]["PT50To70"]["Eta0To0p8"][0]=-0.0020362338982522488;
+dAsym_result_all["2017"]["PT50To70"]["Eta0To0p8"][1]=0.00611126634408328;
+dAsym_result_all["2017"]["PT50To70"]["Eta0p8To1p6"][-1]=-0.0006609534630989209;
+dAsym_result_all["2017"]["PT50To70"]["Eta0p8To1p6"][0]=0.008708975277841091;
+dAsym_result_all["2017"]["PT50To70"]["Eta0p8To1p6"][1]=0.018099322495020914;
+dAsym_result_all["2017"]["PT50To70"]["Eta1p6To2"][-1]=0.01809672940908452;
+dAsym_result_all["2017"]["PT50To70"]["Eta1p6To2"][0]=0.04100019484758377;
+dAsym_result_all["2017"]["PT50To70"]["Eta1p6To2"][1]=0.06391065050587269;
+dAsym_result_all["2017"]["PT50To70"]["Eta2To2p5"][-1]=0.009469285983170421;
+dAsym_result_all["2017"]["PT50To70"]["Eta2To2p5"][0]=0.03902658447623253;
+dAsym_result_all["2017"]["PT50To70"]["Eta2To2p5"][1]=0.06851490548446783;
 
 
- dAsym_result_all["2017"]["PT70To100"]["Eta0To0p8"][-1]=-0.012;                               
-dAsym_result_all["2017"]["PT70To100"]["Eta0To0p8"][0]=-0.004;                                
-dAsym_result_all["2017"]["PT70To100"]["Eta0To0p8"][1]=0.004;                                 
-dAsym_result_all["2017"]["PT70To100"]["Eta0p8To1p6"][-1]=-0.015;                             
-dAsym_result_all["2017"]["PT70To100"]["Eta0p8To1p6"][0]=-0.003;                              
-dAsym_result_all["2017"]["PT70To100"]["Eta0p8To1p6"][1]=0.009000000000000001;                
-dAsym_result_all["2017"]["PT70To100"]["Eta1p6To2"][-1]=-0.015;                               
-dAsym_result_all["2017"]["PT70To100"]["Eta1p6To2"][0]=0.012;                                 
-dAsym_result_all["2017"]["PT70To100"]["Eta1p6To2"][1]=0.039;                                 
-dAsym_result_all["2017"]["PT70To100"]["Eta2To2p5"][-1]=0.020999999999999998;                 
-dAsym_result_all["2017"]["PT70To100"]["Eta2To2p5"][0]=0.059;                                 
-dAsym_result_all["2017"]["PT70To100"]["Eta2To2p5"][1]=0.097;                                 
-dAsym_result_all["2017"]["PT70To100"]["Eta0To0p8"][-1]=-0.012;        
-dAsym_result_all["2017"]["PT70To100"]["Eta0To0p8"][0]=-0.004;         
-dAsym_result_all["2017"]["PT70To100"]["Eta0To0p8"][1]=0.004;                       
-dAsym_result_all["2017"]["PT70To100"]["Eta0p8To1p6"][-1]=-0.015;    
-dAsym_result_all["2017"]["PT70To100"]["Eta0p8To1p6"][0]=-0.003;     
-dAsym_result_all["2017"]["PT70To100"]["Eta0p8To1p6"][1]=0.009000000000000001;
-dAsym_result_all["2017"]["PT70To100"]["Eta1p6To2"][-1]=-0.015;            
-dAsym_result_all["2017"]["PT70To100"]["Eta1p6To2"][0]=0.012;                      
-dAsym_result_all["2017"]["PT70To100"]["Eta1p6To2"][1]=0.039;         
-dAsym_result_all["2017"]["PT70To100"]["Eta2To2p5"][-1]=0.020999999999999998;
-dAsym_result_all["2017"]["PT70To100"]["Eta2To2p5"][0]=0.059;                       
-dAsym_result_all["2017"]["PT70To100"]["Eta2To2p5"][1]=0.097;          
 
- dAsym_result_all["2017"]["PT100To140"]["Eta0To0p8"][-1]=-0.04;        
-dAsym_result_all["2017"]["PT100To140"]["Eta0To0p8"][0]=-0.027;                     
-dAsym_result_all["2017"]["PT100To140"]["Eta0To0p8"][1]=-0.014;      
-dAsym_result_all["2017"]["PT100To140"]["Eta0p8To1p6"][-1]=0.009000000000000001;              
-dAsym_result_all["2017"]["PT100To140"]["Eta0p8To1p6"][0]=0.025;       
-dAsym_result_all["2017"]["PT100To140"]["Eta0p8To1p6"][1]=0.041;      
-dAsym_result_all["2017"]["PT100To140"]["Eta1p6To2"][-1]=-0.08399999999999999;     
-dAsym_result_all["2017"]["PT100To140"]["Eta1p6To2"][0]=-0.052;                               
-dAsym_result_all["2017"]["PT100To140"]["Eta1p6To2"][1]=-0.019999999999999997;       
-dAsym_result_all["2017"]["PT100To140"]["Eta2To2p5"][-1]=0.008;      
-dAsym_result_all["2017"]["PT100To140"]["Eta2To2p5"][0]=0.064;                     
-dAsym_result_all["2017"]["PT100To140"]["Eta2To2p5"][1]=0.12;                          
-dAsym_result_all["2017"]["PT100To140"]["Eta0To0p8"][-1]=-0.04;        
-dAsym_result_all["2017"]["PT100To140"]["Eta0To0p8"][0]=-0.027;       
-dAsym_result_all["2017"]["PT100To140"]["Eta0To0p8"][1]=-0.014;        
-dAsym_result_all["2017"]["PT100To140"]["Eta0p8To1p6"][-1]=0.009000000000000001;
-dAsym_result_all["2017"]["PT100To140"]["Eta0p8To1p6"][0]=0.025;                    
-dAsym_result_all["2017"]["PT100To140"]["Eta0p8To1p6"][1]=0.041;       
-dAsym_result_all["2017"]["PT100To140"]["Eta1p6To2"][-1]=-0.08399999999999999;
-dAsym_result_all["2017"]["PT100To140"]["Eta1p6To2"][0]=-0.052;                
-dAsym_result_all["2017"]["PT100To140"]["Eta1p6To2"][1]=-0.019999999999999997;
-dAsym_result_all["2017"]["PT100To140"]["Eta2To2p5"][-1]=0.008;
-dAsym_result_all["2017"]["PT100To140"]["Eta2To2p5"][0]=0.064;               
-dAsym_result_all["2017"]["PT100To140"]["Eta2To2p5"][1]=0.12;
+dAsym_result_all["2017"]["PT70To100"]["Eta0To0p8"][-1]=-0.02039889611707543;
+dAsym_result_all["2017"]["PT70To100"]["Eta0To0p8"][0]=-0.010802765376865864;
+dAsym_result_all["2017"]["PT70To100"]["Eta0To0p8"][1]=-0.0013271952529550907;
+dAsym_result_all["2017"]["PT70To100"]["Eta0p8To1p6"][-1]=-0.012922065436753538;
+dAsym_result_all["2017"]["PT70To100"]["Eta0p8To1p6"][0]=-0.001627036021091044;
+dAsym_result_all["2017"]["PT70To100"]["Eta0p8To1p6"][1]=0.009800439799984307;
+dAsym_result_all["2017"]["PT70To100"]["Eta1p6To2"][-1]=-0.018735485618811224;
+dAsym_result_all["2017"]["PT70To100"]["Eta1p6To2"][0]=0.009165436029434204;
+dAsym_result_all["2017"]["PT70To100"]["Eta1p6To2"][1]=0.03693277565465567;
+dAsym_result_all["2017"]["PT70To100"]["Eta2To2p5"][-1]=0.020017504224489488;
+dAsym_result_all["2017"]["PT70To100"]["Eta2To2p5"][0]=0.05832994356751442;
+dAsym_result_all["2017"]["PT70To100"]["Eta2To2p5"][1]=0.09674155608117933;
 
- dAsym_result_all["2017"]["PT140ToInf"]["Eta0To0p8"][-1]=-0.031;                              
-dAsym_result_all["2017"]["PT140ToInf"]["Eta0To0p8"][0]=-0.015;                               
-dAsym_result_all["2017"]["PT140ToInf"]["Eta0To0p8"][1]=0.0010000000000000009;                
-dAsym_result_all["2017"]["PT140ToInf"]["Eta0p8To1p6"][-1]=0.009999999999999998;              
-dAsym_result_all["2017"]["PT140ToInf"]["Eta0p8To1p6"][0]=0.036;                              
-dAsym_result_all["2017"]["PT140ToInf"]["Eta0p8To1p6"][1]=0.062;                              
-dAsym_result_all["2017"]["PT140ToInf"]["Eta1p6To2"][-1]=-0.153;                              
-dAsym_result_all["2017"]["PT140ToInf"]["Eta1p6To2"][0]=-0.093;                               
-dAsym_result_all["2017"]["PT140ToInf"]["Eta1p6To2"][1]=-0.033;                               
-dAsym_result_all["2017"]["PT140ToInf"]["Eta2To2p5"][-1]=-0.145;                              
-dAsym_result_all["2017"]["PT140ToInf"]["Eta2To2p5"][0]=-0.053;                               
-dAsym_result_all["2017"]["PT140ToInf"]["Eta2To2p5"][1]=0.039;                                
-dAsym_result_all["2017"]["PT140ToInf"]["Eta0To0p8"][-1]=-0.031;                              
-dAsym_result_all["2017"]["PT140ToInf"]["Eta0To0p8"][0]=-0.015;                               
-dAsym_result_all["2017"]["PT140ToInf"]["Eta0To0p8"][1]=0.0010000000000000009;                
-dAsym_result_all["2017"]["PT140ToInf"]["Eta0p8To1p6"][-1]=0.009999999999999998;              
-dAsym_result_all["2017"]["PT140ToInf"]["Eta0p8To1p6"][0]=0.036;       
-dAsym_result_all["2017"]["PT140ToInf"]["Eta0p8To1p6"][1]=0.062;       
-dAsym_result_all["2017"]["PT140ToInf"]["Eta1p6To2"][-1]=-0.153;                    
-dAsym_result_all["2017"]["PT140ToInf"]["Eta1p6To2"][0]=-0.093;      
-dAsym_result_all["2017"]["PT140ToInf"]["Eta1p6To2"][1]=-0.033;      
-dAsym_result_all["2017"]["PT140ToInf"]["Eta2To2p5"][-1]=-0.145;              
-dAsym_result_all["2017"]["PT140ToInf"]["Eta2To2p5"][0]=-0.053;            
-dAsym_result_all["2017"]["PT140ToInf"]["Eta2To2p5"][1]=0.039;                     
+
+dAsym_result_all["2017"]["PT100To140"]["Eta0To0p8"][-1]=-0.0402090890971809;
+dAsym_result_all["2017"]["PT100To140"]["Eta0To0p8"][0]=-0.027084987610578537;
+dAsym_result_all["2017"]["PT100To140"]["Eta0To0p8"][1]=-0.013798666306738552;
+dAsym_result_all["2017"]["PT100To140"]["Eta0p8To1p6"][-1]=0.00843939623325551;
+dAsym_result_all["2017"]["PT100To140"]["Eta0p8To1p6"][0]=0.02422022446990013;
+dAsym_result_all["2017"]["PT100To140"]["Eta0p8To1p6"][1]=0.04031592633901752;
+dAsym_result_all["2017"]["PT100To140"]["Eta1p6To2"][-1]=-0.0832243726932413;
+dAsym_result_all["2017"]["PT100To140"]["Eta1p6To2"][0]=-0.04384738579392433;
+dAsym_result_all["2017"]["PT100To140"]["Eta1p6To2"][1]=-0.0050271661420706465;
+dAsym_result_all["2017"]["PT100To140"]["Eta2To2p5"][-1]=-0.048624924319870304;
+dAsym_result_all["2017"]["PT100To140"]["Eta2To2p5"][0]=0.012908926233649254;
+dAsym_result_all["2017"]["PT100To140"]["Eta2To2p5"][1]=0.07415626633161844;
+
+
+dAsym_result_all["2017"]["PT140ToInf"]["Eta0To0p8"][-1]=-0.03345837603511652;
+dAsym_result_all["2017"]["PT140ToInf"]["Eta0To0p8"][0]=-0.017358504235744476;
+dAsym_result_all["2017"]["PT140ToInf"]["Eta0To0p8"][1]=-0.0012825744819283322;
+dAsym_result_all["2017"]["PT140ToInf"]["Eta0p8To1p6"][-1]=0.009558452763031158;
+dAsym_result_all["2017"]["PT140ToInf"]["Eta0p8To1p6"][0]=0.03575459122657776;
+dAsym_result_all["2017"]["PT140ToInf"]["Eta0p8To1p6"][1]=0.06206076943837987;
+dAsym_result_all["2017"]["PT140ToInf"]["Eta1p6To2"][-1]=-0.1531098079330084;
+dAsym_result_all["2017"]["PT140ToInf"]["Eta1p6To2"][0]=-0.09117455035448074;
+dAsym_result_all["2017"]["PT140ToInf"]["Eta1p6To2"][1]=-0.031315274978470316;
+dAsym_result_all["2017"]["PT140ToInf"]["Eta2To2p5"][-1]=0.030204268507389276;
+dAsym_result_all["2017"]["PT140ToInf"]["Eta2To2p5"][0]=0.2337620109319687;
+dAsym_result_all["2017"]["PT140ToInf"]["Eta2To2p5"][1]=0.3984200525570541;
+
 
   //2018
-dAsym_result_all["2018"]["PT30To50"]["Eta0To0p8"][-1]=0.006999999999999999;                  
-dAsym_result_all["2018"]["PT30To50"]["Eta0To0p8"][0]=0.013;                                  
-dAsym_result_all["2018"]["PT30To50"]["Eta0To0p8"][1]=0.019;                                  
-dAsym_result_all["2018"]["PT30To50"]["Eta0p8To1p6"][-1]=0.009000000000000001;                
-dAsym_result_all["2018"]["PT30To50"]["Eta0p8To1p6"][0]=0.017;                                
-dAsym_result_all["2018"]["PT30To50"]["Eta0p8To1p6"][1]=0.025;                                
-dAsym_result_all["2018"]["PT30To50"]["Eta1p6To2"][-1]=-0.013999999999999999;                 
-dAsym_result_all["2018"]["PT30To50"]["Eta1p6To2"][0]=-0.001;                                 
-dAsym_result_all["2018"]["PT30To50"]["Eta1p6To2"][1]=0.012;                                  
-dAsym_result_all["2018"]["PT30To50"]["Eta2To2p5"][-1]=-0.025;                                
-dAsym_result_all["2018"]["PT30To50"]["Eta2To2p5"][0]=-0.009;                                 
-dAsym_result_all["2018"]["PT30To50"]["Eta2To2p5"][1]=0.007000000000000001;                   
-dAsym_result_all["2018"]["PT30To50"]["Eta0To0p8"][-1]=0.006999999999999999;                  
-dAsym_result_all["2018"]["PT30To50"]["Eta0To0p8"][0]=0.013;                                  
-dAsym_result_all["2018"]["PT30To50"]["Eta0To0p8"][1]=0.019;                                  
-dAsym_result_all["2018"]["PT30To50"]["Eta0p8To1p6"][-1]=0.009000000000000001;                
-dAsym_result_all["2018"]["PT30To50"]["Eta0p8To1p6"][0]=0.017;                                
-dAsym_result_all["2018"]["PT30To50"]["Eta0p8To1p6"][1]=0.025;                                
-dAsym_result_all["2018"]["PT30To50"]["Eta1p6To2"][-1]=-0.013999999999999999;                 
-dAsym_result_all["2018"]["PT30To50"]["Eta1p6To2"][0]=-0.001;                                 
-dAsym_result_all["2018"]["PT30To50"]["Eta1p6To2"][1]=0.012;                                  
-dAsym_result_all["2018"]["PT30To50"]["Eta2To2p5"][-1]=-0.025;                                
-dAsym_result_all["2018"]["PT30To50"]["Eta2To2p5"][0]=-0.009;                                 
-dAsym_result_all["2018"]["PT30To50"]["Eta2To2p5"][1]=0.007000000000000001;                   
+dAsym_result_all["2018"]["PT30To50"]["Eta0To0p8"][-1]=0.007358832723149459;
+dAsym_result_all["2018"]["PT30To50"]["Eta0To0p8"][0]=0.013248656876385212;
+dAsym_result_all["2018"]["PT30To50"]["Eta0To0p8"][1]=0.01914798920942731;
+dAsym_result_all["2018"]["PT30To50"]["Eta0p8To1p6"][-1]=0.004894798899910343;
+dAsym_result_all["2018"]["PT30To50"]["Eta0p8To1p6"][0]=0.012434265576303005;
+dAsym_result_all["2018"]["PT30To50"]["Eta0p8To1p6"][1]=0.020024740654899235;
+dAsym_result_all["2018"]["PT30To50"]["Eta1p6To2"][-1]=-0.013079872288501831;
+dAsym_result_all["2018"]["PT30To50"]["Eta1p6To2"][0]=0.0008394744945690036;
+dAsym_result_all["2018"]["PT30To50"]["Eta1p6To2"][1]=0.014834405818587632;
+dAsym_result_all["2018"]["PT30To50"]["Eta2To2p5"][-1]=-0.031998464349122055;
+dAsym_result_all["2018"]["PT30To50"]["Eta2To2p5"][0]=-0.011646872386336327;
+dAsym_result_all["2018"]["PT30To50"]["Eta2To2p5"][1]=0.008524124381229632;
 
- dAsym_result_all["2018"]["PT50To70"]["Eta0To0p8"][-1]=-0.026;                                
-dAsym_result_all["2018"]["PT50To70"]["Eta0To0p8"][0]=-0.018;                                 
-dAsym_result_all["2018"]["PT50To70"]["Eta0To0p8"][1]=-0.011;                                 
-dAsym_result_all["2018"]["PT50To70"]["Eta0p8To1p6"][-1]=-0.002;                              
-dAsym_result_all["2018"]["PT50To70"]["Eta0p8To1p6"][0]=0.006;                                
-dAsym_result_all["2018"]["PT50To70"]["Eta0p8To1p6"][1]=0.014;                                
-dAsym_result_all["2018"]["PT50To70"]["Eta1p6To2"][-1]=0.005000000000000001;                  
-dAsym_result_all["2018"]["PT50To70"]["Eta1p6To2"][0]=0.02;                                   
-dAsym_result_all["2018"]["PT50To70"]["Eta1p6To2"][1]=0.034;                                  
-dAsym_result_all["2018"]["PT50To70"]["Eta2To2p5"][-1]=-0.004;                                
-dAsym_result_all["2018"]["PT50To70"]["Eta2To2p5"][0]=0.018;                                  
-dAsym_result_all["2018"]["PT50To70"]["Eta2To2p5"][1]=0.040999999999999995;                   
-dAsym_result_all["2018"]["PT50To70"]["Eta0To0p8"][-1]=-0.026;
-dAsym_result_all["2018"]["PT50To70"]["Eta0To0p8"][0]=-0.018;
-dAsym_result_all["2018"]["PT50To70"]["Eta0To0p8"][1]=-0.011;
-dAsym_result_all["2018"]["PT50To70"]["Eta0p8To1p6"][-1]=-0.002;
-dAsym_result_all["2018"]["PT50To70"]["Eta0p8To1p6"][0]=0.006;
-dAsym_result_all["2018"]["PT50To70"]["Eta0p8To1p6"][1]=0.014;
-dAsym_result_all["2018"]["PT50To70"]["Eta1p6To2"][-1]=0.005000000000000001;
-dAsym_result_all["2018"]["PT50To70"]["Eta1p6To2"][0]=0.02;
-dAsym_result_all["2018"]["PT50To70"]["Eta1p6To2"][1]=0.034;
-dAsym_result_all["2018"]["PT50To70"]["Eta2To2p5"][-1]=-0.004;
-dAsym_result_all["2018"]["PT50To70"]["Eta2To2p5"][0]=0.018;
-dAsym_result_all["2018"]["PT50To70"]["Eta2To2p5"][1]=0.040999999999999995;
 
- dAsym_result_all["2018"]["PT70To100"]["Eta0To0p8"][-1]=-0.013000000000000001;                
-dAsym_result_all["2018"]["PT70To100"]["Eta0To0p8"][0]=-0.006;                                
-dAsym_result_all["2018"]["PT70To100"]["Eta0To0p8"][1]=0.001;                                 
-dAsym_result_all["2018"]["PT70To100"]["Eta0p8To1p6"][-1]=-0.006999999999999999;              
-dAsym_result_all["2018"]["PT70To100"]["Eta0p8To1p6"][0]=0.002;                               
-dAsym_result_all["2018"]["PT70To100"]["Eta0p8To1p6"][1]=0.011;                               
-dAsym_result_all["2018"]["PT70To100"]["Eta1p6To2"][-1]=-0.026000000000000002;                
-dAsym_result_all["2018"]["PT70To100"]["Eta1p6To2"][0]=-0.009;                                
-dAsym_result_all["2018"]["PT70To100"]["Eta1p6To2"][1]=0.008000000000000002;                  
-dAsym_result_all["2018"]["PT70To100"]["Eta2To2p5"][-1]=-0.043;                               
-dAsym_result_all["2018"]["PT70To100"]["Eta2To2p5"][0]=-0.016;                                
-dAsym_result_all["2018"]["PT70To100"]["Eta2To2p5"][1]=0.011;                                 
-dAsym_result_all["2018"]["PT70To100"]["Eta0To0p8"][-1]=-0.013000000000000001;                
-dAsym_result_all["2018"]["PT70To100"]["Eta0To0p8"][0]=-0.006;                                
-dAsym_result_all["2018"]["PT70To100"]["Eta0To0p8"][1]=0.001;                                 
-dAsym_result_all["2018"]["PT70To100"]["Eta0p8To1p6"][-1]=-0.006999999999999999;              
-dAsym_result_all["2018"]["PT70To100"]["Eta0p8To1p6"][0]=0.002;                               
-dAsym_result_all["2018"]["PT70To100"]["Eta0p8To1p6"][1]=0.011;                               
-dAsym_result_all["2018"]["PT70To100"]["Eta1p6To2"][-1]=-0.026000000000000002;                
-dAsym_result_all["2018"]["PT70To100"]["Eta1p6To2"][0]=-0.009;                                
-dAsym_result_all["2018"]["PT70To100"]["Eta1p6To2"][1]=0.008000000000000002;                  
-dAsym_result_all["2018"]["PT70To100"]["Eta2To2p5"][-1]=-0.043;                               
-dAsym_result_all["2018"]["PT70To100"]["Eta2To2p5"][0]=-0.016;                                
-dAsym_result_all["2018"]["PT70To100"]["Eta2To2p5"][1]=0.011;                                 
-dAsym_result_all["2018"]["PT100To140"]["Eta0To0p8"][-1]=-0.008;                              
-dAsym_result_all["2018"]["PT100To140"]["Eta0To0p8"][0]=0.003;                                
-dAsym_result_all["2018"]["PT100To140"]["Eta0To0p8"][1]=0.013999999999999999;                 
-dAsym_result_all["2018"]["PT100To140"]["Eta0p8To1p6"][-1]=0.0;                               
-dAsym_result_all["2018"]["PT100To140"]["Eta0p8To1p6"][0]=0.015;                              
-dAsym_result_all["2018"]["PT100To140"]["Eta0p8To1p6"][1]=0.028999999999999998;               
-dAsym_result_all["2018"]["PT100To140"]["Eta1p6To2"][-1]=-0.07300000000000001;                
-dAsym_result_all["2018"]["PT100To140"]["Eta1p6To2"][0]=-0.049;                               
-dAsym_result_all["2018"]["PT100To140"]["Eta1p6To2"][1]=-0.025;                               
-dAsym_result_all["2018"]["PT100To140"]["Eta2To2p5"][-1]=-0.078;                              
-dAsym_result_all["2018"]["PT100To140"]["Eta2To2p5"][0]=-0.037;                               
-dAsym_result_all["2018"]["PT100To140"]["Eta2To2p5"][1]=0.0050000000000000044;                
-dAsym_result_all["2018"]["PT100To140"]["Eta0To0p8"][-1]=-0.008;                              
-dAsym_result_all["2018"]["PT100To140"]["Eta0To0p8"][0]=0.003;                                
-dAsym_result_all["2018"]["PT100To140"]["Eta0To0p8"][1]=0.013999999999999999;                 
-dAsym_result_all["2018"]["PT100To140"]["Eta0p8To1p6"][-1]=0.0;                               
-dAsym_result_all["2018"]["PT100To140"]["Eta0p8To1p6"][0]=0.015;
-dAsym_result_all["2018"]["PT100To140"]["Eta0p8To1p6"][1]=0.028999999999999998;
-dAsym_result_all["2018"]["PT100To140"]["Eta1p6To2"][-1]=-0.07300000000000001;
-dAsym_result_all["2018"]["PT100To140"]["Eta1p6To2"][0]=-0.049;
-dAsym_result_all["2018"]["PT100To140"]["Eta1p6To2"][1]=-0.025;
-dAsym_result_all["2018"]["PT100To140"]["Eta2To2p5"][-1]=-0.078;
-dAsym_result_all["2018"]["PT100To140"]["Eta2To2p5"][0]=-0.037;
-dAsym_result_all["2018"]["PT100To140"]["Eta2To2p5"][1]=0.0050000000000000044;
+dAsym_result_all["2018"]["PT50To70"]["Eta0To0p8"][-1]=-0.019449868869687574;
+dAsym_result_all["2018"]["PT50To70"]["Eta0To0p8"][0]=-0.013176491484045982;
+dAsym_result_all["2018"]["PT50To70"]["Eta0To0p8"][1]=-0.006894222897680952;
+dAsym_result_all["2018"]["PT50To70"]["Eta0p8To1p6"][-1]=-0.0027923101716274337;
+dAsym_result_all["2018"]["PT50To70"]["Eta0p8To1p6"][0]=0.005137792322784662;
+dAsym_result_all["2018"]["PT50To70"]["Eta0p8To1p6"][1]=0.013038363125753363;
+dAsym_result_all["2018"]["PT50To70"]["Eta1p6To2"][-1]=0.025783917452140082;
+dAsym_result_all["2018"]["PT50To70"]["Eta1p6To2"][0]=0.042356375604867935;
+dAsym_result_all["2018"]["PT50To70"]["Eta1p6To2"][1]=0.05941529050749278;
+dAsym_result_all["2018"]["PT50To70"]["Eta2To2p5"][-1]=-0.004529787391813745;
+dAsym_result_all["2018"]["PT50To70"]["Eta2To2p5"][0]=0.017870064824819565;
+dAsym_result_all["2018"]["PT50To70"]["Eta2To2p5"][1]=0.040533236230575295;
 
- dAsym_result_all["2018"]["PT140ToInf"]["Eta0To0p8"][-1]=-0.032;
-dAsym_result_all["2018"]["PT140ToInf"]["Eta0To0p8"][0]=-0.019;
-dAsym_result_all["2018"]["PT140ToInf"]["Eta0To0p8"][1]=-0.006;
-dAsym_result_all["2018"]["PT140ToInf"]["Eta0p8To1p6"][-1]=0.008;
-dAsym_result_all["2018"]["PT140ToInf"]["Eta0p8To1p6"][0]=0.027;
-dAsym_result_all["2018"]["PT140ToInf"]["Eta0p8To1p6"][1]=0.046;
-dAsym_result_all["2018"]["PT140ToInf"]["Eta1p6To2"][-1]=0.049;
-dAsym_result_all["2018"]["PT140ToInf"]["Eta1p6To2"][0]=0.099;
-dAsym_result_all["2018"]["PT140ToInf"]["Eta1p6To2"][1]=0.15;
-dAsym_result_all["2018"]["PT140ToInf"]["Eta2To2p5"][-1]=-0.083;
-dAsym_result_all["2018"]["PT140ToInf"]["Eta2To2p5"][0]=-0.019;
-dAsym_result_all["2018"]["PT140ToInf"]["Eta2To2p5"][1]=0.045;
-dAsym_result_all["2018"]["PT140ToInf"]["Eta0To0p8"][-1]=-0.032;
-dAsym_result_all["2018"]["PT140ToInf"]["Eta0To0p8"][0]=-0.019;
-dAsym_result_all["2018"]["PT140ToInf"]["Eta0To0p8"][1]=-0.006;
-dAsym_result_all["2018"]["PT140ToInf"]["Eta0p8To1p6"][-1]=0.008;
-dAsym_result_all["2018"]["PT140ToInf"]["Eta0p8To1p6"][0]=0.027;
-dAsym_result_all["2018"]["PT140ToInf"]["Eta0p8To1p6"][1]=0.046;
-dAsym_result_all["2018"]["PT140ToInf"]["Eta1p6To2"][-1]=0.049;
-dAsym_result_all["2018"]["PT140ToInf"]["Eta1p6To2"][0]=0.099;
-dAsym_result_all["2018"]["PT140ToInf"]["Eta1p6To2"][1]=0.15;
-dAsym_result_all["2018"]["PT140ToInf"]["Eta2To2p5"][-1]=-0.083;
-dAsym_result_all["2018"]["PT140ToInf"]["Eta2To2p5"][0]=-0.019;
-dAsym_result_all["2018"]["PT140ToInf"]["Eta2To2p5"][1]=0.045;
+dAsym_result_all["2018"]["PT70To100"]["Eta0To0p8"][-1]=-0.012241560362165001;
+dAsym_result_all["2018"]["PT70To100"]["Eta0To0p8"][0]=-0.005645238794386387;
+dAsym_result_all["2018"]["PT70To100"]["Eta0To0p8"][1]=0.0009521483047481407;
+dAsym_result_all["2018"]["PT70To100"]["Eta0p8To1p6"][-1]=-0.007079146701493164;
+dAsym_result_all["2018"]["PT70To100"]["Eta0p8To1p6"][0]=0.001498007564805448;
+dAsym_result_all["2018"]["PT70To100"]["Eta0p8To1p6"][1]=0.010113858009717449;
+dAsym_result_all["2018"]["PT70To100"]["Eta1p6To2"][-1]=-0.014925442015165904;
+dAsym_result_all["2018"]["PT70To100"]["Eta1p6To2"][0]=0.008515211753547192;
+dAsym_result_all["2018"]["PT70To100"]["Eta1p6To2"][1]=0.03189541003912921;
+dAsym_result_all["2018"]["PT70To100"]["Eta2To2p5"][-1]=-0.05280042096770415;
+dAsym_result_all["2018"]["PT70To100"]["Eta2To2p5"][0]=-0.026045018807053566;
+dAsym_result_all["2018"]["PT70To100"]["Eta2To2p5"][1]=0.0007090533478341307;
+
+
+dAsym_result_all["2018"]["PT100To140"]["Eta0To0p8"][-1]=-0.007693800045020967;
+dAsym_result_all["2018"]["PT100To140"]["Eta0To0p8"][0]=0.0030131840612739325;
+dAsym_result_all["2018"]["PT100To140"]["Eta0To0p8"][1]=0.013850932253916162;
+dAsym_result_all["2018"]["PT100To140"]["Eta0p8To1p6"][-1]=-5.328310836433606e-05;
+dAsym_result_all["2018"]["PT100To140"]["Eta0p8To1p6"][0]=0.014483453705906868;
+dAsym_result_all["2018"]["PT100To140"]["Eta0p8To1p6"][1]=0.028904762764860505;
+dAsym_result_all["2018"]["PT100To140"]["Eta1p6To2"][-1]=-0.03582112884250092;
+dAsym_result_all["2018"]["PT100To140"]["Eta1p6To2"][0]=-0.0033138557337224483;
+dAsym_result_all["2018"]["PT100To140"]["Eta1p6To2"][1]=0.02890039275889872;
+dAsym_result_all["2018"]["PT100To140"]["Eta2To2p5"][-1]=-0.05450370725711815;
+dAsym_result_all["2018"]["PT100To140"]["Eta2To2p5"][0]=-0.005472644232213497;
+dAsym_result_all["2018"]["PT100To140"]["Eta2To2p5"][1]=0.043439110071594435;
+
+
+dAsym_result_all["2018"]["PT140ToInf"]["Eta0To0p8"][-1]=-0.027922979579607078;
+dAsym_result_all["2018"]["PT140ToInf"]["Eta0To0p8"][0]=-0.0152486776933074;
+dAsym_result_all["2018"]["PT140ToInf"]["Eta0To0p8"][1]=-0.0025833090493880793;
+dAsym_result_all["2018"]["PT140ToInf"]["Eta0p8To1p6"][-1]=0.0075035875786103635;
+dAsym_result_all["2018"]["PT140ToInf"]["Eta0p8To1p6"][0]=0.02707127295434475;
+dAsym_result_all["2018"]["PT140ToInf"]["Eta0p8To1p6"][1]=0.04691202439088519;
+dAsym_result_all["2018"]["PT140ToInf"]["Eta1p6To2"][-1]=0.03757474167546396;
+dAsym_result_all["2018"]["PT140ToInf"]["Eta1p6To2"][0]=0.10190125554800034;
+dAsym_result_all["2018"]["PT140ToInf"]["Eta1p6To2"][1]=0.1654726336722126;
+dAsym_result_all["2018"]["PT140ToInf"]["Eta2To2p5"][-1]=-0.15058375357829207;
+dAsym_result_all["2018"]["PT140ToInf"]["Eta2To2p5"][0]=-0.07326273620128632;
+dAsym_result_all["2018"]["PT140ToInf"]["Eta2To2p5"][1]=0.0061353592776734606;
+
 
  
   //---Use only this DataEra
@@ -2052,7 +1904,7 @@ double MCCorrection::GetBTaggingReweight_1a(const vector<Jet>& jets, JetTagging:
 							    ietabinsys
 						     );
 
-    
+    if(fabs(this_dAsym_SF)>=1) this_dAsym_SF=0.;
     double this_DATA_Eff = this_MC_Eff*this_SF*(1.+this_dAsym_SF);
     
     bool isTagged = jets.at(i).GetTaggerResult(jtp.j_Tagger) > GetJetTaggingCutValue(jtp.j_Tagger, jtp.j_WP);
