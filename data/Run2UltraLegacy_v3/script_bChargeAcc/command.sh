@@ -1,0 +1,192 @@
+#TTsemiLepChargeScoreAccuracyMeasurement_TTLL_powheg.root
+cd temp__2016preVFP__TTsemiLepChargeScoreAccuracyMeasurement_TTLL_powheg/
+hadd -f combine.root 2016preVFP__empty.root TTsemiLepChargeScoreAccuracyMeasurement_TTLL_powheg.root &> hadd.log
+mkdir -p /data6/Users/jhchoi/SKFlatAnalyzers/test/ForTMVA/SKFlatAnalyzer/data/Run2UltraLegacy_v3/2016preVFP/bChargeAcc/
+cp combine.root /data6/Users/jhchoi/SKFlatAnalyzers/test/ForTMVA/SKFlatAnalyzer/data/Run2UltraLegacy_v3/2016preVFP/bChargeAcc//TTsemiLepChargeScoreAccuracyMeasurement_TTLL_powheg.root
+cd -
+#TTsemiLepChargeScoreAccuracyMeasurement_TTLJ_powheg.root
+cd temp__2016preVFP__TTsemiLepChargeScoreAccuracyMeasurement_TTLJ_powheg/
+hadd -f combine.root 2016preVFP__empty.root TTsemiLepChargeScoreAccuracyMeasurement_TTLJ_powheg.root &> hadd.log
+mkdir -p /data6/Users/jhchoi/SKFlatAnalyzers/test/ForTMVA/SKFlatAnalyzer/data/Run2UltraLegacy_v3/2016preVFP/bChargeAcc/
+cp combine.root /data6/Users/jhchoi/SKFlatAnalyzers/test/ForTMVA/SKFlatAnalyzer/data/Run2UltraLegacy_v3/2016preVFP/bChargeAcc//TTsemiLepChargeScoreAccuracyMeasurement_TTLJ_powheg.root
+cd -
+#TTsemiLepChargeScoreAccuracyMeasurement_DYJetsToEE_MiNNLO.root
+cd temp__2016preVFP__TTsemiLepChargeScoreAccuracyMeasurement_DYJetsToEE_MiNNLO/
+hadd -f combine.root 2016preVFP__empty.root TTsemiLepChargeScoreAccuracyMeasurement_DYJetsToEE_MiNNLO.root &> hadd.log
+mkdir -p /data6/Users/jhchoi/SKFlatAnalyzers/test/ForTMVA/SKFlatAnalyzer/data/Run2UltraLegacy_v3/2016preVFP/bChargeAcc/
+cp combine.root /data6/Users/jhchoi/SKFlatAnalyzers/test/ForTMVA/SKFlatAnalyzer/data/Run2UltraLegacy_v3/2016preVFP/bChargeAcc//TTsemiLepChargeScoreAccuracyMeasurement_DYJetsToEE_MiNNLO.root
+cd -
+#TTsemiLepChargeScoreAccuracyMeasurement_DYJetsToMuMu_MiNNLO.root
+cd temp__2016preVFP__TTsemiLepChargeScoreAccuracyMeasurement_DYJetsToMuMu_MiNNLO/
+hadd -f combine.root 2016preVFP__empty.root TTsemiLepChargeScoreAccuracyMeasurement_DYJetsToMuMu_MiNNLO.root &> hadd.log
+mkdir -p /data6/Users/jhchoi/SKFlatAnalyzers/test/ForTMVA/SKFlatAnalyzer/data/Run2UltraLegacy_v3/2016preVFP/bChargeAcc/
+cp combine.root /data6/Users/jhchoi/SKFlatAnalyzers/test/ForTMVA/SKFlatAnalyzer/data/Run2UltraLegacy_v3/2016preVFP/bChargeAcc//TTsemiLepChargeScoreAccuracyMeasurement_DYJetsToMuMu_MiNNLO.root
+cd -
+#TTsemiLepChargeScoreAccuracyMeasurement_DYJetsToTauTau_MiNNLO.root
+cd temp__2016preVFP__TTsemiLepChargeScoreAccuracyMeasurement_DYJetsToTauTau_MiNNLO/
+hadd -f combine.root 2016preVFP__empty.root TTsemiLepChargeScoreAccuracyMeasurement_DYJetsToTauTau_MiNNLO.root &> hadd.log
+mkdir -p /data6/Users/jhchoi/SKFlatAnalyzers/test/ForTMVA/SKFlatAnalyzer/data/Run2UltraLegacy_v3/2016preVFP/bChargeAcc/
+cp combine.root /data6/Users/jhchoi/SKFlatAnalyzers/test/ForTMVA/SKFlatAnalyzer/data/Run2UltraLegacy_v3/2016preVFP/bChargeAcc//TTsemiLepChargeScoreAccuracyMeasurement_DYJetsToTauTau_MiNNLO.root
+cd -
+#TTsemiLepChargeScoreAccuracyMeasurement_SingleTop_tch_antitop_Incl.root
+cd temp__2016preVFP__TTsemiLepChargeScoreAccuracyMeasurement_SingleTop_tch_antitop_Incl/
+hadd -f combine.root 2016preVFP__empty.root TTsemiLepChargeScoreAccuracyMeasurement_SingleTop_tch_antitop_Incl.root &> hadd.log
+mkdir -p /data6/Users/jhchoi/SKFlatAnalyzers/test/ForTMVA/SKFlatAnalyzer/data/Run2UltraLegacy_v3/2016preVFP/bChargeAcc/
+cp combine.root /data6/Users/jhchoi/SKFlatAnalyzers/test/ForTMVA/SKFlatAnalyzer/data/Run2UltraLegacy_v3/2016preVFP/bChargeAcc//TTsemiLepChargeScoreAccuracyMeasurement_SingleTop_tch_antitop_Incl.root
+cd -
+#TTsemiLepChargeScoreAccuracyMeasurement_SingleTop_sch_Lep.root
+cd temp__2016preVFP__TTsemiLepChargeScoreAccuracyMeasurement_SingleTop_sch_Lep/
+hadd -f combine.root 2016preVFP__empty.root TTsemiLepChargeScoreAccuracyMeasurement_SingleTop_sch_Lep.root &> hadd.log
+mkdir -p /data6/Users/jhchoi/SKFlatAnalyzers/test/ForTMVA/SKFlatAnalyzer/data/Run2UltraLegacy_v3/2016preVFP/bChargeAcc/
+cp combine.root /data6/Users/jhchoi/SKFlatAnalyzers/test/ForTMVA/SKFlatAnalyzer/data/Run2UltraLegacy_v3/2016preVFP/bChargeAcc//TTsemiLepChargeScoreAccuracyMeasurement_SingleTop_sch_Lep.root
+cd -
+#TTsemiLepChargeScoreAccuracyMeasurement_SingleTop_tW_antitop_NoFullyHad.root
+cd temp__2016preVFP__TTsemiLepChargeScoreAccuracyMeasurement_SingleTop_tW_antitop_NoFullyHad/
+hadd -f combine.root 2016preVFP__empty.root TTsemiLepChargeScoreAccuracyMeasurement_SingleTop_tW_antitop_NoFullyHad.root &> hadd.log
+mkdir -p /data6/Users/jhchoi/SKFlatAnalyzers/test/ForTMVA/SKFlatAnalyzer/data/Run2UltraLegacy_v3/2016preVFP/bChargeAcc/
+cp combine.root /data6/Users/jhchoi/SKFlatAnalyzers/test/ForTMVA/SKFlatAnalyzer/data/Run2UltraLegacy_v3/2016preVFP/bChargeAcc//TTsemiLepChargeScoreAccuracyMeasurement_SingleTop_tW_antitop_NoFullyHad.root
+cd -
+#TTsemiLepChargeScoreAccuracyMeasurement_SingleTop_tW_top_NoFullyHad.root
+cd temp__2016preVFP__TTsemiLepChargeScoreAccuracyMeasurement_SingleTop_tW_top_NoFullyHad/
+hadd -f combine.root 2016preVFP__empty.root TTsemiLepChargeScoreAccuracyMeasurement_SingleTop_tW_top_NoFullyHad.root &> hadd.log
+mkdir -p /data6/Users/jhchoi/SKFlatAnalyzers/test/ForTMVA/SKFlatAnalyzer/data/Run2UltraLegacy_v3/2016preVFP/bChargeAcc/
+cp combine.root /data6/Users/jhchoi/SKFlatAnalyzers/test/ForTMVA/SKFlatAnalyzer/data/Run2UltraLegacy_v3/2016preVFP/bChargeAcc//TTsemiLepChargeScoreAccuracyMeasurement_SingleTop_tW_top_NoFullyHad.root
+cd -
+#TTsemiLepChargeScoreAccuracyMeasurement_SingleTop_tch_top_Incl.root
+cd temp__2016preVFP__TTsemiLepChargeScoreAccuracyMeasurement_SingleTop_tch_top_Incl/
+hadd -f combine.root 2016preVFP__empty.root TTsemiLepChargeScoreAccuracyMeasurement_SingleTop_tch_top_Incl.root &> hadd.log
+mkdir -p /data6/Users/jhchoi/SKFlatAnalyzers/test/ForTMVA/SKFlatAnalyzer/data/Run2UltraLegacy_v3/2016preVFP/bChargeAcc/
+cp combine.root /data6/Users/jhchoi/SKFlatAnalyzers/test/ForTMVA/SKFlatAnalyzer/data/Run2UltraLegacy_v3/2016preVFP/bChargeAcc//TTsemiLepChargeScoreAccuracyMeasurement_SingleTop_tch_top_Incl.root
+cd -
+#TTsemiLepChargeScoreAccuracyMeasurement_TTLL_powheg.root
+cd temp__2016postVFP__TTsemiLepChargeScoreAccuracyMeasurement_TTLL_powheg/
+hadd -f combine.root 2016postVFP__empty.root TTsemiLepChargeScoreAccuracyMeasurement_TTLL_powheg.root &> hadd.log
+mkdir -p /data6/Users/jhchoi/SKFlatAnalyzers/test/ForTMVA/SKFlatAnalyzer/data/Run2UltraLegacy_v3/2016postVFP/bChargeAcc/
+cp combine.root /data6/Users/jhchoi/SKFlatAnalyzers/test/ForTMVA/SKFlatAnalyzer/data/Run2UltraLegacy_v3/2016postVFP/bChargeAcc//TTsemiLepChargeScoreAccuracyMeasurement_TTLL_powheg.root
+cd -
+#TTsemiLepChargeScoreAccuracyMeasurement_TTLJ_powheg.root
+cd temp__2016postVFP__TTsemiLepChargeScoreAccuracyMeasurement_TTLJ_powheg/
+hadd -f combine.root 2016postVFP__empty.root TTsemiLepChargeScoreAccuracyMeasurement_TTLJ_powheg.root &> hadd.log
+mkdir -p /data6/Users/jhchoi/SKFlatAnalyzers/test/ForTMVA/SKFlatAnalyzer/data/Run2UltraLegacy_v3/2016postVFP/bChargeAcc/
+cp combine.root /data6/Users/jhchoi/SKFlatAnalyzers/test/ForTMVA/SKFlatAnalyzer/data/Run2UltraLegacy_v3/2016postVFP/bChargeAcc//TTsemiLepChargeScoreAccuracyMeasurement_TTLJ_powheg.root
+cd -
+#TTsemiLepChargeScoreAccuracyMeasurement_DYJetsToEE_MiNNLO.root
+cd temp__2016postVFP__TTsemiLepChargeScoreAccuracyMeasurement_DYJetsToEE_MiNNLO/
+hadd -f combine.root 2016postVFP__empty.root TTsemiLepChargeScoreAccuracyMeasurement_DYJetsToEE_MiNNLO.root &> hadd.log
+mkdir -p /data6/Users/jhchoi/SKFlatAnalyzers/test/ForTMVA/SKFlatAnalyzer/data/Run2UltraLegacy_v3/2016postVFP/bChargeAcc/
+cp combine.root /data6/Users/jhchoi/SKFlatAnalyzers/test/ForTMVA/SKFlatAnalyzer/data/Run2UltraLegacy_v3/2016postVFP/bChargeAcc//TTsemiLepChargeScoreAccuracyMeasurement_DYJetsToEE_MiNNLO.root
+cd -
+#TTsemiLepChargeScoreAccuracyMeasurement_DYJetsToTauTau_MiNNLO.root
+cd temp__2016postVFP__TTsemiLepChargeScoreAccuracyMeasurement_DYJetsToTauTau_MiNNLO/
+hadd -f combine.root 2016postVFP__empty.root TTsemiLepChargeScoreAccuracyMeasurement_DYJetsToTauTau_MiNNLO.root &> hadd.log
+mkdir -p /data6/Users/jhchoi/SKFlatAnalyzers/test/ForTMVA/SKFlatAnalyzer/data/Run2UltraLegacy_v3/2016postVFP/bChargeAcc/
+cp combine.root /data6/Users/jhchoi/SKFlatAnalyzers/test/ForTMVA/SKFlatAnalyzer/data/Run2UltraLegacy_v3/2016postVFP/bChargeAcc//TTsemiLepChargeScoreAccuracyMeasurement_DYJetsToTauTau_MiNNLO.root
+cd -
+#TTsemiLepChargeScoreAccuracyMeasurement_SingleTop_sch_Lep.root
+cd temp__2016postVFP__TTsemiLepChargeScoreAccuracyMeasurement_SingleTop_sch_Lep/
+hadd -f combine.root 2016postVFP__empty.root TTsemiLepChargeScoreAccuracyMeasurement_SingleTop_sch_Lep.root &> hadd.log
+mkdir -p /data6/Users/jhchoi/SKFlatAnalyzers/test/ForTMVA/SKFlatAnalyzer/data/Run2UltraLegacy_v3/2016postVFP/bChargeAcc/
+cp combine.root /data6/Users/jhchoi/SKFlatAnalyzers/test/ForTMVA/SKFlatAnalyzer/data/Run2UltraLegacy_v3/2016postVFP/bChargeAcc//TTsemiLepChargeScoreAccuracyMeasurement_SingleTop_sch_Lep.root
+cd -
+#TTsemiLepChargeScoreAccuracyMeasurement_SingleTop_tch_antitop_Incl.root
+cd temp__2016postVFP__TTsemiLepChargeScoreAccuracyMeasurement_SingleTop_tch_antitop_Incl/
+hadd -f combine.root 2016postVFP__empty.root TTsemiLepChargeScoreAccuracyMeasurement_SingleTop_tch_antitop_Incl.root &> hadd.log
+mkdir -p /data6/Users/jhchoi/SKFlatAnalyzers/test/ForTMVA/SKFlatAnalyzer/data/Run2UltraLegacy_v3/2016postVFP/bChargeAcc/
+cp combine.root /data6/Users/jhchoi/SKFlatAnalyzers/test/ForTMVA/SKFlatAnalyzer/data/Run2UltraLegacy_v3/2016postVFP/bChargeAcc//TTsemiLepChargeScoreAccuracyMeasurement_SingleTop_tch_antitop_Incl.root
+cd -
+#TTsemiLepChargeScoreAccuracyMeasurement_SingleTop_tW_antitop_NoFullyHad.root
+cd temp__2016postVFP__TTsemiLepChargeScoreAccuracyMeasurement_SingleTop_tW_antitop_NoFullyHad/
+hadd -f combine.root 2016postVFP__empty.root TTsemiLepChargeScoreAccuracyMeasurement_SingleTop_tW_antitop_NoFullyHad.root &> hadd.log
+mkdir -p /data6/Users/jhchoi/SKFlatAnalyzers/test/ForTMVA/SKFlatAnalyzer/data/Run2UltraLegacy_v3/2016postVFP/bChargeAcc/
+cp combine.root /data6/Users/jhchoi/SKFlatAnalyzers/test/ForTMVA/SKFlatAnalyzer/data/Run2UltraLegacy_v3/2016postVFP/bChargeAcc//TTsemiLepChargeScoreAccuracyMeasurement_SingleTop_tW_antitop_NoFullyHad.root
+cd -
+#TTsemiLepChargeScoreAccuracyMeasurement_DYJetsToMuMu_MiNNLO.root
+cd temp__2016postVFP__TTsemiLepChargeScoreAccuracyMeasurement_DYJetsToMuMu_MiNNLO/
+hadd -f combine.root 2016postVFP__empty.root TTsemiLepChargeScoreAccuracyMeasurement_DYJetsToMuMu_MiNNLO.root &> hadd.log
+mkdir -p /data6/Users/jhchoi/SKFlatAnalyzers/test/ForTMVA/SKFlatAnalyzer/data/Run2UltraLegacy_v3/2016postVFP/bChargeAcc/
+cp combine.root /data6/Users/jhchoi/SKFlatAnalyzers/test/ForTMVA/SKFlatAnalyzer/data/Run2UltraLegacy_v3/2016postVFP/bChargeAcc//TTsemiLepChargeScoreAccuracyMeasurement_DYJetsToMuMu_MiNNLO.root
+cd -
+#TTsemiLepChargeScoreAccuracyMeasurement_SingleTop_tW_top_NoFullyHad.root
+cd temp__2016postVFP__TTsemiLepChargeScoreAccuracyMeasurement_SingleTop_tW_top_NoFullyHad/
+hadd -f combine.root 2016postVFP__empty.root TTsemiLepChargeScoreAccuracyMeasurement_SingleTop_tW_top_NoFullyHad.root &> hadd.log
+mkdir -p /data6/Users/jhchoi/SKFlatAnalyzers/test/ForTMVA/SKFlatAnalyzer/data/Run2UltraLegacy_v3/2016postVFP/bChargeAcc/
+cp combine.root /data6/Users/jhchoi/SKFlatAnalyzers/test/ForTMVA/SKFlatAnalyzer/data/Run2UltraLegacy_v3/2016postVFP/bChargeAcc//TTsemiLepChargeScoreAccuracyMeasurement_SingleTop_tW_top_NoFullyHad.root
+cd -
+#TTsemiLepChargeScoreAccuracyMeasurement_SingleTop_tch_top_Incl.root
+cd temp__2016postVFP__TTsemiLepChargeScoreAccuracyMeasurement_SingleTop_tch_top_Incl/
+hadd -f combine.root 2016postVFP__empty.root TTsemiLepChargeScoreAccuracyMeasurement_SingleTop_tch_top_Incl.root &> hadd.log
+mkdir -p /data6/Users/jhchoi/SKFlatAnalyzers/test/ForTMVA/SKFlatAnalyzer/data/Run2UltraLegacy_v3/2016postVFP/bChargeAcc/
+cp combine.root /data6/Users/jhchoi/SKFlatAnalyzers/test/ForTMVA/SKFlatAnalyzer/data/Run2UltraLegacy_v3/2016postVFP/bChargeAcc//TTsemiLepChargeScoreAccuracyMeasurement_SingleTop_tch_top_Incl.root
+cd -
+#TTsemiLepChargeScoreAccuracyMeasurement_TTLJ_powheg.root
+cd temp__2017__TTsemiLepChargeScoreAccuracyMeasurement_TTLJ_powheg/
+hadd -f combine.root 2017__empty.root TTsemiLepChargeScoreAccuracyMeasurement_TTLJ_powheg.root &> hadd.log
+mkdir -p /data6/Users/jhchoi/SKFlatAnalyzers/test/ForTMVA/SKFlatAnalyzer/data/Run2UltraLegacy_v3/2017/bChargeAcc/
+cp combine.root /data6/Users/jhchoi/SKFlatAnalyzers/test/ForTMVA/SKFlatAnalyzer/data/Run2UltraLegacy_v3/2017/bChargeAcc//TTsemiLepChargeScoreAccuracyMeasurement_TTLJ_powheg.root
+cd -
+#TTsemiLepChargeScoreAccuracyMeasurement_TTLL_powheg.root
+cd temp__2017__TTsemiLepChargeScoreAccuracyMeasurement_TTLL_powheg/
+hadd -f combine.root 2017__empty.root TTsemiLepChargeScoreAccuracyMeasurement_TTLL_powheg.root &> hadd.log
+mkdir -p /data6/Users/jhchoi/SKFlatAnalyzers/test/ForTMVA/SKFlatAnalyzer/data/Run2UltraLegacy_v3/2017/bChargeAcc/
+cp combine.root /data6/Users/jhchoi/SKFlatAnalyzers/test/ForTMVA/SKFlatAnalyzer/data/Run2UltraLegacy_v3/2017/bChargeAcc//TTsemiLepChargeScoreAccuracyMeasurement_TTLL_powheg.root
+cd -
+#TTsemiLepChargeScoreAccuracyMeasurement_DYJetsToTauTau_MiNNLO.root
+cd temp__2017__TTsemiLepChargeScoreAccuracyMeasurement_DYJetsToTauTau_MiNNLO/
+hadd -f combine.root 2017__empty.root TTsemiLepChargeScoreAccuracyMeasurement_DYJetsToTauTau_MiNNLO.root &> hadd.log
+mkdir -p /data6/Users/jhchoi/SKFlatAnalyzers/test/ForTMVA/SKFlatAnalyzer/data/Run2UltraLegacy_v3/2017/bChargeAcc/
+cp combine.root /data6/Users/jhchoi/SKFlatAnalyzers/test/ForTMVA/SKFlatAnalyzer/data/Run2UltraLegacy_v3/2017/bChargeAcc//TTsemiLepChargeScoreAccuracyMeasurement_DYJetsToTauTau_MiNNLO.root
+cd -
+#TTsemiLepChargeScoreAccuracyMeasurement_DYJetsToEE_MiNNLO.root
+cd temp__2017__TTsemiLepChargeScoreAccuracyMeasurement_DYJetsToEE_MiNNLO/
+hadd -f combine.root 2017__empty.root TTsemiLepChargeScoreAccuracyMeasurement_DYJetsToEE_MiNNLO.root &> hadd.log
+mkdir -p /data6/Users/jhchoi/SKFlatAnalyzers/test/ForTMVA/SKFlatAnalyzer/data/Run2UltraLegacy_v3/2017/bChargeAcc/
+cp combine.root /data6/Users/jhchoi/SKFlatAnalyzers/test/ForTMVA/SKFlatAnalyzer/data/Run2UltraLegacy_v3/2017/bChargeAcc//TTsemiLepChargeScoreAccuracyMeasurement_DYJetsToEE_MiNNLO.root
+cd -
+#TTsemiLepChargeScoreAccuracyMeasurement_DYJetsToMuMu_MiNNLO.root
+cd temp__2017__TTsemiLepChargeScoreAccuracyMeasurement_DYJetsToMuMu_MiNNLO/
+hadd -f combine.root 2017__empty.root TTsemiLepChargeScoreAccuracyMeasurement_DYJetsToMuMu_MiNNLO.root &> hadd.log
+mkdir -p /data6/Users/jhchoi/SKFlatAnalyzers/test/ForTMVA/SKFlatAnalyzer/data/Run2UltraLegacy_v3/2017/bChargeAcc/
+cp combine.root /data6/Users/jhchoi/SKFlatAnalyzers/test/ForTMVA/SKFlatAnalyzer/data/Run2UltraLegacy_v3/2017/bChargeAcc//TTsemiLepChargeScoreAccuracyMeasurement_DYJetsToMuMu_MiNNLO.root
+cd -
+#TTsemiLepChargeScoreAccuracyMeasurement_SingleTop_tch_antitop_Incl.root
+cd temp__2017__TTsemiLepChargeScoreAccuracyMeasurement_SingleTop_tch_antitop_Incl/
+hadd -f combine.root 2017__empty.root TTsemiLepChargeScoreAccuracyMeasurement_SingleTop_tch_antitop_Incl.root &> hadd.log
+mkdir -p /data6/Users/jhchoi/SKFlatAnalyzers/test/ForTMVA/SKFlatAnalyzer/data/Run2UltraLegacy_v3/2017/bChargeAcc/
+cp combine.root /data6/Users/jhchoi/SKFlatAnalyzers/test/ForTMVA/SKFlatAnalyzer/data/Run2UltraLegacy_v3/2017/bChargeAcc//TTsemiLepChargeScoreAccuracyMeasurement_SingleTop_tch_antitop_Incl.root
+cd -
+#TTsemiLepChargeScoreAccuracyMeasurement_SingleTop_sch_Lep.root
+cd temp__2017__TTsemiLepChargeScoreAccuracyMeasurement_SingleTop_sch_Lep/
+hadd -f combine.root 2017__empty.root TTsemiLepChargeScoreAccuracyMeasurement_SingleTop_sch_Lep.root &> hadd.log
+mkdir -p /data6/Users/jhchoi/SKFlatAnalyzers/test/ForTMVA/SKFlatAnalyzer/data/Run2UltraLegacy_v3/2017/bChargeAcc/
+cp combine.root /data6/Users/jhchoi/SKFlatAnalyzers/test/ForTMVA/SKFlatAnalyzer/data/Run2UltraLegacy_v3/2017/bChargeAcc//TTsemiLepChargeScoreAccuracyMeasurement_SingleTop_sch_Lep.root
+cd -
+#TTsemiLepChargeScoreAccuracyMeasurement_SingleTop_tW_antitop_NoFullyHad.root
+cd temp__2017__TTsemiLepChargeScoreAccuracyMeasurement_SingleTop_tW_antitop_NoFullyHad/
+hadd -f combine.root 2017__empty.root TTsemiLepChargeScoreAccuracyMeasurement_SingleTop_tW_antitop_NoFullyHad.root &> hadd.log
+mkdir -p /data6/Users/jhchoi/SKFlatAnalyzers/test/ForTMVA/SKFlatAnalyzer/data/Run2UltraLegacy_v3/2017/bChargeAcc/
+cp combine.root /data6/Users/jhchoi/SKFlatAnalyzers/test/ForTMVA/SKFlatAnalyzer/data/Run2UltraLegacy_v3/2017/bChargeAcc//TTsemiLepChargeScoreAccuracyMeasurement_SingleTop_tW_antitop_NoFullyHad.root
+cd -
+#TTsemiLepChargeScoreAccuracyMeasurement_SingleTop_tW_top_NoFullyHad.root
+cd temp__2017__TTsemiLepChargeScoreAccuracyMeasurement_SingleTop_tW_top_NoFullyHad/
+hadd -f combine.root 2017__empty.root TTsemiLepChargeScoreAccuracyMeasurement_SingleTop_tW_top_NoFullyHad.root &> hadd.log
+mkdir -p /data6/Users/jhchoi/SKFlatAnalyzers/test/ForTMVA/SKFlatAnalyzer/data/Run2UltraLegacy_v3/2017/bChargeAcc/
+cp combine.root /data6/Users/jhchoi/SKFlatAnalyzers/test/ForTMVA/SKFlatAnalyzer/data/Run2UltraLegacy_v3/2017/bChargeAcc//TTsemiLepChargeScoreAccuracyMeasurement_SingleTop_tW_top_NoFullyHad.root
+cd -
+#TTsemiLepChargeScoreAccuracyMeasurement_SingleTop_tch_top_Incl.root
+cd temp__2017__TTsemiLepChargeScoreAccuracyMeasurement_SingleTop_tch_top_Incl/
+hadd -f combine.root 2017__empty.root TTsemiLepChargeScoreAccuracyMeasurement_SingleTop_tch_top_Incl.root &> hadd.log
+mkdir -p /data6/Users/jhchoi/SKFlatAnalyzers/test/ForTMVA/SKFlatAnalyzer/data/Run2UltraLegacy_v3/2017/bChargeAcc/
+cp combine.root /data6/Users/jhchoi/SKFlatAnalyzers/test/ForTMVA/SKFlatAnalyzer/data/Run2UltraLegacy_v3/2017/bChargeAcc//TTsemiLepChargeScoreAccuracyMeasurement_SingleTop_tch_top_Incl.root
+cd -
+#TTsemiLepChargeScoreAccuracyMeasurement_TTLJ_powheg.root
+cd temp__2018__TTsemiLepChargeScoreAccuracyMeasurement_TTLJ_powheg/
+hadd -f combine.root 2018__empty.root TTsemiLepChargeScoreAccuracyMeasurement_TTLJ_powheg.root &> hadd.log
+mkdir -p /data6/Users/jhchoi/SKFlatAnalyzers/test/ForTMVA/SKFlatAnalyzer/data/Run2UltraLegacy_v3/2018/bChargeAcc/
+cp combine.root /data6/Users/jhchoi/SKFlatAnalyzers/test/ForTMVA/SKFlatAnalyzer/data/Run2UltraLegacy_v3/2018/bChargeAcc//TTsemiLepChargeScoreAccuracyMeasurement_TTLJ_powheg.root
+cd -
+#TTsemiLepChargeScoreAccuracyMeasurement_TTLL_powheg.root
+cd temp__2018__TTsemiLepChargeScoreAccuracyMeasurement_TTLL_powheg/
+hadd -f combine.root 2018__empty.root TTsemiLepChargeScoreAccuracyMeasurement_TTLL_powheg.root &> hadd.log
+mkdir -p /data6/Users/jhchoi/SKFlatAnalyzers/test/ForTMVA/SKFlatAnalyzer/data/Run2UltraLegacy_v3/2018/bChargeAcc/
+cp combine.root /data6/Users/jhchoi/SKFlatAnalyzers/test/ForTMVA/SKFlatAnalyzer/data/Run2UltraLegacy_v3/2018/bChargeAcc//TTsemiLepChargeScoreAccuracyMeasurement_TTLL_powheg.root
+cd -
