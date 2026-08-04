@@ -1,0 +1,26 @@
+#TTsemiLepBtagChargeAsymEfficiencyMeasurement_BINNING
+mkdir -p ApplyBtagSF_use_beff_noveto_newlepveto_JETPUID_L_chi2kincut_logs/
+
+SKIM="--skim SkimTree_SingleLepton"
+SKIM=""
+FLAG="--userflags ApplyBtagSF,use_beff,noveto,newlepveto,JETPUID_L,chi2kincut"
+#FLAG=""
+MAXJOB=" --nmax 400 "
+YEAR=2016a
+#MEM="--memory 6399"
+#C="--count 2"
+MEM2="--memory 3199"
+SKFlat.py -a TTsemiLepBtagChargeAsymEfficiencyMeasurement_BINNING  ${SKIM} -i TTLJ_powheg -n 150 -e ${YEAR} $FLAG ${MAXJOB} ${MEM2}  &> ApplyBtagSF_use_beff_noveto_newlepveto_JETPUID_L_chi2kincut_logs/TTLJ_powheg.log&
+sleep 15
+SKFlat.py -a TTsemiLepBtagChargeAsymEfficiencyMeasurement_BINNING  ${SKIM} -l  inputlist_major.txt -n 40 -e ${YEAR} $FLAG ${MAXJOB} ${MEM2}  &> ApplyBtagSF_use_beff_noveto_newlepveto_JETPUID_L_chi2kincut_logs/major.log&
+sleep 15
+SKFlat.py -a TTsemiLepBtagChargeAsymEfficiencyMeasurement_BINNING  ${SKIM} -l inputlist_minor.txt -n 40 -e ${YEAR} $FLAG ${MAXJOB} ${MEM2}  &> ApplyBtagSF_use_beff_noveto_newlepveto_JETPUID_L_chi2kincut_logs/minor.log&
+sleep 15
+SKFlat.py -a TTsemiLepBtagChargeAsymEfficiencyMeasurement_BINNING  ${SKIM} -l inputlist_tW.txt -n 20 -e ${YEAR} $FLAG ${MAXJOB} ${MEM2}  &> ApplyBtagSF_use_beff_noveto_newlepveto_JETPUID_L_chi2kincut_logs/tW.log&
+sleep 15
+SKFlat.py -a TTsemiLepBtagChargeAsymEfficiencyMeasurement_BINNING  ${SKIM} -i SingleMuon -n 20 -e ${YEAR} $FLAG ${MAXJOB} ${MEM2} &> ApplyBtagSF_use_beff_noveto_newlepveto_JETPUID_L_chi2kincut_logs/SingleMuon.log&
+sleep 15
+SKFlat.py -a TTsemiLepBtagChargeAsymEfficiencyMeasurement_BINNING  ${SKIM} -i SingleElectron -n 20 -e ${YEAR} $FLAG ${MAXJOB} ${MEM2} &> ApplyBtagSF_use_beff_noveto_newlepveto_JETPUID_L_chi2kincut_logs/SingleElectron.log&
+sleep 15
+SKFlat.py -a TTsemiLepBtagChargeAsymEfficiencyMeasurement_BINNING -l inputlist_NoSkim.txt -n 20 -e ${YEAR} $FLAG ${MAXJOB} ${MEM2} &> ApplyBtagSF_use_beff_noveto_newlepveto_JETPUID_L_chi2kincut_logs/NoSkim.log&
+

@@ -5,18 +5,19 @@ SKIM=""
 FLAG=""
 #FLAG="--userflags runSys"
 #FLAG="--userflags simple_lepscale,runSys"
-FLAG="--userflags cut_v2405.2"
+FLAG="--userflags cut_v2608.1,treemode"
 
 #REDUCTION="--reduction 1000"
 #YEAR=2018
 ARR_YEAR=(2017 2016a 2016b 2018)
-NMAX=" --nmax 120 "
-njob=" -n 20 "
+NMAX=" --nmax 240 "
+njob_mm=" -n 20 "
+njob_ee=" -n 40 "
 for YEAR in ${ARR_YEAR[@]};do
 
-    SKFlat.py -a EEMu_MuMuE_Method -i DYJetsToMuMu_MiNNLO $NMAX $SKIM -e ${YEAR} $njob $FLAG &> logs/DYNNLO_MuMu_${YEAR}.log&
+    SKFlat.py -a EEMu_MuMuE_Method -i DYJetsToMuMu_MiNNLO $NMAX $SKIM -e ${YEAR} $njob_mm $FLAG &> logs/DYNNLO_MuMu_${YEAR}.log&
     sleep 10
-    SKFlat.py -a EEMu_MuMuE_Method -i DYJetsToEE_MiNNLO $NMAX $SKIM -e ${YEAR} $njob $FLAG &> logs/DYNNLO_EE_${YEAR}.log&
+    SKFlat.py -a EEMu_MuMuE_Method -i DYJetsToEE_MiNNLO $NMAX $SKIM -e ${YEAR} $njob_ee $FLAG &> logs/DYNNLO_EE_${YEAR}.log&
     sleep 10
 
 

@@ -1,6 +1,3 @@
-SingleTop_tch_antitop_Incl
-SingleTop_tch_top_Incl
-SingleTop_sch_Lep
 WW_pythia
 WZ_pythia
 ZZ_pythia
