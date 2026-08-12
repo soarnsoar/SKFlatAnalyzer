@@ -662,7 +662,9 @@ void PreselectionAnalyzer::FillHistAll_bmuon(TString cutname,bmuonvar this_bmuon
   FillHist(cutname+"/bmuon_dR_l_j",this_bmuon.dR_l_j,weight,40,0,0.4);
   FillHist(cutname+"/bmuon_nsip3d",this_bmuon.nsip3d,weight,100,0,10);
   FillHist(cutname+"/bmuon_reltrkiso",this_bmuon.reltrkiso,weight,150,0,15);
+  FillHist(cutname+"/bmuon_log_1_reltrkiso",log10(1+this_bmuon.reltrkiso),weight,100,0,2);
   FillHist(cutname+"/bmuon_reliso",this_bmuon.reliso,weight,100,0,10);
+  FillHist(cutname+"/bmuon_log_1_reliso",log10(1+this_bmuon.reliso),weight,100,0,2);
   FillHist(cutname+"/bmuon_charge",this_bmuon.charge,weight,4,-2,2);
   
 
@@ -676,7 +678,9 @@ void PreselectionAnalyzer::FillHistAll_bmuon(TString cutname,bmuonvar this_bmuon
   FillHist(cutname+"/bmuon_nvalidmuonhits",this_bmuon.nvalidmuonhits,weight,50,0,50);
   FillHist(cutname+"/bmuon_nmatchedstations",this_bmuon.nmatchedstations,weight,6,0,6);
   FillHist(cutname+"/bmuon_bjet_charge_dot_bmuon_charge",this_bmuon.bjet_charge_dot_bmuon_charge,weight,50,-1,1);
-
+  //
+  FillHist(cutname+"/bmuon_pt",this_bmuon.pt,weight,50,0,50);
+  FillHist(cutname+"/bmuon_aeta",this_bmuon.aeta,weight,50,0,2.5);
 }
 
 void PreselectionAnalyzer::FillHistAll_belectron(TString cutname,belectronvar this_belectron){
@@ -685,12 +689,14 @@ void PreselectionAnalyzer::FillHistAll_belectron(TString cutname,belectronvar th
   FillHist(cutname+"/belectron_dR_l_j",this_belectron.dR_l_j,weight,40,0,0.4);
   FillHist(cutname+"/belectron_nsip3d",this_belectron.nsip3d,weight,300,0,30);
   FillHist(cutname+"/belectron_reltrkiso",this_belectron.reltrkiso,weight,150,0,15);
+  FillHist(cutname+"/belectron_log_1_reltrkiso",log10(1+this_belectron.reltrkiso),weight,100,0,2);
   FillHist(cutname+"/belectron_reliso",this_belectron.reliso,weight,100,0,10);
+  FillHist(cutname+"/belectron_log_1_reliso",log10(1+this_belectron.reliso),weight,100,0,2);
   FillHist(cutname+"/belectron_charge",this_belectron.charge,weight,4,-2,2);
   FillHist(cutname+"/belectron_IsGsfCtfScPixChargeConsistent",this_belectron.IsGsfCtfScPixChargeConsistent,weight,4,-2,2);
-  //FillHist(cutname+"/belectron_pt",this_belectron.pt,weight,50,0,50);
-  //FillHist(cutname+"/belectron_aeta",this_belectron.aeta,weight,40,-4,4);
+  
   FillHist(cutname+"/belectron_full5x5sigmaietaieta",this_belectron.full5x5sigmaietaieta,weight,100,0,0.1);
+  FillHist(cutname+"/belectron_log_1_full5x5sigmaietaieta",log10(1+this_belectron.full5x5sigmaietaieta),weight,100,0,0.5);
   FillHist(cutname+"/belectron_abs_detaseed",this_belectron.detaseed,weight,100,0,0.1);
   FillHist(cutname+"/belectron_HoverE",this_belectron.HoverE,weight,100,0,1);
   FillHist(cutname+"/belectron_InvEminusInvP",this_belectron.InvEminusInvP,weight,100,0,1);
@@ -708,6 +714,34 @@ void PreselectionAnalyzer::FillHistAll_belectron(TString cutname,belectronvar th
   FillHist(cutname+"/belectron_passTightID",this_belectron.passTightID,weight,3,-1,2);
 
 
+  FillHist(cutname+"/belectron_pt",this_belectron.pt,weight,50,0,50);
+  FillHist(cutname+"/belectron_aeta",this_belectron.aeta,weight,50,0,2.5);
+
+  if(this_belectron.aeta<1.479){//ECAL BARREL
+    FillHist(cutname+"_EB/belectron_full5x5sigmaietaieta",this_belectron.full5x5sigmaietaieta,weight,100,0,1);
+    FillHist(cutname+"_EB/belectron_log_1_full5x5sigmaietaieta",log10(1+this_belectron.full5x5sigmaietaieta),weight,100,0,0.5);
+    FillHist(cutname+"_EB/belectron_abs_detaseed",this_belectron.abs_detaseed,weight,100,0,1);
+    FillHist(cutname+"_EB/belectron_log_abs_detaseed",log10(this_belectron.abs_detaseed),weight,100,-8,1);
+    FillHist(cutname+"_EB/belectron_abs_dPhiIn",this_belectron.abs_dPhiIn,weight,100,0,1);
+    FillHist(cutname+"_EB/belectron_log_abs_dPhiIn",log10(this_belectron.abs_dPhiIn),weight,100,-8,1);
+    FillHist(cutname+"_EB/belectron_InvEminusInvP",this_belectron.InvEminusInvP,weight,100,0,1);
+    FillHist(cutname+"_EB/belectron_log_InvEminusInvP",log10(this_belectron.InvEminusInvP),weight,100,-8,1);
+    FillHist(cutname+"_EB/belectron_HoverE",this_belectron.HoverE,weight,100,0,1);
+    FillHist(cutname+"_EB/belectron_log_0p0001_HoverE",log10(0.0001+this_belectron.HoverE),weight,100,-4,1);
+    
+  }else{//ECAL ENDCAP
+    FillHist(cutname+"_EE/belectron_full5x5sigmaietaieta",this_belectron.full5x5sigmaietaieta,weight,100,0,1);
+    FillHist(cutname+"_EE/belectron_log_1_full5x5sigmaietaieta",log10(1+this_belectron.full5x5sigmaietaieta),weight,100,0,0.5);
+    FillHist(cutname+"_EE/belectron_abs_detaseed",this_belectron.abs_detaseed,weight,100,0,1);
+    FillHist(cutname+"_EE/belectron_log_abs_detaseed",log10(this_belectron.abs_detaseed),weight,100,-8,1);
+    FillHist(cutname+"_EE/belectron_abs_dPhiIn",this_belectron.abs_dPhiIn,weight,100,0,1);
+    FillHist(cutname+"_EE/belectron_log_abs_dPhiIn",log10(this_belectron.abs_dPhiIn),weight,100,-8,1);
+    FillHist(cutname+"_EE/belectron_InvEminusInvP",this_belectron.InvEminusInvP,weight,100,0,1);
+    FillHist(cutname+"_EE/belectron_log_InvEminusInvP",log10(this_belectron.InvEminusInvP),weight,100,-8,1);
+    FillHist(cutname+"_EE/belectron_HoverE",this_belectron.HoverE,weight,100,0,1);
+    FillHist(cutname+"_EE/belectron_log_0p0001_HoverE",log10(0.0001+this_belectron.HoverE),weight,100,-4,1);
+  }
+  
 }
 
 void PreselectionAnalyzer::FillHistAll_bjet(TString cutname,bjetvar this_bjet){

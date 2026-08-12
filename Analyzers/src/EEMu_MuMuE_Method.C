@@ -317,9 +317,9 @@ void EEMu_MuMuE_Method::FillHist_1bmuon(TString SigORBkg){
   FillHist(SigORBkg+"_1bmuon/muon_palongjet_Over_Pjet",bmuon.palongjetratio,weight,100,0,1);
   FillHist(SigORBkg+"_1bmuon/muon_dR_j",bmuon.dR_l_j,weight,100,0,1);
   FillHist(SigORBkg+"_1bmuon/muon_reliso",bmuon.reliso,weight,100,0,10);
-  FillHist(SigORBkg+"_1bmuon/muon_logreliso",log10(bmuon.reliso),weight,100,-2,1.5);
+  FillHist(SigORBkg+"_1bmuon/muon_log_1_reliso",log10(1+bmuon.reliso),weight,100,0,2);
   FillHist(SigORBkg+"_1bmuon/muon_reltrkiso",bmuon.reltrkiso,weight,100,0,10);
-  FillHist(SigORBkg+"_1bmuon/muon_logreltrkiso",log10(bmuon.reltrkiso),weight,100,-2,1.5);
+  FillHist(SigORBkg+"_1bmuon/muon_log_1_reltrkiso",log10(1+bmuon.reltrkiso),weight,100,0,2);
   FillHist(SigORBkg+"_1bmuon/muon_nsip3d",fabs(bmuon.nsip3d),weight,100,0,10);
 
 
@@ -424,9 +424,9 @@ void EEMu_MuMuE_Method::FillHist_1belectron(TString SigORBkg){
   FillHist(SigORBkg+"_1belectron/electron_palongjet_Over_Pjet",belectron.palongjetratio,weight,100,0,1);
   FillHist(SigORBkg+"_1belectron/electron_dR_j",belectron.dR_l_j,weight,100,0,1);
   FillHist(SigORBkg+"_1belectron/electron_reliso",belectron.reliso,weight,100,0,10);
-  FillHist(SigORBkg+"_1belectron/electron_logreliso",log10(belectron.reliso),weight,100,-2,1.5);
+  FillHist(SigORBkg+"_1belectron/electron_log_1_reliso",log10(1+belectron.reliso),weight,100,0,2);
   FillHist(SigORBkg+"_1belectron/electron_reltrkiso",belectron.reltrkiso,weight,100,0,10);
-  FillHist(SigORBkg+"_1belectron/electron_logreltrkiso",log10(belectron.reltrkiso),weight,100,-2,1.5);
+  FillHist(SigORBkg+"_1belectron/electron_log_1_reltrkiso",log10(1+belectron.reltrkiso),weight,100,0,2);
 
   FillHist(SigORBkg+"_1belectron/electron_nsip3d",fabs(belectron.nsip3d),weight,100,0,10);
 
@@ -467,7 +467,34 @@ void EEMu_MuMuE_Method::FillHist_1belectron(TString SigORBkg){
   FillHist(SigORBkg+"_1belectron/electron_passVetoIDnoIso",belectron.passVetoIDnoIso,weight,2,0,2);
   FillHist(SigORBkg+"_1belectron/electron_passLooseID",belectron.passLooseID,weight,2,0,2);
 
+  //id related // by eta region
+  if(belectron.aeta < 1.479){ // ECAL BARREL
+    FillHist(SigORBkg+"_1belectron_EB/electron_full5x5sigmaietaieta",belectron.full5x5sigmaietaieta,weight,100,0,1);
+    FillHist(SigORBkg+"_1belectron_EB/electron_log_1_full5x5sigmaietaieta",log10(1+belectron.full5x5sigmaietaieta),weight,100,0,0.5);
+    FillHist(SigORBkg+"_1belectron_EB/electron_abs_detaseed",belectron.abs_detaseed,weight,100,0,1);
+    FillHist(SigORBkg+"_1belectron_EB/electron_log_abs_detaseed",log10(belectron.abs_detaseed),weight,100,-8,1);
+    FillHist(SigORBkg+"_1belectron_EB/electron_abs_dPhiIn",belectron.abs_dPhiIn,weight,100,0,1);
+    FillHist(SigORBkg+"_1belectron_EB/electron_log_abs_dPhiIn",log10(belectron.abs_dPhiIn),weight,100,-8,1);
+    FillHist(SigORBkg+"_1belectron_EB/electron_InvEminusInvP",belectron.InvEminusInvP,weight,100,0,1);
+    FillHist(SigORBkg+"_1belectron_EB/electron_log_InvEminusInvP",log10(belectron.InvEminusInvP),weight,100,-8,1);
+    FillHist(SigORBkg+"_1belectron_EB/electron_HoverE",belectron.HoverE,weight,100,0,1);
+    FillHist(SigORBkg+"_1belectron_EB/electron_log_0p0001_HoverE",log10(0.0001+belectron.HoverE),weight,100,-4,1);
+    
 
+
+  }// |eta|<1.479
+  else{ // ECAL ENDCAP
+    FillHist(SigORBkg+"_1belectron_EE/electron_full5x5sigmaietaieta",belectron.full5x5sigmaietaieta,weight,100,0,1);
+    FillHist(SigORBkg+"_1belectron_EE/electron_log_1_full5x5sigmaietaieta",log10(1+belectron.full5x5sigmaietaieta),weight,100,0,0.5);
+    FillHist(SigORBkg+"_1belectron_EE/electron_abs_detaseed",belectron.abs_detaseed,weight,100,0,1);
+    FillHist(SigORBkg+"_1belectron_EE/electron_log_abs_detaseed",log10(belectron.abs_detaseed),weight,100,-8,1); 
+    FillHist(SigORBkg+"_1belectron_EE/electron_abs_dPhiIn",belectron.abs_dPhiIn,weight,100,0,1);
+    FillHist(SigORBkg+"_1belectron_EE/electron_log_abs_dPhiIn",log10(belectron.abs_dPhiIn),weight,100,-8,1);
+    FillHist(SigORBkg+"_1belectron_EE/electron_InvEminusInvP",belectron.InvEminusInvP,weight,100,0,1);
+    FillHist(SigORBkg+"_1belectron_EE/electron_log_InvEminusInvP",log10(belectron.InvEminusInvP),weight,100,-8,1);
+    FillHist(SigORBkg+"_1belectron_EE/electron_HoverE",belectron.HoverE,weight,100,0,1);
+    FillHist(SigORBkg+"_1belectron_EE/electron_log_0p0001_HoverE",log10(0.0001+belectron.HoverE),weight,100,-4,1);
+  }//|eta|>1.479
 }
 
 void EEMu_MuMuE_Method::FillTree_0blepton(){

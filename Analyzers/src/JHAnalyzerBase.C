@@ -3926,7 +3926,9 @@ JHAnalyzerBase::belectronvar JHAnalyzerBase::Get_belectronvar(Electron &this_ele
   ret.HoverE=this_electron.HoverE();
   ret.InvEminusInvP=fabs(this_electron.InvEminusInvP());
   ret.nmissinghits=this_electron.NMissingHits();
-
+  ret.dPhiIn=this_electron.dPhiIn();
+  ret.abs_dPhiIn=fabs(ret.dPhiIn);
+  
   ret.passVetoID=this_electron.PassID("passVetoID");
   ret.passVetoIDnoIso=this_electron.PassID("passVetoIDnoIso");
   ret.passLooseID=this_electron.PassID("passLooseID");
