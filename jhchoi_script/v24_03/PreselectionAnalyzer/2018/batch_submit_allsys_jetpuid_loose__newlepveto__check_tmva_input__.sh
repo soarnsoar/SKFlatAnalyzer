@@ -4,10 +4,11 @@ mkdir -p jetpuid_loose_newlepveto_check_tmva_input_syslogs/
 SKIM="--skim SkimTree_Dilepton_1DeepJetTightWP"
 FLAG="--userflags runSys,jetpuid_loose,newlepveto,check_tmva_input"
 NMAX="--nmax 400"
-MEM="--memory 6399 --count 2 "
+MEM="--memory 3500 --count 2 "
 
 YEAR=2018
 SKFlat.py -a PreselectionAnalyzer  ${SKIM} -l  inputlist_major.txt -n 50 -e ${YEAR} $FLAG ${NMAX}  ${MEM} &> jetpuid_loose_newlepveto_check_tmva_input_syslogs/major.log&
+MEM=""
 SKFlat.py -a PreselectionAnalyzer  ${SKIM} -l inputlist_minor.txt -n 50 -e ${YEAR} $FLAG  ${NMAX}   ${MEM} &> jetpuid_loose_newlepveto_check_tmva_input_syslogs/minor.log&
 SKFlat.py -a PreselectionAnalyzer  ${SKIM} -l inputlist_tW.txt -n 50 -e ${YEAR} $FLAG ${NMAX}   ${MEM} &> jetpuid_loose_newlepveto_check_tmva_input_syslogs/tW.log&
 SKFlat.py -a PreselectionAnalyzer  ${SKIM} -i DoubleMuon -n 50 -e ${YEAR} $FLAG  ${NMAX}   ${MEM} &> jetpuid_loose_newlepveto_check_tmva_input_syslogs/DoubleMuon.log&
