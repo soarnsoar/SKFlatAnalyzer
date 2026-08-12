@@ -488,6 +488,8 @@ class JHAnalyzerBase : public AnalyzerCore {
     float full5x5sigmaietaieta=0;
     float detaseed=0;
     float abs_detaseed=0;
+    float dPhiIn=0;
+    float abs_dPhiIn=0;
     float HoverE=0;
     float InvEminusInvP=0;
     float nmissinghits=0;

@@ -18,6 +18,8 @@
 //#pragma link C++ class SkimTree_HNMultiLep+;
 //#pragma link C++ class MeasureJetTaggingEfficiency+;
 //#pragma link C++ class SkimTree_Dilepton+;
+#pragma link C++ class SkimTree_SingleLepton_1DeepJetTightWP+;
+#pragma link C++ class SkimTree_Dilepton_1DeepJetTightWP+;
 
 //#pragma link C++ class TTsemilep_ChargeReliability+;
 //#pragma link C++ class TTsemilep_LeptonChargeAccuracy+;
