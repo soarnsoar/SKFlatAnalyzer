@@ -470,7 +470,7 @@ void EEMu_MuMuE_Method::FillHist_1belectron(TString SigORBkg){
   //id related // by eta region
   if(belectron.aeta < 1.479){ // ECAL BARREL
     FillHist(SigORBkg+"_1belectron_EB/electron_full5x5sigmaietaieta",belectron.full5x5sigmaietaieta,weight,100,0,1);
-    FillHist(SigORBkg+"_1belectron_EB/electron_log_1_full5x5sigmaietaieta",log10(1+belectron.full5x5sigmaietaieta),weight,100,0,0.5);
+    FillHist(SigORBkg+"_1belectron_EB/electron_log_1_full5x5sigmaietaieta",log10(1+belectron.full5x5sigmaietaieta),weight,100,0,0.05);
     FillHist(SigORBkg+"_1belectron_EB/electron_abs_detaseed",belectron.abs_detaseed,weight,100,0,1);
     FillHist(SigORBkg+"_1belectron_EB/electron_log_abs_detaseed",log10(belectron.abs_detaseed),weight,100,-8,1);
     FillHist(SigORBkg+"_1belectron_EB/electron_abs_dPhiIn",belectron.abs_dPhiIn,weight,100,0,1);
@@ -485,7 +485,7 @@ void EEMu_MuMuE_Method::FillHist_1belectron(TString SigORBkg){
   }// |eta|<1.479
   else{ // ECAL ENDCAP
     FillHist(SigORBkg+"_1belectron_EE/electron_full5x5sigmaietaieta",belectron.full5x5sigmaietaieta,weight,100,0,1);
-    FillHist(SigORBkg+"_1belectron_EE/electron_log_1_full5x5sigmaietaieta",log10(1+belectron.full5x5sigmaietaieta),weight,100,0,0.5);
+    FillHist(SigORBkg+"_1belectron_EE/electron_log_1_full5x5sigmaietaieta",log10(1+belectron.full5x5sigmaietaieta),weight,100,0,0.05);
     FillHist(SigORBkg+"_1belectron_EE/electron_abs_detaseed",belectron.abs_detaseed,weight,100,0,1);
     FillHist(SigORBkg+"_1belectron_EE/electron_log_abs_detaseed",log10(belectron.abs_detaseed),weight,100,-8,1); 
     FillHist(SigORBkg+"_1belectron_EE/electron_abs_dPhiIn",belectron.abs_dPhiIn,weight,100,0,1);

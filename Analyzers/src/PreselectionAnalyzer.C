@@ -696,7 +696,7 @@ void PreselectionAnalyzer::FillHistAll_belectron(TString cutname,belectronvar th
   FillHist(cutname+"/belectron_IsGsfCtfScPixChargeConsistent",this_belectron.IsGsfCtfScPixChargeConsistent,weight,4,-2,2);
   
   FillHist(cutname+"/belectron_full5x5sigmaietaieta",this_belectron.full5x5sigmaietaieta,weight,100,0,0.1);
-  FillHist(cutname+"/belectron_log_1_full5x5sigmaietaieta",log10(1+this_belectron.full5x5sigmaietaieta),weight,100,0,0.5);
+  FillHist(cutname+"/belectron_log_1_full5x5sigmaietaieta",log10(1+this_belectron.full5x5sigmaietaieta),weight,100,0,0.05);
   FillHist(cutname+"/belectron_abs_detaseed",this_belectron.detaseed,weight,100,0,0.1);
   FillHist(cutname+"/belectron_HoverE",this_belectron.HoverE,weight,100,0,1);
   FillHist(cutname+"/belectron_InvEminusInvP",this_belectron.InvEminusInvP,weight,100,0,1);
@@ -719,7 +719,7 @@ void PreselectionAnalyzer::FillHistAll_belectron(TString cutname,belectronvar th
 
   if(this_belectron.aeta<1.479){//ECAL BARREL
     FillHist(cutname+"_EB/belectron_full5x5sigmaietaieta",this_belectron.full5x5sigmaietaieta,weight,100,0,1);
-    FillHist(cutname+"_EB/belectron_log_1_full5x5sigmaietaieta",log10(1+this_belectron.full5x5sigmaietaieta),weight,100,0,0.5);
+    FillHist(cutname+"_EB/belectron_log_1_full5x5sigmaietaieta",log10(1+this_belectron.full5x5sigmaietaieta),weight,100,0,0.05);
     FillHist(cutname+"_EB/belectron_abs_detaseed",this_belectron.abs_detaseed,weight,100,0,1);
     FillHist(cutname+"_EB/belectron_log_abs_detaseed",log10(this_belectron.abs_detaseed),weight,100,-8,1);
     FillHist(cutname+"_EB/belectron_abs_dPhiIn",this_belectron.abs_dPhiIn,weight,100,0,1);
@@ -731,7 +731,7 @@ void PreselectionAnalyzer::FillHistAll_belectron(TString cutname,belectronvar th
     
   }else{//ECAL ENDCAP
     FillHist(cutname+"_EE/belectron_full5x5sigmaietaieta",this_belectron.full5x5sigmaietaieta,weight,100,0,1);
-    FillHist(cutname+"_EE/belectron_log_1_full5x5sigmaietaieta",log10(1+this_belectron.full5x5sigmaietaieta),weight,100,0,0.5);
+    FillHist(cutname+"_EE/belectron_log_1_full5x5sigmaietaieta",log10(1+this_belectron.full5x5sigmaietaieta),weight,100,0,0.05);
     FillHist(cutname+"_EE/belectron_abs_detaseed",this_belectron.abs_detaseed,weight,100,0,1);
     FillHist(cutname+"_EE/belectron_log_abs_detaseed",log10(this_belectron.abs_detaseed),weight,100,-8,1);
     FillHist(cutname+"_EE/belectron_abs_dPhiIn",this_belectron.abs_dPhiIn,weight,100,0,1);
