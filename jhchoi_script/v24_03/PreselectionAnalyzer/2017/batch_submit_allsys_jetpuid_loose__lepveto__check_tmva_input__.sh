@@ -1,14 +1,14 @@
 #PreselectionAnalyzer
 mkdir -p jetpuid_loose_lepveto_check_tmva_input_syslogs/
 
-SKIM="--skim SkimTree_Dilepton"
+SKIM="--skim SkimTree_Dilepton_1DeepJetTightWP"
 FLAG="--userflags runSys,jetpuid_loose,lepveto,check_tmva_input"
 NMAX="--nmax 400"
 
 
 SKFlat.py -a PreselectionAnalyzer  ${SKIM} -l  inputlist_major.txt -n 50 -e 2017 $FLAG ${NMAX} &> jetpuid_loose_lepveto_check_tmva_input_syslogs/major.log&
 sleep 3
-SKFlat.py -a PreselectionAnalyzer -l inputlist_NoSkim.txt -n 50 -e 2017 $FLAG ${NMAX} &> jetpuid_loose_lepveto_check_tmva_input_syslogs/NoSkim.log&
+SKFlat.py -a PreselectionAnalyzer ${SKIM} -l inputlist_NoSkim.txt -n 50 -e 2017 $FLAG ${NMAX} &> jetpuid_loose_lepveto_check_tmva_input_syslogs/NoSkim.log&
 sleep 3
 SKFlat.py -a PreselectionAnalyzer  ${SKIM} -l inputlist_minor.txt -n 50 -e 2017 $FLAG ${NMAX} &> jetpuid_loose_lepveto_check_tmva_input_syslogs/minor.log&
 SKFlat.py -a PreselectionAnalyzer  ${SKIM} -l inputlist_tW.txt -n 50 -e 2017 $FLAG ${NMAX} &> jetpuid_loose_lepveto_check_tmva_input_syslogs/tW.log&
