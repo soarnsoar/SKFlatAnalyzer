@@ -7,6 +7,7 @@ NMAX="--nmax 400"
 MEM="--memory 6399 --count 2 "
 
 SKFlat.py -a PreselectionAnalyzer  ${SKIM} -l  inputlist_major.txt -n 50 -e 2017 $FLAG ${NMAX}  ${MEM} &> jetpuid_loose_newlepveto_check_tmva_input_syslogs/major.log&
+SKFlat.py -a PreselectionAnalyzer  ${SKIM} -l  inputlist_TT.txt -n 150 -e 2017 $FLAG ${NMAX}  ${MEM} &> jetpuid_loose_newlepveto_check_tmva_input_syslogs/TT.log&
 sleep 3
 MEM="--memory 3199 --count 1"
 SKFlat.py -a PreselectionAnalyzer  ${SKIM} -l inputlist_NoSkim.txt -n 50 -e 2017 $FLAG ${NMAX}  ${MEM} &> jetpuid_loose_newlepveto_check_tmva_input_syslogs/NoSkim.log&

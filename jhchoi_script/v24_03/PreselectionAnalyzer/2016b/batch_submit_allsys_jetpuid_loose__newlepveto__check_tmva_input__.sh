@@ -10,6 +10,7 @@ YEAR=2016b
 
 
 SKFlat.py -a PreselectionAnalyzer  ${SKIM} -l  inputlist_major.txt -n 50 -e ${YEAR} $FLAG ${NMAX}  ${MEM} &> jetpuid_loose_newlepveto_check_tmva_input_syslogs/major.log&
+SKFlat.py -a PreselectionAnalyzer  ${SKIM} -l  inputlist_TT.txt -n 150 -e ${YEAR} $FLAG ${NMAX}  ${MEM} &> jetpuid_loose_newlepveto_check_tmva_input_syslogs/TT.log&
 MEM="--memory 3199 --count 1"
 
 SKFlat.py -a PreselectionAnalyzer  ${SKIM} -l inputlist_minor.txt -n 50 -e ${YEAR} $FLAG ${NMAX}  ${MEM} &> jetpuid_loose_newlepveto_check_tmva_input_syslogs/minor.log&
