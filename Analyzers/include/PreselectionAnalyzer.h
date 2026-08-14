@@ -6,8 +6,9 @@
 class PreselectionAnalyzer : public JHAnalyzerBase {
 
 public:
-
-
+  //
+  bool bdt_v2608_2=false;
+  
   void initializeAnalyzer() override;
   void EventLoop() override;
   void TruthLoop() override;
