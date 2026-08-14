@@ -73,6 +73,14 @@ void PreselectionAnalyzer::initializeAnalyzer(){
     newlepveto=true;
     cout << "newlepveto -> true" << endl;
   }
+  //bdt_v2608_2
+  bdt_v2608_2=false;
+  if(HasFlag("bdt_v2608_2")){
+    bdt_v2608_2=true;
+    cout << "bdt_v2608_2 -> true" << endl;
+  }
+  
+
   
   jetvetotest=HasFlag("jetvetotest");
   kincutopt=HasFlag("kincutopt");
@@ -208,8 +216,8 @@ void PreselectionAnalyzer::initializeAnalyzer(){
   //---newlepveto
   maxMET=75.0;
   min_dphi_z_b=-1;
-  min_z_pt=5.0;
-  max_ptzb=580.0;
+  min_z_pt=6.0;
+  max_ptzb=-1;
   if(DataEra=="2016preVFP"){
     //m_score_region
     //e_score_region
@@ -427,7 +435,9 @@ void PreselectionAnalyzer::RunBasicZregion(){
     
   //}
   //if(ptzb>60.) return;
-  if(ptzb>max_ptzb) return;
+  if(max_ptzb>0){
+    if(ptzb>max_ptzb) return;
+  }
   if(!runSys){
     
     //FillHistAllChannel("After__maxMET__min_dphizb__max_ptzb");
@@ -523,7 +533,9 @@ void PreselectionAnalyzer::RunBasicZregion(){
     if(!electron.IsGsfCtfScPixChargeConsistent()) continue;
     if(!electron.PassConversionVeto()) continue;
     //if(electron.RelIso() > 10.) continue;
-    //if(electron.NMissingHits() != 0) continue;
+    if(bdt_v2608_2){
+      if(electron.NMissingHits() >1) continue;
+    }
     electron_1belectron=&electron;
     //this_belectron=Get_belectronvar(electron,v_bjet[0]);
     nbelectron+=1;    

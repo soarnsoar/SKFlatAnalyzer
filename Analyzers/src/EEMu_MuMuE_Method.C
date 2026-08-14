@@ -931,7 +931,8 @@ void EEMu_MuMuE_Method::RunElectronInJet(){
   //FillHist by ElectronCharge
   nbelectron=0;
   for(auto& electron : AllElectrons){
-    if(!electron.IsGsfCtfScPixChargeConsistent()) continue;    
+    if(!electron.IsGsfCtfScPixChargeConsistent()) continue;
+    if(!electron.PassConversionVeto()) continue;    
     nbelectron+=1;
     current_belectron=electron;
 
