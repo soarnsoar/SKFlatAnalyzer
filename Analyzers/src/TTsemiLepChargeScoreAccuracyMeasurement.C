@@ -356,10 +356,8 @@ void TTsemiLepChargeScoreAccuracyMeasurement::RunBJet(TString bjetname, int bjet
   for(auto& muon : AllMuons){
     if(muon.Pt() < 5.) continue;
     if(muon.DeltaR(v_tightjet[bjetidx]) > 0.4) continue;
-    if(muon.RelIso() > 10.) continue;
-    if(muon.Chi2()>10) continue;
-    if(muon.TrackerLayers()<1) continue;
-    if(muon.MatchedStations() <1) continue;
+    bool isGlobalMuon__OR__isTrackerMuon= muon.IsType(Muon::GlobalMuon) || muon.IsType(Muon::TrackerMuon);
+    if(!isGlobalMuon__OR__isTrackerMuon) continue;
     
     SetMuonChargeScore(muon,v_tightjet[bjetidx]);
     double this_muon_score=GetMuonChargeScore();
@@ -378,13 +376,12 @@ void TTsemiLepChargeScoreAccuracyMeasurement::RunBJet(TString bjetname, int bjet
   }//[end muon for loop]
 
   for(auto& electron : AllElectrons){
-    if(!electron.IsGsfCtfScPixChargeConsistent()) continue;
     if(electron.Pt() < 5.) continue;
     if(electron.DeltaR(v_tightjet[bjetidx]) > 0.4) continue;
     if(!electron.IsGsfCtfScPixChargeConsistent()) continue;
     if(!electron.PassConversionVeto()) continue;
-    if(electron.RelIso() > 10.) continue;
-    if(electron.NMissingHits() != 0) continue;
+    //if(electron.RelIso() > 10.) continue;
+    if(electron.NMissingHits() >1) continue;
     
     
     SetElectronChargeScore(electron,v_tightjet[bjetidx]);

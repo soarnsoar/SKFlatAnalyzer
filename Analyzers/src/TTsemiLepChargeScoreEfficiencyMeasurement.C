@@ -65,8 +65,6 @@ void TTsemiLepChargeScoreEfficiencyMeasurement::initializeAnalyzer(){
   //HighJetOnly
   HighJetOnly=HasFlag("HighJetOnly");
   if(HighJetOnly){
-    //void Setup_bChargeIDEff(TString _bchargeid_mceff_filename="",bool readsltonly=false);
-    //Setup_bChargeIDEff("TTsemiLepChargeScoreEfficiencyMeasurement_"+MCSample+".root",true);
     Setup_bChargeIDEff("",true);
   }
   //apply bchargeideff
@@ -81,6 +79,10 @@ void TTsemiLepChargeScoreEfficiencyMeasurement::initializeAnalyzer(){
     LoadChargeScoreTool("2512.5","2512.5","2512.5",true);
 
   }
+  else if(HasFlag("bdt2608.2")){
+    LoadChargeScoreTool("2608.2","2608.2","2608.2",true);
+
+  }  
   else{
     LoadChargeScoreTool("2512.5","2512.5","2512.5",true);
   }
@@ -212,6 +214,16 @@ void TTsemiLepChargeScoreEfficiencyMeasurement::RunReco(){
   //btagsf=1;///Only for this analyzer. Unset the btag eff correction
   //250429 -> Other jets effdata/effmc effects will be cancelled. So, we dont have to remove charge indep. btagsf?
 
+
+  
+  
+  v_bjetidx=GetBJetIdx(v_tightjet);
+  nbjet=v_bjetidx.size();
+  if(nbjet < 2) return;
+  njet=v_tightjet.size();
+  if(v_tightjet.size()<4) return;
+
+  ////----
   if(measure_bchargeeff){
     SetEventWeight();
     //vector<Jet> JHAnalyzerBase::GetBJet(const vector<Jet> &v_Tightjet){
@@ -220,12 +232,6 @@ void TTsemiLepChargeScoreEfficiencyMeasurement::RunReco(){
     return;
   }
   
-  
-  v_bjetidx=GetBJetIdx(v_tightjet);
-  nbjet=v_bjetidx.size();
-  if(nbjet < 2) return;
-  njet=v_tightjet.size();
-  if(v_tightjet.size()<4) return;
   //--Now Objects are ready--//
   SetEventWeight();
 
@@ -391,10 +397,13 @@ void TTsemiLepChargeScoreEfficiencyMeasurement::RunBJet(TString bjetname, int bj
   for(auto& muon : AllMuons){
     if(muon.Pt() < 5.) continue;
     if(muon.DeltaR(v_tightjet[bjetidx]) > 0.4) continue;
-    if(muon.RelIso() > 10.) continue;
-    if(muon.Chi2()>10) continue;
-    if(muon.TrackerLayers()<1) continue;
-    if(muon.MatchedStations() <1) continue;
+    //if(muon.RelIso() > 10.) continue;
+    //if(muon.Chi2()>10) continue;
+    //if(muon.TrackerLayers()<1) continue;
+    //if(muon.MatchedStations() <1) continue;
+    bool isGlobalMuon__OR__isTrackerMuon= muon.IsType(Muon::GlobalMuon) || muon.IsType(Muon::TrackerMuon);
+    if(!isGlobalMuon__OR__isTrackerMuon) continue;
+
     
     SetMuonChargeScore(muon,v_tightjet[bjetidx]);
     double this_muon_score=GetMuonChargeScore();
@@ -413,13 +422,12 @@ void TTsemiLepChargeScoreEfficiencyMeasurement::RunBJet(TString bjetname, int bj
   }//[end muon for loop]
 
   for(auto& electron : AllElectrons){
-    if(!electron.IsGsfCtfScPixChargeConsistent()) continue;
     if(electron.Pt() < 5.) continue;
     if(electron.DeltaR(v_tightjet[bjetidx]) > 0.4) continue;
     if(!electron.IsGsfCtfScPixChargeConsistent()) continue;
     if(!electron.PassConversionVeto()) continue;
-    if(electron.RelIso() > 10.) continue;
-    if(electron.NMissingHits() != 0) continue;
+    //if(electron.RelIso() > 10.) continue;
+    if(electron.NMissingHits() > 1) continue;
     
     
     SetElectronChargeScore(electron,v_tightjet[bjetidx]);
