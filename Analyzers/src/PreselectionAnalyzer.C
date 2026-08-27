@@ -211,7 +211,7 @@ void PreselectionAnalyzer::initializeAnalyzer(){
     LoadChargeScoreTool("2512.3","2512.3","2512.3",0);
   }
   else if(HasFlag("bdt_v2608_2")){
-    LoadChargeScoreTool("2608.2","2608.2","2608.2",0);
+    LoadChargeScoreTool("2608.2","2608.2","2608.2",bdtcut);
   }
   
   else{

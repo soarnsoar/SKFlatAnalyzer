@@ -4262,17 +4262,17 @@ void JHAnalyzerBase::LoadChargeScoreTool_2608_2(bool applycut){
   if (applycut){
 
     map<TString,float> map_muon_mincut;
-    map_muon_mincut["2016preVFP"]=0.0;  map_muon_mincut["2016postVFP"]=-0.05;  map_muon_mincut["2017"]=0.0; map_muon_mincut["2018"]=0.0;
+    map_muon_mincut["2016preVFP"]=-0.05;  map_muon_mincut["2016postVFP"]=0.05;  map_muon_mincut["2017"]=0.05; map_muon_mincut["2018"]=0.05;
     map<TString,float> map_muon_maxcut;
-    map_muon_maxcut["2016preVFP"]=-0.6;  map_muon_maxcut["2016postVFP"]=-0.55;  map_muon_maxcut["2017"]=-0.55; map_muon_maxcut["2018"]=-0.55;
+    map_muon_maxcut["2016preVFP"]=-0.5;  map_muon_maxcut["2016postVFP"]=-0.55;  map_muon_maxcut["2017"]=-0.45; map_muon_maxcut["2018"]=-0.5;
 
 
     map<TString,float> map_electron_mincut;
-    map_electron_mincut["2016preVFP"]=0.05;  map_electron_mincut["2016postVFP"]=0.05;  map_electron_mincut["2017"]=0.05; map_electron_mincut["2018"]=0.05;
+    map_electron_mincut["2016preVFP"]=0.05;  map_electron_mincut["2016postVFP"]=0.05;  map_electron_mincut["2017"]=0.1; map_electron_mincut["2018"]=0.05;
     map<TString,float> map_electron_maxcut;
-    map_electron_maxcut["2016preVFP"]=-0.4;  map_electron_maxcut["2016postVFP"]=-0.4;  map_electron_maxcut["2017"]=-0.45; map_electron_maxcut["2018"]=-0.45;
+    map_electron_maxcut["2016preVFP"]=-0.45;  map_electron_maxcut["2016postVFP"]=-0.35;  map_electron_maxcut["2017"]=-0.45; map_electron_maxcut["2018"]=-0.4;
     map<TString,float> map_jet_mincut;
-    map_jet_mincut["2016preVFP"]=-0.06;  map_jet_mincut["2016postVFP"]=-0.04;  map_jet_mincut["2017"]=-0.08; map_jet_mincut["2018"]=-0.06;
+    map_jet_mincut["2016preVFP"]=0.01;  map_jet_mincut["2016postVFP"]=0.01;  map_jet_mincut["2017"]=0.02; map_jet_mincut["2018"]=0.03;
     map<TString,float> map_jet_maxcut;//Turn off this region                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                
     map_jet_maxcut["2016preVFP"]=-1;  map_jet_maxcut["2016postVFP"]=-1;  map_jet_maxcut["2017"]=-1; map_jet_maxcut["2018"]=-1;
 

@@ -398,10 +398,12 @@ void PreselectionToBDTRegionAnalyzer::RunBasicZregion(){
   for(auto& muon : AllMuons){
     if(muon.Pt() < 5.) continue;
     if(muon.DeltaR(v_bjet[0]) > 0.4) continue;
-    if(muon.RelIso() > 10.) continue;
-    if(muon.Chi2()>10) continue;
-    if(muon.TrackerLayers()<1) continue;
-    if(muon.MatchedStations() <1) continue;
+    //if(muon.RelIso() > 10.) continue;
+    //if(muon.Chi2()>10) continue;
+    //if(muon.TrackerLayers()<1) continue;
+    //if(muon.MatchedStations() <1) continue;
+    bool isGlobalMuon__OR__isTrackerMuon= muon.IsType(Muon::GlobalMuon) || muon.IsType(Muon::TrackerMuon);
+    if(!isGlobalMuon__OR__isTrackerMuon) continue;
 
     SetMuonChargeScore(muon,v_bjet[0]);
     double this_muon_score=GetMuonChargeScore();
@@ -420,13 +422,12 @@ void PreselectionToBDTRegionAnalyzer::RunBasicZregion(){
   }//[end muon for loop]
   //belectronvar this_belectron;
   for(auto& electron : AllElectrons){
-    if(!electron.IsGsfCtfScPixChargeConsistent()) continue;
     if(electron.Pt() < 5.) continue;
     if(electron.DeltaR(v_bjet[0]) > 0.4) continue;
     if(!electron.IsGsfCtfScPixChargeConsistent()) continue;
     if(!electron.PassConversionVeto()) continue;
-    if(electron.RelIso() > 10.) continue;
-    if(electron.NMissingHits() != 0) continue;
+    //if(electron.RelIso() > 10.) continue;
+    if(electron.NMissingHits() >1) continue;//v2608.2
     
     //this_belectron=Get_belectronvar(electron,v_bjet[0]);
     
