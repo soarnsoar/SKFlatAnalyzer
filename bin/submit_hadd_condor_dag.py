@@ -85,7 +85,7 @@ class hadd_submitter:
         nretry=3
         #ncpu=len(self.dict_group[j])
         ncpu=1
-        nmax=400
+        nmax=800
         #def Export(WORKDIR,command,jobname,submit,ncpu,memory=False,nretry=3,nmax=False):
         Export(WORKDIR,command,jobname,submit,ncpu,memory,nretry,nmax)
 

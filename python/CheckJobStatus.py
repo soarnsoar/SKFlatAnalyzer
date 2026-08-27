@@ -88,6 +88,9 @@ def CheckJobStatus(logfiledir, cycle, jobnumber, hostname):
       continue
     elif "To enable them in other operations, rebuild TensorFlow" in e_l:
       continue
+    elif "Warning in <TChain::AddFile>: Adding tree with no entries from file" in e_l:
+      ##no entry
+      continue
     elif 'tensorflow/stream_executor/cuda/cuda_driver.cc:271] failed call to cuInit: UNKNOWN ERROR' in e_l:
       continue
     elif 'tensorflow/stream_executor/cuda/cuda_diagnostics.cc:156] kernel driver does not appear' in e_l:
