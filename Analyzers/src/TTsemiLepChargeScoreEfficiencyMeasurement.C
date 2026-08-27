@@ -141,7 +141,7 @@ bool TTsemiLepChargeScoreEfficiencyMeasurement::CheckIsElectronChannel(){
 void TTsemiLepChargeScoreEfficiencyMeasurement::SetEventWeight(){
   weight=1;
   if(IsDATA) return;
-  if(measure_btageff) btagsf=1;
+  if(measure_btageff||measure_btageff_tight) btagsf=1;
   weight=MCweight()*ev.GetTriggerLumi("Full")*GetPileUpWeight(nPileUp,0)*GetPrefireWeight(0)*weakweight*z0weight*topptweight*btagsf*jetpuidsf;
   //Muon
   if(IsMuonChannel){
