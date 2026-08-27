@@ -85,6 +85,9 @@ void PreselectionAnalyzer::initializeAnalyzer(){
   jetvetotest=HasFlag("jetvetotest");
   kincutopt=HasFlag("kincutopt");
   bdtopt=HasFlag("bdtopt");
+  bdtopt_mue=HasFlag("bdtopt_mue");
+  bdtopt_jet=HasFlag("bdtopt_jet");
+  bdtopt_jetfin=HasFlag("bdtopt_jetfin");
   doxrange=HasFlag("doxrange");
   xrangetree=HasFlag("xrangetree");
   bdtcut=HasFlag("bdtcut");//applying bdtcut
@@ -156,6 +159,39 @@ void PreselectionAnalyzer::initializeAnalyzer(){
 
 
   }
+
+  
+  //
+  v_cut_to_muon_high={};
+  v_cut_to_muon_low={};
+
+  v_cut_to_electron_high={};
+  v_cut_to_electron_low={};
+  
+  for (int i = 0; i <= 40; ++i){
+    double this_val = -1.0 + i * 0.05;
+    v_cut_to_muon_high.push_back(this_val);
+    v_cut_to_muon_low.push_back(this_val);
+
+    v_cut_to_electron_high.push_back(this_val);
+    v_cut_to_electron_low.push_back(this_val);
+  }
+
+  //after opt slt ch//260826
+  if(DataEra=="2016preVFP"){
+    //-0.05 -0.5 0.05 -0.45
+    opt_cut_to_muon_high=-0.05,opt_cut_to_muon_low=-0.5,opt_cut_to_electron_high=0.05,opt_cut_to_electron_low=-0.45;
+  }else if(DataEra=="2016postVFP"){
+    //best_cut_config= 0.05 -0.55 0.05 -0.35
+    opt_cut_to_muon_high=0.05,opt_cut_to_muon_low=-0.55,opt_cut_to_electron_high=0.05,opt_cut_to_electron_low=-0.35;
+  }else if(DataEra=="2017"){
+    //best_cut_config= 0.05 -0.45 0.1 -0.45
+    opt_cut_to_muon_high=0.05,opt_cut_to_muon_low=-0.45,opt_cut_to_electron_high=0.1,opt_cut_to_electron_low=-0.45;
+  }else if(DataEra=="2018"){
+    //best_cut_config= 0.05 -0.5 0.05 -0.4
+    opt_cut_to_muon_high=0.05,opt_cut_to_muon_low=-0.5,opt_cut_to_electron_high=0.05,opt_cut_to_electron_low=-0.4;
+  }
+  
   //charge
   cout << "[LoadChargeScoreTool]" << endl;
   //void LoadChargeScoreTool(TString muon_version="2512.4",TString electron_version="2512.4", TString jet_version="2512.4", bool applycut=false);
@@ -174,8 +210,15 @@ void PreselectionAnalyzer::initializeAnalyzer(){
   else if(HasFlag("bdt2512.3")){
     LoadChargeScoreTool("2512.3","2512.3","2512.3",0);
   }
+  else if(HasFlag("bdt_v2608_2")){
+    LoadChargeScoreTool("2608.2","2608.2","2608.2",0);
+  }
+  
   else{
+    //LoadChargeScoreTool("2608.2","2608.2","2608.2",0);
+    //LoadChargeScoreTool("2512.5","2512.5","2512.5",bdtcut);
     LoadChargeScoreTool("2512.3","2512.3","2512.3",0);
+
   }
 
   
@@ -319,6 +362,7 @@ void PreselectionAnalyzer::SetEventWeight(){
   //----ZpT weight For DY
   //----DY WEAK NLO
   //---z0 weight
+  if(measure_btageff) btagsf=1;
   weight=MCweight()*ev.GetTriggerLumi("Full")*GetPileUpWeight(nPileUp,0)*GetPrefireWeight(0)*weakweight*z0weight*topptweight*btagsf*jetpuidsf;
   
   if(IsDiMuonChannel){
@@ -405,6 +449,15 @@ void PreselectionAnalyzer::RunBasicZregion(){
   
   //----Let's select and fillhist
   if(!runSys)FillHistAllChannel("BasicDYSelection");
+
+
+  if(measure_btageff){
+    if(met_pt > maxMET) return;//updated 251222
+    if(z_pt<min_z_pt) return;
+    Measure_MCbtagEff();
+    return;
+  }
+  
   if(nbjet!=1) return ;
   //  bool HasVetoLepton_NotTightLeps_NotWithinJets(const vector<int>& _v_tightmuonidx, const vector<int>& _v_tightelectronidx, const vector<TLorentzVector>& _v_jet);
   if(newlepveto){
@@ -422,7 +475,7 @@ void PreselectionAnalyzer::RunBasicZregion(){
       jhchoi_newtree3->Fill();
     }else{
       jhchoi_newtree4->Fill();
-  }
+    }
   }
   if(!runSys)FillHistAllChannel("Only1bjet");
   //if(CurrentMET.Pt() > 75.) return;
@@ -450,11 +503,7 @@ void PreselectionAnalyzer::RunBasicZregion(){
   FillHistAllChannel("After__maxMET__max_ptzb__min_z_pt");
 
 
-  if(measure_btageff){
 
-    Measure_MCbtagEff();
-    return;
-  }
 
   if(IsDYbplus || IsDYbminus){
     if(xrangetree){
@@ -659,11 +708,265 @@ void PreselectionAnalyzer::RunBasicZregion(){
   }
 
   if(bdtopt){
-    jhchoi_newtree->Fill();
-    return;
+    
+    if(bdtopt_mue){
+      FillBDTOptHistsMuE();
+      return;//hist based
+    }
+    if(bdtopt_jet){
+      FillBDTOptHistsJet();
+      return;//hist based
+    }
+    if(bdtopt_jetfin){
+      FillBDTOptHistsJetFin();
+      return;
+    }
+    jhchoi_newtree->Fill();//tree based
+
+
   }
   
 }//[end]RunBasic Zregion
+
+//---Jet BDT Opt HistBase---//
+void PreselectionAnalyzer::FillBDTOptHistsJet(){
+  //
+  int N=201;
+  TString Ndiv=TString::Itoa(N,10);
+  double delta=0.01;
+  int Nbins=N*N;
+
+  int SLT_Q=GetMeasuredCharge(opt_cut_to_muon_high,opt_cut_to_muon_low,opt_cut_to_electron_high,opt_cut_to_electron_low);
+  //if(SLT_Q==0){
+  //  FillHist("SLTOnly/MeasuredCharge",SLT_Q,weight,9,-4.5,4.5);
+  //  return; // multi SLT case
+  //}
+  if(SLT_Q<5){// abs(SLT_Q)>0 : only one SLT case//SLT_Q==0 : multi SLT
+      FillHist("SLTOnly/MeasuredCharge",SLT_Q,weight,9,-4.5,4.5);
+      return;
+  }
+  ///Not this bjet has no proper SLT in it
+  int jetcharge_int = jetcharge > 0 ? 1 : jetcharge < 0 ? -1 : 0;
+  
+  for( int i = 0 ;i<N; i++ ){
+    //    double this_val = -1.0 + i * 0.05;
+    double cut_to_jet_high=-1. + i*delta;
+    for( int j = 0 ;j<N; j++ ){
+      //    double this_val = -1.0 + i * 0.05;
+      double cut_to_jet_low=-1. + j*delta;
+      if(cut_to_jet_low>cut_to_jet_high) continue;
+
+      int this_Q=0;
+
+      if(jetscore>cut_to_jet_high){
+	this_Q=5*jetcharge_int;
+      }else if(jetscore<cut_to_jet_low){
+	this_Q= -6*jetcharge_int;
+      }else{
+	this_Q=7*jetcharge_int;
+      }
+      TString this_Q_str=TString::Itoa(this_Q,10);
+      int i_fin=i + j*N;
+      FillHist("JETBDTOPT_MeasuredQ_"+this_Q_str+"/CutIndex__CutNdiv_"+Ndiv,i_fin,weight,Nbins,0,Nbins);
+    }
+  }
+  
+  
+}
+
+
+
+
+//---Jet BDT Opt HistBase---//
+void PreselectionAnalyzer::FillBDTOptHistsJetFin(){
+  //
+  int N=201;
+  TString Ndiv=TString::Itoa(N,10);
+  double delta=0.01;
+  int Nbins=N;
+
+  int SLT_Q=GetMeasuredCharge(opt_cut_to_muon_high,opt_cut_to_muon_low,opt_cut_to_electron_high,opt_cut_to_electron_low);
+  //if(SLT_Q==0){
+  //  FillHist("SLTOnly/MeasuredCharge",SLT_Q,weight,9,-4.5,4.5);
+  //  return; // multi SLT case
+  //}
+  if(SLT_Q<5){// abs(SLT_Q)>0 : only one SLT case//SLT_Q==0 : multi SLT
+      FillHist("SLTOnly/MeasuredCharge",SLT_Q,weight,9,-4.5,4.5);
+      return;
+  }
+  ///Not this bjet has no proper SLT in it
+  int jetcharge_int = jetcharge > 0 ? 1 : jetcharge < 0 ? -1 : 0;
+  
+  for( int i = 0 ;i<N; i++ ){
+    //    double this_val = -1.0 + i * 0.05;
+    double cut_to_jet_high=-1. + i*delta;
+    int this_Q=0;
+
+    if(jetscore>cut_to_jet_high){
+      this_Q=5*jetcharge_int;
+    }else{
+	this_Q=6*jetcharge_int;
+    }
+    TString this_Q_str=TString::Itoa(this_Q,10);
+    int i_fin=i;
+    FillHist("JETFINBDTOPT_MeasuredQ_"+this_Q_str+"/CutIndex__CutNdiv_"+Ndiv,i_fin,weight,Nbins,0,Nbins);
+  }
+  
+  
+  
+}
+
+
+
+
+//----SLT BDT Opt HistBase---//
+void PreselectionAnalyzer::FillBDTOptHistsMuE(){
+  //
+  int N=41;
+  TString Ndiv=TString::Itoa(N,10);
+  int Nbins=N*N*N*N;
+  for( int i_muH = 0 ;i_muH<N; i_muH++ ){
+    double cut_to_muon_high=v_cut_to_muon_high[i_muH];
+    for( int i_muL = 0 ;i_muL<N; i_muL++ ){
+      double cut_to_muon_low=v_cut_to_muon_low[i_muL];
+	if(cut_to_muon_low > cut_to_muon_high) continue;
+	for( int i_eH = 0 ;i_eH<N; i_eH++ ){
+	  double cut_to_electron_high=v_cut_to_electron_high[i_eH];
+	  for( int i_eL = 0 ;i_eL<N; i_eL++ ){
+	    double cut_to_electron_low=v_cut_to_electron_low[i_eL];
+	    if(cut_to_electron_low > cut_to_electron_high) continue;
+	    //FillBDTOptHistsGivenCut(cut_to_muon_high,cut_to_muon_low,cut_to_electron_high,cut_to_electron_low);
+	    int this_Q=GetMeasuredCharge(cut_to_muon_high,cut_to_muon_low,cut_to_electron_high,cut_to_electron_low);
+	    TString this_Q_str=TString::Itoa(this_Q,10);
+	    int i_fin=i_muH + i_muL*N + i_eH*N*N + i_eL*N*N*N;
+	    FillHist("BDTOPT_MeasuredQ_"+this_Q_str+"/CutIndex__CutNdiv_"+Ndiv,i_fin,weight,Nbins,0,Nbins);
+	  }
+	}
+    }
+  }
+  
+  
+}
+int PreselectionAnalyzer::GetMeasuredCharge(double cut_to_muon_high,double cut_to_muon_low,double cut_to_electron_high,double cut_to_electron_low){
+  int n_muH=0;
+  int n_muL=0;
+  int n_eH=0;
+  int n_eL=0;
+
+  int Q_muH=0;
+  int Q_muL=0;
+  int Q_eH=0;
+  int Q_eL=0;
+  
+
+  for(int im=0;im<v_muonscore.size();im++){
+    double this_muonscore=v_muonscore[im];
+    if(this_muonscore>cut_to_muon_high){
+      n_muH+=1;
+      Q_muH=v_muoncharge[im];
+    }else if(this_muonscore<cut_to_muon_low){
+      n_muL+=1;
+      Q_muL=v_muoncharge[im];
+    }
+    if(n_muH+n_muL>1) return 0;// nSLT must be one.   
+  }//soft muon loop
+
+  
+  for(int ie=0;ie<v_electronscore.size();ie++){
+    double this_electronscore=v_electronscore[ie];
+    if(this_electronscore>cut_to_electron_high){
+      n_eH+=1;
+      Q_eH=v_electroncharge[ie];
+    }else if(this_electronscore<cut_to_electron_low){
+      n_eL+=1;
+      Q_eL=v_electroncharge[ie];
+    }
+    if(n_muH+n_muL+n_eH+n_eL>1) return 0;// nSLT must be one.   
+  }//soft electron loop
+
+
+  
+  //double cut_to_muon_high,double cut_to_muon_low,double cut_to_electron_high,double cut_to_electron_low
+
+  int MeasuredCharge=5;//no SLT
+  if(n_muH>0){
+    MeasuredCharge=Q_muH;
+  }else if(n_muL>0){
+    MeasuredCharge=-2*Q_muL;
+  }else if(n_eH>0){
+    MeasuredCharge=3*Q_eH;
+  }else if(n_eL>0){
+    MeasuredCharge=-4*Q_eL;
+  }
+  
+  return MeasuredCharge;
+
+  
+  
+  
+}
+
+
+void PreselectionAnalyzer::FillBDTOptHistsGivenCut(double cut_to_muon_high,double cut_to_muon_low,double cut_to_electron_high,double cut_to_electron_low){
+  int n_muH=0;
+  int n_muL=0;
+  int n_eH=0;
+  int n_eL=0;
+
+  int Q_muH=0;
+  int Q_muL=0;
+  int Q_eH=0;
+  int Q_eL=0;
+  
+
+  for(int im=0;im<v_muonscore.size();im++){
+    double this_muonscore=v_muonscore[im];
+    if(this_muonscore>cut_to_muon_high){
+      n_muH+=1;
+      Q_muH=v_muoncharge[im];
+    }else if(this_muonscore<cut_to_muon_low){
+      n_muL+=1;
+      Q_muL=v_muoncharge[im];
+    }
+    if(n_muH+n_muL>1) return;// nSLT must be one.   
+  }//soft muon loop
+
+  
+  for(int ie=0;ie<v_electronscore.size();ie++){
+    double this_electronscore=v_electronscore[ie];
+    if(this_electronscore>cut_to_electron_high){
+      n_eH+=1;
+      Q_eH=v_electroncharge[ie];
+    }else if(this_electronscore<cut_to_electron_low){
+      n_eL+=1;
+      Q_eL=v_electroncharge[ie];
+    }
+    if(n_muH+n_muL+n_eH+n_eL>1) return;// nSLT must be one.   
+  }//soft electron loop
+  
+  //double cut_to_muon_high,double cut_to_muon_low,double cut_to_electron_high,double cut_to_electron_low
+  TString cut_to_muon_high_str=Form("%.2f",cut_to_muon_high);
+  TString cut_to_muon_low_str=Form("%.2f",cut_to_muon_low);
+  TString cut_to_electron_high_str=Form("%.2f",cut_to_electron_high);
+  TString cut_to_electron_low_str=Form("%.2f",cut_to_electron_low);
+  
+  TString CutSetName="BDTOPT/"+cut_to_muon_high_str+"/"+cut_to_muon_low_str+"/"+cut_to_electron_high_str+"/"+cut_to_electron_low_str;
+  int MeasuredCharge=0;
+  if(n_muH>0){
+    MeasuredCharge=Q_muH;
+  }else if(n_muL>0){
+    MeasuredCharge=2*Q_muL;
+  }else if(n_eH>0){
+    MeasuredCharge=3*Q_eH;
+  }else if(n_eL>0){
+    MeasuredCharge=4*Q_eL;
+  }
+
+  FillHist(CutSetName+"/MeasuredCharge",MeasuredCharge,weight,9,-4.5,4.5);
+  
+  
+}
+
 
 
 

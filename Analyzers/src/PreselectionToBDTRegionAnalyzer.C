@@ -23,7 +23,9 @@ void PreselectionToBDTRegionAnalyzer::initializeAnalyzer(){
     //----use this analyzer specific btag mc eff----//
     //void AnalyzerCore::SetBTagMCEff_Filename(TString _btagmceff_filename)
     //if(!IsDATA) AnalyzerCore::SetBTagMCEff_Filename("PreselectionAnalyzer_"+MCSample+".root",true);// with kincut
-    if(!IsDATA) AnalyzerCore::SetBTagMCEff_Filename("",true);// with kincut
+    //if(!IsDATA) AnalyzerCore::SetBTagMCEff_Filename("",true);// with kincut
+    if(!IsDATA) AnalyzerCore::SetBTagMCEff_Filename("PreselectionAnalyzer_"+MCSample+".root");// with kincut
+	
     //use default mc eff
   }
   
@@ -114,6 +116,9 @@ void PreselectionToBDTRegionAnalyzer::initializeAnalyzer(){
   else if(HasFlag("bdt2512.3")){
     LoadChargeScoreTool("2512.3","2512.3","2512.3",0);
   }
+  else if(HasFlag("bdt2608.2")){
+    LoadChargeScoreTool("2608.2","2608.2","2608.2",bdtcut);
+  }
   else{
     LoadChargeScoreTool("2512.3","2512.3","2512.3",0);
   }
@@ -146,10 +151,12 @@ void PreselectionToBDTRegionAnalyzer::initializeAnalyzer(){
     cout << "Not Valid DataEra-->" << DataEra << endl;
   }
   */
-  maxMET=70.0;
+
+  ///after 2608.2
+  maxMET=75.0;
   min_dphi_z_b=-1;
-  min_z_pt=5.0;
-  max_ptzb=500.0;
+  min_z_pt=6.0;
+  max_ptzb=-1;
 
   apply_chargeid_eff_corr=HasFlag("apply_chargeid_eff_corr");
   if(apply_chargeid_eff_corr){
@@ -308,7 +315,7 @@ void PreselectionToBDTRegionAnalyzer::RunBasicZregion(){
   dphi_z_b= fabs(v_bjet[0].DeltaPhi(vZ));
   ptzb=(v_bjet[0]+vZ).Pt();  
   if(met_pt > maxMET) return;//updated 251222
-  if(ptzb>max_ptzb) return;
+  //if(ptzb>max_ptzb) return; //update 260820
   if(z_pt<min_z_pt) return;
 
   if(measure_btageff){

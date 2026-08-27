@@ -1,9 +1,9 @@
-#ifndef EEMu_MuMuE_Method_h
-#define EEMu_MuMuE_Method_h
+#ifndef EEMu_MuMuE_Method_Charm_h
+#define EEMu_MuMuE_Method_Charm_h
 
 #include "JHAnalyzerBase.h"
 
-class EEMu_MuMuE_Method : public JHAnalyzerBase {
+class EEMu_MuMuE_Method_Charm : public JHAnalyzerBase {
 
 public:
 
@@ -46,8 +46,8 @@ public:
   belectronvar Get_init_belectronvar();
   bmuonvar Get_init_bmuonvar();
 
-  EEMu_MuMuE_Method();
-  ~EEMu_MuMuE_Method();
+  EEMu_MuMuE_Method_Charm();
+  ~EEMu_MuMuE_Method_Charm();
 
   bool IsEE, IsMuMu;
   int idx_lhe_mu1, idx_lhe_mu2;

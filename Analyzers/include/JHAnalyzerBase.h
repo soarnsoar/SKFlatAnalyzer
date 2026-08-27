@@ -449,6 +449,7 @@ class JHAnalyzerBase : public AnalyzerCore {
     float nsip3d=0;
     float reltrkiso=0;
     float reliso=0;
+    float log10_1_reliso=0;
     float charge=0;
     float palongjet=0;
     float palongjetratio=0;
@@ -479,6 +480,7 @@ class JHAnalyzerBase : public AnalyzerCore {
     float nsip3d=0;
     float reltrkiso=0;
     float reliso=0;
+    float log10_1_reliso=0;
     float charge=0;
     float relecalPFClusterIso=0;
     float IsGsfCtfScPixChargeConsistent=0;
@@ -635,7 +637,8 @@ class JHAnalyzerBase : public AnalyzerCore {
   void LoadChargeScoreTool_2512_3(bool applycut=false);
   void LoadChargeScoreTool_2512_4(bool applycut=false);
   void LoadChargeScoreTool_2512_5(bool applycut=false);
-
+  void LoadChargeScoreTool_2608_2(bool applycut=false);
+  
   void LoadChargeScoreTool_temp(TString muon_version="2409.2",TString electron_version="2409.2", TString jet_version="2409.2", bool applycut=false);
   bool IsChargeScoreToolOn=false;
   void DeleteChargeScoreTool();

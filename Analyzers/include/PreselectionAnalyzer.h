@@ -34,6 +34,12 @@ public:
   void FillHistAll_bjet(TString cutname,bjetvar this_bjet);
 
 
+  void FillBDTOptHistsMuE();
+  void FillBDTOptHistsJet();
+  void FillBDTOptHistsJetFin();
+  void FillBDTOptHistsGivenCut(double cut_to_muon_high,double cut_to_muon_low,double cut_to_electron_high,double cut_to_electron_low);
+  int GetMeasuredCharge(double cut_to_muon_high,double cut_to_muon_low,double cut_to_electron_high,double cut_to_electron_low);
+
   bool IsDiMuonChannel;
   bool IsDiElectronChannel;
   void SetEventWeight();
@@ -73,6 +79,12 @@ public:
   bool jetvetotest;
   bool kincutopt;
   bool bdtopt;
+  bool bdtopt_mue;
+  bool bdtopt_jet;
+  bool bdtopt_jetfin;
+
+
+  
   bool doxrange,xrangetree;
   bool bdtcut;
   double maxMET,min_dphi_z_b,min_z_pt,max_ptzb;
@@ -89,6 +101,16 @@ public:
   vector<double> v_electronscore;
   vector<double> v_electroncharge;  
   double jetscore,jetcharge;
+
+  vector<double> v_cut_to_muon_high;
+  vector<double> v_cut_to_muon_low;
+  vector<double> v_cut_to_electron_high;
+  vector<double> v_cut_to_electron_low;
+  //for bdtopt
+  //double Measured_Q;
+  //static const TString Arr_Measured_Q_Str[9];
+
+  double opt_cut_to_muon_high,opt_cut_to_muon_low,opt_cut_to_electron_high,opt_cut_to_electron_low;
 };
 
 

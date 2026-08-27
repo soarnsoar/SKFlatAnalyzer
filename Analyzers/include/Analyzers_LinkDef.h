@@ -40,6 +40,7 @@
 //#pragma link C++ class BBosillation+;
 //#pragma link C++ class HZZ_test+;
 #pragma link C++ class EEMu_MuMuE_Method+;
+#pragma link C++ class EEMu_MuMuE_Method_Charm+;
 #pragma link C++ class JHAnalyzerBase+;
 #pragma link C++ class SingleLeptonAnalyzer+;
 #pragma link C++ class DiLeptonAnalyzer+;
