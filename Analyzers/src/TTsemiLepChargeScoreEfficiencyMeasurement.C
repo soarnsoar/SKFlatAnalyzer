@@ -223,14 +223,7 @@ void TTsemiLepChargeScoreEfficiencyMeasurement::RunReco(){
   njet=v_tightjet.size();
   if(v_tightjet.size()<4) return;
 
-  ////----
-  if(measure_bchargeeff){
-    SetEventWeight();
-    //vector<Jet> JHAnalyzerBase::GetBJet(const vector<Jet> &v_Tightjet){
-    vector<Jet> v_bjet=GetBJet(v_tightjet);
-    MeasureMC_bChargeIDEff(v_bjet);
-    return;
-  }
+
   
   //--Now Objects are ready--//
   SetEventWeight();
@@ -308,7 +301,15 @@ void TTsemiLepChargeScoreEfficiencyMeasurement::Run(){
     if(HasAddLep) return;
   }
   
-
+  ////----
+  if(measure_bchargeeff){
+    //SetEventWeight();
+    //vector<Jet> JHAnalyzerBase::GetBJet(const vector<Jet> &v_Tightjet){
+    //vector<Jet> v_bjet=GetBJet(v_tightjet);
+    //MeasureMC_bChargeIDEff(v_bjet);
+    MeasureMC_bChargeIDEff({v_tightjet[iblep],v_tightjet[ibhad]});
+    return;
+  }
   
   RunBJet("bJetLeptonicSide",iblep,-1,Tlep_cand);
   RunBJet("bJetHadronicSide",ibhad,-1,Thad_cand);
