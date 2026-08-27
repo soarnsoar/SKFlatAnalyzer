@@ -211,6 +211,7 @@ void TTsemiLepChargeScoreEfficiencyMeasurement::RunReco(){
   if(measure_btageff_tight){
     SetEventWeight();
     Measure_MCbtagEff_GivenJets(v_tightjet);
+    return;
   }
 
   
