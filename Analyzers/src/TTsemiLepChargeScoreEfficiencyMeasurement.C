@@ -207,7 +207,12 @@ void TTsemiLepChargeScoreEfficiencyMeasurement::RunReco(){
   LepSign= l1.Charge() > 0 ? "Plus" : "Minus";
   //----Jet---//
   v_tightlep={l1};
-  v_tightjet=GetTightJet(v_tightlep,30,jetetacut,"tight",JETPUID,!NoJetVeto);
+  v_tightjet=GetTightJet(v_tightlep,30,jetetacut,"tight",JETPUID,!NoJetVeto);//here, we apply btagsf
+  if(measure_btageff_tight){
+    Measure_MCbtagEff_GivenJets(v_tightjet);
+  }
+
+  
   //vector<Jet> JHAnalyzerBase::GetTightJet(const vector<Lepton> &v_tightlep, double ptmin, double etacut, TString JetID, TString _JetPUID){
   //  vector<Jet> GetTightJet(const vector<Lepton> &TightLeptonCollection ,double ptmin, double etacut, TString JetID="tight", TString _JETPUID="");
 

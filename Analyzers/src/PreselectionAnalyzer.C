@@ -15,7 +15,8 @@ void PreselectionAnalyzer::initializeAnalyzer(){
   if(HasFlag("use_beff")){
     //----use this analyzer specific btag mc eff----//
     //void AnalyzerCore::SetBTagMCEff_Filename(TString _btagmceff_filename)
-    if(!IsDATA) AnalyzerCore::SetBTagMCEff_Filename("PreselectionAnalyzer_"+MCSample+".root");// with kincut
+    //if(!IsDATA) AnalyzerCore::SetBTagMCEff_Filename("PreselectionAnalyzer_"+MCSample+".root");// with kincut
+    if(!IsDATA) AnalyzerCore::SetBTagMCEff_Filename("");// with kincut
   }
 
 
@@ -23,6 +24,7 @@ void PreselectionAnalyzer::initializeAnalyzer(){
     //----use this analyzer specific btag mc eff----//
     //void AnalyzerCore::SetBTagMCEff_Filename(TString _btagmceff_filename)
     if(!IsDATA) AnalyzerCore::SetBTagMCEff_Filename("PreselectionAnalyzer_"+MCSample+".root",true);// with kincut
+    //if(!IsDATA) AnalyzerCore::SetBTagMCEff_Filename("",true);// use TTLJ's eff. instead here. 
   }
   
   
@@ -362,7 +364,7 @@ void PreselectionAnalyzer::SetEventWeight(){
   //----ZpT weight For DY
   //----DY WEAK NLO
   //---z0 weight
-  if(measure_btageff) btagsf=1;
+  if(measure_btageff || measure_btageff_tight) btagsf=1;
   weight=MCweight()*ev.GetTriggerLumi("Full")*GetPileUpWeight(nPileUp,0)*GetPrefireWeight(0)*weakweight*z0weight*topptweight*btagsf*jetpuidsf;
   
   if(IsDiMuonChannel){
@@ -455,6 +457,15 @@ void PreselectionAnalyzer::RunBasicZregion(){
     if(met_pt > maxMET) return;//updated 251222
     if(z_pt<min_z_pt) return;
     Measure_MCbtagEff();
+    //Measure_MCbtagEff_GivenJets(v_tightjet);
+    return;
+  }
+
+  if(measure_btageff_tight){
+    if(met_pt > maxMET) return;//updated 251222
+    if(z_pt<min_z_pt) return;
+    //Measure_MCbtagEff();
+    Measure_MCbtagEff_GivenJets(v_tightjet);
     return;
   }
   

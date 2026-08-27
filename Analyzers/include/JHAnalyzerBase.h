@@ -41,6 +41,7 @@ class JHAnalyzerBase : public AnalyzerCore {
   bool weightonly;
   bool pusysonly;
   bool measure_btageff=false;
+  bool measure_btageff_tight=false;
   bool measure_btageff_partonFlavour=false;
   bool measure_btageff_partonFlavour_bonly=false;
   bool measure_bchargeeff=false;
@@ -753,6 +754,7 @@ class JHAnalyzerBase : public AnalyzerCore {
   void SetUpBtagEffMeasurementPartonFlavour();
   void SetUpBtagEffMeasurementPartonFlavour_bonly();
   void Measure_MCbtagEff();
+  void Measure_MCbtagEff_GivenJets(vector<Jet> vJets);
   void Measure_MCbtagEff_PartonFlavour();
   void Measure_MCbtagEff_PartonFlavour_bonly();
 

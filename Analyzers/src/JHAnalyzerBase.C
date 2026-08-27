@@ -54,6 +54,7 @@ void JHAnalyzerBase::initializeAnalyzer(){
   simple_lepscale=HasFlag("simple_lepscale");
   checksf=HasFlag("checksf");
   measure_btageff=HasFlag("measure_btageff");
+  measure_btageff_tight=HasFlag("measure_btageff_tight");
   measure_btageff_partonFlavour=HasFlag("measure_btageff_partonFlavour");
   measure_btageff_partonFlavour_bonly=HasFlag("measure_btageff_partonFlavour_bonly");
   measure_bchargeeff=HasFlag("measure_bchargeeff");
@@ -6030,6 +6031,49 @@ void JHAnalyzerBase::SetUpBtagEffMeasurementPartonFlavour_bonly(){
 
 }
 
+
+void JHAnalyzerBase::Measure_MCbtagEff_GivenJets(vector<Jet> vJets){
+  //AllJets_raw
+  vector<double> vec_etabins = {0.0, 0.8, 1.6, 2., 2.5};
+  vector<double> vec_ptbins = {20., 30., 50., 70., 100., 140., 200., 300., 600., 1000.};//PT bins used in POG SF measurements
+
+  double PtMax = vec_ptbins.at( vec_ptbins.size()-1 );
+  const int NEtaBin = vec_etabins.size()-1;
+  const int NPtBin = vec_ptbins.size()-1;
+
+  double etabins[NEtaBin+1];
+  for(int i=0; i<NEtaBin+1; i++) etabins[i] = vec_etabins.at(i);
+  double ptbins[NPtBin+1];
+  for(int i=0; i<NPtBin+1; i++) ptbins[i] = vec_ptbins.at(i);
+  //for(unsigned int ij = 0 ; ij < AllJets_raw.size(); ij++){
+  for(auto& this_jet : vJets){
+    TString flav= "B";
+    if(fabs(this_jet.hadronFlavour()) == 4) flav= "C";
+    if(fabs(this_jet.hadronFlavour()) == 0) flav= "Light";
+    double this_Eta = fabs(this_jet.Eta());//POG recommendation is to use |eta|
+    double this_Pt = this_jet.Pt()<PtMax ? this_jet.Pt() : PtMax-1; // put overflows in the last bin
+    //==== First, fill the denominator
+    AnalyzerCore::FillHist("Jet_"+DataEra+"_eff_"+flav+"_denom", this_Eta, this_Pt, weight, NEtaBin, etabins, NPtBin, ptbins);
+
+    //==== Now looping over (tagger,working point)
+    for(unsigned i_m=0; i_m<TaggersToMeasure.size(); i_m++){
+
+      string Tagger = TaggersToMeasure.at(i_m);
+      string WP = WPsToMeasure.at(i_m);
+      double CutValue = CutValuesToMeasure.at(i_m);
+
+      double this_taggerresult = this_jet.GetTaggerResult( JetTagging::StringToTagger(Tagger) );
+
+      if(this_taggerresult>CutValue){
+	AnalyzerCore::FillHist("Jet_"+DataEra+"_"+Tagger+"_"+WP+"_eff_"+flav+"_num", this_Eta, this_Pt, weight, NEtaBin, etabins, NPtBin, ptbins);
+      }
+    } // END Loop (tagger,working point)
+  } // END Loop jet
+
+
+}
+
+
 void JHAnalyzerBase::Measure_MCbtagEff(){
   //AllJets_raw
   vector<double> vec_etabins = {0.0, 0.8, 1.6, 2., 2.5};
@@ -6070,6 +6114,9 @@ void JHAnalyzerBase::Measure_MCbtagEff(){
 
 
 }
+
+
+
 
 //measure btageff by partonFlavour
 void JHAnalyzerBase::Measure_MCbtagEff_PartonFlavour(){

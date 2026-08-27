@@ -15,7 +15,7 @@ void PreselectionToBDTRegionAnalyzer::initializeAnalyzer(){
   if(HasFlag("use_beff")){
     //----use this analyzer specific btag mc eff----//
     //void AnalyzerCore::SetBTagMCEff_Filename(TString _btagmceff_filename)
-    if(!IsDATA) AnalyzerCore::SetBTagMCEff_Filename("PreselectionAnalyzer_"+MCSample+".root");// with kincut
+    if(!IsDATA) AnalyzerCore::SetBTagMCEff_Filename("PreselectionToBDTRegionAnalyzer_"+MCSample+".root");// with kincut
   }
 
 
@@ -24,7 +24,7 @@ void PreselectionToBDTRegionAnalyzer::initializeAnalyzer(){
     //void AnalyzerCore::SetBTagMCEff_Filename(TString _btagmceff_filename)
     //if(!IsDATA) AnalyzerCore::SetBTagMCEff_Filename("PreselectionAnalyzer_"+MCSample+".root",true);// with kincut
     //if(!IsDATA) AnalyzerCore::SetBTagMCEff_Filename("",true);// with kincut
-    if(!IsDATA) AnalyzerCore::SetBTagMCEff_Filename("PreselectionAnalyzer_"+MCSample+".root");// with kincut
+    if(!IsDATA) AnalyzerCore::SetBTagMCEff_Filename("PreselectionToBDTRegionAnalyzer_"+MCSample+".root");// with kincut
 	
     //use default mc eff
   }
