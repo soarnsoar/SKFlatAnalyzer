@@ -16,7 +16,11 @@ def GetX(expr):
     if 'nsip3d' in expr:return bvar+'nsip3d'
     if 'palongjet' in expr:return bvar+'palongjet'
     if 'ptwrtbjet' in expr:return bvar+'ptwrtjet'
-    if 'reliso' in expr:return bvar+'reliso'
+    if 'reliso' in expr:
+        if 'log10' in expr:
+            return bvar+'log10_1_reliso'
+        else:
+            return bvar+'reliso'
     if 'bjet_charge*bmuon_charge' in expr: return bvar+'bjet_charge_dot_bmuon_charge'
     if 'bjet_charge*belectron_charge' in expr: return bvar+'bjet_charge_dot_belectron_charge'
 
@@ -38,9 +42,7 @@ def GetX(expr):
     if 'fabs(bjet_charge)' in expr : return bvar+'abs_charge'
 
 
-def ParseMinMax(expr):
-    ##
-    True
+        
 SKFlat_WD=os.getenv("SKFlat_WD")
 #/Variables
 
@@ -86,5 +88,9 @@ if "/jet/" in path:
     bvar="bjet_ChargeTool"
 
 for expr in list_expr:
-    mystr=ChargeTool+'->AddVariable("'+expr+'",&'+GetX(expr)+');'
+    
+    #clamp=ParseMinMax(exp)
+    clamp=""
+    X=GetX(expr)
+    mystr=ChargeTool+'->AddVariable("'+expr+'",&'+X+clamp+');'
     print(mystr)
