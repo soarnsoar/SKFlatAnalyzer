@@ -65,11 +65,11 @@ class hadd_submitter:
         nfiles=len(_list)
         this_maxsize=self.GetMaxFileSize(_list)
         _req_memory=int(this_maxsize*nfiles)
-        if _req_memory < 13000:
-            _req_memory=13000
-        elif _req_memory<30000:
-            _req_memory=30000
-        if _req_memory > 200000 : _req_memory=200000
+        #if _req_memory < 13000:
+        #    _req_memory=13000
+        #elif _req_memory<30000:
+        #    _req_memory=30000
+        #if _req_memory > 200000 : _req_memory=200000
         return _req_memory
     
     def MakeJobGroupIdx(self,j):
