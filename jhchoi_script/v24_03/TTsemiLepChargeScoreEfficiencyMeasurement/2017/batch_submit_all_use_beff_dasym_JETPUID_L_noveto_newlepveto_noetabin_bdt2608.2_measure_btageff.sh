@@ -2,7 +2,7 @@ mkdir -p use_beff_dasym_JETPUID_L_noveto_newlepveto_noetabin_bdt2608.2_measure_b
 
 FLAG="--userflags use_beff_dasym,JETPUID_L,noveto,newlepveto,noetabin,bdt2608.2,measure_btageff"
 SKIM="--skim SkimTree_SingleLepton_1DeepJetTightWP"
-
+SKIM=""
 YEAR=2017
 MAXJOB=" --nmax 60 "
 
