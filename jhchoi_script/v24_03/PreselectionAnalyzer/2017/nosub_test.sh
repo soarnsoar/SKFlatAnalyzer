@@ -1,4 +1,4 @@
-SKIM="--skim SkimTree_Dilepton"
+SKIM="--skim SkimTree_Dilepton_1DeepJetTightWP"
 FLAG=""
 #FLAG="--userflags runSys,check_tmva_input"
 #FLAG="--userflags simple_lepscale,runSys"
@@ -7,6 +7,7 @@ FLAG=""
 #FLAG="--userflags check_tmva_input"
 FLAG="--userflags runSys,jetpuid_loose,lepveto"
 FLAG="--userflags runSys,jetpuid_loose,lepveto,check_tmva_input,pusysonly,bdt2512.5"
+FLAG="--userflags jetpuid_loose,newlepveto,use_beffasym,bdt_v2608_2,bdtopt,bdtopt_mue"
 
 
 REDUCTION="--reduction 1000"
