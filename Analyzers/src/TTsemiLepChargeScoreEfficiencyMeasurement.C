@@ -209,6 +209,7 @@ void TTsemiLepChargeScoreEfficiencyMeasurement::RunReco(){
   v_tightlep={l1};
   v_tightjet=GetTightJet(v_tightlep,30,jetetacut,"tight",JETPUID,!NoJetVeto);//here, we apply btagsf
   if(measure_btageff_tight){
+    SetEventWeight();
     Measure_MCbtagEff_GivenJets(v_tightjet);
   }
 
