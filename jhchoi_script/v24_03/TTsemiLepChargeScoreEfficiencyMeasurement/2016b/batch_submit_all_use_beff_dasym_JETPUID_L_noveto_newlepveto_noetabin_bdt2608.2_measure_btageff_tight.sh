@@ -7,7 +7,7 @@ SKIM="--skim SkimTree_SingleLepton_1DeepJetTightWP"
 SKIM=""
 FLAG="--userflags use_beff_dasym,JETPUID_L,noveto,newlepveto,noetabin,bdt2608.2,measure_btageff_tight"
 
-MAXJOB=" --nmax 60 "
+MAXJOB=" --nmax 180 "
 
 
 YEAR=2016b

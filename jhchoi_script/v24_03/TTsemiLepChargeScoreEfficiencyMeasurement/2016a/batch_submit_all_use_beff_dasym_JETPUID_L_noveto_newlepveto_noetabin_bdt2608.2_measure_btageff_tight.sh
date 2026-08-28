@@ -4,7 +4,7 @@ mkdir -p use_beff_dasym_JETPUID_L_noveto_newlepveto_noetabin_bdt2608.2_measure_b
 SKIM=""
 FLAG="--userflags use_beff_dasym,JETPUID_L,noveto,newlepveto,noetabin,bdt2608.2,measure_btageff_tight"
 
-MAXJOB=" --nmax 60 "
+MAXJOB=" --nmax 180 "
 
 
 YEAR=2016a

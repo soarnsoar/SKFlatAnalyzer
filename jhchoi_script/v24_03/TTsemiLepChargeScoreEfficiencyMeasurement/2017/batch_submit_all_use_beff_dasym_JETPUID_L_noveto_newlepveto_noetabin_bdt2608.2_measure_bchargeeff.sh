@@ -4,7 +4,7 @@ FLAG="--userflags use_beff_dasym,JETPUID_L,noveto,newlepveto,noetabin,bdt2608.2,
 SKIM="--skim SkimTree_SingleLepton_1DeepJetTightWP"
 
 YEAR=2017
-MAXJOB=" --nmax 60 "
+MAXJOB=" --nmax 150 "
 
 
 SKFlat.py -a TTsemiLepChargeScoreEfficiencyMeasurement  ${SKIM} -i TTLJ_powheg -n 50 -e ${YEAR} $FLAG $MAXJOB  &> use_beff_dasym_JETPUID_L_noveto_newlepveto_noetabin_bdt2608.2_measure_bchargeeff_logs/TTLJ_powheg.log&
