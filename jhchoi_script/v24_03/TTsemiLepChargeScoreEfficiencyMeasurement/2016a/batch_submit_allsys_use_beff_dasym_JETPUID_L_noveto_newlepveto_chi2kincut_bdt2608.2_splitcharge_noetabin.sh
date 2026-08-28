@@ -15,10 +15,19 @@ MEM_ST="--memory 6400"
 C_ST="--count 3"
 
 YEAR=2016a
-##--TT
-SKFlat.py -a TTsemiLepChargeScoreEfficiencyMeasurement  ${SKIM} -i TTLJ_powheg -n 80 -e ${YEAR} $FLAG ${MAXJOB} ${MEM_TT} ${C_TT} &> _use_beff_dasym_JETPUID_L_noveto_newlepveto_chi2kincut_bdt2608.2_splitcharge_noetabin_syslogs/TTLJ_powheg.log&
+##--TTLJ
+NJOB=80
+if [[ "$HOSTNAME" == *knu* ]]; then
+    NJOB=300
+fi
+SKFlat.py -a TTsemiLepChargeScoreEfficiencyMeasurement  ${SKIM} -i TTLJ_powheg -n ${NJOB} -e ${YEAR} $FLAG ${MAXJOB} ${MEM_TT} ${C_TT} &> _use_beff_dasym_JETPUID_L_noveto_newlepveto_chi2kincut_bdt2608.2_splitcharge_noetabin_syslogs/TTLJ_powheg.log&
 sleep 15
-SKFlat.py -a TTsemiLepChargeScoreEfficiencyMeasurement  ${SKIM} -i TTLL_powheg -n 20 -e ${YEAR} $FLAG ${MAXJOB} ${MEM_TT} ${C_TT} &> _use_beff_dasym_JETPUID_L_noveto_newlepveto_chi2kincut_bdt2608.2_splitcharge_noetabin_syslogs/TTLL_powheg.log&
+##--TTLL
+NJOB=20
+if [[ "$HOSTNAME" == *knu* ]]; then
+    NJOB=300
+fi
+SKFlat.py -a TTsemiLepChargeScoreEfficiencyMeasurement  ${SKIM} -i TTLL_powheg -n ${NJOB} -e ${YEAR} $FLAG ${MAXJOB} ${MEM_TT} ${C_TT} &> _use_beff_dasym_JETPUID_L_noveto_newlepveto_chi2kincut_bdt2608.2_splitcharge_noetabin_syslogs/TTLL_powheg.log&
 sleep 15
 ##--DY
 SKFlat.py -a TTsemiLepChargeScoreEfficiencyMeasurement  ${SKIM} -l  inputlist_DY.txt -n 30 -e ${YEAR} $FLAG ${MAXJOB} ${MEM_DY} ${C_DY} &> _use_beff_dasym_JETPUID_L_noveto_newlepveto_chi2kincut_bdt2608.2_splitcharge_noetabin_syslogs/DY.log&
