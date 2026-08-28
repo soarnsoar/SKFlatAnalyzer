@@ -1386,6 +1386,7 @@ void MCCorrection::SetupJetTagging(TString _btagmceff_filename,bool _Use_dAsym){
   for(std::map< std::string, BTagCalibrationReader* >::iterator it=map_BTagCalibrationReader.begin(); it!=map_BTagCalibrationReader.end(); it++){
     cout << "[MCCorrection::SetJetTaggingParameters] key = " << it->first << endl;
   }
+  cout << "[MCCorrection::SetupJetTagging]_btagmceff_filename=" << _btagmceff_filename << endl;
   if(_Use_dAsym){
     cout << "[MCCorrection::SetupJetTagging]Setup MCJetTagEff With dAsym!!" << endl;
     use_dasym=true;

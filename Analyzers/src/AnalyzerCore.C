@@ -1713,7 +1713,7 @@ void AnalyzerCore::SetBTagMCEff_Filename(TString _btagmceff_filename, bool _Use_
   if(_Use_dAsym) cout << "[SetBTagMCEff_Filename] Try Using dAsym Factor!!" << endl;
   btagmceff_filename=_btagmceff_filename;
   Use_dAsym=_Use_dAsym;
-
+  cout<<"[AnalyzerCore::SetBTagMCEff_Filename]->"<<btagmceff_filename<<endl;
 }
 void AnalyzerCore::initializeAnalyzerTools(){
   //==== MCCorrection
@@ -1723,6 +1723,7 @@ void AnalyzerCore::initializeAnalyzerTools(){
   mcCorr->SetEventInfo(run, lumi, event);
   mcCorr->SetIsFastSim(IsFastSim);
   if(!IsDATA){
+    cout << "[AnalyzerCore::initializeAnalyzerTools] btagmceff_filename=" << btagmceff_filename << endl;
     mcCorr->ReadHistograms();
     mcCorr->SetupJetTagging(btagmceff_filename,Use_dAsym);
   }
