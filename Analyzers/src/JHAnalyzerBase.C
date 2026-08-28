@@ -95,6 +95,7 @@ void JHAnalyzerBase::initializeAnalyzer(){
 
   //---SetUp MC btag Eff Measurement--..
   if(measure_btageff) SetUpBtagEffMeasurement();
+  if(measure_btageff_tight) SetUpBtagEffMeasurement();
   if(measure_btageff_partonFlavour) SetUpBtagEffMeasurementPartonFlavour();
   if(measure_btageff_partonFlavour_bonly) SetUpBtagEffMeasurementPartonFlavour_bonly();
 
