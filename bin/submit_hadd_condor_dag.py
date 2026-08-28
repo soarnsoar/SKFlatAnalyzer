@@ -79,8 +79,8 @@ class hadd_submitter:
         submit=0
         jobname=WORKDIR
         memory=self.GetMemoryForFileList(self.dict_group[j])
-        if 'runSys' in os.getcwd():
-            if memory < 30000 :memory = 30000
+        #if 'runSys' in os.getcwd():
+        #    if memory < 30000 :memory = 30000
         #memory=False
         nretry=3
         #ncpu=len(self.dict_group[j])
