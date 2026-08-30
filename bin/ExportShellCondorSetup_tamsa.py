@@ -73,6 +73,7 @@ def Export(WORKDIR,command,jobname,submit,ncpu,memory=False,nretry=3,nmax=False)
     if memory:
         lines.append('request_memory = '+str(int(memory))+' MB \n')
         consumption=math.ceil(float(memory)/3200)
+        consumption=ncpu+int(consumption)
         consumption=str(int(consumption))
     #ncpu_criteria=int(memory/4096)+1
     #if int(ncpu) < int(ncpu_criteria):

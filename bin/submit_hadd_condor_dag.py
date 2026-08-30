@@ -65,12 +65,13 @@ class hadd_submitter:
         nfiles=len(_list)
         this_maxsize=self.GetMaxFileSize(_list)
         _req_memory=int(this_maxsize*nfiles)
+        r=3
         #if _req_memory < 13000:
         #    _req_memory=13000
         #elif _req_memory<30000:
         #    _req_memory=30000
         #if _req_memory > 200000 : _req_memory=200000
-        return _req_memory
+        return _req_memory*r
     
     def MakeJobGroupIdx(self,j):
         command="cd "+os.getcwd()
@@ -98,12 +99,12 @@ class hadd_submitter:
         submit=0
         jobname=WORKDIR
         memory=self.GetMemoryForFileList(glob(self.GetTempOutDir()+"/*.root"))
-        if 'runSys' in FinalOutputPathToMove:
-            if memory < 30000 : memory = 30000
+        #if 'runSys' in FinalOutputPathToMove:
+        #    if memory < 30000 : memory = 30000
         #memory=False
         nretry=3
         ncpu=1
-        nmax=400
+        nmax=800
         Export(WORKDIR,command,jobname,submit,ncpu,memory,nretry,nmax)
 
 
