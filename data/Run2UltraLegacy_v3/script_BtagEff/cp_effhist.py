@@ -13,10 +13,11 @@ list_year=["2016preVFP", "2016postVFP", "2017", "2018"]
 
 #ANANAME="TTsemiLepChargeScoreEfficiencyMeasurement_TightMatch"
 #ANANAME="TTsemiLepBtagChargeAsymEfficiencyMeasurement_BINNING"
-#ANANAME="PreselectionAnalyzer"
+ANANAME="PreselectionAnalyzer"
 #suffix="jetpuid_loose__newlepveto__measure_btageff__"
-ANANAME="TTsemiLepChargeScoreEfficiencyMeasurement"
-suffix="use_beff_dasym__JETPUID_L__noveto__newlepveto__noetabin__bdt2608.2__measure_btageff_tight__"
+suffix="jetpuid_loose__newlepveto__measure_btageff_tight__"
+#ANANAME="TTsemiLepChargeScoreEfficiencyMeasurement"
+#suffix="use_beff_dasym__JETPUID_L__noveto__newlepveto__noetabin__bdt2608.2__measure_btageff_tight__"
 for YEAR in list_year:
     #from_dir="/data6/Users/jhchoi/SKFlatOutput/Run2UltraLegacy_v3/"+ANANAME+"/"+str(YEAR)+"/measure_btageff__"
     from_dir="/data9/Users/jhchoi/SKFlatOutput/Run2UltraLegacy_v3/"+ANANAME+"/"+str(YEAR)+"/"+suffix
