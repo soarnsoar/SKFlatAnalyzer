@@ -27,7 +27,7 @@ void TTsemiLepChargeScoreEfficiencyMeasurement::initializeAnalyzer(){
     //void AnalyzerCore::SetBTagMCEff_Filename(TString _btagmceff_filename)
     //if(!IsDATA) AnalyzerCore::SetBTagMCEff_Filename("",true);
     if(!IsDATA){
-      AnalyzerCore::SetBTagMCEff_Filename("TTsemiLepChargeScoreEfficiencyMeasurement_"+MCSample+".root",true);
+      AnalyzerCore::SetBTagMCEff_Filename("TTsemiLepChargeScoreEfficiencyMeasurement_"+MCSample+".root",true,"TTsemiLepChargeScoreEfficiencyMeasurement_HADDED.root");
     }
     use_dasym=true;
   }

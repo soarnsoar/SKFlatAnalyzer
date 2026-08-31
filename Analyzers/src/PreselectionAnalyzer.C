@@ -23,8 +23,8 @@ void PreselectionAnalyzer::initializeAnalyzer(){
   if(HasFlag("use_beffasym")){
     //----use this analyzer specific btag mc eff----//
     //void AnalyzerCore::SetBTagMCEff_Filename(TString _btagmceff_filename)
-    //if(!IsDATA) AnalyzerCore::SetBTagMCEff_Filename("PreselectionAnalyzer_"+MCSample+".root",true);// with kincut
-    if(!IsDATA) AnalyzerCore::SetBTagMCEff_Filename("",true);// use TTLJ's eff. instead here. mceff is not that different between the processes.
+    if(!IsDATA) AnalyzerCore::SetBTagMCEff_Filename("PreselectionAnalyzer_"+MCSample+".root",true,"PreselectionAnalyzer_HADDED.root");// with kincut
+    //if(!IsDATA) AnalyzerCore::SetBTagMCEff_Filename("",true);// use TTLJ's eff. instead here. mceff is not that different between the processes.
   }
   
   
