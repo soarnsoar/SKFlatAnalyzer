@@ -1,7 +1,7 @@
-../2016preVFP/TMVA/ChargeScore/BDT/v2512.5/jet/FIN_BDT_2016preVFP_BDT.weights.xml
-jChargeTool->AddVariable("bjet_ChargedHadronEnergyFraction>0.15?bjet_ChargedHadronEnergyFraction:0.15",&bjet_ChargeTool.ChargedHadronEnergyFraction);
-jChargeTool->AddVariable("(bjet_ChargedMultiplicity<30)?bjet_ChargedMultiplicity:30",&bjet_ChargeTool.ChargedMultiplicity);
-jChargeTool->AddVariable("(bjet_NeutralEmEnergyFraction<0.15)?0.15:(bjet_NeutralEmEnergyFraction>0.7)?0.7:bjet_NeutralEmEnergyFraction",&bjet_ChargeTool.NeutralEmEnergyFraction);
-jChargeTool->AddVariable("(bjet_NeutralHadronEnergyFraction<0.1)?0.1:(bjet_NeutralHadronEnergyFraction>0.4)?0.4:bjet_NeutralHadronEnergyFraction",&bjet_ChargeTool.NeutralHadronEnergyFraction);
-jChargeTool->AddVariable("(bjet_NeutralMultiplicity<30)?bjet_NeutralMultiplicity:30",&bjet_ChargeTool.NeutralMultiplicity);
-jChargeTool->AddVariable("(fabs(bjet_charge)<0.9)?fabs(bjet_charge):0.9",&bjet_ChargeTool.abs_charge);
+../2016preVFP/TMVA/ChargeScore/BDT/v2608.2/jet/BDT_2016preVFP_BDT.weights.xml
+jChargeTool->AddVariable("bjet_ChargedHadronEnergyFraction<0.15?0.15:bjet_ChargedHadronEnergyFraction",&bjet_ChargeTool.ChargedHadronEnergyFraction);
+jChargeTool->AddVariable("bjet_ChargedMultiplicity>30?30:bjet_ChargedMultiplicity",&bjet_ChargeTool.ChargedMultiplicity);
+jChargeTool->AddVariable("bjet_NeutralEmEnergyFraction<0.1?0.1:bjet_NeutralEmEnergyFraction>0.7?0.7:bjet_NeutralEmEnergyFraction",&bjet_ChargeTool.NeutralEmEnergyFraction);
+jChargeTool->AddVariable("bjet_NeutralHadronEnergyFraction<0.1?0.1:bjet_NeutralHadronEnergyFraction>0.4?0.4:bjet_NeutralHadronEnergyFraction",&bjet_ChargeTool.NeutralHadronEnergyFraction);
+jChargeTool->AddVariable("bjet_NeutralMultiplicity>30?30:bjet_NeutralMultiplicity",&bjet_ChargeTool.NeutralMultiplicity);
+jChargeTool->AddVariable("fabs(bjet_charge)",&bjet_ChargeTool.abs_charge);

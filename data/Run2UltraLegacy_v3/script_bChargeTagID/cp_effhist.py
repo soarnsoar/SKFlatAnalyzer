@@ -18,17 +18,20 @@ list_year=["2016preVFP", "2016postVFP", "2017", "2018"]
 #suffix="jetpuid_loose__lepveto__use_beffasym__bdt2512.5__bdtcut__measure_bchargeeff__"
 
 ANANAME="TTsemiLepChargeScoreEfficiencyMeasurement"
-suffix="use_beff_dasym__JETPUID_L__bdt2512.5__measure_bchargeeff__"
+#suffix="use_beff_dasym__JETPUID_L__bdt2512.5__measure_bchargeeff__"
+suffix='use_beff_dasym__JETPUID_L__noveto__newlepveto__noetabin__bdt2608.2__measure_bchargeeff__'
+
+
 
 for YEAR in list_year:
     #from_dir="/data6/Users/jhchoi/SKFlatOutput/Run2UltraLegacy_v3/"+ANANAME+"/"+str(YEAR)+"/measure_btageff__"
-    from_dir="/data6/Users/jhchoi/SKFlatOutput/Run2UltraLegacy_v3/"+ANANAME+"/"+str(YEAR)+"/"+suffix
+    from_dir="/data9/Users/jhchoi/SKFlatOutput/Run2UltraLegacy_v3/"+ANANAME+"/"+str(YEAR)+"/"+suffix
     to_dir=SKFlat_WD+"/data/Run2UltraLegacy_v3/"+str(YEAR)+"/bChargeTagID/"
 
     #os.system("ls "+from_dir)
     list_rootfile=glob.glob(from_dir+"/*.root")
     for rootfile in list_rootfile:
-        rootfile_new=rootfile.replace("_SkimTree_Dilepton","").replace("_SkimTree_SingleLepton","")
+        rootfile_new=rootfile.replace("_SkimTree_SingleLepton_1DeepJetTightWP","").replace("_SkimTree_Dilepton","").replace("_SkimTree_SingleLepton","")
         rootfile_new=rootfile_new.split("/")[-1]
         print("#"+rootfile_new)
         #os.system("cp "+rootfile+" "+to_dir+"/"+rootfile_new)

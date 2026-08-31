@@ -183,6 +183,61 @@ def Run(ana,year,algo,wp,flav,procs):
                 proc+"__"+ydistname,
                 outdirname
             )
+
+
+def RunAllHadd(ana,year,algo,wp,flav,procs):
+
+
+    year=str(year)
+
+    #fpath_default="../"+year+"/BTag/MeasureJetTaggingEfficiency_TTLL_TTLJ_hadded.root"
+    fpath_default="../"+year+"/BTag/"+ana+"_HADDED.root"
+    h2_defualt=GetEffTH2(fpath_default,year,algo,wp,flav)
+    
+    ##----Get defualt h2's h1s
+
+    converter_default=TH2ToTH1_Converter(h2_defualt,"|eta|","pT")
+    converter_default.Run()
+    dict_hx_default=converter_default.GetHistDictX()
+    dict_hy_default=converter_default.GetHistDictY()
+
+
+
+    dict_converter={}
+    dict_h2_Presel={}
+    dict_hx_Presel={}
+    dict_hy_Presel={}
+    for proc in procs:
+        this_fpath="../"+year+"/BTag/"+ana+"_"+proc+".root"
+        if not os.path.isfile(this_fpath) : continue
+        dict_h2_Presel[proc]=GetEffTH2(this_fpath,year,algo,wp,flav)
+        dict_converter[proc]=TH2ToTH1_Converter(dict_h2_Presel[proc],"|eta|","pT")
+        dict_converter[proc].Run()
+        dict_hx_Presel[proc]=dict_converter[proc].GetHistDictX()
+        dict_hy_Presel[proc]=dict_converter[proc].GetHistDictY()
+
+
+        outdirname="output/"+ana+"/"+year+"/"+algo+"__"+wp+"__"+flav+"/"+proc+"_CompareWithAllHadd"
+        
+        for xdistname in dict_hx_Presel[proc]:
+            
+            #def Compare_TH1(list_h,list_name,savename,savedir)
+            
+            Compare_TH1(
+                [dict_hx_default[xdistname], dict_hx_Presel[proc][xdistname]],
+                [ana+" all mc eff", ana+","+proc+" Eff"],
+                proc+"__"+xdistname,
+                outdirname
+            )
+
+        for ydistname in dict_hy_Presel[proc]:
+            #def Compare_TH1(list_h,list_name,savename,savedir)            
+            Compare_TH1(
+                [dict_hy_default[ydistname], dict_hy_Presel[proc][ydistname]],
+                [ana+" all mc eff", ana+","+proc+" Eff"],
+                proc+"__"+ydistname,
+                outdirname
+            )            
 if __name__ == '__main__':
     #analist=["Preselection_To_bjet","TTsemiLepChargeScoreEfficiencyMeasurement_TightMatch"]
     #analist=['PreselectionAnalyzer']
@@ -196,10 +251,12 @@ if __name__ == '__main__':
     procs=["TTLL_powheg","TTLJ_powheg","TTJJ_powheg","DYJetsToMuMu_MiNNLO","DYJetsToEE_MiNNLO","DYJetsToTauTau_MiNNLO","WJets_MG"]+\
         ["SingleTop_sch_Lep","SingleTop_tch_top_Incl","SingleTop_tch_antitop_Incl","SingleTop_tW_antitop_NoFullyHad","SingleTop_tW_top_NoFullyHad"]+\
         ["WW_pythia","WZ_pythia","ZZ_pythia"]
+    #procs=["HADDED"]
     for ana in analist:
         for year in list_year:
             for algo in list_algo:
                 for wp in list_wp:
                     for flav in list_flav:
                         Run(ana,year,algo,wp,flav,procs)
+                        RunAllHadd(ana,year,algo,wp,flav,procs)
                         #RunComparePOSNEG(ana,year,algo,wp,flav,procs)

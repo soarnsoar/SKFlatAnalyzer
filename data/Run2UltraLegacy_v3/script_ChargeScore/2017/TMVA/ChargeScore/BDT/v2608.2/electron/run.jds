@@ -1,0 +1,10 @@
+executable = /data9/Users/jhchoi/Generate_BDT_Model/TMVA_TOOL/ws/WORKDIR_FIN/2608.2/2017/electron/G/Grad/Shrinkage__0.01/NTrees__1000/MaxDepth__4/MinNodeSize__2.5/UseBaggedBoost__True/BaggedSampleFraction__0.6/SeparationType__CrossEntropy/nCuts__20/IgnoreNegWeightsInTraining__True/run.sh
+universe = vanilla
+output = /data9/Users/jhchoi/Generate_BDT_Model/TMVA_TOOL/ws/WORKDIR_FIN/2608.2/2017/electron/G/Grad/Shrinkage__0.01/NTrees__1000/MaxDepth__4/MinNodeSize__2.5/UseBaggedBoost__True/BaggedSampleFraction__0.6/SeparationType__CrossEntropy/nCuts__20/IgnoreNegWeightsInTraining__True/run.out
+error = /data9/Users/jhchoi/Generate_BDT_Model/TMVA_TOOL/ws/WORKDIR_FIN/2608.2/2017/electron/G/Grad/Shrinkage__0.01/NTrees__1000/MaxDepth__4/MinNodeSize__2.5/UseBaggedBoost__True/BaggedSampleFraction__0.6/SeparationType__CrossEntropy/nCuts__20/IgnoreNegWeightsInTraining__True/run.err
+log = /data9/Users/jhchoi/Generate_BDT_Model/TMVA_TOOL/ws/WORKDIR_FIN/2608.2/2017/electron/G/Grad/Shrinkage__0.01/NTrees__1000/MaxDepth__4/MinNodeSize__2.5/UseBaggedBoost__True/BaggedSampleFraction__0.6/SeparationType__CrossEntropy/nCuts__20/IgnoreNegWeightsInTraining__True/run.log
+concurrency_limits = n400.jhchoi
+request_cpus = 1
+accounting_group=group_cms
+JobBatchName=FIN_BDT_electron_2608.2_2017
+queue
