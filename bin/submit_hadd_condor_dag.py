@@ -71,7 +71,10 @@ class hadd_submitter:
         #elif _req_memory<30000:
         #    _req_memory=30000
         #if _req_memory > 200000 : _req_memory=200000
-        return _req_memory*r
+        _req_memory=_req_memory*r
+        if _req_memory < 2048:
+            _req_memory=2048
+        return _req_memory
     
     def MakeJobGroupIdx(self,j):
         command="cd "+os.getcwd()
