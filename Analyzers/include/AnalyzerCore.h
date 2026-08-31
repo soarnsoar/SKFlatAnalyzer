@@ -168,8 +168,10 @@ public:
 
   void initializeAnalyzerTools();
   //-----btag mc eff filename
-  void SetBTagMCEff_Filename(TString _btagmceff_filename, bool _Use_dAsym=false);
+  void SetBTagMCEff_Filename(TString _btagmceff_filename, bool _Use_dAsym=false, TString _btagmceff_filename2="");
+  
   TString btagmceff_filename="";
+  TString btagmceff_filename2="";
   bool Use_dAsym=false;  
   //==== MCweight
   double MCweight(bool usesign=true, bool norm_1invpb=true) const;

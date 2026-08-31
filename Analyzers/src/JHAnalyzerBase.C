@@ -6034,6 +6034,7 @@ void JHAnalyzerBase::SetUpBtagEffMeasurementPartonFlavour_bonly(){
 
 
 void JHAnalyzerBase::Measure_MCbtagEff_GivenJets(vector<Jet> vJets){
+  TString weight_sign_str= weight > 0 ? "_POS" : "_NEG";
   //AllJets_raw
   vector<double> vec_etabins = {0.0, 0.8, 1.6, 2., 2.5};
   vector<double> vec_ptbins = {20., 30., 50., 70., 100., 140., 200., 300., 600., 1000.};//PT bins used in POG SF measurements
@@ -6054,7 +6055,16 @@ void JHAnalyzerBase::Measure_MCbtagEff_GivenJets(vector<Jet> vJets){
     double this_Eta = fabs(this_jet.Eta());//POG recommendation is to use |eta|
     double this_Pt = this_jet.Pt()<PtMax ? this_jet.Pt() : PtMax-1; // put overflows in the last bin
     //==== First, fill the denominator
-    AnalyzerCore::FillHist("Jet_"+DataEra+"_eff_"+flav+"_denom", this_Eta, this_Pt, weight, NEtaBin, etabins, NPtBin, ptbins);
+    /*
+    if(weight>0){
+      AnalyzerCore::FillHist("Jet_"+DataEra+"_eff_"+flav+"_denom", this_Eta, this_Pt, weight, NEtaBin, etabins, NPtBin, ptbins);
+    }else{
+      AnalyzerCore::FillHist("Jet_"+DataEra+"_eff_"+flav+"_denom_neg", this_Eta, this_Pt, fabs(weight), NEtaBin, etabins, NPtBin, ptbins);
+    }
+    */
+    AnalyzerCore::FillHist("Jet_"+DataEra+"_eff_"+flav+"_denom", this_Eta, this_Pt, fabs(weight), NEtaBin, etabins, NPtBin, ptbins);
+    AnalyzerCore::FillHist("Jet_"+DataEra+"_eff_"+flav+"_denom"+weight_sign_str, this_Eta, this_Pt, fabs(weight), NEtaBin, etabins, NPtBin, ptbins);
+    
 
     //==== Now looping over (tagger,working point)
     for(unsigned i_m=0; i_m<TaggersToMeasure.size(); i_m++){
@@ -6066,7 +6076,16 @@ void JHAnalyzerBase::Measure_MCbtagEff_GivenJets(vector<Jet> vJets){
       double this_taggerresult = this_jet.GetTaggerResult( JetTagging::StringToTagger(Tagger) );
 
       if(this_taggerresult>CutValue){
-	AnalyzerCore::FillHist("Jet_"+DataEra+"_"+Tagger+"_"+WP+"_eff_"+flav+"_num", this_Eta, this_Pt, weight, NEtaBin, etabins, NPtBin, ptbins);
+	/*
+	if(weight>0){
+	  AnalyzerCore::FillHist("Jet_"+DataEra+"_"+Tagger+"_"+WP+"_eff_"+flav+"_num", this_Eta, this_Pt, weight, NEtaBin, etabins, NPtBin, ptbins);
+	}else{
+	  AnalyzerCore::FillHist("Jet_"+DataEra+"_"+Tagger+"_"+WP+"_eff_"+flav+"_num_neg", this_Eta, this_Pt, fabs(weight), NEtaBin, etabins, NPtBin, ptbins);
+	}
+	*/
+	AnalyzerCore::FillHist("Jet_"+DataEra+"_"+Tagger+"_"+WP+"_eff_"+flav+"_num", this_Eta, this_Pt, fabs(weight), NEtaBin, etabins, NPtBin, ptbins);
+	AnalyzerCore::FillHist("Jet_"+DataEra+"_"+Tagger+"_"+WP+"_eff_"+flav+"_num"+weight_sign_str, this_Eta, this_Pt, fabs(weight), NEtaBin, etabins, NPtBin, ptbins);
+
       }
     } // END Loop (tagger,working point)
   } // END Loop jet

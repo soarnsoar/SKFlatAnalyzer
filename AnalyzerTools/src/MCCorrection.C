@@ -1282,7 +1282,7 @@ void MCCorrection::SetJetTaggingParameters(std::vector<JetTagging::Parameters> v
   jetTaggingPars = v;
 }
 
-void MCCorrection::SetupJetTagging(TString _btagmceff_filename,bool _Use_dAsym){
+void MCCorrection::SetupJetTagging(TString _btagmceff_filename,bool _Use_dAsym,TString _btagmceff_filename2){
   
   if(IsDATA) return;
 
@@ -1387,16 +1387,15 @@ void MCCorrection::SetupJetTagging(TString _btagmceff_filename,bool _Use_dAsym){
     cout << "[MCCorrection::SetJetTaggingParameters] key = " << it->first << endl;
   }
   cout << "[MCCorrection::SetupJetTagging]_btagmceff_filename=" << _btagmceff_filename << endl;
+  cout << "[MCCorrection::SetupJetTagging]_btagmceff_filename2=" << _btagmceff_filename2 << endl;
   if(_Use_dAsym){
     cout << "[MCCorrection::SetupJetTagging]Setup MCJetTagEff With dAsym!!" << endl;
     use_dasym=true;
     InitBtagChargeAsymFactor();
-    //SetupMCJetTagEffWithAsym(_btagmceff_filename);
-    SetupMCJetTagEff(_btagmceff_filename);
   }else{
     cout << "[MCCorrection::SetupJetTagging]Setup MCJetTagEff. NO dAsym!!" << endl;
-    SetupMCJetTagEff(_btagmceff_filename);
   }
+  SetupMCJetTagEff(_btagmceff_filename,_btagmceff_filename2);
 }
 
 double MCCorrection::GetdAsymResult(double JetPt, double JetEta, int SystDir, int iptbinsys, int ietabinsys){
@@ -1640,7 +1639,7 @@ double MCCorrection::GetJetTaggingCutValue(JetTagging::Tagger tagger, JetTagging
 
 }
 
-void MCCorrection::SetupMCJetTagEff(TString _btagmceff_filename){
+void MCCorrection::SetupMCJetTagEff(TString _btagmceff_filename, TString _btagmceff_filename2){
   cout<<"[MCCorrection::SetupMCJetTagEff] setting MCJetTagEff"<<endl;
   cout << "_btagmceff_filename=" << _btagmceff_filename << endl;
   
@@ -1663,6 +1662,25 @@ void MCCorrection::SetupMCJetTagEff(TString _btagmceff_filename){
   }
 
 
+
+  if(_btagmceff_filename2==""){
+    cout << "[jhchoi]Use default btag mc eff" << endl;
+    _btagmceff_filename2=default_btageff_file;
+  }
+  else{
+    TString mcjetpath2=datapath+"/"+DataEra+"/BTag/"+_btagmceff_filename2;
+    cout << "[jhchoi]Use  2nd btag mc eff-->" << mcjetpath2 << endl;
+    ifstream fcheck2(mcjetpath2);
+    if(!fcheck2.good()){
+      cout << "[jhchoi]FAIL!!! to load  btag mc eff-->" << mcjetpath2 << endl;
+      cout << "Use default file" << endl;
+      _btagmceff_filename2=default_btageff_file;
+    }
+  }
+  
+
+
+  //---primary mceff---//
   TString mcjetpath=datapath+"/"+DataEra+"/BTag/"+_btagmceff_filename;
   cout << "[jhchoi]mcjetpath----->" << mcjetpath << endl;
   ifstream fcheck(mcjetpath);
@@ -1670,6 +1688,8 @@ void MCCorrection::SetupMCJetTagEff(TString _btagmceff_filename){
     cout<<"[MCCorrection::SetupMCJetTagEff] no "+mcjetpath<<endl;
     return;
   }
+
+
   TFile fmcjet(mcjetpath);
   // Denominator histogram setup first
   vector<TString> jfs = {"B", "C", "Light"};
@@ -1695,11 +1715,46 @@ void MCCorrection::SetupMCJetTagEff(TString _btagmceff_filename){
     this_hist->SetDirectory(0);
     cout<<"[MCCorrection::SetupMCJetTagEff] setting "<<hnum<<endl;
   }
+  //--secondary mceff file
+  TString mcjetpath2=datapath+"/"+DataEra+"/BTag/"+_btagmceff_filename2;
+  cout << "[jhchoi]mcjetpath2----->" << mcjetpath2 << endl;
+  ifstream fcheck2(mcjetpath2);
+  if(!fcheck2.good()){
+    cout<<"[MCCorrection::SetupMCJetTagEff] no "+mcjetpath2<<endl;
+    return;
+  }
+
+  
+  TFile fmcjet2(mcjetpath2);
+  // Denominator histogram setup first
+  for(unsigned int i=0; i<jfs.size(); i++){
+    TString hden="Jet_"+DataEra+"_eff_"+jfs.at(i)+"_denom";
+    TH2F* this_hist=(TH2F*)fmcjet2.Get(hden);
+    map_hist_mcjet2[hden]=this_hist;
+    this_hist->SetDirectory(0);
+    cout<<"[MCCorrection::SetupMCJetTagEff]2nd mceff setting "<<hden<<endl;
+  }
+  // Numerator histogram setup and divided using "binomial option"
+  for(const auto& obj:*(fmcjet2.GetListOfKeys())){
+    TH2F* this_hist=(TH2F*)((TKey*)obj)->ReadObj();
+    TString hnum=this_hist->GetName();
+    if(!hnum.Contains("num")) continue;
+    TString hden="";
+    if(hnum.Contains("_B_")) hden="Jet_"+DataEra+"_eff_B_denom";
+    else if(hnum.Contains("_C_")) hden="Jet_"+DataEra+"_eff_C_denom";
+    else hden="Jet_"+DataEra+"_eff_Light_denom";
+
+    this_hist->Divide(this_hist,map_hist_mcjet2[hden],1.,1.,"b");
+    map_hist_mcjet2[hnum]=this_hist;
+    this_hist->SetDirectory(0);
+    cout<<"[MCCorrection::SetupMCJetTagEff] setting "<<hnum<<endl;
+  }
+  
 }
 
 
 
-//---DO NOT USE SetupMCJetTagEffWithAsym
+//---DO NOT USE SetupMCJetTagEffWithAsym. it is outdated
 void MCCorrection::SetupMCJetTagEffWithAsym(TString _btagmceff_filename){
   cout<<"[MCCorrection::SetupMCJetTagEffWithAsym] setting MCJetTagEff with dasym"<<endl;
   cout << "_btagmceff_filename=" << _btagmceff_filename << endl;
@@ -1792,15 +1847,29 @@ double MCCorrection::GetMCJetTagEff(JetTagging::Tagger tagger, JetTagging::WP wp
   error = this_hist->GetBinError(this_bin);
 
   out = value+double(sys)*error;
+  //if(out<=0.) out = 1E-10;
+  //if(out>=1.) out = 1.-1E-10;
+  //jhchoi
+  //if(out<=0.) out = -999.;
+  //if(out>=1.) out = 999.;
+  if(out<=0. || out>=1.){
+    TH2F *this_hist2 = map_hist_mcjet2[hnum];
+    //int this_bin2 = this_hist2->FindBin(fabs(JetEta),JetPt);
+    value = this_hist2->GetBinContent(this_bin);
+    error = this_hist2->GetBinError(this_bin);
+    out = value+double(sys)*error;
+
+  }
   if(out<=0.) out = 1E-10;
-  if(out>=1.) out = 1.-1E-10;
+  if(out>=1.) out = 1.-1E-10;                                                                                                                                                                                                             
+
   return out;
 }
 
 
 //jhchoi
 double MCCorrection::GetMCJetTagEffWithAsym(JetTagging::Tagger tagger, JetTagging::WP wp, int JetPartonFlavour ,int JetHadronFlavour, double JetPt, double JetEta, int sys){
-
+  //outdated
   if(IsDATA) return 1.;
 
   if(JetPt<20) JetPt = 20.;
@@ -1910,14 +1979,17 @@ double MCCorrection::GetBTaggingReweight_1a(const vector<Jet>& jets, JetTagging:
     
     bool isTagged = jets.at(i).GetTaggerResult(jtp.j_Tagger) > GetJetTaggingCutValue(jtp.j_Tagger, jtp.j_WP);
 
+
     if(isTagged){
-      Prob_MC *= this_MC_Eff;
-      Prob_DATA *= this_DATA_Eff;
+      //Prob_MC *= this_MC_Eff;
+      //Prob_DATA *= this_DATA_Eff;
+      Prob_DATA=Prob_DATA*this_SF*(1.+this_dAsym_SF);//jhchoi
     }
     else{
       Prob_MC *= 1.-this_MC_Eff;
       Prob_DATA *= 1.-this_DATA_Eff;
     }//
+
   }//end of jet loop
 
   if(Prob_MC>0. && Prob_DATA>0.) SF=Prob_DATA/Prob_MC;

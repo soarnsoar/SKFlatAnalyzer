@@ -1709,12 +1709,16 @@ bool AnalyzerCore::PassMETFilter(){
   return true;
 
 }
-void AnalyzerCore::SetBTagMCEff_Filename(TString _btagmceff_filename, bool _Use_dAsym){
+void AnalyzerCore::SetBTagMCEff_Filename(TString _btagmceff_filename, bool _Use_dAsym,TString _btagmceff_filename2){
   if(_Use_dAsym) cout << "[SetBTagMCEff_Filename] Try Using dAsym Factor!!" << endl;
   btagmceff_filename=_btagmceff_filename;
+  btagmceff_filename2=_btagmceff_filename2;
   Use_dAsym=_Use_dAsym;
   cout<<"[AnalyzerCore::SetBTagMCEff_Filename]->"<<btagmceff_filename<<endl;
+  cout<<"[AnalyzerCore::SetBTagMCEff_Filename2]->"<<btagmceff_filename2<<endl;
 }
+
+
 void AnalyzerCore::initializeAnalyzerTools(){
   //==== MCCorrection
   mcCorr->SetMCSample(MCSample);
@@ -1724,8 +1728,9 @@ void AnalyzerCore::initializeAnalyzerTools(){
   mcCorr->SetIsFastSim(IsFastSim);
   if(!IsDATA){
     cout << "[AnalyzerCore::initializeAnalyzerTools] btagmceff_filename=" << btagmceff_filename << endl;
+    cout << "[AnalyzerCore::initializeAnalyzerTools] btagmceff_filename2=" << btagmceff_filename2 << endl;
     mcCorr->ReadHistograms();
-    mcCorr->SetupJetTagging(btagmceff_filename,Use_dAsym);
+    mcCorr->SetupJetTagging(btagmceff_filename,Use_dAsym,btagmceff_filename2);
   }
 
   puppiCorr->SetEra(GetEra());

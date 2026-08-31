@@ -23,8 +23,8 @@ void PreselectionAnalyzer::initializeAnalyzer(){
   if(HasFlag("use_beffasym")){
     //----use this analyzer specific btag mc eff----//
     //void AnalyzerCore::SetBTagMCEff_Filename(TString _btagmceff_filename)
-    if(!IsDATA) AnalyzerCore::SetBTagMCEff_Filename("PreselectionAnalyzer_"+MCSample+".root",true);// with kincut
-    //if(!IsDATA) AnalyzerCore::SetBTagMCEff_Filename("",true);// use TTLJ's eff. instead here. 
+    //if(!IsDATA) AnalyzerCore::SetBTagMCEff_Filename("PreselectionAnalyzer_"+MCSample+".root",true);// with kincut
+    if(!IsDATA) AnalyzerCore::SetBTagMCEff_Filename("",true);// use TTLJ's eff. instead here. mceff is not that different between the processes.
   }
   
   
@@ -449,8 +449,7 @@ void PreselectionAnalyzer::RunBasicZregion(){
     return;
   }
   
-  //----Let's select and fillhist
-  if(!runSys)FillHistAllChannel("BasicDYSelection");
+
 
 
   if(measure_btageff){
@@ -468,6 +467,10 @@ void PreselectionAnalyzer::RunBasicZregion(){
     Measure_MCbtagEff_GivenJets(v_tightjet);
     return;
   }
+
+
+  //----Let's select and fillhist
+  if(!runSys)FillHistAllChannel("BasicDYSelection");
   
   if(nbjet!=1) return ;
   //  bool HasVetoLepton_NotTightLeps_NotWithinJets(const vector<int>& _v_tightmuonidx, const vector<int>& _v_tightelectronidx, const vector<TLorentzVector>& _v_jet);
@@ -1215,8 +1218,8 @@ void PreselectionAnalyzer::FillHist(TString histname, double value, double weigh
 
 }
 void PreselectionAnalyzer::EventLoop(){
-  AnalyzerCore::FillHist("all/nmuons/"+ProcessName,AllMuons.size(),1,100,0.,100.);
-  AnalyzerCore::FillHist("all/nelectrons/"+ProcessName,AllElectrons.size(),1,100,0.,100.);
+  //AnalyzerCore::FillHist("all/nmuons/"+ProcessName,AllMuons.size(),1,100,0.,100.);
+  //AnalyzerCore::FillHist("all/nelectrons/"+ProcessName,AllElectrons.size(),1,100,0.,100.);
   RunBasicZregion();
 }
 
