@@ -46,8 +46,8 @@ class hadd_submitter:
         
         nf=len(self.dict_group[j])
         if nf ==1 :
-            command+="&&cp "+outname+" "+arg_inputs
-
+            #command+="&&cp "+outname+" "+arg_inputs
+            command+="&&cp "+arg_inputs+" "+outname
         else:
             command+="&&hadd -f "+outname+" "+arg_inputs
 
