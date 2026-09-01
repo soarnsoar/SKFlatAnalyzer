@@ -101,7 +101,13 @@ class hadd_submitter:
         WORKDIR="WORKDIR_HADD_"+self.jobname+"/FINAL"
         submit=0
         jobname=WORKDIR
-        memory=self.GetMemoryForFileList(glob(self.GetTempOutDir()+"/*.root"))
+        #memory=self.GetMemoryForFileList(glob(self.GetTempOutDir()+"/*.root"))
+        memory=2048
+        for j in range(self.N):
+            this_memory=self.GetMemoryForFileList(self.dict_group[j])
+            if this_memory>memory:
+                memory=this_memory
+        
         #if 'runSys' in FinalOutputPathToMove:
         #    if memory < 30000 : memory = 30000
         #memory=False
