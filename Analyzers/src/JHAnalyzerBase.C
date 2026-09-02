@@ -6717,9 +6717,7 @@ void JHAnalyzerBase::MeasureMC_bChargeIDEff(vector<Jet> vJets ){
     if(n_eL>0) AnalyzerCore::FillHist("Jet_"+DataEra+"_Has_eL_eff_"+flav+"_num", this_Eta, this_Pt, weight, NEtaBinAll, etabins_all, NPtBin, ptbins);
 
     if(n_muH==0 && n_muL==0 && n_eH==0 && n_eL==0){
-
       //do not need to apply SLT tag eff corr because for given jet/pt/eta/origin, the same weight is multiplied to deno and nume both.So it is canceled out.  
-      
       AnalyzerCore::FillHist("Jet_"+DataEra+"_eff_"+flav+"_denom__NoSL", this_Eta, this_Pt, weight, NEtaBin, etabins, NPtBin, ptbins);
 
       SetJetChargeScore(this_jet);      
