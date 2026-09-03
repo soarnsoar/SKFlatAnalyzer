@@ -6687,6 +6687,8 @@ void JHAnalyzerBase::Setup_bChargeAcc(TString _bchargeacc_mc_filename){
 
 
 void JHAnalyzerBase::MeasureMC_bChargeIDEff(vector<Jet> vJets ){
+  TString weight_sign_str= weight > 0 ? "_POS" : "_NEG";
+
   vector<double> vec_etabins = {0.0, 0.8, 1.6, 2., 2.5};
   vector<double> vec_ptbins = {20., 30., 50., 70., 100., 140.};
   double etabins[5]= {0.0, 0.8, 1.6, 2., 2.5};
@@ -6703,7 +6705,8 @@ void JHAnalyzerBase::MeasureMC_bChargeIDEff(vector<Jet> vJets ){
     double this_Eta = fabs(this_jet.Eta());
     double this_Pt = this_jet.Pt()>1000. ? 999. : this_jet.Pt();
 
-    AnalyzerCore::FillHist("Jet_"+DataEra+"_eff_"+flav+"_denom", this_Eta, this_Pt, weight, NEtaBinAll, etabins_all, NPtBin, ptbins);
+    AnalyzerCore::FillHist("Jet_"+DataEra+"_eff_"+flav+"_denom", this_Eta, this_Pt, fabs(weight), NEtaBinAll, etabins_all, NPtBin, ptbins);
+    AnalyzerCore::FillHist("Jet_"+DataEra+"_eff_"+flav+"_denom"+weight_sign_str, this_Eta, this_Pt, weight, NEtaBinAll, etabins_all, NPtBin, ptbins);
 
     std::vector<int> v_nSLT=Count_SLT(this_jet);
     int n_muH=v_nSLT[0];
@@ -6711,19 +6714,32 @@ void JHAnalyzerBase::MeasureMC_bChargeIDEff(vector<Jet> vJets ){
     int n_eH=v_nSLT[2];
     int n_eL=v_nSLT[3];
 
-    if(n_muH>0) AnalyzerCore::FillHist("Jet_"+DataEra+"_Has_muH_eff_"+flav+"_num", this_Eta, this_Pt, weight, NEtaBinAll, etabins_all, NPtBin, ptbins);
-    if(n_muL>0) AnalyzerCore::FillHist("Jet_"+DataEra+"_Has_muL_eff_"+flav+"_num", this_Eta, this_Pt, weight, NEtaBinAll, etabins_all, NPtBin, ptbins);
-    if(n_eH>0) AnalyzerCore::FillHist("Jet_"+DataEra+"_Has_eH_eff_"+flav+"_num", this_Eta, this_Pt, weight, NEtaBinAll, etabins_all, NPtBin, ptbins);
-    if(n_eL>0) AnalyzerCore::FillHist("Jet_"+DataEra+"_Has_eL_eff_"+flav+"_num", this_Eta, this_Pt, weight, NEtaBinAll, etabins_all, NPtBin, ptbins);
-
+    if(n_muH>0){
+      AnalyzerCore::FillHist("Jet_"+DataEra+"_Has_muH_eff_"+flav+"_num", this_Eta, this_Pt, fabs(weight), NEtaBinAll, etabins_all, NPtBin, ptbins);
+      AnalyzerCore::FillHist("Jet_"+DataEra+"_Has_muH_eff_"+flav+"_num"+weight_sign_str, this_Eta, this_Pt, weight, NEtaBinAll, etabins_all, NPtBin, ptbins);
+    }
+    if(n_muL>0){
+      AnalyzerCore::FillHist("Jet_"+DataEra+"_Has_muL_eff_"+flav+"_num", this_Eta, this_Pt, fabs(weight), NEtaBinAll, etabins_all, NPtBin, ptbins);
+      AnalyzerCore::FillHist("Jet_"+DataEra+"_Has_muL_eff_"+flav+"_num"+weight_sign_str, this_Eta, this_Pt, weight, NEtaBinAll, etabins_all, NPtBin, ptbins);
+    }
+    if(n_eH>0){
+      AnalyzerCore::FillHist("Jet_"+DataEra+"_Has_eH_eff_"+flav+"_num", this_Eta, this_Pt, fabs(weight), NEtaBinAll, etabins_all, NPtBin, ptbins);
+      AnalyzerCore::FillHist("Jet_"+DataEra+"_Has_eH_eff_"+flav+"_num"+weight_sign_str, this_Eta, this_Pt, weight, NEtaBinAll, etabins_all, NPtBin, ptbins);
+    }
+    if(n_eL>0){
+      AnalyzerCore::FillHist("Jet_"+DataEra+"_Has_eL_eff_"+flav+"_num", this_Eta, this_Pt, fabs(weight), NEtaBinAll, etabins_all, NPtBin, ptbins);
+      AnalyzerCore::FillHist("Jet_"+DataEra+"_Has_eL_eff_"+flav+"_num"+weight_sign_str, this_Eta, this_Pt, weight, NEtaBinAll, etabins_all, NPtBin, ptbins);
+    }
     if(n_muH==0 && n_muL==0 && n_eH==0 && n_eL==0){
       //do not need to apply SLT tag eff corr because for given jet/pt/eta/origin, the same weight is multiplied to deno and nume both.So it is canceled out.  
-      AnalyzerCore::FillHist("Jet_"+DataEra+"_eff_"+flav+"_denom__NoSL", this_Eta, this_Pt, weight, NEtaBin, etabins, NPtBin, ptbins);
+      AnalyzerCore::FillHist("Jet_"+DataEra+"_eff_"+flav+"_denom__NoSL", this_Eta, this_Pt, fabs(weight), NEtaBin, etabins, NPtBin, ptbins);
+      AnalyzerCore::FillHist("Jet_"+DataEra+"_eff_"+flav+"_denom__NoSL"+weight_sign_str, this_Eta, this_Pt, weight, NEtaBin, etabins, NPtBin, ptbins);
 
       SetJetChargeScore(this_jet);      
       int jetcharge_coeff=GetJetChargeScoreCoeff();
       if(jetcharge_coeff==1){//_NoSL_jH
-	AnalyzerCore::FillHist("Jet_"+DataEra+"_jH_eff_"+flav+"_num__NoSL", this_Eta, this_Pt, weight, NEtaBin, etabins, NPtBin, ptbins);
+	AnalyzerCore::FillHist("Jet_"+DataEra+"_jH_eff_"+flav+"_num__NoSL", this_Eta, this_Pt, fabs(weight), NEtaBin, etabins, NPtBin, ptbins);
+	AnalyzerCore::FillHist("Jet_"+DataEra+"_jH_eff_"+flav+"_num__NoSL"+weight_sign_str, this_Eta, this_Pt, weight, NEtaBin, etabins, NPtBin, ptbins);
       }
     }
   }
@@ -6734,6 +6750,7 @@ void JHAnalyzerBase::MeasureMC_bChargeIDEff(vector<Jet> vJets ){
 
 
 void JHAnalyzerBase::MeasureMC_bChargeAcc(vector<Jet> vJets ){
+  TString weight_sign_str= weight > 0 ? "_POS" : "_NEG";
   vector<double> vec_etabins = {0.0, 0.8, 1.6, 2., 2.5};
   vector<double> vec_ptbins = {20., 30., 50., 70., 100., 140.};
   double etabins[5]= {0.0, 0.8, 1.6, 2., 2.5};
@@ -6759,11 +6776,19 @@ void JHAnalyzerBase::MeasureMC_bChargeAcc(vector<Jet> vJets ){
     
    
     if(this_chargeid<4){//SLT
-      AnalyzerCore::FillHist("Jet_"+DataEra+"_acc_"+flav+"_chargeid"+std::to_string(this_chargeid)+"_denom", this_Eta, this_Pt, weight, NEtaBinAll, etabins_all, NPtBin, ptbins);
-      if(isMeasuredCorrect)AnalyzerCore::FillHist("Jet_"+DataEra+"_acc_"+flav+"_chargeid"+std::to_string(this_chargeid)+"_num", this_Eta, this_Pt, weight, NEtaBinAll, etabins_all, NPtBin, ptbins);
+      AnalyzerCore::FillHist("Jet_"+DataEra+"_acc_"+flav+"_chargeid"+std::to_string(this_chargeid)+"_denom", this_Eta, this_Pt, fabs(weight), NEtaBinAll, etabins_all, NPtBin, ptbins);
+      AnalyzerCore::FillHist("Jet_"+DataEra+"_acc_"+flav+"_chargeid"+std::to_string(this_chargeid)+"_denom"+weight_sign_str, this_Eta, this_Pt, weight, NEtaBinAll, etabins_all, NPtBin, ptbins);
+      if(isMeasuredCorrect){
+	AnalyzerCore::FillHist("Jet_"+DataEra+"_acc_"+flav+"_chargeid"+std::to_string(this_chargeid)+"_num", this_Eta, this_Pt, fabs(weight), NEtaBinAll, etabins_all, NPtBin, ptbins);
+	AnalyzerCore::FillHist("Jet_"+DataEra+"_acc_"+flav+"_chargeid"+std::to_string(this_chargeid)+"_num"+weight_sign_str, this_Eta, this_Pt, weight, NEtaBinAll, etabins_all, NPtBin, ptbins);
+      }
     }else{
-      AnalyzerCore::FillHist("Jet_"+DataEra+"_acc_"+flav+"_chargeid"+std::to_string(this_chargeid)+"_denom", this_Eta, this_Pt, weight, NEtaBin, etabins, NPtBin, ptbins);
-      if(isMeasuredCorrect)AnalyzerCore::FillHist("Jet_"+DataEra+"_acc_"+flav+"_chargeid"+std::to_string(this_chargeid)+"_num", this_Eta, this_Pt, weight, NEtaBin, etabins, NPtBin, ptbins);
+      AnalyzerCore::FillHist("Jet_"+DataEra+"_acc_"+flav+"_chargeid"+std::to_string(this_chargeid)+"_denom", this_Eta, this_Pt, fabs(weight), NEtaBin, etabins, NPtBin, ptbins);
+      AnalyzerCore::FillHist("Jet_"+DataEra+"_acc_"+flav+"_chargeid"+std::to_string(this_chargeid)+"_denom"+weight_sign_str, this_Eta, this_Pt, weight, NEtaBin, etabins, NPtBin, ptbins);
+      if(isMeasuredCorrect){
+	AnalyzerCore::FillHist("Jet_"+DataEra+"_acc_"+flav+"_chargeid"+std::to_string(this_chargeid)+"_num", this_Eta, this_Pt, fabs(weight), NEtaBin, etabins, NPtBin, ptbins);
+	AnalyzerCore::FillHist("Jet_"+DataEra+"_acc_"+flav+"_chargeid"+std::to_string(this_chargeid)+"_num"+weight_sign_str, this_Eta, this_Pt, weight, NEtaBin, etabins, NPtBin, ptbins);
+      }
     }
   }
 
@@ -6784,10 +6809,13 @@ vector<int> JHAnalyzerBase::Count_SLT(const Jet& this_Jet){
   for(auto& muon : AllMuons){
     if(muon.Pt() < 5.) continue;
     if(muon.DeltaR(this_Jet) > 0.4) continue;
-    if(muon.RelIso() > 10.) continue;
-    if(muon.Chi2()>10) continue;
-    if(muon.TrackerLayers()<1) continue;
-    if(muon.MatchedStations() <1) continue;
+    //if(muon.RelIso() > 10.) continue;
+    //if(muon.Chi2()>10) continue;
+    //if(muon.TrackerLayers()<1) continue;
+    //if(muon.MatchedStations() <1) continue;
+    //---v2608.2
+    bool isGlobalMuon__OR__isTrackerMuon= muon.IsType(Muon::GlobalMuon) || muon.IsType(Muon::TrackerMuon);
+    if(!isGlobalMuon__OR__isTrackerMuon) continue;
 
     SetMuonChargeScore(muon,this_Jet);
     int this_muon_coeff=GetMuonChargeScoreCoeff();// if pass HighCut -> +1 // if pass LowCut -> -1
@@ -6802,13 +6830,12 @@ vector<int> JHAnalyzerBase::Count_SLT(const Jet& this_Jet){
   }//[end muon for loop]
   
   for(auto& electron : AllElectrons){
-    if(!electron.IsGsfCtfScPixChargeConsistent()) continue;
     if(electron.Pt() < 5.) continue;
     if(electron.DeltaR(this_Jet) > 0.4) continue;
     if(!electron.IsGsfCtfScPixChargeConsistent()) continue;
     if(!electron.PassConversionVeto()) continue;
-    if(electron.RelIso() > 10.) continue;
-    if(electron.NMissingHits() != 0) continue;
+    
+    if(electron.NMissingHits() > 1) continue;//2608.2
 
 
     SetElectronChargeScore(electron,this_Jet);
