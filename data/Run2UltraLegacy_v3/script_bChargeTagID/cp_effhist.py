@@ -9,7 +9,7 @@ SKFlat_WD=os.getenv("SKFlat_WD")
 
 #_SkimTree_Dilepton
 list_year=["2016preVFP", "2016postVFP", "2017", "2018"]
-#list_year=["2018"]
+#list_year=["2016preVFP"]
 
 #ANANAME="TTsemiLepChargeScoreEfficiencyMeasurement_TightMatch"
 #ANANAME="TTsemiLepBtagChargeAsymEfficiencyMeasurement_BINNING"
@@ -19,9 +19,9 @@ list_year=["2016preVFP", "2016postVFP", "2017", "2018"]
 
 ANANAME="TTsemiLepChargeScoreEfficiencyMeasurement"
 #suffix="use_beff_dasym__JETPUID_L__bdt2512.5__measure_bchargeeff__"
-suffix='use_beff_dasym__JETPUID_L__noveto__newlepveto__noetabin__bdt2608.2__measure_bchargeeff__'
-
-
+#suffix='use_beff_dasym__JETPUID_L__noveto__newlepveto__chi2kincut__bdt2608.2__splitcharge__noetabin__measure_bchargeeff__'
+#suffix="use_beff_dasym__JETPUID_L__newlepveto__chi2kincut__bdt2608.2__splitcharge__noetabin__jetlepveto__measure_bchargeeff__"
+suffix="use_beff_dasym__JETPUID_L__chi2kincut__bdt2608.2__splitcharge__noetabin__measure_bchargeeff__"
 
 for YEAR in list_year:
     #from_dir="/data6/Users/jhchoi/SKFlatOutput/Run2UltraLegacy_v3/"+ANANAME+"/"+str(YEAR)+"/measure_btageff__"
@@ -31,7 +31,7 @@ for YEAR in list_year:
     #os.system("ls "+from_dir)
     list_rootfile=glob.glob(from_dir+"/*.root")
     for rootfile in list_rootfile:
-        rootfile_new=rootfile.replace("_SkimTree_SingleLepton_1DeepJetTightWP","").replace("_SkimTree_Dilepton","").replace("_SkimTree_SingleLepton","")
+        rootfile_new=rootfile.replace("_SkimTree_SingleLepton_1DeepJetTightWP","").replace("_SkimTree_Dilepton_1DeepJetTightWP","").replace("_SkimTree_Dilepton","").replace("_SkimTree_SingleLepton","")
         rootfile_new=rootfile_new.split("/")[-1]
         print("#"+rootfile_new)
         #os.system("cp "+rootfile+" "+to_dir+"/"+rootfile_new)
