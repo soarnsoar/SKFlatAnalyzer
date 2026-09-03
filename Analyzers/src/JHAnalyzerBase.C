@@ -6809,10 +6809,13 @@ vector<int> JHAnalyzerBase::Count_SLT(const Jet& this_Jet){
   for(auto& muon : AllMuons){
     if(muon.Pt() < 5.) continue;
     if(muon.DeltaR(this_Jet) > 0.4) continue;
-    if(muon.RelIso() > 10.) continue;
-    if(muon.Chi2()>10) continue;
-    if(muon.TrackerLayers()<1) continue;
-    if(muon.MatchedStations() <1) continue;
+    //if(muon.RelIso() > 10.) continue;
+    //if(muon.Chi2()>10) continue;
+    //if(muon.TrackerLayers()<1) continue;
+    //if(muon.MatchedStations() <1) continue;
+    //---v2608.2
+    bool isGlobalMuon__OR__isTrackerMuon= muon.IsType(Muon::GlobalMuon) || muon.IsType(Muon::TrackerMuon);
+    if(!isGlobalMuon__OR__isTrackerMuon) continue;
 
     SetMuonChargeScore(muon,this_Jet);
     int this_muon_coeff=GetMuonChargeScoreCoeff();// if pass HighCut -> +1 // if pass LowCut -> -1
@@ -6827,13 +6830,12 @@ vector<int> JHAnalyzerBase::Count_SLT(const Jet& this_Jet){
   }//[end muon for loop]
   
   for(auto& electron : AllElectrons){
-    if(!electron.IsGsfCtfScPixChargeConsistent()) continue;
     if(electron.Pt() < 5.) continue;
     if(electron.DeltaR(this_Jet) > 0.4) continue;
     if(!electron.IsGsfCtfScPixChargeConsistent()) continue;
     if(!electron.PassConversionVeto()) continue;
-    if(electron.RelIso() > 10.) continue;
-    if(electron.NMissingHits() != 0) continue;
+    
+    if(electron.NMissingHits() > 1) continue;//2608.2
 
 
     SetElectronChargeScore(electron,this_Jet);
