@@ -67,16 +67,19 @@ class TH2ToTH1_Converter:
         for ix in range(self.nx):
             for iy in range(self.ny):
                 this_z=self.h2.GetBinContent(ix+1,iy+1)
+                this_zerr=self.h2.GetBinError(ix+1,iy+1)
 
                 ymin=str(self.ybins[iy])
                 ymax=str(self.ybins[iy+1])            
                 xdistname="y__From__"+ymin+"__To__"+ymax
                 self.dict_xdist[xdistname].SetBinContent(ix+1,this_z)
+                self.dict_xdist[xdistname].SetBinError(ix+1,this_zerr)
 
                 xmin=str(self.xbins[ix])
                 xmax=str(self.xbins[ix+1])            
                 ydistname="x__From__"+xmin+"__To__"+xmax
                 self.dict_ydist[ydistname].SetBinContent(iy+1,this_z)
+                self.dict_ydist[ydistname].SetBinError(iy+1,this_zerr)
 
 
     def GetHistDictX(self):
