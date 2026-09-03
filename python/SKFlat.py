@@ -184,7 +184,7 @@ for flag in Userflags:
 ## Get Random Number for webdir
 
 random.seed(hash(StringForHash+timestamp+args.Era))
-RandomNumber = int(random.random()*1000000)
+RandomNumber = int(random.random()*1000)##fix to 1000
 str_RandomNumber = str(RandomNumber)
 webdirname = timestamp+"_"+str_RandomNumber
 webdirpathbase = SKFlatRunlogDir+'/www/SKFlatAnalyzerJobLogs/'+webdirname
