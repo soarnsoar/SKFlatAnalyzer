@@ -58,6 +58,7 @@ void JHAnalyzerBase::initializeAnalyzer(){
   measure_btageff_partonFlavour=HasFlag("measure_btageff_partonFlavour");
   measure_btageff_partonFlavour_bonly=HasFlag("measure_btageff_partonFlavour_bonly");
   measure_bchargeeff=HasFlag("measure_bchargeeff");
+  measure_bchargeeff_v2=HasFlag("measure_bchargeeff_v2");
   measure_bchargeacc=HasFlag("measure_bchargeacc");
   UsePfMET=HasFlag("pfmet");
   if(UsePfMET){
@@ -6749,6 +6750,72 @@ void JHAnalyzerBase::MeasureMC_bChargeIDEff(vector<Jet> vJets ){
 
 
 
+
+
+void JHAnalyzerBase::MeasureMC_bChargeIDEff_test_v2(vector<Jet> vJets ){
+  TString weight_sign_str= weight > 0 ? "_POS" : "_NEG";
+
+  vector<double> vec_etabins = {0.0, 0.8, 1.6, 2., 2.5};
+  vector<double> vec_ptbins = {20., 30., 50., 70., 100., 140.};
+  double etabins[5]= {0.0, 0.8, 1.6, 2., 2.5};
+  double etabins_all[2]= {0.0, 2.5};
+  double ptbins[6]= {30.,50.,70.,100.,140.,1000.};
+  const int NEtaBin = 4;
+  const int NEtaBinAll = 1;
+  const int NPtBin = 5;
+
+  for(auto& this_jet : vJets){
+    if(fabs(this_jet.partonFlavour())!=5) continue;
+    if(this_jet.hadronFlavour()!=5) continue;
+    TString flav= this_jet.partonFlavour() > 0 ? "bminus" : "bplus";
+    double this_Eta = fabs(this_jet.Eta());
+    double this_Pt = this_jet.Pt()>1000. ? 999. : this_jet.Pt();
+
+    AnalyzerCore::FillHist("Jet_"+DataEra+"_eff_"+flav+"_denom", this_Eta, this_Pt, fabs(weight), NEtaBinAll, etabins_all, NPtBin, ptbins);
+    AnalyzerCore::FillHist("Jet_"+DataEra+"_eff_"+flav+"_denom"+weight_sign_str, this_Eta, this_Pt, weight, NEtaBinAll, etabins_all, NPtBin, ptbins);
+
+    std::vector<int> v_nSLT=Count_SLT_test_v2(this_jet);
+    int n_muH=v_nSLT[0];
+    int n_muL=v_nSLT[1];
+    int n_eH=v_nSLT[2];
+    int n_eL=v_nSLT[3];
+
+    if(n_muH>0){
+      AnalyzerCore::FillHist("Jet_"+DataEra+"_Has_muH_eff_"+flav+"_num", this_Eta, this_Pt, fabs(weight), NEtaBinAll, etabins_all, NPtBin, ptbins);
+      AnalyzerCore::FillHist("Jet_"+DataEra+"_Has_muH_eff_"+flav+"_num"+weight_sign_str, this_Eta, this_Pt, weight, NEtaBinAll, etabins_all, NPtBin, ptbins);
+    }
+    if(n_muL>0){
+      AnalyzerCore::FillHist("Jet_"+DataEra+"_Has_muL_eff_"+flav+"_num", this_Eta, this_Pt, fabs(weight), NEtaBinAll, etabins_all, NPtBin, ptbins);
+      AnalyzerCore::FillHist("Jet_"+DataEra+"_Has_muL_eff_"+flav+"_num"+weight_sign_str, this_Eta, this_Pt, weight, NEtaBinAll, etabins_all, NPtBin, ptbins);
+    }
+    if(n_eH>0){
+      AnalyzerCore::FillHist("Jet_"+DataEra+"_Has_eH_eff_"+flav+"_num", this_Eta, this_Pt, fabs(weight), NEtaBinAll, etabins_all, NPtBin, ptbins);
+      AnalyzerCore::FillHist("Jet_"+DataEra+"_Has_eH_eff_"+flav+"_num"+weight_sign_str, this_Eta, this_Pt, weight, NEtaBinAll, etabins_all, NPtBin, ptbins);
+    }
+    if(n_eL>0){
+      AnalyzerCore::FillHist("Jet_"+DataEra+"_Has_eL_eff_"+flav+"_num", this_Eta, this_Pt, fabs(weight), NEtaBinAll, etabins_all, NPtBin, ptbins);
+      AnalyzerCore::FillHist("Jet_"+DataEra+"_Has_eL_eff_"+flav+"_num"+weight_sign_str, this_Eta, this_Pt, weight, NEtaBinAll, etabins_all, NPtBin, ptbins);
+    }
+    if(n_muH==0 && n_muL==0 && n_eH==0 && n_eL==0){
+      //do not need to apply SLT tag eff corr because for given jet/pt/eta/origin, the same weight is multiplied to deno and nume both.So it is canceled out.  
+      AnalyzerCore::FillHist("Jet_"+DataEra+"_eff_"+flav+"_denom__NoSL", this_Eta, this_Pt, fabs(weight), NEtaBin, etabins, NPtBin, ptbins);
+      AnalyzerCore::FillHist("Jet_"+DataEra+"_eff_"+flav+"_denom__NoSL"+weight_sign_str, this_Eta, this_Pt, weight, NEtaBin, etabins, NPtBin, ptbins);
+
+      SetJetChargeScore(this_jet);      
+      int jetcharge_coeff=GetJetChargeScoreCoeff();
+      if(jetcharge_coeff==1){//_NoSL_jH
+	AnalyzerCore::FillHist("Jet_"+DataEra+"_jH_eff_"+flav+"_num__NoSL", this_Eta, this_Pt, fabs(weight), NEtaBin, etabins, NPtBin, ptbins);
+	AnalyzerCore::FillHist("Jet_"+DataEra+"_jH_eff_"+flav+"_num__NoSL"+weight_sign_str, this_Eta, this_Pt, weight, NEtaBin, etabins, NPtBin, ptbins);
+      }
+    }
+  }
+
+
+}
+
+
+
+
 void JHAnalyzerBase::MeasureMC_bChargeAcc(vector<Jet> vJets ){
   TString weight_sign_str= weight > 0 ? "_POS" : "_NEG";
   vector<double> vec_etabins = {0.0, 0.8, 1.6, 2., 2.5};
@@ -6859,6 +6926,78 @@ vector<int> JHAnalyzerBase::Count_SLT(const Jet& this_Jet){
   ret.push_back(last_measured_charge);
   return ret;
 }
+
+
+
+
+vector<int> JHAnalyzerBase::Count_SLT_test_v2(const Jet& this_Jet){
+  int n_muonHigh=0;
+  int n_muonLow=0;
+  int n_electronHigh=0;
+  int n_electronLow=0;
+  int last_measured_charge=0;
+
+  
+  for(auto& muon : AllMuons){
+    if(muon.Pt() < 5.) continue;
+    if(muon.DeltaR(this_Jet) > 0.4) continue;
+    //if(muon.RelIso() > 10.) continue;
+    //if(muon.Chi2()>10) continue;
+    //if(muon.TrackerLayers()<1) continue;
+    //if(muon.MatchedStations() <1) continue;
+    //---v2608.2
+    bool isGlobalMuon__OR__isTrackerMuon= muon.IsType(Muon::GlobalMuon) || muon.IsType(Muon::TrackerMuon);
+    if(!isGlobalMuon__OR__isTrackerMuon) continue;
+    //---test v2
+    if(muon.TrkIso()/muon.Pt()<0.1) continue;
+    if(GetPt_wrt_Jet(muon,this_Jet)>4) continue;
+    
+    SetMuonChargeScore(muon,this_Jet);
+    int this_muon_coeff=GetMuonChargeScoreCoeff();// if pass HighCut -> +1 // if pass LowCut -> -1
+    if(this_muon_coeff==1){
+      n_muonHigh+=1;
+      last_measured_charge=muon.Charge();
+    }else if(this_muon_coeff==-1){
+      n_muonLow+=1;
+      last_measured_charge=-muon.Charge();
+    }
+
+  }//[end muon for loop]
+  
+  for(auto& electron : AllElectrons){
+    if(electron.Pt() < 5.) continue;
+    if(electron.DeltaR(this_Jet) > 0.4) continue;
+    if(!electron.IsGsfCtfScPixChargeConsistent()) continue;
+    if(!electron.PassConversionVeto()) continue;
+    
+    if(electron.NMissingHits() > 1) continue;//2608.2
+
+    //--testv2
+    if(electron.TrkIso()/electron.Pt()<0.1) continue;
+    if(GetPt_wrt_Jet(electron,this_Jet)>4) continue;
+
+    SetElectronChargeScore(electron,this_Jet);
+    int this_electron_coeff=GetElectronChargeScoreCoeff();// if pass HighCut -> +1 // if pass LowCut -> -1
+    if(this_electron_coeff==1){
+      n_electronHigh+=1;
+      last_measured_charge=electron.Charge();
+    }else if(this_electron_coeff==-1){
+      n_electronLow+=1;
+      last_measured_charge=-electron.Charge();
+    }
+
+  }//[end electron for loop]
+
+  vector<int> ret;
+  ret.clear();
+  ret.push_back(n_muonHigh);
+  ret.push_back(n_muonLow);
+  ret.push_back(n_electronHigh);
+  ret.push_back(n_electronLow);
+  ret.push_back(last_measured_charge);
+  return ret;
+}
+
 
 
 
