@@ -1091,9 +1091,11 @@ void EEMu_MuMuE_Method::FillHistElectron(TString cutname,Electron &electron){
   FillHist(cutname+"/electron_dR_j",electron.DeltaR(AllJets[jetidx_b]),weight,100,0,2);
   FillHist(cutname+"/electron_reliso",electron.RelIso(),weight,100,0,20);
   FillHist(cutname+"/electron_reliso_zoom",electron.RelIso(),weight,100,0,1);
+  FillHist(cutname+"/electron_reliso_zoom0p1",electron.RelIso(),weight,100,0,0.1);
   FillHist(cutname+"/electron_logreliso",log10(electron.RelIso()),weight,100,-2,1.5);
   FillHist(cutname+"/electron_reltrkiso",electron.TrkIso()/electron.Pt(),weight,100,0,20);
   FillHist(cutname+"/electron_reltrkiso_zoom",electron.TrkIso()/electron.Pt(),weight,100,0,1);
+  FillHist(cutname+"/electron_reltrkiso_zoom0p1",electron.TrkIso()/electron.Pt(),weight,100,0,0.1);
   FillHist(cutname+"/electron_logreltrkiso",log10(electron.TrkIso()/electron.Pt()),weight,100,-2,1.5);
   FillHist(cutname+"/electron_relecalPFClusterIso",electron.ecalPFClusterIso()/electron.Pt(),weight,100,0,20);
   FillHist(cutname+"/electron_logrelecalPFClusterIso",log10(electron.ecalPFClusterIso()/electron.Pt()),weight,100,-2,1.5);
@@ -1139,9 +1141,11 @@ void EEMu_MuMuE_Method::FillHistMuon(TString cutname,Muon &muon){
   FillHist(cutname+"/muon_dR_j",muon.DeltaR(AllJets[jetidx_b]),weight,100,0,2);
   FillHist(cutname+"/muon_reliso",muon.RelIso(),weight,100,0,20);
   FillHist(cutname+"/muon_reliso_zoom",muon.RelIso(),weight,100,0,1);
+  FillHist(cutname+"/muon_reliso_zoom0p1",muon.RelIso(),weight,100,0,0.1);
   FillHist(cutname+"/muon_logreliso",log10(muon.RelIso()),weight,100,-2,1.5);
   FillHist(cutname+"/muon_reltrkiso",muon.TrkIso()/muon.Pt(),weight,100,0,20);
   FillHist(cutname+"/muon_reltrkiso_zoom",muon.TrkIso()/muon.Pt(),weight,100,0,1);
+  FillHist(cutname+"/muon_reltrkiso_zoom0p1",muon.TrkIso()/muon.Pt(),weight,100,0,0.1);
   FillHist(cutname+"/muon_logreltrkiso",log10(muon.TrkIso()/muon.Pt()),weight,100,-2,1.5);
   FillHist(cutname+"/muon_nsip3d",fabs(muon.IP3D()/muon.IP3Derr()),weight,100,0,10);
 
