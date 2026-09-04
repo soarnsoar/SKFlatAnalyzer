@@ -94,8 +94,8 @@ public:
   bool noveto;
   bool HcbCR;
   bool newlepveto;
-  bool jetlepveto;
-  TString jetidtight;
+  //bool jetlepveto;
+  //TString jetidtight;
   //bool TopMassWindow;
   bool chi2kincut;
   //bool ApplyBtagSF;

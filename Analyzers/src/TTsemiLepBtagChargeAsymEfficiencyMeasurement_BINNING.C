@@ -47,6 +47,7 @@ void TTsemiLepBtagChargeAsymEfficiencyMeasurement_BINNING::initializeAnalyzer(){
   newlepveto=false;
   if(HasFlag("newlepveto")){
     newlepveto=true;
+    noveto=true;
   }
   
   //TopMassWindow=HasFlag("TopMassWindow");
@@ -57,7 +58,10 @@ void TTsemiLepBtagChargeAsymEfficiencyMeasurement_BINNING::initializeAnalyzer(){
   NoJetVeto=HasFlag("NoJetVeto");
   //Jet Assignment Tool
   InitJetAssigenChi2Fitter();
-
+  //
+  jetlepveto=HasFlag("jetlepveto");
+  jetidtight="tight";
+  if(jetlepveto) jetidtight="tightLepVeto";
 
 
 
@@ -122,6 +126,7 @@ bool TTsemiLepBtagChargeAsymEfficiencyMeasurement_BINNING::CheckIsElectronChanne
 void TTsemiLepBtagChargeAsymEfficiencyMeasurement_BINNING::SetEventWeight(){
   weight=1;
   if(IsDATA) return;
+  if(measure_btageff||measure_btageff_tight) btagsf=1;
   weight=MCweight()*ev.GetTriggerLumi("Full")*GetPileUpWeight(nPileUp,0)*GetPrefireWeight(0)*weakweight*z0weight*topptweight*btagsf*jetpuidsf;
   //Muon
   if(IsMuonChannel){
@@ -170,6 +175,8 @@ void TTsemiLepBtagChargeAsymEfficiencyMeasurement_BINNING::RunReco(){
     return;
   }
 
+
+
   if(measure_btageff_partonFlavour){
     SetEventWeight();
     Measure_MCbtagEff_PartonFlavour();
@@ -186,7 +193,15 @@ void TTsemiLepBtagChargeAsymEfficiencyMeasurement_BINNING::RunReco(){
   LepSign= l1.Charge() > 0 ? "Plus" : "Minus";
   //----Jet---//
   v_tightlep={l1};
-  v_tightjet=GetTightJet(v_tightlep,30,jetetacut,"tight",JETPUID,!NoJetVeto);
+  v_tightjet=GetTightJet(v_tightlep,30,jetetacut,jetidtight,JETPUID,!NoJetVeto);
+
+  if(measure_btageff_tight){
+    SetEventWeight();
+    Measure_MCbtagEff_GivenJets(v_tightjet);
+    return;
+  }
+
+  
   //vector<Jet> JHAnalyzerBase::GetTightJet(const vector<Lepton> &v_tightlep, double ptmin, double etacut, TString JetID, TString _JetPUID){
   //  vector<Jet> GetTightJet(const vector<Lepton> &TightLeptonCollection ,double ptmin, double etacut, TString JetID="tight", TString _JETPUID="");
 
