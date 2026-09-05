@@ -59,6 +59,8 @@ void JHAnalyzerBase::initializeAnalyzer(){
   measure_btageff_partonFlavour_bonly=HasFlag("measure_btageff_partonFlavour_bonly");
   measure_bchargeeff=HasFlag("measure_bchargeeff");
   measure_bchargeeff_v2=HasFlag("measure_bchargeeff_v2");
+  measure_bchargeeff_v3=HasFlag("measure_bchargeeff_v3");
+
   measure_bchargeacc=HasFlag("measure_bchargeacc");
   UsePfMET=HasFlag("pfmet");
   if(UsePfMET){
