@@ -49,6 +49,10 @@ class JHAnalyzerBase : public AnalyzerCore {
   bool measure_bchargeeff_v3=false;
   
   bool measure_bchargeacc=false;
+
+  bool jetlepveto;
+  TString jetidtight;
+  
   //--end flags
   //--flag for test
   bool muonscale00event;
