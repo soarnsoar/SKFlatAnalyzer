@@ -1090,19 +1090,28 @@ void EEMu_MuMuE_Method::FillHistElectron(TString cutname,Electron &electron){
   FillHist(cutname+"/electron_palongjet_Over_Pjet",GetP_along_Jet(electron,AllJets[jetidx_b])/AllJets[jetidx_b].P(),weight,100,0,1);
   FillHist(cutname+"/electron_dR_j",electron.DeltaR(AllJets[jetidx_b]),weight,100,0,2);
   FillHist(cutname+"/electron_reliso",electron.RelIso(),weight,100,0,20);
-  FillHist(cutname+"/electron_reliso_zoom",electron.RelIso(),weight,100,0,1);
-  FillHist(cutname+"/electron_reliso_zoom0p1",electron.RelIso(),weight,100,0,0.1);
+  FillHist(cutname+"/electron_reliso_zoom",min(electron.RelIso(),0.99),weight,100,0,1);
+  FillHist(cutname+"/electron_reliso_zoom0p1",min(electron.RelIso(),0.099),weight,100,0,0.1);
   FillHist(cutname+"/electron_logreliso",log10(electron.RelIso()),weight,100,-2,1.5);
   FillHist(cutname+"/electron_reltrkiso",electron.TrkIso()/electron.Pt(),weight,100,0,20);
-  FillHist(cutname+"/electron_reltrkiso_zoom",electron.TrkIso()/electron.Pt(),weight,100,0,1);
-  FillHist(cutname+"/electron_reltrkiso_zoom0p1",electron.TrkIso()/electron.Pt(),weight,100,0,0.1);
+  FillHist(cutname+"/electron_reltrkiso_zoom",min(electron.TrkIso()/electron.Pt(),0.99),weight,100,0,1);
+  FillHist(cutname+"/electron_reltrkiso_zoom0p1",min(electron.TrkIso()/electron.Pt(),0.099),weight,100,0,0.1);
   FillHist(cutname+"/electron_logreltrkiso",log10(electron.TrkIso()/electron.Pt()),weight,100,-2,1.5);
   FillHist(cutname+"/electron_relecalPFClusterIso",electron.ecalPFClusterIso()/electron.Pt(),weight,100,0,20);
   FillHist(cutname+"/electron_logrelecalPFClusterIso",log10(electron.ecalPFClusterIso()/electron.Pt()),weight,100,-2,1.5);
-  FillHist(cutname+"/electron_nsip3d",fabs(electron.IP3D()/electron.IP3Derr()),weight,100,0,10);
+  FillHist(cutname+"/electron_nsip3d",min(fabs(electron.IP3D()/electron.IP3Derr()),9.9),weight,100,0,10);
+  FillHist(cutname+"/electron_nsip3d_sign",electron.IP3D()/electron.IP3Derr(),weight,200,-10,10);
+  FillHist(cutname+"/electron_dXY",electron.dXY(),weight,200,-0.1,0.1);
+  FillHist(cutname+"/electron_nsdXY",electron.dXY()/electron.dXYerr(),weight,80,-4,4);
+  FillHist(cutname+"/electron_dZ",electron.dZ(),weight,200,-0.1,0.1);
+  FillHist(cutname+"/electron_nsdZ",electron.dZ()/electron.dZerr(),weight,80,-0.4,0.4);
+  FillHist(cutname+"/electron_ip3d",electron.IP3D(),weight,200,-0.1,0.1);
 
+  
   FillHist(cutname+"/electron_pt",electron.Pt(),weight,100,0,100);
   FillHist(cutname+"/electron_eta",electron.Eta(),weight,80,-4,4);
+
+  FillHist(cutname+"/electronjet_ptratio",min(electron.Pt()/AllJets[jetidx_b].Pt(),0.99),weight,100,0,1);
   //To Check ID
   FillHist(cutname+"/electron_passVetoNoIso",electron.PassID("passVetoIDnoIso"),weight,4,-2,2);
   FillHist(cutname+"/electron_passVetoID",electron.PassID("passVetoID"),weight,4,-2,2);
@@ -1137,21 +1146,36 @@ void EEMu_MuMuE_Method::FillHistMuon(TString cutname,Muon &muon){
   FillHist(cutname+"/muon_p_jetrestframe",GetP_JetRestFrame(muon,AllJets[jetidx_b]),weight,100,0,20);
   FillHist(cutname+"/muon_ptwrtjet",GetPt_wrt_Jet(muon,AllJets[jetidx_b]),weight,100,0,20);
   FillHist(cutname+"/muon_palongjet",GetP_along_Jet(muon,AllJets[jetidx_b]),weight,100,0,50);
-  FillHist(cutname+"/muon_palongjet_Over_Pjet",GetP_along_Jet(muon,AllJets[jetidx_b])/AllJets[jetidx_b].P(),weight,100,0,1);
+  FillHist(cutname+"/muon_palongjet_Over_Pjet",min(GetP_along_Jet(muon,AllJets[jetidx_b])/AllJets[jetidx_b].P(),0.99),weight,100,0,1);
   FillHist(cutname+"/muon_dR_j",muon.DeltaR(AllJets[jetidx_b]),weight,100,0,2);
   FillHist(cutname+"/muon_reliso",muon.RelIso(),weight,100,0,20);
-  FillHist(cutname+"/muon_reliso_zoom",muon.RelIso(),weight,100,0,1);
-  FillHist(cutname+"/muon_reliso_zoom0p1",muon.RelIso(),weight,100,0,0.1);
+  FillHist(cutname+"/muon_reliso_zoom",min(muon.RelIso(),0.99),weight,100,0,1.);
+  FillHist(cutname+"/muon_reliso_zoom0p1",min(muon.RelIso(),0.099),weight,100,0,0.1);
   FillHist(cutname+"/muon_logreliso",log10(muon.RelIso()),weight,100,-2,1.5);
   FillHist(cutname+"/muon_reltrkiso",muon.TrkIso()/muon.Pt(),weight,100,0,20);
-  FillHist(cutname+"/muon_reltrkiso_zoom",muon.TrkIso()/muon.Pt(),weight,100,0,1);
-  FillHist(cutname+"/muon_reltrkiso_zoom0p1",muon.TrkIso()/muon.Pt(),weight,100,0,0.1);
+  FillHist(cutname+"/muon_reltrkiso_zoom",min(muon.TrkIso()/muon.Pt(),0.99),weight,100,0,1);
+  FillHist(cutname+"/muon_reltrkiso_zoom0p1",min(muon.TrkIso()/muon.Pt(),0.099),weight,100,0,0.1);
   FillHist(cutname+"/muon_logreltrkiso",log10(muon.TrkIso()/muon.Pt()),weight,100,-2,1.5);
-  FillHist(cutname+"/muon_nsip3d",fabs(muon.IP3D()/muon.IP3Derr()),weight,100,0,10);
+  FillHist(cutname+"/muon_nsip3d",min(fabs(muon.IP3D()/muon.IP3Derr()),9.9),weight,100,0,10);
+  FillHist(cutname+"/muon_nsip3d_sign",muon.IP3D()/muon.IP3Derr(),weight,200,-10,10);
+
+
+
+  FillHist(cutname+"/muon_dXY",muon.dXY(),weight,200,-0.1,0.1);
+  FillHist(cutname+"/muon_nsdXY",muon.dXY()/muon.dXYerr(),weight,80,-4,4);
+  FillHist(cutname+"/muon_dZ",muon.dZ(),weight,200,-0.1,0.1);
+  FillHist(cutname+"/muon_nsdZ",muon.dZ()/muon.dZerr(),weight,80,-0.4,0.4);
+
+  FillHist(cutname+"/muon_ip3d",muon.IP3D(),weight,200,-0.1,0.1);
+
 
   FillHist(cutname+"/muon_pt",muon.Pt(),weight,100,0,100);
   FillHist(cutname+"/muon_eta",muon.Eta(),weight,80,-4,4);
 
+  FillHist(cutname+"/muonjet_ptratio",min(muon.Pt()/AllJets[jetidx_b].Pt(),0.99),weight,100,0,1);
+
+  
+  
   //To Check ID
   FillHist(cutname+"/muon_passLoose",muon.PassID("POGLoose"),weight,4,-2,2);
   FillHist(cutname+"/muon_passMedium",muon.PassID("POGMedium"),weight,4,-2,2);
