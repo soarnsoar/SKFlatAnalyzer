@@ -337,6 +337,10 @@ void TTsemiLepChargeScoreEfficiencyMeasurement::Run(){
     MeasureMC_bChargeIDEff_test_v2({v_tightjet[iblep],v_tightjet[ibhad]});
     return;
   }
+  if(measure_bchargeeff_v4){
+    MeasureMC_bChargeIDEff_test_v2({v_tightjet[iblep],v_tightjet[ibhad]});
+    return;
+  }
   
   RunBJet("bJetLeptonicSide",iblep,-1,Tlep_cand);
   RunBJet("bJetHadronicSide",ibhad,-1,Thad_cand);

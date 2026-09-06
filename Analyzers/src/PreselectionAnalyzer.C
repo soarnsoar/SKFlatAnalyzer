@@ -468,11 +468,41 @@ void PreselectionAnalyzer::RunBasicZregion(){
     return;
   }
 
+  if(measure_bchargeeff){
+    if(nbjet!=1) return ;
+    if(met_pt > maxMET) return;//updated 251222
+    if(z_pt<min_z_pt) return;
+    //v_bjet
+    MeasureMC_bChargeIDEff({v_bjet[0]});
+    return;
+  }
+  if(measure_bchargeeff_v2){
+    if(nbjet!=1) return ;
+    if(met_pt > maxMET) return;//updated 251222
+    if(z_pt<min_z_pt) return;
+    MeasureMC_bChargeIDEff_test_v2({v_bjet[0]});
+    return;
+  }
+
+  if(measure_bchargeeff_v3){
+    if(nbjet!=1) return ;
+    if(met_pt > maxMET) return;//updated 251222
+    if(z_pt<min_z_pt) return;
+    MeasureMC_bChargeIDEff_test_v2({v_bjet[0]});
+    return;
+  }
+  if(measure_bchargeeff_v4){
+    if(nbjet!=1) return ;
+    if(met_pt > maxMET) return;//updated 251222
+    if(z_pt<min_z_pt) return;
+    MeasureMC_bChargeIDEff_test_v2({v_bjet[0]});
+    return;
+  }
 
   //----Let's select and fillhist
   if(!runSys)FillHistAllChannel("BasicDYSelection");
   
-  if(nbjet!=1) return ;
+
   //  bool HasVetoLepton_NotTightLeps_NotWithinJets(const vector<int>& _v_tightmuonidx, const vector<int>& _v_tightelectronidx, const vector<TLorentzVector>& _v_jet);
   if(newlepveto){
     if (HasVetoLepton_NotTightLeps_NotWithinJets(v_tightmuonidx,v_tightelectronidx,&v_bjet[0])  ) return;
@@ -515,6 +545,7 @@ void PreselectionAnalyzer::RunBasicZregion(){
   
   //FillHistAllChannel("After__maxMET__min_dphizb__max_ptzb__min_z_pt");
   FillHistAllChannel("After__maxMET__max_ptzb__min_z_pt");
+
 
 
 

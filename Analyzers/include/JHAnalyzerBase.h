@@ -47,6 +47,7 @@ class JHAnalyzerBase : public AnalyzerCore {
   bool measure_bchargeeff=false;
   bool measure_bchargeeff_v2=false;
   bool measure_bchargeeff_v3=false;
+  bool measure_bchargeeff_v4=false;
   
   bool measure_bchargeacc=false;
 
@@ -835,11 +836,13 @@ class JHAnalyzerBase : public AnalyzerCore {
   void MeasureMC_bChargeIDEff(vector<Jet> vJets);
   void MeasureMC_bChargeIDEff_test_v2(vector<Jet> vJets);
   void MeasureMC_bChargeIDEff_test_v3(vector<Jet> vJets);
+  void MeasureMC_bChargeIDEff_test_v4(vector<Jet> vJets);
   void MeasureMC_bChargeAcc(vector<Jet> vJets);
   //void JHAnalyzerBase::MeasureMC_bChargeAcc(vector<Jet> vJets )
   vector<int> Count_SLT(const Jet& this_Jet);
   vector<int> Count_SLT_test_v2(const Jet& this_Jet);
   vector<int> Count_SLT_test_v3(const Jet& this_Jet);
+  vector<int> Count_SLT_test_v4(const Jet& this_Jet);
   map<TString,TH2D*> map_effhist_bchargeID_mcjet;
   map<TString,TH2D*> map_acchist_bchargeID_mcjet;
 
