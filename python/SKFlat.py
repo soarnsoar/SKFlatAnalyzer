@@ -90,7 +90,7 @@ SampleHOSTNAME = HOSTNAME
 
 ## Check joblog email
 
-SendLogToEmail=True
+SendLogToEmail=False
 if SKFlatLogEmail=='':
   SendLogToEmail=False
 SendLogToWeb = True
