@@ -3,7 +3,7 @@ import os
 from math import sqrt
 from TH2ToTH1_Converter import TH2ToTH1_Converter
 from copy import deepcopy
-
+DATA_DIR=os.getenv('DATA_DIR')
 def GetEffTH2(filepath,year,bchargeid,flav,suffix=""):
     year=str(year)
     nume_name="Jet_"+year+"_"+bchargeid+"_eff_"+flav+"_num"+suffix
@@ -83,7 +83,7 @@ def RunAllHadd(ana,year,bchargeid,procs,suffix=""):
 
     year=str(year)
 
-    fpath_default="../"+year+"/bChargeTagID/"+ana+"_HADDED.root"
+    fpath_default=DATA_DIR+"/"+year+"/bChargeTagID/"+ana+"_HADDED.root"
     
     h2_defualt_bminus=GetEffTH2(fpath_default,year,bchargeid,'bminus',suffix)
     h2_defualt_bplus=GetEffTH2(fpath_default,year,bchargeid,'bplus',suffix)
@@ -114,7 +114,7 @@ def RunAllHadd(ana,year,bchargeid,procs,suffix=""):
     dict_hy_Presel_bplus={}
     
     for proc in procs:
-        this_fpath="../"+year+"/bChargeTagID/"+ana+"_"+proc+".root"
+        this_fpath=DATA_DIR+"/"+year+"/bChargeTagID/"+ana+"_"+proc+".root"
         if not os.path.isfile(this_fpath) : continue
         dict_h2_Presel_bminus[proc]=GetEffTH2(this_fpath,year,bchargeid,'bminus',suffix)
         dict_converter_bminus[proc]=TH2ToTH1_Converter(dict_h2_Presel_bminus[proc],"|eta|","pT")
@@ -154,7 +154,7 @@ if __name__ == '__main__':
 
     analist=["TTsemiLepChargeScoreEfficiencyMeasurement"]
     list_year=["2016preVFP","2016postVFP","2017","2018"]
-    #list_year=["2016preVFP"]
+    list_year=["2016preVFP"]
     list_sltid=['Has_muH',"Has_muL","Has_eH","Has_eL"]
     procs=["TTLL_powheg","TTLJ_powheg","TTJJ_powheg","DYJetsToMuMu_MiNNLO","DYJetsToEE_MiNNLO","DYJetsToTauTau_MiNNLO","WJets_MG"]+\
         ["SingleTop_sch_Lep","SingleTop_tch_top_Incl","SingleTop_tch_antitop_Incl","SingleTop_tW_antitop_NoFullyHad","SingleTop_tW_top_NoFullyHad"]+\

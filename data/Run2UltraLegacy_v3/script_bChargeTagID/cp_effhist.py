@@ -9,7 +9,7 @@ SKFlat_WD=os.getenv("SKFlat_WD")
 
 #_SkimTree_Dilepton
 list_year=["2016preVFP", "2016postVFP", "2017", "2018"]
-#list_year=["2016preVFP"]
+list_year=["2018"]
 
 #ANANAME="TTsemiLepChargeScoreEfficiencyMeasurement_TightMatch"
 #ANANAME="TTsemiLepBtagChargeAsymEfficiencyMeasurement_BINNING"
@@ -21,7 +21,14 @@ ANANAME="TTsemiLepChargeScoreEfficiencyMeasurement"
 #suffix="use_beff_dasym__JETPUID_L__bdt2512.5__measure_bchargeeff__"
 #suffix='use_beff_dasym__JETPUID_L__noveto__newlepveto__chi2kincut__bdt2608.2__splitcharge__noetabin__measure_bchargeeff__'
 #suffix="use_beff_dasym__JETPUID_L__newlepveto__chi2kincut__bdt2608.2__splitcharge__noetabin__jetlepveto__measure_bchargeeff__"
-suffix="use_beff_dasym__JETPUID_L__chi2kincut__bdt2608.2__splitcharge__noetabin__measure_bchargeeff__"
+#suffix="use_beff_dasym__JETPUID_L__chi2kincut__bdt2608.2__splitcharge__noetabin__measure_bchargeeff__"
+#suffix="use_beff_dasym__JETPUID_L__chi2kincut__bdt2608.2__splitcharge__noetabin__jetlepveto__measure_bchargeeff__"
+suffix='use_beff_dasym__JETPUID_L__chi2kincut__bdt2608.2__splitcharge__noetabin__jetlepveto__measure_bchargeeff_pveto__'
+#use_beff_dasym__JETPUID_L__chi2kincut__bdt2608.2__splitcharge__noetabin__measure_bchargeeff_v2__/
+#use_beff_dasym__JETPUID_L__chi2kincut__bdt2608.2__splitcharge__noetabin__measure_bchargeeff_v3__/
+#use_beff_dasym__JETPUID_L__noveto__newlepveto__chi2kincut__bdt2608.2__splitcharge__noetabin__measure_bchargeeff_v2__/
+#use_beff_dasym__JETPUID_L__noveto__newlepveto__chi2kincut__bdt2608.2__splitcharge__noetabin__measure_bchargeeff_v3__/
+
 
 for YEAR in list_year:
     #from_dir="/data6/Users/jhchoi/SKFlatOutput/Run2UltraLegacy_v3/"+ANANAME+"/"+str(YEAR)+"/measure_btageff__"
