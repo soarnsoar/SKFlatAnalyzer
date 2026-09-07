@@ -1,21 +1,21 @@
-#include "PreselectionAnalyzer.h"
+#include "DY2bAnalyzer.h"
 #include <map>
-PreselectionAnalyzer::PreselectionAnalyzer(){
+DY2bAnalyzer::DY2bAnalyzer(){
   //runSys=true;
 
   //JHAnalyzerBase::SetupDiLeptonChannel();  
 }
 
-PreselectionAnalyzer::~PreselectionAnalyzer(){
+DY2bAnalyzer::~DY2bAnalyzer(){
   //==== Destructor of this Analyzer
 }
 
-void PreselectionAnalyzer::initializeAnalyzer(){
+void DY2bAnalyzer::initializeAnalyzer(){
 
   if(HasFlag("use_beff")){
     //----use this analyzer specific btag mc eff----//
     //void AnalyzerCore::SetBTagMCEff_Filename(TString _btagmceff_filename)
-    //if(!IsDATA) AnalyzerCore::SetBTagMCEff_Filename("PreselectionAnalyzer_"+MCSample+".root");// with kincut
+    //if(!IsDATA) AnalyzerCore::SetBTagMCEff_Filename("DY2bAnalyzer_"+MCSample+".root");// with kincut
     if(!IsDATA) AnalyzerCore::SetBTagMCEff_Filename("");// with kincut
   }
 
@@ -23,12 +23,12 @@ void PreselectionAnalyzer::initializeAnalyzer(){
   if(HasFlag("use_beffasym")){
     //----use this analyzer specific btag mc eff----//
     //void AnalyzerCore::SetBTagMCEff_Filename(TString _btagmceff_filename)
-    if(!IsDATA) AnalyzerCore::SetBTagMCEff_Filename("PreselectionAnalyzer_"+MCSample+".root",true,"PreselectionAnalyzer_HADDED.root");// with kincut
+    if(!IsDATA) AnalyzerCore::SetBTagMCEff_Filename("DY2bAnalyzer_"+MCSample+".root",true,"DY2bAnalyzer_HADDED.root");// with kincut
     //if(!IsDATA) AnalyzerCore::SetBTagMCEff_Filename("",true);// use TTLJ's eff. instead here. mceff is not that different between the processes.
   }
   
   
-  cout << "[PreselectionAnalyzer::initializeAnalyzer]" << endl;
+  cout << "[DY2bAnalyzer::initializeAnalyzer]" << endl;
   JHAnalyzerBase::initializeAnalyzer();
   JHAnalyzerBase::SetupDiLeptonChannel();
   IsDYSample=false;
@@ -111,21 +111,21 @@ void PreselectionAnalyzer::initializeAnalyzer(){
   
   ///----For KinCut Optimization---//
   if(!runSys && kincutopt){
-    jhchoi_newtree=new TTree("ll1b_dy1b","ll1b_dy1b");
+    jhchoi_newtree=new TTree("ll2b_dy1b","ll2b_dy1b");
     jhchoi_newtree->Branch("met",&met_pt);
     jhchoi_newtree->Branch("dphi_z_b",&dphi_z_b);
     jhchoi_newtree->Branch("ptzb",&ptzb);
     jhchoi_newtree->Branch("z_pt",&z_pt);
     jhchoi_newtree->Branch("weight",&weight);
     
-    jhchoi_newtree2=new TTree("ll1b_dy_others","ll1b_dy_others");
+    jhchoi_newtree2=new TTree("ll2b_dy_others","ll2b_dy_others");
     jhchoi_newtree2->Branch("met",&met_pt);
     jhchoi_newtree2->Branch("dphi_z_b",&dphi_z_b);
     jhchoi_newtree2->Branch("ptzb",&ptzb);
     jhchoi_newtree2->Branch("z_pt",&z_pt);
     jhchoi_newtree2->Branch("weight",&weight);
     
-    jhchoi_newtree3=new TTree("ll1b_bkg","ll1b_bkg");
+    jhchoi_newtree3=new TTree("ll2b_bkg","ll2b_bkg");
     jhchoi_newtree3->Branch("met",&met_pt);
     jhchoi_newtree3->Branch("dphi_z_b",&dphi_z_b);
     jhchoi_newtree3->Branch("ptzb",&ptzb);
@@ -133,7 +133,7 @@ void PreselectionAnalyzer::initializeAnalyzer(){
     jhchoi_newtree3->Branch("weight",&weight);
     
     
-    jhchoi_newtree4=new TTree("ll1b_data","ll1b_data");
+    jhchoi_newtree4=new TTree("ll2b_data","ll2b_data");
     jhchoi_newtree4->Branch("met",&met_pt);
     jhchoi_newtree4->Branch("dphi_z_b",&dphi_z_b);
     jhchoi_newtree4->Branch("ptzb",&ptzb);
@@ -305,13 +305,13 @@ void PreselectionAnalyzer::initializeAnalyzer(){
 }
 
 
-void PreselectionAnalyzer::SetMuon(const Muon& _l1, const Muon& _l2){
+void DY2bAnalyzer::SetMuon(const Muon& _l1, const Muon& _l2){
   mu1=_l1;
   mu2=_l2;
   
 }
 
-bool PreselectionAnalyzer::CheckIsDiMuonChannel(double min_mll,double max_mll){
+bool DY2bAnalyzer::CheckIsDiMuonChannel(double min_mll,double max_mll){
   if (!ev.PassTrigger(MuonTriggerNames)) return 0;
   //vector<int> v_muonidx=GetIdxDiMuReco(TriggerSafeCut_muon1, TriggerSafeCut_muon2);
   //vector<Muon> v_muon=lepveto ?  GetDiMuReco(TriggerSafeCut_muon1, TriggerSafeCut_muon2) :  GetDiMuRecoNoVeto(TriggerSafeCut_muon1, TriggerSafeCut_muon2);
@@ -328,14 +328,14 @@ bool PreselectionAnalyzer::CheckIsDiMuonChannel(double min_mll,double max_mll){
   return 1;
 }  
 
-void PreselectionAnalyzer::SetElectron(const Electron& _l1, const Electron& _l2){
+void DY2bAnalyzer::SetElectron(const Electron& _l1, const Electron& _l2){
   el1=_l1;
   el2=_l2;
   
 }
 
 
-bool PreselectionAnalyzer::CheckIsDiElectronChannel(double min_mll,double max_mll){
+bool DY2bAnalyzer::CheckIsDiElectronChannel(double min_mll,double max_mll){
   if (!ev.PassTrigger(ElectronTriggerNames)) return 0;
   bool isElectronData = DataStream.Contains("EG")||DataStream.Contains("Electron");
   if ( IsDATA && isElectronData && ev.PassTrigger(MuonTriggerNames)) return 0; // to avoid double count
@@ -354,13 +354,13 @@ bool PreselectionAnalyzer::CheckIsDiElectronChannel(double min_mll,double max_ml
   return 1;
 }  
 
-void PreselectionAnalyzer::SetEventNormWeight(){
+void DY2bAnalyzer::SetEventNormWeight(){
   weight=1;
   if(IsDATA) return;
   weight=MCweight()*ev.GetTriggerLumi("Full");
 }
 
-void PreselectionAnalyzer::SetEventWeight(){
+void DY2bAnalyzer::SetEventWeight(){
   weight=1;
   if(IsDATA) return;
   //----ZpT weight For DY
@@ -379,7 +379,7 @@ void PreselectionAnalyzer::SetEventWeight(){
 
 }
 
-void PreselectionAnalyzer::RunBasicZregion(){
+void DY2bAnalyzer::RunBasicZregion(){
   if(xrangetree){
     if(!IsDYbplus && !IsDYbminus){
       return;
@@ -471,7 +471,7 @@ void PreselectionAnalyzer::RunBasicZregion(){
   }
 
   if(measure_bchargeeff){
-    if(nbjet!=1) return ;
+    if(nbjet!=2) return ;
     if(met_pt > maxMET) return;//updated 251222
     if(z_pt<min_z_pt) return;
     //v_bjet
@@ -480,7 +480,7 @@ void PreselectionAnalyzer::RunBasicZregion(){
   }
   
   if(measure_bchargeeff_Eta){
-    if(nbjet!=1) return ;
+    if(nbjet!=2) return ;
     if(met_pt > maxMET) return;//updated 251222                                                                                                                                                           
     if(z_pt<min_z_pt) return;
     //v_bjet                                                                                                                                                                                              
@@ -490,7 +490,7 @@ void PreselectionAnalyzer::RunBasicZregion(){
 
 
   if(measure_bchargeeff_pveto && nokincut){
-    if(nbjet!=1) return ;
+    if(nbjet!=2) return ;
 
     GetPromptLepGenIdx();
     MeasureMC_bChargeIDEff_pveto({v_bjet[0]});
@@ -508,7 +508,7 @@ void PreselectionAnalyzer::RunBasicZregion(){
 
   
   if(measure_bchargeeff_pveto && dy1bonly){
-    if(nbjet!=1) return ;
+    if(nbjet!=2) return ;
     if(met_pt > maxMET) return;//updated 251222                                                                                                                                                           
     if(z_pt<min_z_pt) return;
     //v_bjet
@@ -520,7 +520,7 @@ void PreselectionAnalyzer::RunBasicZregion(){
     return;
   }
   if(measure_bchargeeff_pveto && nody1b){
-    if(nbjet!=1) return ;
+    if(nbjet!=2) return ;
     if(met_pt > maxMET) return;//updated 251222                                                                                                                                                           
     if(z_pt<min_z_pt) return;
     //v_bjet
@@ -533,7 +533,7 @@ void PreselectionAnalyzer::RunBasicZregion(){
   }
 
   if(measure_bchargeeff_pveto){
-    if(nbjet!=1) return ;
+    if(nbjet!=2) return ;
     if(met_pt > maxMET) return;//updated 251222                                                                                                                                                           
     if(z_pt<min_z_pt) return;
     //v_bjet
@@ -544,7 +544,7 @@ void PreselectionAnalyzer::RunBasicZregion(){
   }
 
   if(measure_bchargeeff_pveto_v2){
-    if(nbjet!=1) return ;
+    if(nbjet!=2) return ;
     if(met_pt > maxMET) return;//updated 251222                                                                                                                                                           
     if(z_pt<min_z_pt) return;
     //v_bjet
@@ -555,7 +555,7 @@ void PreselectionAnalyzer::RunBasicZregion(){
   }
 
   if(measure_bchargeeff_pveto_v3){
-    if(nbjet!=1) return ;
+    if(nbjet!=2) return ;
     if(met_pt > maxMET) return;//updated 251222                                                                                                                                                           
     if(z_pt<min_z_pt) return;
     //v_bjet
@@ -566,7 +566,7 @@ void PreselectionAnalyzer::RunBasicZregion(){
   }  
   
   if(measure_bchargeeff_pveto_v4){
-    if(nbjet!=1) return ;
+    if(nbjet!=2) return ;
     if(met_pt > maxMET) return;//updated 251222                                                                                                                                                           
     if(z_pt<min_z_pt) return;
     //v_bjet
@@ -577,7 +577,7 @@ void PreselectionAnalyzer::RunBasicZregion(){
   }
   
   if(measure_bchargeeff_v2){
-    if(nbjet!=1) return ;
+    if(nbjet!=2) return ;
     if(met_pt > maxMET) return;//updated 251222
     if(z_pt<min_z_pt) return;
     MeasureMC_bChargeIDEff_test_v2({v_bjet[0]});
@@ -585,14 +585,14 @@ void PreselectionAnalyzer::RunBasicZregion(){
   }
 
   if(measure_bchargeeff_v3){
-    if(nbjet!=1) return ;
+    if(nbjet!=2) return ;
     if(met_pt > maxMET) return;//updated 251222
     if(z_pt<min_z_pt) return;
     MeasureMC_bChargeIDEff_test_v2({v_bjet[0]});
     return;
   }
   if(measure_bchargeeff_v4){
-    if(nbjet!=1) return ;
+    if(nbjet!=2) return ;
     if(met_pt > maxMET) return;//updated 251222
     if(z_pt<min_z_pt) return;
     MeasureMC_bChargeIDEff_test_v2({v_bjet[0]});
@@ -621,7 +621,11 @@ void PreselectionAnalyzer::RunBasicZregion(){
       jhchoi_newtree4->Fill();
     }
   }
-  if(nbjet!=1) return;
+
+
+
+  if(nbjet!=2) return;
+  
   if(!runSys)FillHistAllChannel("Only1bjet");
   //if(CurrentMET.Pt() > 75.) return;
   if(met_pt > maxMET) return;//updated 251222
@@ -875,7 +879,7 @@ void PreselectionAnalyzer::RunBasicZregion(){
 }//[end]RunBasic Zregion
 
 //---Jet BDT Opt HistBase---//
-void PreselectionAnalyzer::FillBDTOptHistsJet(){
+void DY2bAnalyzer::FillBDTOptHistsJet(){
   //
   int N=201;
   TString Ndiv=TString::Itoa(N,10);
@@ -924,7 +928,7 @@ void PreselectionAnalyzer::FillBDTOptHistsJet(){
 
 
 //---Jet BDT Opt HistBase---//
-void PreselectionAnalyzer::FillBDTOptHistsJetFin(){
+void DY2bAnalyzer::FillBDTOptHistsJetFin(){
   //
   int N=201;
   TString Ndiv=TString::Itoa(N,10);
@@ -966,7 +970,7 @@ void PreselectionAnalyzer::FillBDTOptHistsJetFin(){
 
 
 //----SLT BDT Opt HistBase---//
-void PreselectionAnalyzer::FillBDTOptHistsMuE(){
+void DY2bAnalyzer::FillBDTOptHistsMuE(){
   //
   int N=41;
   TString Ndiv=TString::Itoa(N,10);
@@ -993,7 +997,7 @@ void PreselectionAnalyzer::FillBDTOptHistsMuE(){
   
   
 }
-int PreselectionAnalyzer::GetMeasuredCharge(double cut_to_muon_high,double cut_to_muon_low,double cut_to_electron_high,double cut_to_electron_low){
+int DY2bAnalyzer::GetMeasuredCharge(double cut_to_muon_high,double cut_to_muon_low,double cut_to_electron_high,double cut_to_electron_low){
   int n_muH=0;
   int n_muL=0;
   int n_eH=0;
@@ -1053,7 +1057,7 @@ int PreselectionAnalyzer::GetMeasuredCharge(double cut_to_muon_high,double cut_t
 }
 
 
-void PreselectionAnalyzer::FillBDTOptHistsGivenCut(double cut_to_muon_high,double cut_to_muon_low,double cut_to_electron_high,double cut_to_electron_low){
+void DY2bAnalyzer::FillBDTOptHistsGivenCut(double cut_to_muon_high,double cut_to_muon_low,double cut_to_electron_high,double cut_to_electron_low){
   int n_muH=0;
   int n_muL=0;
   int n_eH=0;
@@ -1117,7 +1121,7 @@ void PreselectionAnalyzer::FillBDTOptHistsGivenCut(double cut_to_muon_high,doubl
 
 
 
-void PreselectionAnalyzer::FillHistAll_bmuon(TString cutname,bmuonvar this_bmuon){
+void DY2bAnalyzer::FillHistAll_bmuon(TString cutname,bmuonvar this_bmuon){
   FillHist(cutname+"/bmuon_P_jetrest",this_bmuon.P_jetrest,weight,100,0,10);
   FillHist(cutname+"/bmuon_ptwrtjet",this_bmuon.ptwrtjet,weight,100,0,10);
   FillHist(cutname+"/bmuon_dR_l_j",this_bmuon.dR_l_j,weight,40,0,0.4);
@@ -1144,7 +1148,7 @@ void PreselectionAnalyzer::FillHistAll_bmuon(TString cutname,bmuonvar this_bmuon
   FillHist(cutname+"/bmuon_aeta",this_bmuon.aeta,weight,50,0,2.5);
 }
 
-void PreselectionAnalyzer::FillHistAll_belectron(TString cutname,belectronvar this_belectron){
+void DY2bAnalyzer::FillHistAll_belectron(TString cutname,belectronvar this_belectron){
   FillHist(cutname+"/belectron_P_jetrest",this_belectron.P_jetrest,weight,100,0,10);
   FillHist(cutname+"/belectron_ptwrtjet",this_belectron.ptwrtjet,weight,100,0,10);
   FillHist(cutname+"/belectron_dR_l_j",this_belectron.dR_l_j,weight,40,0,0.4);
@@ -1205,7 +1209,7 @@ void PreselectionAnalyzer::FillHistAll_belectron(TString cutname,belectronvar th
   
 }
 
-void PreselectionAnalyzer::FillHistAll_bjet(TString cutname,bjetvar this_bjet){
+void DY2bAnalyzer::FillHistAll_bjet(TString cutname,bjetvar this_bjet){
   //FillHist(cutname+"/bjet_pt",this_bjet.pt,weight,100,0,100);
   //FillHist(cutname+"/bjet_aeta",this_bjet.aeta,weight,60,0,3);
   FillHist(cutname+"/bjet_ChargedHadronEnergyFraction",this_bjet.ChargedHadronEnergyFraction,weight,100,0,1);
@@ -1224,24 +1228,24 @@ void PreselectionAnalyzer::FillHistAll_bjet(TString cutname,bjetvar this_bjet){
 
 }
 
-void PreselectionAnalyzer::FillHistAllChannel(TString cutname){
+void DY2bAnalyzer::FillHistAllChannel(TString cutname){
   //FillHistAllChannelWithSuffix(cutname);
   if(check_tmva_input) return;
-  PreselectionAnalyzer::FillHistAll("ll__"+cutname);
-  PreselectionAnalyzer::FillHistAll(LepCh+"__"+cutname);
+  DY2bAnalyzer::FillHistAll("ll__"+cutname);
+  DY2bAnalyzer::FillHistAll(LepCh+"__"+cutname);
 }
 /*
-void PreselectionAnalyzer::FillHistAllChannelWithSuffix(TString cutname){
+void DY2bAnalyzer::FillHistAllChannelWithSuffix(TString cutname){
   if(check_tmva_input) return;
   TString ProcessName_orig=ProcessName;
   ProcessName=ProcessName_orig+suffix_true_nb;
-  PreselectionAnalyzer::FillHistAll("ll__"+cutname);
-  PreselectionAnalyzer::FillHistAll(LepCh+"__"+cutname);
+  DY2bAnalyzer::FillHistAll("ll__"+cutname);
+  DY2bAnalyzer::FillHistAll(LepCh+"__"+cutname);
   ProcessName=ProcessName_orig;
 }
 */
 
-void PreselectionAnalyzer::FillHistAll(TString cutname){
+void DY2bAnalyzer::FillHistAll(TString cutname){
 
   FillHist(cutname+"/event",1,weight,1,0,1);
   FillHist(cutname+"/nPV",nPV,weight,100,0,100);
@@ -1317,7 +1321,7 @@ void PreselectionAnalyzer::FillHistAll(TString cutname){
 
 
 }
-void PreselectionAnalyzer::FillHist(TString histname, double value, double weight, int n_bin, double x_min, double x_max){
+void DY2bAnalyzer::FillHist(TString histname, double value, double weight, int n_bin, double x_min, double x_max){
   JHAnalyzerBase::FillHist(histname,value,weight,n_bin,x_min,x_max);
   if(check_tmva_input) return;
   if(bdtopt) return;
@@ -1349,7 +1353,7 @@ void PreselectionAnalyzer::FillHist(TString histname, double value, double weigh
   }
 
 }
-void PreselectionAnalyzer::EventLoop(){
+void DY2bAnalyzer::EventLoop(){
   //AnalyzerCore::FillHist("all/nmuons/"+ProcessName,AllMuons.size(),1,100,0.,100.);
   //AnalyzerCore::FillHist("all/nelectrons/"+ProcessName,AllElectrons.size(),1,100,0.,100.);
   RunBasicZregion();
@@ -1358,7 +1362,7 @@ void PreselectionAnalyzer::EventLoop(){
 
 
 
-void PreselectionAnalyzer::TruthLoop(){
+void DY2bAnalyzer::TruthLoop(){
   IsDYbplus=0;
   IsDYbminus=0;
   IsBKG=0;

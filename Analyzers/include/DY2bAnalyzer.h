@@ -1,9 +1,9 @@
-#ifndef PreselectionAnalyzer_h
-#define PreselectionAnalyzer_h
+#ifndef DY2bAnalyzer_h
+#define DY2bAnalyzer_h
 
 #include "JHAnalyzerBase.h"
 
-class PreselectionAnalyzer : public JHAnalyzerBase {
+class DY2bAnalyzer : public JHAnalyzerBase {
 
 public:
   //
@@ -66,8 +66,8 @@ public:
 
   TString suffix_true_nb;
   int i_proc; //1:dyb 2:dyothers 3: bkg 0 :data
-  PreselectionAnalyzer();
-  ~PreselectionAnalyzer();
+  DY2bAnalyzer();
+  ~DY2bAnalyzer();
 
   std::map<TString,double> N_1_weightmap;
   double met_pt,z_pt;

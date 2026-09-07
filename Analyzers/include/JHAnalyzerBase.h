@@ -45,6 +45,11 @@ class JHAnalyzerBase : public AnalyzerCore {
   bool measure_btageff_partonFlavour=false;
   bool measure_btageff_partonFlavour_bonly=false;
   bool measure_bchargeeff=false;
+  bool measure_bchargeeff_pveto=false;
+  bool measure_bchargeeff_pveto_v2=false;
+  bool measure_bchargeeff_pveto_v3=false;
+  bool measure_bchargeeff_pveto_v4=false;
+  bool measure_bchargeeff_Eta=false;
   bool measure_bchargeeff_v2=false;
   bool measure_bchargeeff_v3=false;
   bool measure_bchargeeff_v4=false;
@@ -834,6 +839,11 @@ class JHAnalyzerBase : public AnalyzerCore {
   bool Is_bChargeIDEffOn=false;
   bool Is_bChargeAccOn=false;
   void MeasureMC_bChargeIDEff(vector<Jet> vJets);
+  void MeasureMC_bChargeIDEff_pveto(vector<Jet> vJets);
+  void MeasureMC_bChargeIDEff_pveto_v2(vector<Jet> vJets);
+  void MeasureMC_bChargeIDEff_pveto_v3(vector<Jet> vJets);
+  void MeasureMC_bChargeIDEff_pveto_v4(vector<Jet> vJets);
+  void MeasureMC_bChargeIDEff_Eta(vector<Jet> vJets);
   void MeasureMC_bChargeIDEff_test_v2(vector<Jet> vJets);
   void MeasureMC_bChargeIDEff_test_v3(vector<Jet> vJets);
   void MeasureMC_bChargeIDEff_test_v4(vector<Jet> vJets);
@@ -905,8 +915,10 @@ class JHAnalyzerBase : public AnalyzerCore {
 
   //---new add. lepton veto
   bool HasVetoLepton_NotTightLeps_NotWithinJets(const vector<int>& _v_tightmuonidx, const vector<int>& _v_tightelectronidx,     const TLorentzVector* _jet1, const TLorentzVector* _jet2 = nullptr);
-
-
+  
+  //
+  vector<int> v_genlepidx;
+  void GetPromptLepGenIdx();
 private:
   MomentumVar _CurrentSys;
   JetTagging::Parameters jtp;

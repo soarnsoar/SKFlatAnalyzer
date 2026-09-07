@@ -318,16 +318,32 @@ void TTsemiLepChargeScoreEfficiencyMeasurement::Run(){
     
     if(HasAddLep) return;
   }
-  
+
+  //---Get PromptLep in genlevel
+  if(!IsDATA)GetPromptLepGenIdx();
+
   ////----
   if(measure_bchargeeff){
-    //SetEventWeight();
-    //vector<Jet> JHAnalyzerBase::GetBJet(const vector<Jet> &v_Tightjet){
-    //vector<Jet> v_bjet=GetBJet(v_tightjet);
-    //MeasureMC_bChargeIDEff(v_bjet);
     MeasureMC_bChargeIDEff({v_tightjet[iblep],v_tightjet[ibhad]});
     return;
   }
+  if(measure_bchargeeff_pveto){
+    MeasureMC_bChargeIDEff_pveto({v_tightjet[iblep],v_tightjet[ibhad]});
+    return;
+  }
+  if(measure_bchargeeff_pveto_v2){
+    MeasureMC_bChargeIDEff_pveto_v2({v_tightjet[iblep],v_tightjet[ibhad]});
+    return;
+  }
+  if(measure_bchargeeff_pveto_v3){
+    MeasureMC_bChargeIDEff_pveto_v3({v_tightjet[iblep],v_tightjet[ibhad]});
+    return;
+  }
+  if(measure_bchargeeff_pveto_v4){
+    MeasureMC_bChargeIDEff_pveto_v4({v_tightjet[iblep],v_tightjet[ibhad]});
+    return;
+  }  
+  
   if(measure_bchargeeff_v2){
     MeasureMC_bChargeIDEff_test_v2({v_tightjet[iblep],v_tightjet[ibhad]});
     return;
@@ -338,7 +354,7 @@ void TTsemiLepChargeScoreEfficiencyMeasurement::Run(){
     return;
   }
   if(measure_bchargeeff_v4){
-    MeasureMC_bChargeIDEff_test_v2({v_tightjet[iblep],v_tightjet[ibhad]});
+    MeasureMC_bChargeIDEff_test_v4({v_tightjet[iblep],v_tightjet[ibhad]});
     return;
   }
   
