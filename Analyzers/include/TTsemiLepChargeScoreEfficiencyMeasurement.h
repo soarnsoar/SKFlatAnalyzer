@@ -145,7 +145,7 @@ public:
 
   double jetscore,jetcharge;
 
-  
+  bool mOverPtOnly;
 
 
 

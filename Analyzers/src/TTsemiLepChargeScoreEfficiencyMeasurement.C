@@ -57,7 +57,8 @@ void TTsemiLepChargeScoreEfficiencyMeasurement::initializeAnalyzer(){
   jetlepveto=HasFlag("jetlepveto");
   jetidtight="tight";
   if(jetlepveto) jetidtight="tightLepVeto";
-  
+
+  mOverPtOnly=HasFlag("mOverPtOnly");
     
   splitcharge=HasFlag("splitcharge");
   //TopMassWindow=HasFlag("TopMassWindow");
@@ -373,7 +374,7 @@ void TTsemiLepChargeScoreEfficiencyMeasurement::RunBJet(TString bjetname, int bj
   TString prompt_suffix="";
   if(!IsDATA){
     if(HasPromptLepWithinJet(v_tightjet[bjetidx])){
-      prompt_suffix="PromptContam";
+      prompt_suffix="_PromptContam";
     }
   }
   
@@ -400,9 +401,14 @@ void TTsemiLepChargeScoreEfficiencyMeasurement::RunBJet(TString bjetname, int bj
     else{
       psuffix="FromOthers";
     }
-    ProcessName=MCSample+"_"+psuffix+hsuffix+"_"+prompt_suffix;
+    ProcessName=MCSample+"_"+psuffix+hsuffix+prompt_suffix;
   }
 
+  if(mOverPtOnly){
+    FillHist("AllSelected_bjets/bjet_mOverPt", v_tightjet[bjetidx].M()/v_tightjet[bjetidx].Pt(),weight,8,0,0.4);
+    return;
+  }
+  //FillHistBJet("AllSelected_bjets",           bjetidx,bgenidx,Tcand);
 
 
   //
@@ -410,6 +416,7 @@ void TTsemiLepChargeScoreEfficiencyMeasurement::RunBJet(TString bjetname, int bj
   TString cut_suffix_all=GetCutSuffix(v_tightjet[bjetidx].Pt(),v_tightjet[bjetidx].Eta(),false);
   //---denominator
   if(!runSys){
+    FillHistBJet("AllSelected_bjets",           bjetidx,bgenidx,Tcand);
     if(!splitcharge){
     FillHistBJet("Lepton_"+bjetname,           bjetidx,bgenidx,Tcand);
     FillHistBJet("Lepton_"+bjetname+cut_suffix,bjetidx,bgenidx,Tcand);
@@ -721,8 +728,9 @@ void TTsemiLepChargeScoreEfficiencyMeasurement::FillHistBJet(TString cutname, in
   FillHist(cutname+"/Event", 0.5,weight,1,0,1);    
   if(runSys) return;
 
-
+  FillHist(cutname+"/bjet_mOverPt", v_tightjet[bjetidx].M()/v_tightjet[bjetidx].Pt(),weight,100,0,1);
   FillHist(cutname+"/bjet_pt", v_tightjet[bjetidx].Pt(),weight,njetpog_ptbins,jetpog_ptbins);
+
   FillHist(cutname+"/bjet_eta", v_tightjet[bjetidx].Eta(),weight,njetpog_etabins,jetpog_etabins);
 
   FillHist(cutname+"/bjet_pt_fine", v_tightjet[bjetidx].Pt(),weight,200,0,200);
