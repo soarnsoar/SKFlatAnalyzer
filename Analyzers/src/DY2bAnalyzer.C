@@ -426,11 +426,7 @@ void DY2bAnalyzer::RunBasicZregion(){
   v_tightlep={l1,l2};
   v_tightjet=GetTightJet(v_tightlep,30,jetetacut,"tight",_JETPUID);
   v_bjet=GetBJet(v_tightjet);
-  //v_bjetidx=GetBJetIdx(v_tightjet);
-  //v_bjet.clear();
-  //for( const int ij : v_bjetidx){
-  //  v_bjet.push_back(v_tightjet[ij]);
-  //}
+
   njet=v_tightjet.size();
   nbjet=v_bjet.size();
   met_pt=CurrentMET.Pt();
@@ -475,7 +471,7 @@ void DY2bAnalyzer::RunBasicZregion(){
     if(met_pt > maxMET) return;//updated 251222
     if(z_pt<min_z_pt) return;
     //v_bjet
-    MeasureMC_bChargeIDEff({v_bjet[0]});
+    MeasureMC_bChargeIDEff({v_bjet[0],v_bjet[1]});
     return;
   }
   
@@ -484,7 +480,7 @@ void DY2bAnalyzer::RunBasicZregion(){
     if(met_pt > maxMET) return;//updated 251222                                                                                                                                                           
     if(z_pt<min_z_pt) return;
     //v_bjet                                                                                                                                                                                              
-    MeasureMC_bChargeIDEff_Eta({v_bjet[0]});
+    MeasureMC_bChargeIDEff_Eta({v_bjet[0],v_bjet[1]});
     return;
   }
 
@@ -493,7 +489,7 @@ void DY2bAnalyzer::RunBasicZregion(){
     if(nbjet!=2) return ;
 
     GetPromptLepGenIdx();
-    MeasureMC_bChargeIDEff_pveto({v_bjet[0]});
+    MeasureMC_bChargeIDEff_pveto({v_bjet[0],v_bjet[1]});
     return;
   }
 
@@ -516,7 +512,7 @@ void DY2bAnalyzer::RunBasicZregion(){
       if(!IsDYbplus && !IsDYbminus) return;
     }
     GetPromptLepGenIdx();                                              
-    MeasureMC_bChargeIDEff_pveto({v_bjet[0]});
+    MeasureMC_bChargeIDEff_pveto({v_bjet[0],v_bjet[1]});
     return;
   }
   if(measure_bchargeeff_pveto && nody1b){
@@ -528,7 +524,7 @@ void DY2bAnalyzer::RunBasicZregion(){
       if(IsDYbplus || IsDYbminus) return;
     }
     GetPromptLepGenIdx();                                              
-    MeasureMC_bChargeIDEff_pveto({v_bjet[0]});
+    MeasureMC_bChargeIDEff_pveto({v_bjet[0],v_bjet[1]});
     return;
   }
 
@@ -539,7 +535,7 @@ void DY2bAnalyzer::RunBasicZregion(){
     //v_bjet
   
     GetPromptLepGenIdx();                                              
-    MeasureMC_bChargeIDEff_pveto({v_bjet[0]});
+    MeasureMC_bChargeIDEff_pveto({v_bjet[0],v_bjet[1]});
     return;
   }
 
@@ -550,7 +546,7 @@ void DY2bAnalyzer::RunBasicZregion(){
     //v_bjet
   
     GetPromptLepGenIdx();                                              
-    MeasureMC_bChargeIDEff_pveto_v2({v_bjet[0]});
+    MeasureMC_bChargeIDEff_pveto_v2({v_bjet[0],v_bjet[1]});
     return;
   }
 
@@ -561,7 +557,7 @@ void DY2bAnalyzer::RunBasicZregion(){
     //v_bjet
   
     GetPromptLepGenIdx();                                              
-    MeasureMC_bChargeIDEff_pveto_v3({v_bjet[0]});
+    MeasureMC_bChargeIDEff_pveto_v3({v_bjet[0],v_bjet[1]});
     return;
   }  
   
@@ -572,7 +568,7 @@ void DY2bAnalyzer::RunBasicZregion(){
     //v_bjet
   
     GetPromptLepGenIdx();                                              
-    MeasureMC_bChargeIDEff_pveto_v4({v_bjet[0]});
+    MeasureMC_bChargeIDEff_pveto_v4({v_bjet[0],v_bjet[1]});
     return;
   }
   
@@ -580,7 +576,7 @@ void DY2bAnalyzer::RunBasicZregion(){
     if(nbjet!=2) return ;
     if(met_pt > maxMET) return;//updated 251222
     if(z_pt<min_z_pt) return;
-    MeasureMC_bChargeIDEff_test_v2({v_bjet[0]});
+    MeasureMC_bChargeIDEff_test_v2({v_bjet[0],v_bjet[1]});
     return;
   }
 
@@ -588,28 +584,30 @@ void DY2bAnalyzer::RunBasicZregion(){
     if(nbjet!=2) return ;
     if(met_pt > maxMET) return;//updated 251222
     if(z_pt<min_z_pt) return;
-    MeasureMC_bChargeIDEff_test_v2({v_bjet[0]});
+    MeasureMC_bChargeIDEff_test_v2({v_bjet[0],v_bjet[1]});
     return;
   }
   if(measure_bchargeeff_v4){
     if(nbjet!=2) return ;
     if(met_pt > maxMET) return;//updated 251222
     if(z_pt<min_z_pt) return;
-    MeasureMC_bChargeIDEff_test_v2({v_bjet[0]});
+    MeasureMC_bChargeIDEff_test_v2({v_bjet[0],v_bjet[1]});
     return;
   }
 
   //----Let's select and fillhist
   if(!runSys)FillHistAllChannel("BasicDYSelection");
   
-
+  if(nbjet!=2) return;
   //  bool HasVetoLepton_NotTightLeps_NotWithinJets(const vector<int>& _v_tightmuonidx, const vector<int>& _v_tightelectronidx, const vector<TLorentzVector>& _v_jet);
   if(newlepveto){
-    if (HasVetoLepton_NotTightLeps_NotWithinJets(v_tightmuonidx,v_tightelectronidx,&v_bjet[0])  ) return;
+    if (HasVetoLepton_NotTightLeps_NotWithinJets(v_tightmuonidx,v_tightelectronidx,&v_bjet[0],&v_bjet[1])  ) return;
   }
-  dphi_z_b= fabs(v_bjet[0].DeltaPhi(vZ));
-  ptzb=(v_bjet[0]+vZ).Pt();
+  dphi_z_b= fabs(vZ.DeltaPhi(v_bjet[0]+v_bjet[1]));
+  ptzb=(v_bjet[0]+v_bjet[1]+vZ).Pt();
 
+
+  
   if(!runSys && kincutopt){
     if(i_proc==1){
       jhchoi_newtree->Fill();
@@ -624,7 +622,7 @@ void DY2bAnalyzer::RunBasicZregion(){
 
 
 
-  if(nbjet!=2) return;
+
   
   if(!runSys)FillHistAllChannel("Only1bjet");
   //if(CurrentMET.Pt() > 75.) return;
