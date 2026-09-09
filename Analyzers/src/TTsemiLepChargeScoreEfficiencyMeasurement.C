@@ -368,6 +368,14 @@ void TTsemiLepChargeScoreEfficiencyMeasurement::Run(){
 
 
 void TTsemiLepChargeScoreEfficiencyMeasurement::RunBJet(TString bjetname, int bjetidx, int bgenidx, TLorentzVector &Tcand){
+  //---Prompt Lep in the jet
+  //---PromptSuffix
+  TString prompt_suffix="";
+  if(!IsDATA){
+    if(HasPromptLepWithinJet(v_tightjet[bjetidx])){
+      prompt_suffix="PromptContam";
+    }
+  }
   
   ///---Let's Check matching OR not (if it is TTLJ sample <=> bgenidx>-1)---//
   int this_partonFlavour=-9999;
@@ -392,10 +400,8 @@ void TTsemiLepChargeScoreEfficiencyMeasurement::RunBJet(TString bjetname, int bj
     else{
       psuffix="FromOthers";
     }
-    ProcessName=MCSample+"_"+psuffix+hsuffix;
+    ProcessName=MCSample+"_"+psuffix+hsuffix+"_"+prompt_suffix;
   }
-
-
 
 
 

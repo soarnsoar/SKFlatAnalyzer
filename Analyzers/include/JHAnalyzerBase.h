@@ -919,6 +919,8 @@ class JHAnalyzerBase : public AnalyzerCore {
   //
   vector<int> v_genlepidx;
   void GetPromptLepGenIdx();
+  bool HasPromptLepWithinJet(const Jet& thisJet);
+
 private:
   MomentumVar _CurrentSys;
   JetTagging::Parameters jtp;

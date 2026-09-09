@@ -8317,3 +8317,20 @@ void JHAnalyzerBase::GetPromptLepGenIdx(){
   }
 
 }
+
+bool JHAnalyzerBase::HasPromptLepWithinJet(const Jet& thisJet){
+  bool HasPromptLep=false;
+  for(int ig=0; ig<v_genlepidx.size();ig++){
+    int this_genidx=v_genlepidx[ig];
+    if(thisJet.DeltaR(gens[this_genidx])<0.4){
+      HasPromptLep=true;
+      break;
+    }
+  }
+  return HasPromptLep;
+
+}
+
+    
+
+  
