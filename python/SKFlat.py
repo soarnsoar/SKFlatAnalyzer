@@ -887,6 +887,7 @@ try:
 
             else:
               if IsKISTI or IsTAMSA or IsKNU:
+                time.sleep(60) ## wait 60 sec for condor
                 #while True:
                 #  nhadd=int(os.popen("pgrep -x hadd -u $USER |wc -l").read().strip())
                 #  if nhadd<4: break
@@ -927,6 +928,7 @@ try:
                 ##--[END]HADD---##
 
                 ##---HADD USING condor_submit_dag --> skip
+
                 submit_hadd="submit_hadd_condor_dag.py -n DAG_hadd_"+outputname+str(args.Era)+' -i "output/*.root"' + " -f "+FinalOutputPath+"/"+outputname+".root -s"                 
                 print submit_hadd
                 ##---[END]HADD USING condor_submit_dag
