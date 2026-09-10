@@ -38,7 +38,8 @@ public:
   void FillHistOtherObject(TString cutname);
 
   void FillHistBJet(TString cutname, int bjetidx, int bgenidx, TLorentzVector &Tcand);
-  TString GetCutSuffix(double this_bjet_pt, double this_bjet_eta,bool ignore_etabin=false);
+  TString GetCutSuffix_OLD(double this_bjet_pt, double this_bjet_eta,bool ignore_etabin=false);
+  TString GetCutSuffix(const Jet& _this_jet);
   TString cut_suffix;
 
   
