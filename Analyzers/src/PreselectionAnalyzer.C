@@ -1217,6 +1217,7 @@ void PreselectionAnalyzer::FillHistAll_belectron(TString cutname,belectronvar th
 void PreselectionAnalyzer::FillHistAll_bjet(TString cutname,bjetvar this_bjet){
   //FillHist(cutname+"/bjet_pt",this_bjet.pt,weight,100,0,100);
   //FillHist(cutname+"/bjet_aeta",this_bjet.aeta,weight,60,0,3);
+  //FillHist(cutname+"/bjet_mass",this_bjet.mass,weight,100,0,100);
   FillHist(cutname+"/bjet_ChargedHadronEnergyFraction",this_bjet.ChargedHadronEnergyFraction,weight,100,0,1);
   FillHist(cutname+"/bjet_NeutralHadronEnergyFraction",this_bjet.NeutralHadronEnergyFraction,weight,100,0,1);
   FillHist(cutname+"/log_bjet_NeutralHadronEnergyFraction",log(this_bjet.NeutralHadronEnergyFraction),weight,100,-10,0);
@@ -1297,9 +1298,11 @@ void PreselectionAnalyzer::FillHistAll(TString cutname){
 
     FillHist(cutname+"/pt_bj1",v_bjet[0].Pt(),weight,200,0,200);
     FillHist(cutname+"/eta_bj1",v_bjet[0].Eta(),weight,60,-3,3);
+    FillHist(cutname+"/mass_bj1",v_bjet[0].M(),weight,100,0,100);
     if(nbjet>1){
       FillHist(cutname+"/pt_bj2",v_bjet[1].Pt(),weight,200,0,200);
       FillHist(cutname+"/eta_bj2",v_bjet[1].Eta(),weight,60,-3,3);
+      FillHist(cutname+"/mass_bj2",v_bjet[1].M(),weight,100,0,100);
     }
   }
 
@@ -1350,6 +1353,7 @@ void PreselectionAnalyzer::FillHist(TString histname, double value, double weigh
     N_1_weightmap["jetpuidsf"]=jetpuidsf ? 1/jetpuidsf : 0;
     
     for(const auto& pair : N_1_weightmap){
+      continue;
       TString suffix="__No_"+pair.first;
       TString newhistname=histname+suffix;
       JHAnalyzerBase::FillHist("N-1__"+newhistname,value,weight*pair.second,n_bin,x_min,x_max);
