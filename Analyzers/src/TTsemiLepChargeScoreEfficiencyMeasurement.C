@@ -406,6 +406,10 @@ void TTsemiLepChargeScoreEfficiencyMeasurement::RunBJet(TString bjetname, int bj
   //---mOverPt Dist Check
   if(mOverPtOnly){
     FillHist("AllSelected_bjets/bjet_mOverPt", v_tightjet[bjetidx].M()/v_tightjet[bjetidx].Pt(),weight,8,0,0.4);
+    double m3OverPt2=pow(v_tightjet[bjetidx].M(),3)/pow(v_tightjet[bjetidx].Pt(),2);
+    if(m3OverPt2>=1) m3OverPt2=0.999999;
+    FillHist("AllSelected_bjets/bjet_m3OverPt2", m3OverPt2
+	     ,weight,10,0,1);
     return;
   }
   //FillHistBJet("AllSelected_bjets",           bjetidx,bgenidx,Tcand);
