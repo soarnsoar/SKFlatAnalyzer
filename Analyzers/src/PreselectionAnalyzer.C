@@ -451,8 +451,6 @@ void PreselectionAnalyzer::RunBasicZregion(){
     return;
   }
   
-
-
   if(measure_btageff){
     if(met_pt > maxMET) return;//updated 251222
     if(z_pt<min_z_pt) return;
@@ -469,6 +467,39 @@ void PreselectionAnalyzer::RunBasicZregion(){
     Measure_MCbtagEff_GivenJets(v_tightjet);
     return;
   }
+
+
+
+  //----Let's select and fillhist
+  if(!runSys)FillHistAllChannel("BasicDYSelection");
+  if(nbjet!=1) return;  
+
+  //  bool HasVetoLepton_NotTightLeps_NotWithinJets(const vector<int>& _v_tightmuonidx, const vector<int>& _v_tightelectronidx, const vector<TLorentzVector>& _v_jet);
+  if(newlepveto){
+    if (HasVetoLepton_NotTightLeps_NotWithinJets(v_tightmuonidx,v_tightelectronidx,&v_bjet[0])  ) return;
+  }
+
+
+
+  
+  dphi_z_b= fabs(v_bjet[0].DeltaPhi(vZ));
+  ptzb=(v_bjet[0]+vZ).Pt();
+
+  if(!runSys && kincutopt){
+    if(i_proc==1){
+      jhchoi_newtree->Fill();
+    }else if(i_proc==2){
+      jhchoi_newtree2->Fill();
+    }else if(i_proc==3){
+      jhchoi_newtree3->Fill();
+    }else{
+      jhchoi_newtree4->Fill();
+    }
+  }
+
+
+  //-----bchargetageff
+
 
   if(measure_bchargeeff){
     if(nbjet!=1) return ;
@@ -599,29 +630,7 @@ void PreselectionAnalyzer::RunBasicZregion(){
     return;
   }
 
-  //----Let's select and fillhist
-  if(!runSys)FillHistAllChannel("BasicDYSelection");
   
-
-  //  bool HasVetoLepton_NotTightLeps_NotWithinJets(const vector<int>& _v_tightmuonidx, const vector<int>& _v_tightelectronidx, const vector<TLorentzVector>& _v_jet);
-  if(newlepveto){
-    if (HasVetoLepton_NotTightLeps_NotWithinJets(v_tightmuonidx,v_tightelectronidx,&v_bjet[0])  ) return;
-  }
-  dphi_z_b= fabs(v_bjet[0].DeltaPhi(vZ));
-  ptzb=(v_bjet[0]+vZ).Pt();
-
-  if(!runSys && kincutopt){
-    if(i_proc==1){
-      jhchoi_newtree->Fill();
-    }else if(i_proc==2){
-      jhchoi_newtree2->Fill();
-    }else if(i_proc==3){
-      jhchoi_newtree3->Fill();
-    }else{
-      jhchoi_newtree4->Fill();
-    }
-  }
-  if(nbjet!=1) return;
   if(!runSys)FillHistAllChannel("Only1bjet");
   //if(CurrentMET.Pt() > 75.) return;
   if(met_pt > maxMET) return;//updated 251222
