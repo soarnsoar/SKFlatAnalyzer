@@ -521,6 +521,7 @@ class JHAnalyzerBase : public AnalyzerCore {
     float pt=0;
     float aeta=0;
     float eta=0;
+    float mass=0;
     float ChargedHadronEnergyFraction=0;
     float NeutralHadronEnergyFraction=0;
     float log_NeutralHadronEnergyFraction=-std::numeric_limits<float>::infinity();
