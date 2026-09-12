@@ -722,16 +722,38 @@ TString TTsemiLepChargeScoreEfficiencyMeasurement::GetCutSuffix(const Jet& _this
   double this_mOverPt=_this_jet.M()/_this_jet.Pt();
   //    ret="__PT140ToInf";    
 
+
+
+  double this_bjet_pt=_this_jet.Pt();
+
+  if(this_bjet_pt > 100.){
+    ret="__PT100ToInf";
+  }
+  else if(this_bjet_pt > 70.){
+    ret="__PT70To100";
+  }
+  else if(this_bjet_pt > 50.){
+    ret="__PT50To70";
+  }
+  else if(this_bjet_pt > 30.){
+    ret="__PT30To50";
+  }
+  else{
+    ret="__PT0To30";
+  }
+
+
+
   if(this_mOverPt>0.25){
-    ret="__mOverPt0p25ToInf";
+    ret+="__mOverPt0p25ToInf";
   }else if(this_mOverPt>0.2){
-    ret="__mOverPt0p2T0p25";
+    ret+="__mOverPt0p2T0p25";
   }else if(this_mOverPt>0.15){
-    ret="__mOverPt0p15T0p2";
+    ret+="__mOverPt0p15T0p2";
   }else if(this_mOverPt>0.1){
-    ret="__mOverPt0p1To0p15";
+    ret+="__mOverPt0p1To0p15";
   }else{
-    ret="__mOverPt0To0p1";
+    ret+="__mOverPt0To0p1";
   }
   
   return ret;
