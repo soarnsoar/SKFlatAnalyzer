@@ -1299,10 +1299,12 @@ void PreselectionAnalyzer::FillHistAll(TString cutname){
     FillHist(cutname+"/pt_bj1",v_bjet[0].Pt(),weight,200,0,200);
     FillHist(cutname+"/eta_bj1",v_bjet[0].Eta(),weight,60,-3,3);
     FillHist(cutname+"/mass_bj1",v_bjet[0].M(),weight,100,0,100);
+    FillHist(cutname+"/mOverPt_bj1",v_bjet[0].M()/v_bjet[0].Pt(),weight,100,0,1);
     if(nbjet>1){
       FillHist(cutname+"/pt_bj2",v_bjet[1].Pt(),weight,200,0,200);
       FillHist(cutname+"/eta_bj2",v_bjet[1].Eta(),weight,60,-3,3);
       FillHist(cutname+"/mass_bj2",v_bjet[1].M(),weight,100,0,100);
+      FillHist(cutname+"/mOverPt_bj2",v_bjet[1].M()/v_bjet[1].Pt(),weight,100,0,1);
     }
   }
 
@@ -1318,6 +1320,8 @@ void PreselectionAnalyzer::FillHistAll(TString cutname){
     }
   }
   for( const auto& bjet : v_bjet){
+    FillHist(cutname+"/mass_bj",bjet.M(),weight,100,0,100);
+    FillHist(cutname+"/mOverPt_bj",bjet.M()/bjet.Pt(),weight,100,0,1);
     FillHist(cutname+"/pt_bj",bjet.Pt(),weight,200,0,200);
     FillHist(cutname+"/eta_bj",bjet.Eta(),weight,60,-3,3);
     if(!runSys){
