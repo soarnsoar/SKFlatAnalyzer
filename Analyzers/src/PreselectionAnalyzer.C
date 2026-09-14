@@ -1300,11 +1300,13 @@ void PreselectionAnalyzer::FillHistAll(TString cutname){
     FillHist(cutname+"/eta_bj1",v_bjet[0].Eta(),weight,60,-3,3);
     FillHist(cutname+"/mass_bj1",v_bjet[0].M(),weight,100,0,100);
     FillHist(cutname+"/mOverPt_bj1",v_bjet[0].M()/v_bjet[0].Pt(),weight,100,0,1);
+    FillHist(cutname+"/mOverPt_bj1_binned",v_bjet[0].M()/v_bjet[0].Pt(),weight,8,0,0.4);
     if(nbjet>1){
       FillHist(cutname+"/pt_bj2",v_bjet[1].Pt(),weight,200,0,200);
       FillHist(cutname+"/eta_bj2",v_bjet[1].Eta(),weight,60,-3,3);
       FillHist(cutname+"/mass_bj2",v_bjet[1].M(),weight,100,0,100);
       FillHist(cutname+"/mOverPt_bj2",v_bjet[1].M()/v_bjet[1].Pt(),weight,100,0,1);
+      FillHist(cutname+"/mOverPt_bj2_binned",v_bjet[1].M()/v_bjet[1].Pt(),weight,8,0,0.4);
     }
   }
 
