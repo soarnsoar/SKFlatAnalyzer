@@ -745,15 +745,15 @@ TString TTsemiLepChargeScoreEfficiencyMeasurement::GetCutSuffix(const Jet& _this
 
 
   if(this_mOverPt>0.25){
-    ret+="__mOverPt0p25ToInf";
+    ret+="__mOverPt_0p25_Inf";
   }else if(this_mOverPt>0.2){
-    ret+="__mOverPt0p2T0p25";
+    ret+="__mOverPt_0p2_0p25";
   }else if(this_mOverPt>0.15){
-    ret+="__mOverPt0p15T0p2";
+    ret+="__mOverPt_0p15_0p2";
   }else if(this_mOverPt>0.1){
-    ret+="__mOverPt0p1To0p15";
+    ret+="__mOverPt_0p1_0p15";
   }else{
-    ret+="__mOverPt0To0p1";
+    ret+="__mOverPt_0_0p1";
   }
   
   return ret;
