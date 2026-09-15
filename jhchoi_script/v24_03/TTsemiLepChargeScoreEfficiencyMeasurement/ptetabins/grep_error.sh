@@ -9,9 +9,8 @@ logdirs=(
     #use_beff_dasym_JETPUID_L_noveto_newlepveto_chi2kincut_bdt2608.2_splitcharge_noetabin_tightLepVeto_measure_bchargeeff_logs
     #use_beff_dasym_JETPUID_L_newlepveto_chi2kincut_bdt2608.2_splitcharge_noetabin_jetlepveto_measure_bchargeeff_logs
     #use_beff_dasym_JETPUID_L_chi2kincut_bdt2608.2_splitcharge_noetabin_jetlepveto_measure_bchargeeff_logs
-    #_use_beff_dasym_JETPUID_L_noveto_newlepveto_chi2kincut_bdt2608.2_splitcharge_noetabin_syslogs
+    _use_beff_dasym_JETPUID_L_noveto_newlepveto_chi2kincut_bdt2608.2_splitcharge_noetabin_syslogs
     #_use_beff_dasym_JETPUID_L_noveto_newlepveto_chi2kincut_bdt2608.2_mOverPtOnly_syslogs
-    _use_beff_dasym_JETPUID_L_newlepveto_chi2kincut_bdt2608.2_splitcharge_syslogs
 )
 for logdir in ${logdirs[@]};do
     grep -r "rr" 201*/${logdir}/*.log|grep -v HT
