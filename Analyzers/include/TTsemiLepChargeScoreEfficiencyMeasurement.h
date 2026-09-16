@@ -39,8 +39,9 @@ public:
 
   void FillHistBJet(TString cutname, int bjetidx, int bgenidx, TLorentzVector &Tcand);
   TString GetCutSuffix_OLD(double this_bjet_pt, double this_bjet_eta,bool ignore_etabin=false);
-  TString GetCutSuffix(const Jet& _this_jet);
-  TString cut_suffix;
+  TString GetCutSuffix_Pt(const Jet& _this_jet);
+  TString GetCutSuffix_mOverPt(const Jet& _this_jet);
+  TString cut_suffix, cut_suffix_Pt, cut_suffix_mOverPt;
 
   
   void SetTopAndW();
@@ -147,7 +148,7 @@ public:
   double jetscore,jetcharge;
 
   bool mOverPtOnly;
-
+  bool mOverPtBinStudy;
 
 
   
