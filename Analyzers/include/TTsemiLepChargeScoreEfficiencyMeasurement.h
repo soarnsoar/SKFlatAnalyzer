@@ -27,10 +27,12 @@ public:
 
   void Run();
 
+  void DefineSLTBinning();
+  vector<TString> ConvertCutVectorToString(    const vector<double>& v_cut);
 
   void RunBJet(TString bjetname, int bjetidx, int bgenidx, TLorentzVector& Tcand);
   
-
+  
 
 
 
@@ -43,6 +45,27 @@ public:
   TString GetCutSuffix_mOverPt(const Jet& _this_jet);
   TString cut_suffix, cut_suffix_Pt, cut_suffix_mOverPt;
 
+  TString cut_suffix_muH,cut_suffix_muL,cut_suffix_eH,cut_suffix_eL;
+
+  vector<double> v_cut_muH_PT30To50, v_cut_muH_PT50To70,v_cut_muH_PT70To100,v_cut_muH_PT100To140,v_cut_muH_PT140ToInf;
+  vector<double> v_cut_muL_PT30To50, v_cut_muL_PT50To70,v_cut_muL_PT70To100,v_cut_muL_PT100To140,v_cut_muL_PT140ToInf;
+  vector<double> v_cut_eH_PT30To50, v_cut_eH_PT50To70,v_cut_eH_PT70To100,v_cut_eH_PT100To140,v_cut_eH_PT140ToInf;
+  vector<double> v_cut_eL_PT30To50, v_cut_eL_PT50To70,v_cut_eL_PT70To100,v_cut_eL_PT100To140,v_cut_eL_PT140ToInf;
+
+
+  vector<TString> str_v_cut_muH_PT30To50, str_v_cut_muH_PT50To70,str_v_cut_muH_PT70To100,str_v_cut_muH_PT100To140,str_v_cut_muH_PT140ToInf;
+  vector<TString> str_v_cut_muL_PT30To50, str_v_cut_muL_PT50To70,str_v_cut_muL_PT70To100,str_v_cut_muL_PT100To140,str_v_cut_muL_PT140ToInf;
+  vector<TString> str_v_cut_eH_PT30To50, str_v_cut_eH_PT50To70,str_v_cut_eH_PT70To100,str_v_cut_eH_PT100To140,str_v_cut_eH_PT140ToInf;
+  vector<TString> str_v_cut_eL_PT30To50, str_v_cut_eL_PT50To70,str_v_cut_eL_PT70To100,str_v_cut_eL_PT100To140,str_v_cut_eL_PT140ToInf;  
+
+
+  
+  TString GetCutSuffix_muH(const Jet& _this_jet);
+  TString GetCutSuffix_muL(const Jet& _this_jet);
+  TString GetCutSuffix_eH(const Jet& _this_jet);
+  TString GetCutSuffix_eL(const Jet& _this_jet);
+  
+  
   
   void SetTopAndW();
   TString LepCh, LepSign;
@@ -149,8 +172,8 @@ public:
 
   bool mOverPtOnly;
   bool mOverPtBinStudy;
-
-
+  
+  
   
 };
 

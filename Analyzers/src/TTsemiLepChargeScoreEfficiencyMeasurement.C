@@ -11,10 +11,150 @@ TTsemiLepChargeScoreEfficiencyMeasurement::~TTsemiLepChargeScoreEfficiencyMeasur
 
 }
 
+void TTsemiLepChargeScoreEfficiencyMeasurement::DefineSLTBinning(){//mOverPt bins
+  //  TString cut_suffix_muH,cut_suffix_muL,cut_suffix_eH,cut_suffix_eL;
+  if(DataEra=="2016preVFP"){
+    v_cut_eH_PT30To50={0,0.15,0.2,0.25,1};
+    v_cut_eH_PT50To70={0,0.1,0.15,0.2,1};
+    v_cut_eH_PT70To100={0,0.1,0.15,0.2,1};
+    v_cut_eH_PT100To140={0,0.1,0.15,0.2,1};
+    v_cut_eH_PT140ToInf={0,0.1,0.15,1};
+    v_cut_eL_PT30To50={0,0.15,0.2,1};
+    v_cut_eL_PT50To70={0,0.15,1};
+    v_cut_eL_PT70To100={0,0.1,0.15,1};
+    v_cut_eL_PT100To140={0,0.1,0.15,1};
+    v_cut_eL_PT140ToInf={0,0.1,1};
+    v_cut_muH_PT30To50={0,0.1,0.15,0.2,0.25,1};
+    v_cut_muH_PT50To70={0,0.1,0.15,0.2,1};
+    v_cut_muH_PT70To100={0,0.1,0.15,0.2,1};
+    v_cut_muH_PT100To140={0,0.1,0.15,0.2,1};
+    v_cut_muH_PT140ToInf={0,0.1,0.15,0.2,1};
+    v_cut_muL_PT30To50={0,0.15,0.2,1};
+    v_cut_muL_PT50To70={0,0.15,1};
+    v_cut_muL_PT70To100={0,0.1,0.15,1};
+    v_cut_muL_PT100To140={0,0.1,0.15,1};
+    v_cut_muL_PT140ToInf={0,0.1,1};
+
+  }
+
+  if(DataEra=="2016postVFP"){
+    v_cut_eH_PT30To50={0,0.15,0.2,0.25,1};
+    v_cut_eH_PT50To70={0,0.1,0.15,0.2,1};
+    v_cut_eH_PT70To100={0,0.1,0.15,0.2,1};
+    v_cut_eH_PT100To140={0,0.1,0.15,0.2,1};
+    v_cut_eH_PT140ToInf={0,0.1,0.15,1};
+    v_cut_eL_PT30To50={0,0.15,0.2,1};
+    v_cut_eL_PT50To70={0,0.15,0.2,1};
+    v_cut_eL_PT70To100={0,0.1,0.15,0.2,1};
+    v_cut_eL_PT100To140={0,0.1,0.15,1};
+    v_cut_eL_PT140ToInf={0,0.1,0.15,1};
+    v_cut_muH_PT30To50={0,0.15,0.2,0.25,1};
+    v_cut_muH_PT50To70={0,0.1,0.15,0.2,1};
+    v_cut_muH_PT70To100={0,0.1,0.15,0.2,1};
+    v_cut_muH_PT100To140={0,0.1,0.15,0.2,1};
+    v_cut_muH_PT140ToInf={0,0.1,0.15,1};
+    v_cut_muL_PT30To50={0,0.15,1};
+    v_cut_muL_PT50To70={0,0.15,1};
+    v_cut_muL_PT70To100={0,0.1,0.15,1};
+    v_cut_muL_PT100To140={0,0.1,0.15,1};
+    v_cut_muL_PT140ToInf={0,0.1,1};
+
+  }
+
+  if(DataEra=="2017"){
+    v_cut_eH_PT30To50={0,0.15,0.2,0.25,1};
+    v_cut_eH_PT50To70={0,0.1,0.15,0.2,0.25,1};
+    v_cut_eH_PT70To100={0,0.1,0.15,0.2,1};
+    v_cut_eH_PT100To140={0,0.1,0.15,0.2,1};
+    v_cut_eH_PT140ToInf={0,0.1,0.15,0.2,1};
+    v_cut_eL_PT30To50={0,0.15,0.2,1};
+    v_cut_eL_PT50To70={0,0.15,0.2,1};
+    v_cut_eL_PT70To100={0,0.1,0.15,0.2,1};
+    v_cut_eL_PT100To140={0,0.1,0.15,1};
+    v_cut_eL_PT140ToInf={0,0.1,0.15,1};
+    v_cut_muH_PT30To50={0,0.15,0.2,0.25,1};
+    v_cut_muH_PT50To70={0,0.1,0.15,0.2,0.25,1};
+    v_cut_muH_PT70To100={0,0.1,0.15,0.2,1};
+    v_cut_muH_PT100To140={0,0.1,0.15,0.2,1};
+    v_cut_muH_PT140ToInf={0,0.1,0.15,0.2,1};
+    v_cut_muL_PT30To50={0,0.15,0.2,1};
+    v_cut_muL_PT50To70={0,0.15,0.2,1};
+    v_cut_muL_PT70To100={0,0.1,0.15,0.2,1};
+    v_cut_muL_PT100To140={0,0.1,0.15,1};
+    v_cut_muL_PT140ToInf={0,0.1,0.15,1};
+    
+  }
+  
+  if(DataEra=="2018"){
+    v_cut_eH_PT30To50={0,0.1,0.15,0.2,0.25,1};
+    v_cut_eH_PT50To70={0,0.1,0.15,0.2,0.25,1};
+    v_cut_eH_PT70To100={0,0.1,0.15,0.2,0.25,1};
+    v_cut_eH_PT100To140={0,0.1,0.15,0.2,1};
+    v_cut_eH_PT140ToInf={0,0.1,0.15,0.2,1};
+    v_cut_eL_PT30To50={0,0.15,0.2,1};
+    v_cut_eL_PT50To70={0,0.1,0.15,0.2,1};
+    v_cut_eL_PT70To100={0,0.1,0.15,0.2,1};
+    v_cut_eL_PT100To140={0,0.1,0.15,0.2,1};
+    v_cut_eL_PT140ToInf={0,0.1,0.15,1};
+    v_cut_muH_PT30To50={0,0.1,0.15,0.2,0.25,1};
+    v_cut_muH_PT50To70={0,0.1,0.15,0.2,0.25,1};
+    v_cut_muH_PT70To100={0,0.1,0.15,0.2,0.25,1};
+    v_cut_muH_PT100To140={0,0.1,0.15,0.2,1};
+    v_cut_muH_PT140ToInf={0,0.1,0.15,0.2,1};
+    v_cut_muL_PT30To50={0,0.15,0.2,1};
+    v_cut_muL_PT50To70={0,0.1,0.15,0.2,1};
+    v_cut_muL_PT70To100={0,0.1,0.15,0.2,1};
+    v_cut_muL_PT100To140={0,0.1,0.15,1};
+    v_cut_muL_PT140ToInf={0,0.1,0.15,1};
+    
+  }
+
+
+  str_v_cut_muH_PT30To50   = ConvertCutVectorToString(v_cut_muH_PT30To50);
+  str_v_cut_muH_PT50To70   = ConvertCutVectorToString(v_cut_muH_PT50To70);
+  str_v_cut_muH_PT70To100  = ConvertCutVectorToString(v_cut_muH_PT70To100);
+  str_v_cut_muH_PT100To140 = ConvertCutVectorToString(v_cut_muH_PT100To140);
+  str_v_cut_muH_PT140ToInf = ConvertCutVectorToString(v_cut_muH_PT140ToInf);
+  
+  str_v_cut_muL_PT30To50   = ConvertCutVectorToString(v_cut_muL_PT30To50);
+  str_v_cut_muL_PT50To70   = ConvertCutVectorToString(v_cut_muL_PT50To70);
+  str_v_cut_muL_PT70To100  = ConvertCutVectorToString(v_cut_muL_PT70To100);
+  str_v_cut_muL_PT100To140 = ConvertCutVectorToString(v_cut_muL_PT100To140);
+  str_v_cut_muL_PT140ToInf = ConvertCutVectorToString(v_cut_muL_PT140ToInf);
+  
+  str_v_cut_eH_PT30To50    = ConvertCutVectorToString(v_cut_eH_PT30To50);
+  str_v_cut_eH_PT50To70    = ConvertCutVectorToString(v_cut_eH_PT50To70);
+  str_v_cut_eH_PT70To100   = ConvertCutVectorToString(v_cut_eH_PT70To100);
+  str_v_cut_eH_PT100To140  = ConvertCutVectorToString(v_cut_eH_PT100To140);
+  str_v_cut_eH_PT140ToInf  = ConvertCutVectorToString(v_cut_eH_PT140ToInf);
+  
+  str_v_cut_eL_PT30To50    = ConvertCutVectorToString(v_cut_eL_PT30To50);
+  str_v_cut_eL_PT50To70    = ConvertCutVectorToString(v_cut_eL_PT50To70);
+  str_v_cut_eL_PT70To100   = ConvertCutVectorToString(v_cut_eL_PT70To100);
+  str_v_cut_eL_PT100To140  = ConvertCutVectorToString(v_cut_eL_PT100To140);
+  str_v_cut_eL_PT140ToInf  = ConvertCutVectorToString(v_cut_eL_PT140ToInf);
+  
+
+}
+
+vector<TString> TTsemiLepChargeScoreEfficiencyMeasurement::ConvertCutVectorToString(    const vector<double>& v_cut){
+  vector<TString> ret;
+  ret.reserve(v_cut.size());
+  
+  for(double x : v_cut){
+    TString s = TString::Format("%g", x);
+    s.ReplaceAll(".", "p");
+    ret.push_back(s);
+  }
+
+  return ret;
+}
+
 void TTsemiLepChargeScoreEfficiencyMeasurement::initializeAnalyzer(){
   cout << "[TTsemiLepChargeScoreEfficiencyMeasurement::initializeAnalyzer]" << endl;
   //TTsemiLepChargeScoreEfficiencyMeasurement
-
+  DefineSLTBinning();
+  
   if(HasFlag("use_beff")){
     //----use this analyzer specific btag mc eff----//
     //void AnalyzerCore::SetBTagMCEff_Filename(TString _btagmceff_filename)
@@ -428,6 +568,13 @@ void TTsemiLepChargeScoreEfficiencyMeasurement::RunBJet(TString bjetname, int bj
   cut_suffix="__"+cut_suffix_mOverPt+"__"+cut_suffix_Pt;
   //  TString GetCutSuffix(const Jet& _this_jet);
 
+  //
+  cut_suffix_muH= "__"+GetCutSuffix_muH(v_tightjet[bjetidx]);
+  cut_suffix_muL= "__"+GetCutSuffix_muL(v_tightjet[bjetidx]);
+  cut_suffix_eH= "__"+GetCutSuffix_eH(v_tightjet[bjetidx]);
+  cut_suffix_eL= "__"+GetCutSuffix_eL(v_tightjet[bjetidx]);
+
+  
   //---denominator
   if(!runSys){
     FillHistBJet("AllSelected_bjets",           bjetidx,bgenidx,Tcand);
@@ -530,10 +677,12 @@ void TTsemiLepChargeScoreEfficiencyMeasurement::RunBJet(TString bjetname, int bj
     if(n_muonHigh>0){
       if(!splitcharge){
 	FillHistBJet("Lepton_"+bjetname+"_Has_muH",           bjetidx,bgenidx,Tcand);
-	FillHistBJet("Lepton_"+bjetname+"_Has_muH"+cut_suffix,bjetidx,bgenidx,Tcand);
+	//FillHistBJet("Lepton_"+bjetname+"_Has_muH"+cut_suffix,bjetidx,bgenidx,Tcand);
+	FillHistBJet("Lepton_"+bjetname+"_Has_muH"+cut_suffix_muH,bjetidx,bgenidx,Tcand);
       }else{
 	FillHistBJet("Lepton"+LepSign+"_"+bjetname+"_Has_muH",           bjetidx,bgenidx,Tcand);
-	FillHistBJet("Lepton"+LepSign+"_"+bjetname+"_Has_muH"+cut_suffix,bjetidx,bgenidx,Tcand);
+	//FillHistBJet("Lepton"+LepSign+"_"+bjetname+"_Has_muH"+cut_suffix,bjetidx,bgenidx,Tcand);
+	FillHistBJet("Lepton"+LepSign+"_"+bjetname+"_Has_muH"+cut_suffix_muH,bjetidx,bgenidx,Tcand);
 	if(mOverPtBinStudy){
 	  FillHistBJet("Lepton"+LepSign+"_"+bjetname+"_Has_muH"+cut_suffix_Pt,bjetidx,bgenidx,Tcand);
 	  FillHistBJet("Lepton"+LepSign+"_"+bjetname+"_Has_muH"+cut_suffix_mOverPt,bjetidx,bgenidx,Tcand);
@@ -543,21 +692,25 @@ void TTsemiLepChargeScoreEfficiencyMeasurement::RunBJet(TString bjetname, int bj
     else{
       if(!splitcharge){
 	FillHistBJet("Lepton_"+bjetname+"_No_muH",           bjetidx,bgenidx,Tcand);
-	FillHistBJet("Lepton_"+bjetname+"_No_muH"+cut_suffix,bjetidx,bgenidx,Tcand);
+	//FillHistBJet("Lepton_"+bjetname+"_No_muH"+cut_suffix,bjetidx,bgenidx,Tcand);
+	FillHistBJet("Lepton_"+bjetname+"_No_muH"+cut_suffix_muH,bjetidx,bgenidx,Tcand);
       }else{
 	FillHistBJet("Lepton"+LepSign+"_"+bjetname+"_No_muH",           bjetidx,bgenidx,Tcand);
-	FillHistBJet("Lepton"+LepSign+"_"+bjetname+"_No_muH"+cut_suffix,bjetidx,bgenidx,Tcand);
+	//FillHistBJet("Lepton"+LepSign+"_"+bjetname+"_No_muH"+cut_suffix,bjetidx,bgenidx,Tcand);
+	FillHistBJet("Lepton"+LepSign+"_"+bjetname+"_No_muH"+cut_suffix_muH,bjetidx,bgenidx,Tcand);
 
       }
     }
     if(n_muonLow>0){
       if(!splitcharge){
 	FillHistBJet("Lepton_"+bjetname+"_Has_muL",           bjetidx,bgenidx,Tcand);
-	FillHistBJet("Lepton_"+bjetname+"_Has_muL"+cut_suffix,bjetidx,bgenidx,Tcand);
+	//FillHistBJet("Lepton_"+bjetname+"_Has_muL"+cut_suffix,bjetidx,bgenidx,Tcand);
+	FillHistBJet("Lepton_"+bjetname+"_Has_muL"+cut_suffix_muL,bjetidx,bgenidx,Tcand);
       }else{
 	
 	FillHistBJet("Lepton"+LepSign+"_"+bjetname+"_Has_muL",           bjetidx,bgenidx,Tcand);
-	FillHistBJet("Lepton"+LepSign+"_"+bjetname+"_Has_muL"+cut_suffix,bjetidx,bgenidx,Tcand);
+	//FillHistBJet("Lepton"+LepSign+"_"+bjetname+"_Has_muL"+cut_suffix,bjetidx,bgenidx,Tcand);
+	FillHistBJet("Lepton"+LepSign+"_"+bjetname+"_Has_muL"+cut_suffix_muL,bjetidx,bgenidx,Tcand);
 
 	if(mOverPtBinStudy){
 	  FillHistBJet("Lepton"+LepSign+"_"+bjetname+"_Has_muL"+cut_suffix_Pt,bjetidx,bgenidx,Tcand);
@@ -568,19 +721,23 @@ void TTsemiLepChargeScoreEfficiencyMeasurement::RunBJet(TString bjetname, int bj
     else{
       if(!splitcharge){
 	FillHistBJet("Lepton_"+bjetname+"_No_muL",           bjetidx,bgenidx,Tcand);
-	FillHistBJet("Lepton_"+bjetname+"_No_muL"+cut_suffix,bjetidx,bgenidx,Tcand);
+	//FillHistBJet("Lepton_"+bjetname+"_No_muL"+cut_suffix,bjetidx,bgenidx,Tcand);
+	FillHistBJet("Lepton_"+bjetname+"_No_muL"+cut_suffix_muL,bjetidx,bgenidx,Tcand);
       }else{
 	FillHistBJet("Lepton"+LepSign+"_"+bjetname+"_No_muL",           bjetidx,bgenidx,Tcand);
-	FillHistBJet("Lepton"+LepSign+"_"+bjetname+"_No_muL"+cut_suffix,bjetidx,bgenidx,Tcand);    
+	//FillHistBJet("Lepton"+LepSign+"_"+bjetname+"_No_muL"+cut_suffix,bjetidx,bgenidx,Tcand);
+	FillHistBJet("Lepton"+LepSign+"_"+bjetname+"_No_muL"+cut_suffix_muL,bjetidx,bgenidx,Tcand);    
       }
     }
     if(n_electronHigh>0){
       if(!splitcharge){
 	FillHistBJet("Lepton_"+bjetname+"_Has_eH",           bjetidx,bgenidx,Tcand);
-	FillHistBJet("Lepton_"+bjetname+"_Has_eH"+cut_suffix,bjetidx,bgenidx,Tcand);
+	//FillHistBJet("Lepton_"+bjetname+"_Has_eH"+cut_suffix,bjetidx,bgenidx,Tcand);
+	FillHistBJet("Lepton_"+bjetname+"_Has_eH"+cut_suffix_eH,bjetidx,bgenidx,Tcand);
       }else{
 	FillHistBJet("Lepton"+LepSign+"_"+bjetname+"_Has_eH",           bjetidx,bgenidx,Tcand);
-	FillHistBJet("Lepton"+LepSign+"_"+bjetname+"_Has_eH"+cut_suffix,bjetidx,bgenidx,Tcand);
+	//FillHistBJet("Lepton"+LepSign+"_"+bjetname+"_Has_eH"+cut_suffix,bjetidx,bgenidx,Tcand);
+	FillHistBJet("Lepton"+LepSign+"_"+bjetname+"_Has_eH"+cut_suffix_eH,bjetidx,bgenidx,Tcand);
 	if(mOverPtBinStudy){
 	  FillHistBJet("Lepton"+LepSign+"_"+bjetname+"_Has_eH"+cut_suffix_Pt,bjetidx,bgenidx,Tcand);
 	  FillHistBJet("Lepton"+LepSign+"_"+bjetname+"_Has_eH"+cut_suffix_mOverPt,bjetidx,bgenidx,Tcand);
@@ -590,19 +747,23 @@ void TTsemiLepChargeScoreEfficiencyMeasurement::RunBJet(TString bjetname, int bj
     else{
       if(!splitcharge){
 	FillHistBJet("Lepton_"+bjetname+"_No_eH",           bjetidx,bgenidx,Tcand);
-	FillHistBJet("Lepton_"+bjetname+"_No_eH"+cut_suffix,bjetidx,bgenidx,Tcand);
+	//FillHistBJet("Lepton_"+bjetname+"_No_eH"+cut_suffix,bjetidx,bgenidx,Tcand);
+	FillHistBJet("Lepton_"+bjetname+"_No_eH"+cut_suffix_eH,bjetidx,bgenidx,Tcand);
       }else{
 	FillHistBJet("Lepton"+LepSign+"_"+bjetname+"_No_eH",           bjetidx,bgenidx,Tcand);
-	FillHistBJet("Lepton"+LepSign+"_"+bjetname+"_No_eH"+cut_suffix,bjetidx,bgenidx,Tcand);    
+	//FillHistBJet("Lepton"+LepSign+"_"+bjetname+"_No_eH"+cut_suffix,bjetidx,bgenidx,Tcand);
+	FillHistBJet("Lepton"+LepSign+"_"+bjetname+"_No_eH"+cut_suffix_eH,bjetidx,bgenidx,Tcand);    
       }
     }
     if(n_electronLow>0){
       if(!splitcharge){
 	FillHistBJet("Lepton_"+bjetname+"_Has_eL",           bjetidx,bgenidx,Tcand);
-	FillHistBJet("Lepton_"+bjetname+"_Has_eL"+cut_suffix,bjetidx,bgenidx,Tcand);
+	//FillHistBJet("Lepton_"+bjetname+"_Has_eL"+cut_suffix,bjetidx,bgenidx,Tcand);
+	FillHistBJet("Lepton_"+bjetname+"_Has_eL"+cut_suffix_eL,bjetidx,bgenidx,Tcand);
       }else{
 	FillHistBJet("Lepton"+LepSign+"_"+bjetname+"_Has_eL",           bjetidx,bgenidx,Tcand);
-	FillHistBJet("Lepton"+LepSign+"_"+bjetname+"_Has_eL"+cut_suffix,bjetidx,bgenidx,Tcand);
+	//FillHistBJet("Lepton"+LepSign+"_"+bjetname+"_Has_eL"+cut_suffix,bjetidx,bgenidx,Tcand);
+	FillHistBJet("Lepton"+LepSign+"_"+bjetname+"_Has_eL"+cut_suffix_eL,bjetidx,bgenidx,Tcand);
 	if(mOverPtBinStudy){
 	  FillHistBJet("Lepton"+LepSign+"_"+bjetname+"_Has_eL"+cut_suffix_Pt,bjetidx,bgenidx,Tcand);
 	  FillHistBJet("Lepton"+LepSign+"_"+bjetname+"_Has_eL"+cut_suffix_mOverPt,bjetidx,bgenidx,Tcand);
@@ -612,10 +773,12 @@ void TTsemiLepChargeScoreEfficiencyMeasurement::RunBJet(TString bjetname, int bj
     else{
       if(!splitcharge){
 	FillHistBJet("Lepton_"+bjetname+"_No_eL",           bjetidx,bgenidx,Tcand);
-	FillHistBJet("Lepton_"+bjetname+"_No_eL"+cut_suffix,bjetidx,bgenidx,Tcand);
+	//FillHistBJet("Lepton_"+bjetname+"_No_eL"+cut_suffix,bjetidx,bgenidx,Tcand);
+	FillHistBJet("Lepton_"+bjetname+"_No_eL"+cut_suffix_eL,bjetidx,bgenidx,Tcand);
       }else{
 	FillHistBJet("Lepton"+LepSign+"_"+bjetname+"_No_eL",           bjetidx,bgenidx,Tcand);
-	FillHistBJet("Lepton"+LepSign+"_"+bjetname+"_No_eL"+cut_suffix,bjetidx,bgenidx,Tcand);    
+	//FillHistBJet("Lepton"+LepSign+"_"+bjetname+"_No_eL"+cut_suffix,bjetidx,bgenidx,Tcand);
+	FillHistBJet("Lepton"+LepSign+"_"+bjetname+"_No_eL"+cut_suffix_eL,bjetidx,bgenidx,Tcand);    
       }
     }
   }
@@ -747,10 +910,10 @@ TString TTsemiLepChargeScoreEfficiencyMeasurement::GetCutSuffix_Pt(const Jet& _t
 
 
   double this_bjet_pt=_this_jet.Pt();
- if(this_bjet_pt > 140.){
+  if(this_bjet_pt > 140.){
     ret="PT140ToInf";
   }
-  if(this_bjet_pt > 100.){
+  else if(this_bjet_pt > 100.){
     ret="PT100To140";
   }
   else if(this_bjet_pt > 70.){
@@ -785,6 +948,296 @@ TString TTsemiLepChargeScoreEfficiencyMeasurement::GetCutSuffix_mOverPt(const Je
   return ret;
   
 }
+
+TString TTsemiLepChargeScoreEfficiencyMeasurement::GetCutSuffix_muH(const Jet& _this_jet){
+  
+  // 260910. First Binning : [0,0.1,0.15,0.2,0.25,inf(0.4)]
+  TString ret="";
+ 
+  double this_bjet_pt=_this_jet.Pt();
+  double this_mOverPt=_this_jet.M()/_this_jet.Pt();
+  if(this_bjet_pt > 140.){
+    ret="PT140ToInf";
+    for(size_t i = 0 ; i < v_cut_muH_PT140ToInf.size()-1 ; i++){
+      double this_cut=v_cut_muH_PT140ToInf[i+1];
+      if(this_mOverPt < this_cut){
+	ret+="__mOverPt_"+str_v_cut_muH_PT140ToInf[i]+"_"+str_v_cut_muH_PT140ToInf[i+1];
+	break;
+      }
+    }
+  }
+  else if(this_bjet_pt > 100.){
+    ret="PT100To140";
+
+    for(size_t i = 0 ; i < v_cut_muH_PT100To140.size()-1 ; i++){
+      double this_cut=v_cut_muH_PT100To140[i+1];
+      if(this_mOverPt < this_cut){
+        ret+="__mOverPt_"+str_v_cut_muH_PT100To140[i]+"_"+str_v_cut_muH_PT100To140[i+1];
+        break;
+      }
+    }
+
+  }
+  else if(this_bjet_pt > 70.){
+    ret="PT70To100";
+    for(size_t i = 0 ; i < v_cut_muH_PT70To100.size()-1 ; i++){
+      double this_cut=v_cut_muH_PT70To100[i+1];
+      if(this_mOverPt < this_cut){
+        ret+="__mOverPt_"+str_v_cut_muH_PT70To100[i]+"_"+str_v_cut_muH_PT70To100[i+1];
+        break;
+      }
+    }
+
+  }
+  else if(this_bjet_pt > 50.){
+    ret="PT50To70";
+    for(size_t i = 0 ; i < v_cut_muH_PT50To70.size()-1 ; i++){
+      double this_cut=v_cut_muH_PT50To70[i+1];
+      if(this_mOverPt < this_cut){
+        ret+="__mOverPt_"+str_v_cut_muH_PT50To70[i]+"_"+str_v_cut_muH_PT50To70[i+1];
+        break;
+      }
+    }
+
+  }
+  else if(this_bjet_pt > 30.){
+    ret="PT30To50";
+    for(size_t i = 0 ; i < v_cut_muH_PT30To50.size()-1 ; i++){
+      double this_cut=v_cut_muH_PT30To50[i+1];
+      if(this_mOverPt < this_cut){
+        ret+="__mOverPt_"+str_v_cut_muH_PT30To50[i]+"_"+str_v_cut_muH_PT30To50[i+1];
+        break;
+      }
+    }
+
+  }
+  else{
+    ret="PT0To30";
+  }
+
+
+
+  return ret;
+}
+
+TString TTsemiLepChargeScoreEfficiencyMeasurement::GetCutSuffix_muL(const Jet& _this_jet){
+
+  // 260910. First Binning : [0,0.1,0.15,0.2,0.25,inf(0.4)]                                                                                                                                                                                                                                                                                                        
+  TString ret="";
+
+  double this_bjet_pt=_this_jet.Pt();
+  double this_mOverPt=_this_jet.M()/_this_jet.Pt();
+  if(this_bjet_pt > 140.){
+    ret="PT140ToInf";
+    for(size_t i = 0 ; i < v_cut_muL_PT140ToInf.size()-1 ; i++){
+      double this_cut=v_cut_muL_PT140ToInf[i+1];
+      if(this_mOverPt < this_cut){
+        ret+="__mOverPt_"+str_v_cut_muL_PT140ToInf[i]+"_"+str_v_cut_muL_PT140ToInf[i+1];
+        break;
+      }
+    }
+  }
+  else if(this_bjet_pt > 100.){
+    ret="PT100To140";
+
+    for(size_t i = 0 ; i < v_cut_muL_PT100To140.size()-1 ; i++){
+      double this_cut=v_cut_muL_PT100To140[i+1];
+      if(this_mOverPt < this_cut){
+        ret+="__mOverPt_"+str_v_cut_muL_PT100To140[i]+"_"+str_v_cut_muL_PT100To140[i+1];
+        break;
+      }
+    }
+
+  }
+  else if(this_bjet_pt > 70.){
+    ret="PT70To100";
+    for(size_t i = 0 ; i < v_cut_muL_PT70To100.size()-1 ; i++){
+      double this_cut=v_cut_muL_PT70To100[i+1];
+      if(this_mOverPt < this_cut){
+        ret+="__mOverPt_"+str_v_cut_muL_PT70To100[i]+"_"+str_v_cut_muL_PT70To100[i+1];
+        break;
+      }
+    }
+
+  }
+  else if(this_bjet_pt > 50.){
+    ret="PT50To70";
+    for(size_t i = 0 ; i < v_cut_muL_PT50To70.size()-1 ; i++){
+      double this_cut=v_cut_muL_PT50To70[i+1];
+      if(this_mOverPt < this_cut){
+        ret+="__mOverPt_"+str_v_cut_muL_PT50To70[i]+"_"+str_v_cut_muL_PT50To70[i+1];
+        break;
+      }
+    }
+
+  }
+  else if(this_bjet_pt > 30.){
+    ret="PT30To50";
+    for(size_t i = 0 ; i < v_cut_muL_PT30To50.size()-1 ; i++){
+      double this_cut=v_cut_muL_PT30To50[i+1];
+      if(this_mOverPt < this_cut){
+        ret+="__mOverPt_"+str_v_cut_muL_PT30To50[i]+"_"+str_v_cut_muL_PT30To50[i+1];
+        break;
+      }
+    }
+
+  }
+  else{
+    ret="PT0To30";
+  }
+
+
+
+  return ret;
+}
+
+
+TString TTsemiLepChargeScoreEfficiencyMeasurement::GetCutSuffix_eH(const Jet& _this_jet){
+
+  // 260910. First Binning : [0,0.1,0.15,0.2,0.25,inf(0.4)]                                                                                                                                                                                                                                                                                                        
+  TString ret="";
+
+  double this_bjet_pt=_this_jet.Pt();
+  double this_mOverPt=_this_jet.M()/_this_jet.Pt();
+  if(this_bjet_pt > 140.){
+    ret="PT140ToInf";
+    for(size_t i = 0 ; i < v_cut_eH_PT140ToInf.size()-1 ; i++){
+      double this_cut=v_cut_eH_PT140ToInf[i+1];
+      if(this_mOverPt < this_cut){
+        ret+="__mOverPt_"+str_v_cut_eH_PT140ToInf[i]+"_"+str_v_cut_eH_PT140ToInf[i+1];
+        break;
+      }
+    }
+  }
+  else if(this_bjet_pt > 100.){
+    ret="PT100To140";
+
+    for(size_t i = 0 ; i < v_cut_eH_PT100To140.size()-1 ; i++){
+      double this_cut=v_cut_eH_PT100To140[i+1];
+      if(this_mOverPt < this_cut){
+        ret+="__mOverPt_"+str_v_cut_eH_PT100To140[i]+"_"+str_v_cut_eH_PT100To140[i+1];
+        break;
+      }
+    }
+
+  }
+  else if(this_bjet_pt > 70.){
+    ret="PT70To100";
+    for(size_t i = 0 ; i < v_cut_eH_PT70To100.size()-1 ; i++){
+      double this_cut=v_cut_eH_PT70To100[i+1];
+      if(this_mOverPt < this_cut){
+        ret+="__mOverPt_"+str_v_cut_eH_PT70To100[i]+"_"+str_v_cut_eH_PT70To100[i+1];
+        break;
+      }
+    }
+
+  }
+  else if(this_bjet_pt > 50.){
+    ret="PT50To70";
+    for(size_t i = 0 ; i < v_cut_eH_PT50To70.size()-1 ; i++){
+      double this_cut=v_cut_eH_PT50To70[i+1];
+      if(this_mOverPt < this_cut){
+        ret+="__mOverPt_"+str_v_cut_eH_PT50To70[i]+"_"+str_v_cut_eH_PT50To70[i+1];
+        break;
+      }
+    }
+
+  }
+  else if(this_bjet_pt > 30.){
+    ret="PT30To50";
+    for(size_t i = 0 ; i < v_cut_eH_PT30To50.size()-1 ; i++){
+      double this_cut=v_cut_eH_PT30To50[i+1];
+      if(this_mOverPt < this_cut){
+        ret+="__mOverPt_"+str_v_cut_eH_PT30To50[i]+"_"+str_v_cut_eH_PT30To50[i+1];
+        break;
+      }
+    }
+
+  }
+  else{
+    ret="PT0To30";
+  }
+
+
+
+  return ret;
+}
+
+
+
+TString TTsemiLepChargeScoreEfficiencyMeasurement::GetCutSuffix_eL(const Jet& _this_jet){
+
+  // 260910. First Binning : [0,0.1,0.15,0.2,0.25,inf(0.4)]                                                                                                                                                                                                                                                                                                        
+  TString ret="";
+
+  double this_bjet_pt=_this_jet.Pt();
+  double this_mOverPt=_this_jet.M()/_this_jet.Pt();
+  if(this_bjet_pt > 140.){
+    ret="PT140ToInf";
+    for(size_t i = 0 ; i < v_cut_eL_PT140ToInf.size()-1 ; i++){
+      double this_cut=v_cut_eL_PT140ToInf[i+1];
+      if(this_mOverPt < this_cut){
+        ret+="__mOverPt_"+str_v_cut_eL_PT140ToInf[i]+"_"+str_v_cut_eL_PT140ToInf[i+1];
+        break;
+      }
+    }
+  }
+  else if(this_bjet_pt > 100.){
+    ret="PT100To140";
+
+    for(size_t i = 0 ; i < v_cut_eL_PT100To140.size()-1 ; i++){
+      double this_cut=v_cut_eL_PT100To140[i+1];
+      if(this_mOverPt < this_cut){
+        ret+="__mOverPt_"+str_v_cut_eL_PT100To140[i]+"_"+str_v_cut_eL_PT100To140[i+1];
+        break;
+      }
+    }
+
+  }
+  else if(this_bjet_pt > 70.){
+    ret="PT70To100";
+    for(size_t i = 0 ; i < v_cut_eL_PT70To100.size()-1 ; i++){
+      double this_cut=v_cut_eL_PT70To100[i+1];
+      if(this_mOverPt < this_cut){
+        ret+="__mOverPt_"+str_v_cut_eL_PT70To100[i]+"_"+str_v_cut_eL_PT70To100[i+1];
+        break;
+      }
+    }
+
+  }
+  else if(this_bjet_pt > 50.){
+    ret="PT50To70";
+    for(size_t i = 0 ; i < v_cut_eL_PT50To70.size()-1 ; i++){
+      double this_cut=v_cut_eL_PT50To70[i+1];
+      if(this_mOverPt < this_cut){
+        ret+="__mOverPt_"+str_v_cut_eL_PT50To70[i]+"_"+str_v_cut_eL_PT50To70[i+1];
+        break;
+      }
+    }
+
+  }
+  else if(this_bjet_pt > 30.){
+    ret="PT30To50";
+    for(size_t i = 0 ; i < v_cut_eL_PT30To50.size()-1 ; i++){
+      double this_cut=v_cut_eL_PT30To50[i+1];
+      if(this_mOverPt < this_cut){
+        ret+="__mOverPt_"+str_v_cut_eL_PT30To50[i]+"_"+str_v_cut_eL_PT30To50[i+1];
+        break;
+      }
+    }
+
+  }
+  else{
+    ret="PT0To30";
+  }
+
+
+
+  return ret;
+}
+
+
+
 //---For AN Object section, add MET lep jet bjet distributions are needed.
 
 
