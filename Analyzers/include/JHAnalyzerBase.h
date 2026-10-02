@@ -840,7 +840,8 @@ class JHAnalyzerBase : public AnalyzerCore {
   bool Is_bChargeIDEffOn=false;
   bool Is_bChargeAccOn=false;
   void MeasureMC_bChargeIDEff(vector<Jet> vJets);
-  void MeasureMC_bChargeIDEff_pveto(vector<Jet> vJets);
+  void MeasureMC_bChargeIDEff_OLD(vector<Jet> vJets);
+  void MeasureMC_bChargeIDEff_pveto_test(vector<Jet> vJets);
   void MeasureMC_bChargeIDEff_pveto_v2(vector<Jet> vJets);
   void MeasureMC_bChargeIDEff_pveto_v3(vector<Jet> vJets);
   void MeasureMC_bChargeIDEff_pveto_v4(vector<Jet> vJets);
@@ -921,6 +922,23 @@ class JHAnalyzerBase : public AnalyzerCore {
   vector<int> v_genlepidx;
   void GetPromptLepGenIdx();
   bool HasPromptLepWithinJet(const Jet& thisJet);
+  //
+  vector<double> v_cut_muH_PT30To50, v_cut_muH_PT50To70,v_cut_muH_PT70To100,v_cut_muH_PT100To140,v_cut_muH_PT140ToInf;
+  vector<double> v_cut_muL_PT30To50, v_cut_muL_PT50To70,v_cut_muL_PT70To100,v_cut_muL_PT100To140,v_cut_muL_PT140ToInf;
+  vector<double> v_cut_eH_PT30To50, v_cut_eH_PT50To70,v_cut_eH_PT70To100,v_cut_eH_PT100To140,v_cut_eH_PT140ToInf;
+  vector<double> v_cut_eL_PT30To50, v_cut_eL_PT50To70,v_cut_eL_PT70To100,v_cut_eL_PT100To140,v_cut_eL_PT140ToInf;
+
+
+  vector<TString> str_v_cut_muH_PT30To50, str_v_cut_muH_PT50To70,str_v_cut_muH_PT70To100,str_v_cut_muH_PT100To140,str_v_cut_muH_PT140ToInf;
+  vector<TString> str_v_cut_muL_PT30To50, str_v_cut_muL_PT50To70,str_v_cut_muL_PT70To100,str_v_cut_muL_PT100To140,str_v_cut_muL_PT140ToInf;
+  vector<TString> str_v_cut_eH_PT30To50, str_v_cut_eH_PT50To70,str_v_cut_eH_PT70To100,str_v_cut_eH_PT100To140,str_v_cut_eH_PT140ToInf;
+  vector<TString> str_v_cut_eL_PT30To50, str_v_cut_eL_PT50To70,str_v_cut_eL_PT70To100,str_v_cut_eL_PT100To140,str_v_cut_eL_PT140ToInf;
+
+  void DefineSLTBinning();
+  vector<TString> ConvertCutVectorToString(    const vector<double>& v_cut);
+  TString GetPtBinName(double this_pt);
+  int GetBinIndex_SLTEff(int sltid, double this_Pt,double this_mOverPt);
+
 
 private:
   MomentumVar _CurrentSys;

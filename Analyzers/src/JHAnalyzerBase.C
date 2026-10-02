@@ -6697,7 +6697,7 @@ void JHAnalyzerBase::Setup_bChargeAcc(TString _bchargeacc_mc_filename){
 
 
 
-void JHAnalyzerBase::MeasureMC_bChargeIDEff(vector<Jet> vJets ){
+void JHAnalyzerBase::MeasureMC_bChargeIDEff_OLD(vector<Jet> vJets ){
   TString weight_sign_str= weight > 0 ? "_POS" : "_NEG";
 
   vector<double> vec_etabins = {0.0, 0.8, 1.6, 2., 2.5};
@@ -7105,7 +7105,227 @@ void JHAnalyzerBase::MeasureMC_bChargeIDEff_pveto_v4(vector<Jet> vJets ){
 }
 
 
-void JHAnalyzerBase::MeasureMC_bChargeIDEff_pveto(vector<Jet> vJets ){
+TString JHAnalyzerBase::GetPtBinName(double this_pt){
+  if(this_pt>140.){
+    return "PT140ToInf";
+  }else if(this_pt>100.){
+    return "PT100To140";
+  }else if(this_pt>70){
+    return "PT70To100";
+  }else if(this_pt>50){
+    return "PT50To70"; 
+  }else if(this_pt>30){
+    return "PT30To50";
+  }
+  return "";
+
+}
+
+
+int JHAnalyzerBase::GetBinIndex_SLTEff(int sltid,
+                                      double this_Pt,
+                                      double this_mOverPt)
+{
+    if (sltid < 0 || sltid >= nSLT)
+        return -1;
+
+    const std::vector<double>* cuts[5] = {nullptr};
+
+    switch (sltid) {
+
+    case k_muH:
+        cuts[0] = &v_cut_muH_PT30To50;
+        cuts[1] = &v_cut_muH_PT50To70;
+        cuts[2] = &v_cut_muH_PT70To100;
+        cuts[3] = &v_cut_muH_PT100To140;
+        cuts[4] = &v_cut_muH_PT140ToInf;
+        break;
+
+    case k_muL:
+        cuts[0] = &v_cut_muL_PT30To50;
+        cuts[1] = &v_cut_muL_PT50To70;
+        cuts[2] = &v_cut_muL_PT70To100;
+        cuts[3] = &v_cut_muL_PT100To140;
+        cuts[4] = &v_cut_muL_PT140ToInf;
+        break;
+
+    case k_eH:
+        cuts[0] = &v_cut_eH_PT30To50;
+        cuts[1] = &v_cut_eH_PT50To70;
+        cuts[2] = &v_cut_eH_PT70To100;
+        cuts[3] = &v_cut_eH_PT100To140;
+        cuts[4] = &v_cut_eH_PT140ToInf;
+        break;
+
+    case k_eL:
+        cuts[0] = &v_cut_eL_PT30To50;
+        cuts[1] = &v_cut_eL_PT50To70;
+        cuts[2] = &v_cut_eL_PT70To100;
+        cuts[3] = &v_cut_eL_PT100To140;
+        cuts[4] = &v_cut_eL_PT140ToInf;
+        break;
+
+    default:
+        return -1;
+    }
+
+
+    int ipt;
+
+    if      (this_Pt < 30)  return -1;
+    else if (this_Pt < 50)  ipt = 0;
+    else if (this_Pt < 70)  ipt = 1;
+    else if (this_Pt < 100) ipt = 2;
+    else if (this_Pt < 140) ipt = 3;
+    else                    ipt = 4;
+
+
+    const auto& edges = *cuts[ipt];
+
+    auto it = std::upper_bound( //get iterator of first one larger than given moverpt
+        edges.begin(),
+        edges.end(),
+        this_mOverPt
+    );
+
+    if (it == edges.begin() || it == edges.end())
+        return -1;
+
+    int localIdx = it - edges.begin() - 1;
+
+
+    int offset = 0;
+
+    for (int i = 0; i < ipt; ++i)
+        offset += cuts[i]->size() - 1;
+
+
+    return offset + localIdx;
+}
+
+
+void JHAnalyzerBase::MeasureMC_bChargeIDEff(vector<Jet> vJets ){
+
+  TString weight_sign_str= weight > 0 ? "_POS" : "_NEG";
+
+
+  ///----- 
+  int N_i_muH =
+    (v_cut_muH_PT30To50.size()   - 1) +
+    (v_cut_muH_PT50To70.size()   - 1) +
+    (v_cut_muH_PT70To100.size()  - 1) +
+    (v_cut_muH_PT100To140.size() - 1) +
+    (v_cut_muH_PT140ToInf.size() - 1);
+
+  int N_i_muL =
+    (v_cut_muL_PT30To50.size()   - 1) +
+    (v_cut_muL_PT50To70.size()   - 1) +
+    (v_cut_muL_PT70To100.size()  - 1) +
+    (v_cut_muL_PT100To140.size() - 1) +
+    (v_cut_muL_PT140ToInf.size() - 1);
+
+  int N_i_eH =
+    (v_cut_eH_PT30To50.size()   - 1) +
+    (v_cut_eH_PT50To70.size()   - 1) +
+    (v_cut_eH_PT70To100.size()  - 1) +
+    (v_cut_eH_PT100To140.size() - 1) +
+    (v_cut_eH_PT140ToInf.size() - 1);
+
+  int N_i_eL =
+    (v_cut_eL_PT30To50.size()   - 1) +
+    (v_cut_eL_PT50To70.size()   - 1) +
+    (v_cut_eL_PT70To100.size()  - 1) +
+    (v_cut_eL_PT100To140.size() - 1) +
+    (v_cut_eL_PT140ToInf.size() - 1);    
+
+  
+  for(auto& this_jet : vJets){
+    if(fabs(this_jet.partonFlavour())!=5) continue;
+    if(this_jet.hadronFlavour()!=5) continue;
+    //---Prompt Veto---//
+    bool HasPromptLep=false;
+    for(int ig=0; ig<v_genlepidx.size();ig++){
+
+      int this_genidx=v_genlepidx[ig];
+      if(this_jet.DeltaR(gens[this_genidx])<0.4){
+        HasPromptLep=true;
+        break;
+      }
+    }
+    if(HasPromptLep) continue;
+
+
+    TString flav= this_jet.partonFlavour() > 0 ? "bminus" : "bplus";
+    double this_Pt = this_jet.Pt()>200. ? 199. : this_jet.Pt();
+
+    double this_mOverPt=this_jet.M()/this_jet.Pt();
+    if (this_mOverPt>=0.5) this_mOverPt=0.499999;
+
+    int i_muH=GetBinIndex_SLTEff(k_muH,this_Pt,this_mOverPt);
+    int i_muL=GetBinIndex_SLTEff(k_muL,this_Pt,this_mOverPt);
+    int i_eH=GetBinIndex_SLTEff(k_eH,this_Pt,this_mOverPt);
+    int i_eL=GetBinIndex_SLTEff(k_eL,this_Pt,this_mOverPt);
+    
+    //---Use 1D Instead. Write binidx
+    AnalyzerCore::FillHist("Jet_"+DataEra+"_eff_"+flav+"_denom__muH",                 i_muH, weight,  N_i_muH, 0,N_i_muH);
+    AnalyzerCore::FillHist("Jet_"+DataEra+"_eff_"+flav+"_denom__muH"+weight_sign_str, i_muH, weight,  N_i_muH, 0,N_i_muH);
+
+    AnalyzerCore::FillHist("Jet_"+DataEra+"_eff_"+flav+"_denom__muL",                 i_muL, weight,  N_i_muL, 0,N_i_muL);
+    AnalyzerCore::FillHist("Jet_"+DataEra+"_eff_"+flav+"_denom__muL"+weight_sign_str, i_muL, weight,  N_i_muL, 0,N_i_muL);
+
+    AnalyzerCore::FillHist("Jet_"+DataEra+"_eff_"+flav+"_denom__eH",                 i_eH, weight,  N_i_eH, 0,N_i_eH);
+    AnalyzerCore::FillHist("Jet_"+DataEra+"_eff_"+flav+"_denom__eH"+weight_sign_str, i_eH, weight,  N_i_eH, 0,N_i_eH);
+    
+    AnalyzerCore::FillHist("Jet_"+DataEra+"_eff_"+flav+"_denom__eL",                 i_eL, weight,  N_i_eL, 0,N_i_eL);
+    AnalyzerCore::FillHist("Jet_"+DataEra+"_eff_"+flav+"_denom__eL"+weight_sign_str, i_eL, weight,  N_i_eL, 0,N_i_eL);
+    //-----
+    
+    std::vector<int> v_nSLT=Count_SLT(this_jet);
+    int n_muH=v_nSLT[0];
+    int n_muL=v_nSLT[1];
+    int n_eH=v_nSLT[2];
+    int n_eL=v_nSLT[3];
+
+    if(n_muH>0){
+      AnalyzerCore::FillHist("Jet_"+DataEra+"_eff_"+flav+"_num__muH",                 i_muH, weight,  N_i_muH, 0,N_i_muH);
+      AnalyzerCore::FillHist("Jet_"+DataEra+"_eff_"+flav+"_num__muH"+weight_sign_str, i_muH, weight,  N_i_muH, 0,N_i_muH);
+
+    }
+    if(n_muL>0){
+      AnalyzerCore::FillHist("Jet_"+DataEra+"_eff_"+flav+"_num__muL",                 i_muL, weight,  N_i_muL, 0,N_i_muL);
+      AnalyzerCore::FillHist("Jet_"+DataEra+"_eff_"+flav+"_num__muL"+weight_sign_str, i_muL, weight,  N_i_muL, 0,N_i_muL);
+
+    }
+    if(n_eH>0){
+      AnalyzerCore::FillHist("Jet_"+DataEra+"_eff_"+flav+"_num__eH",                 i_eH, weight,  N_i_eH, 0,N_i_eH);
+      AnalyzerCore::FillHist("Jet_"+DataEra+"_eff_"+flav+"_num__eH"+weight_sign_str, i_eH, weight,  N_i_eH, 0,N_i_eH);
+
+    }
+    if(n_eL>0){
+      AnalyzerCore::FillHist("Jet_"+DataEra+"_eff_"+flav+"_num__eL",                 i_eL, weight,  N_i_eL, 0,N_i_eL);
+      AnalyzerCore::FillHist("Jet_"+DataEra+"_eff_"+flav+"_num__eL"+weight_sign_str, i_eL, weight,  N_i_eL, 0,N_i_eL);
+
+    }
+    
+    if(n_muH==0 && n_muL==0 && n_eH==0 && n_eL==0){
+      //do not need to apply SLT tag eff corr because for given jet/pt/eta/origin, the same weight is multiplied to deno and nume both.So it is canceled out.
+      //AnalyzerCore::FillHist("Jet_"+DataEra+"_eff_"+flav+"_denom__NoSL", this_Eta, this_Pt, weight, NEtaBin, etabins, NPtBin, ptbins);
+      //AnalyzerCore::FillHist("Jet_"+DataEra+"_eff_"+flav+"_denom__NoSL"+weight_sign_str, this_Eta, this_Pt, weight, NEtaBin, etabins, NPtBin, ptbins);
+
+      SetJetChargeScore(this_jet);
+      int jetcharge_coeff=GetJetChargeScoreCoeff();
+      if(jetcharge_coeff==1){//_NoSL_jH
+	//AnalyzerCore::FillHist("Jet_"+DataEra+"_jH_eff_"+flav+"_num__NoSL", this_Eta, this_Pt, weight, NEtaBin, etabins, NPtBin, ptbins);
+        //AnalyzerCore::FillHist("Jet_"+DataEra+"_jH_eff_"+flav+"_num__NoSL"+weight_sign_str, this_Eta, this_Pt, weight, NEtaBin, etabins, NPtBin, ptbins);
+
+      }
+    }
+  }
+  
+
+}
+    
+void JHAnalyzerBase::MeasureMC_bChargeIDEff_pveto_test(vector<Jet> vJets ){
 
   //cout << "v_genlepidx.size() -> " << v_genlepidx.size() << endl;
   
@@ -8985,6 +9205,7 @@ bool JHAnalyzerBase::HasVetoLepton_NotTightLeps_NotWithinJets(const vector<int>&
 }
 
 void JHAnalyzerBase::GetPromptLepGenIdx(){
+  if(IsDATA) return;
   v_genlepidx.clear();
   unsigned int gensize=gens.size();
   for(unsigned int i = 0 ; i < gensize ; i++){
@@ -9015,6 +9236,146 @@ bool JHAnalyzerBase::HasPromptLepWithinJet(const Jet& thisJet){
 
 }
 
+
+
+void JHAnalyzerBase::DefineSLTBinning(){//mOverPt bins                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                     
+  //  TString cut_suffix_muH,cut_suffix_muL,cut_suffix_eH,cut_suffix_eL;                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                              
+  if(DataEra=="2016preVFP"){
+    v_cut_eH_PT30To50={0,0.15,0.2,0.25,1};
+    v_cut_eH_PT50To70={0,0.1,0.15,0.2,1};
+    v_cut_eH_PT70To100={0,0.1,0.15,0.2,1};
+    v_cut_eH_PT100To140={0,0.1,0.15,0.2,1};
+    v_cut_eH_PT140ToInf={0,0.1,0.15,1};
+    v_cut_eL_PT30To50={0,0.15,0.2,1};
+    v_cut_eL_PT50To70={0,0.15,1};
+    v_cut_eL_PT70To100={0,0.1,0.15,1};
+    v_cut_eL_PT100To140={0,0.1,0.15,1};
+    v_cut_eL_PT140ToInf={0,0.1,1};
+    v_cut_muH_PT30To50={0,0.1,0.15,0.2,0.25,1};
+    v_cut_muH_PT50To70={0,0.1,0.15,0.2,1};
+    v_cut_muH_PT70To100={0,0.1,0.15,0.2,1};
+    v_cut_muH_PT100To140={0,0.1,0.15,0.2,1};
+    v_cut_muH_PT140ToInf={0,0.1,0.15,0.2,1};
+    v_cut_muL_PT30To50={0,0.15,0.2,1};
+    v_cut_muL_PT50To70={0,0.15,1};
+    v_cut_muL_PT70To100={0,0.1,0.15,1};
+    v_cut_muL_PT100To140={0,0.1,0.15,1};
+    v_cut_muL_PT140ToInf={0,0.1,1};
+
+  }
+
+  if(DataEra=="2016postVFP"){
+    v_cut_eH_PT30To50={0,0.15,0.2,0.25,1};
+    v_cut_eH_PT50To70={0,0.1,0.15,0.2,1};
+    v_cut_eH_PT70To100={0,0.1,0.15,0.2,1};
+    v_cut_eH_PT100To140={0,0.1,0.15,0.2,1};
+    v_cut_eH_PT140ToInf={0,0.1,0.15,1};
+    v_cut_eL_PT30To50={0,0.15,0.2,1};
+    v_cut_eL_PT50To70={0,0.15,0.2,1};
+    v_cut_eL_PT70To100={0,0.1,0.15,0.2,1};
+    v_cut_eL_PT100To140={0,0.1,0.15,1};
+    v_cut_eL_PT140ToInf={0,0.1,0.15,1};
+    v_cut_muH_PT30To50={0,0.15,0.2,0.25,1};
+    v_cut_muH_PT50To70={0,0.1,0.15,0.2,1};
+    v_cut_muH_PT70To100={0,0.1,0.15,0.2,1};
+    v_cut_muH_PT100To140={0,0.1,0.15,0.2,1};
+    v_cut_muH_PT140ToInf={0,0.1,0.15,1};
+    v_cut_muL_PT30To50={0,0.15,1};
+    v_cut_muL_PT50To70={0,0.15,1};
+    v_cut_muL_PT70To100={0,0.1,0.15,1};
+    v_cut_muL_PT100To140={0,0.1,0.15,1};
+    v_cut_muL_PT140ToInf={0,0.1,1};
+
+  }
+
+  if(DataEra=="2017"){
+    v_cut_eH_PT30To50={0,0.15,0.2,0.25,1};
+    v_cut_eH_PT50To70={0,0.1,0.15,0.2,0.25,1};
+    v_cut_eH_PT70To100={0,0.1,0.15,0.2,1};
+    v_cut_eH_PT100To140={0,0.1,0.15,0.2,1};
+    v_cut_eH_PT140ToInf={0,0.1,0.15,0.2,1};
+    v_cut_eL_PT30To50={0,0.15,0.2,1};
+    v_cut_eL_PT50To70={0,0.15,0.2,1};
+    v_cut_eL_PT70To100={0,0.1,0.15,0.2,1};
+    v_cut_eL_PT100To140={0,0.1,0.15,1};
+    v_cut_eL_PT140ToInf={0,0.1,0.15,1};
+    v_cut_muH_PT30To50={0,0.15,0.2,0.25,1};
+    v_cut_muH_PT50To70={0,0.1,0.15,0.2,0.25,1};
+    v_cut_muH_PT70To100={0,0.1,0.15,0.2,1};
+    v_cut_muH_PT100To140={0,0.1,0.15,0.2,1};
+    v_cut_muH_PT140ToInf={0,0.1,0.15,0.2,1};
+    v_cut_muL_PT30To50={0,0.15,0.2,1};
+    v_cut_muL_PT50To70={0,0.15,0.2,1};
+    v_cut_muL_PT70To100={0,0.1,0.15,0.2,1};
+    v_cut_muL_PT100To140={0,0.1,0.15,1};
+    v_cut_muL_PT140ToInf={0,0.1,0.15,1};
+
+  }
+
+  if(DataEra=="2018"){
+    v_cut_eH_PT30To50={0,0.1,0.15,0.2,0.25,1};
+    v_cut_eH_PT50To70={0,0.1,0.15,0.2,0.25,1};
+    v_cut_eH_PT70To100={0,0.1,0.15,0.2,0.25,1};
+    v_cut_eH_PT100To140={0,0.1,0.15,0.2,1};
+    v_cut_eH_PT140ToInf={0,0.1,0.15,0.2,1};
+    v_cut_eL_PT30To50={0,0.15,0.2,1};
+    v_cut_eL_PT50To70={0,0.1,0.15,0.2,1};
+    v_cut_eL_PT70To100={0,0.1,0.15,0.2,1};
+    v_cut_eL_PT100To140={0,0.1,0.15,0.2,1};
+    v_cut_eL_PT140ToInf={0,0.1,0.15,1};
+    v_cut_muH_PT30To50={0,0.1,0.15,0.2,0.25,1};
+    v_cut_muH_PT50To70={0,0.1,0.15,0.2,0.25,1};
+    v_cut_muH_PT70To100={0,0.1,0.15,0.2,0.25,1};
+    v_cut_muH_PT100To140={0,0.1,0.15,0.2,1};
+    v_cut_muH_PT140ToInf={0,0.1,0.15,0.2,1};
+    v_cut_muL_PT30To50={0,0.15,0.2,1};
+    v_cut_muL_PT50To70={0,0.1,0.15,0.2,1};
+    v_cut_muL_PT70To100={0,0.1,0.15,0.2,1};
+    v_cut_muL_PT100To140={0,0.1,0.15,1};
+    v_cut_muL_PT140ToInf={0,0.1,0.15,1};
+
+  }
+
+
+  str_v_cut_muH_PT30To50   = ConvertCutVectorToString(v_cut_muH_PT30To50);
+  str_v_cut_muH_PT50To70   = ConvertCutVectorToString(v_cut_muH_PT50To70);
+  str_v_cut_muH_PT70To100  = ConvertCutVectorToString(v_cut_muH_PT70To100);
+  str_v_cut_muH_PT100To140 = ConvertCutVectorToString(v_cut_muH_PT100To140);
+  str_v_cut_muH_PT140ToInf = ConvertCutVectorToString(v_cut_muH_PT140ToInf);
+
+  str_v_cut_muL_PT30To50   = ConvertCutVectorToString(v_cut_muL_PT30To50);
+  str_v_cut_muL_PT50To70   = ConvertCutVectorToString(v_cut_muL_PT50To70);
+  str_v_cut_muL_PT70To100  = ConvertCutVectorToString(v_cut_muL_PT70To100);
+  str_v_cut_muL_PT100To140 = ConvertCutVectorToString(v_cut_muL_PT100To140);
+  str_v_cut_muL_PT140ToInf = ConvertCutVectorToString(v_cut_muL_PT140ToInf);
+
+  str_v_cut_eH_PT30To50    = ConvertCutVectorToString(v_cut_eH_PT30To50);
+  str_v_cut_eH_PT50To70    = ConvertCutVectorToString(v_cut_eH_PT50To70);
+  str_v_cut_eH_PT70To100   = ConvertCutVectorToString(v_cut_eH_PT70To100);
+  str_v_cut_eH_PT100To140  = ConvertCutVectorToString(v_cut_eH_PT100To140);
+  str_v_cut_eH_PT140ToInf  = ConvertCutVectorToString(v_cut_eH_PT140ToInf);
+
+  str_v_cut_eL_PT30To50    = ConvertCutVectorToString(v_cut_eL_PT30To50);
+  str_v_cut_eL_PT50To70    = ConvertCutVectorToString(v_cut_eL_PT50To70);
+  str_v_cut_eL_PT70To100   = ConvertCutVectorToString(v_cut_eL_PT70To100);
+  str_v_cut_eL_PT100To140  = ConvertCutVectorToString(v_cut_eL_PT100To140);
+  str_v_cut_eL_PT140ToInf  = ConvertCutVectorToString(v_cut_eL_PT140ToInf);
+
+
+}
+
     
+vector<TString> JHAnalyzerBase::ConvertCutVectorToString(    const vector<double>& v_cut){
+  vector<TString> ret;
+  ret.reserve(v_cut.size());
+
+  for(double x : v_cut){
+    TString s = TString::Format("%g", x);
+    s.ReplaceAll(".", "p");
+    ret.push_back(s);
+  }
+
+  return ret;
+}
 
   

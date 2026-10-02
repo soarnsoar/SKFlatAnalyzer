@@ -499,7 +499,7 @@ void PreselectionAnalyzer::RunBasicZregion(){
 
 
   //-----bchargetageff
-
+  GetPromptLepGenIdx();
 
   if(measure_bchargeeff){
     if(nbjet!=1) return ;
@@ -510,125 +510,7 @@ void PreselectionAnalyzer::RunBasicZregion(){
     return;
   }
   
-  if(measure_bchargeeff_Eta){
-    if(nbjet!=1) return ;
-    if(met_pt > maxMET) return;//updated 251222                                                                                                                                                           
-    if(z_pt<min_z_pt) return;
-    //v_bjet                                                                                                                                                                                              
-    MeasureMC_bChargeIDEff_Eta({v_bjet[0]});
-    return;
-  }
 
-
-  if(measure_bchargeeff_pveto && nokincut){
-    if(nbjet!=1) return ;
-
-    GetPromptLepGenIdx();
-    MeasureMC_bChargeIDEff_pveto({v_bjet[0]});
-    return;
-  }
-
-  if(measure_bchargeeff_pveto && allbjet){
-    if(nbjet==0) return ;
-    if(met_pt > maxMET) return;//updated 251222                                                                                                                                                           
-    if(z_pt<min_z_pt) return;
-    GetPromptLepGenIdx();
-    MeasureMC_bChargeIDEff_pveto(v_bjet);
-    return;
-  }
-
-  
-  if(measure_bchargeeff_pveto && dy1bonly){
-    if(nbjet!=1) return ;
-    if(met_pt > maxMET) return;//updated 251222                                                                                                                                                           
-    if(z_pt<min_z_pt) return;
-    //v_bjet
-    if(IsDYSample){
-      if(!IsDYbplus && !IsDYbminus) return;
-    }
-    GetPromptLepGenIdx();                                              
-    MeasureMC_bChargeIDEff_pveto({v_bjet[0]});
-    return;
-  }
-  if(measure_bchargeeff_pveto && nody1b){
-    if(nbjet!=1) return ;
-    if(met_pt > maxMET) return;//updated 251222                                                                                                                                                           
-    if(z_pt<min_z_pt) return;
-    //v_bjet
-    if(IsDYSample){
-      if(IsDYbplus || IsDYbminus) return;
-    }
-    GetPromptLepGenIdx();                                              
-    MeasureMC_bChargeIDEff_pveto({v_bjet[0]});
-    return;
-  }
-
-  if(measure_bchargeeff_pveto){
-    if(nbjet!=1) return ;
-    if(met_pt > maxMET) return;//updated 251222                                                                                                                                                           
-    if(z_pt<min_z_pt) return;
-    //v_bjet
-  
-    GetPromptLepGenIdx();                                              
-    MeasureMC_bChargeIDEff_pveto({v_bjet[0]});
-    return;
-  }
-
-  if(measure_bchargeeff_pveto_v2){
-    if(nbjet!=1) return ;
-    if(met_pt > maxMET) return;//updated 251222                                                                                                                                                           
-    if(z_pt<min_z_pt) return;
-    //v_bjet
-  
-    GetPromptLepGenIdx();                                              
-    MeasureMC_bChargeIDEff_pveto_v2({v_bjet[0]});
-    return;
-  }
-
-  if(measure_bchargeeff_pveto_v3){
-    if(nbjet!=1) return ;
-    if(met_pt > maxMET) return;//updated 251222                                                                                                                                                           
-    if(z_pt<min_z_pt) return;
-    //v_bjet
-  
-    GetPromptLepGenIdx();                                              
-    MeasureMC_bChargeIDEff_pveto_v3({v_bjet[0]});
-    return;
-  }  
-  
-  if(measure_bchargeeff_pveto_v4){
-    if(nbjet!=1) return ;
-    if(met_pt > maxMET) return;//updated 251222                                                                                                                                                           
-    if(z_pt<min_z_pt) return;
-    //v_bjet
-  
-    GetPromptLepGenIdx();                                              
-    MeasureMC_bChargeIDEff_pveto_v4({v_bjet[0]});
-    return;
-  }
-  
-  if(measure_bchargeeff_v2){
-    if(nbjet!=1) return ;
-    if(met_pt > maxMET) return;//updated 251222
-    if(z_pt<min_z_pt) return;
-    MeasureMC_bChargeIDEff_test_v2({v_bjet[0]});
-    return;
-  }
-
-  if(measure_bchargeeff_v3){
-    if(nbjet!=1) return ;
-    if(met_pt > maxMET) return;//updated 251222
-    if(z_pt<min_z_pt) return;
-    MeasureMC_bChargeIDEff_test_v2({v_bjet[0]});
-    return;
-  }
-  if(measure_bchargeeff_v4){
-    if(nbjet!=1) return ;
-    if(met_pt > maxMET) return;//updated 251222
-    if(z_pt<min_z_pt) return;
-    MeasureMC_bChargeIDEff_test_v2({v_bjet[0]});
-    return;
-  }
 
   
   if(!runSys)FillHistAllChannel("Only1bjet");
@@ -1324,6 +1206,8 @@ void PreselectionAnalyzer::FillHistAll(TString cutname){
   for( const auto& bjet : v_bjet){
     FillHist(cutname+"/mass_bj",bjet.M(),weight,100,0,100);
     FillHist(cutname+"/mOverPt_bj",bjet.M()/bjet.Pt(),weight,100,0,1);
+    FillHist(cutname+"/mOverPt_bj_binned",bjet.M()/bjet.Pt(),weight,8,0,0.4);
+
     FillHist(cutname+"/pt_bj",bjet.Pt(),weight,200,0,200);
     FillHist(cutname+"/eta_bj",bjet.Eta(),weight,60,-3,3);
     if(!runSys){
