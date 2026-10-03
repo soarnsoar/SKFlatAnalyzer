@@ -138,6 +138,7 @@ public:
   bool simplecat;
   bool ForMeasure;
   bool apply_bchargeideff;
+  bool apply_sltideff;
   bool apply_bchargeeff_TT;
   TString JETPUID="";
   //bool TurnOnFillHist;

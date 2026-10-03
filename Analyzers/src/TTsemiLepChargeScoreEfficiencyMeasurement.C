@@ -16,7 +16,7 @@ TTsemiLepChargeScoreEfficiencyMeasurement::~TTsemiLepChargeScoreEfficiencyMeasur
 void TTsemiLepChargeScoreEfficiencyMeasurement::initializeAnalyzer(){
   cout << "[TTsemiLepChargeScoreEfficiencyMeasurement::initializeAnalyzer]" << endl;
   //TTsemiLepChargeScoreEfficiencyMeasurement
-  DefineSLTBinning();
+  //DefineSLTBinning();
   
   if(HasFlag("use_beff")){
     //----use this analyzer specific btag mc eff----//
@@ -90,6 +90,12 @@ void TTsemiLepChargeScoreEfficiencyMeasurement::initializeAnalyzer(){
   if(apply_bchargeideff){
     Setup_bChargeIDEff("TTsemiLepChargeScoreEfficiencyMeasurement_"+MCSample+".root");
   }
+
+  apply_sltideff=HasFlag("apply_sltideff");
+  if(apply_sltideff){
+    Setup_bChargeIDEff("TTsemiLepChargeScoreEfficiencyMeasurement_"+MCSample+".root",true);
+  }
+  
   InitJetAssigenChi2Fitter();
 
 
@@ -619,7 +625,7 @@ void TTsemiLepChargeScoreEfficiencyMeasurement::RunBJet(TString bjetname, int bj
   if(HighJetOnly||!runSys){//HighJetOnly
     if(n_muonHigh==0 && n_muonLow==0 && n_electronHigh==0 && n_electronLow==0){
       double weight_SLT=1.;
-      if(HighJetOnly||apply_bchargeideff){
+      if(HighJetOnly||apply_bchargeideff||apply_sltideff){
 	//double JHAnalyzerBase::Get_SLTEff_Corr(vector<Jet> &_v_Jet, vector<bool> _v_Has_muH, vector<bool> _v_Has_muL, vector<bool> _v_Has_eH, vector<bool> _v_Has_eL){
 	weight_SLT=Get_SLTEff_Corr({v_tightjet[bjetidx]},{0},{0},{0},{0});
 	weight=weight*weight_SLT;

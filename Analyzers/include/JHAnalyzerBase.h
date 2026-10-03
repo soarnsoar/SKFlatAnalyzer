@@ -824,7 +824,13 @@ class JHAnalyzerBase : public AnalyzerCore {
   double SF_bChargeAcc_Jet[nJetOrigin][2][nPtBin][nEtaBin][nSYSDIR];
 
   
+  void Read_bChargeID_SF_OLD(bool readsltonly=false);
   void Read_bChargeID_SF(bool readsltonly=false);
+  //SLT SF Hist
+  vector<vector <vector <TH1D*> > > v_h_SLT_EffSF; // borigin,iSLT,direction
+  double Get_SF_bChargeTagID_SLT(int ib, int islt, int ibin, int idir);
+
+  
   void Read_bChargeAcc_SF();
   int getB(const std::string& s);
   int getLep(const std::string& s);
@@ -858,34 +864,37 @@ class JHAnalyzerBase : public AnalyzerCore {
   map<TString,TH2D*> map_effhist_bchargeID_mcjet;
   map<TString,TH2D*> map_acchist_bchargeID_mcjet;
 
-  vector<double> Get_bChargeTagID_MCEffs_SLT( int partonFlavour, double JetPt);
-  double Get_SLTEff_Corr_givenJet(const Jet& thisJet, const bool Has_muH, const bool Has_muL, const bool Has_eH, const bool Has_eL,
-				  JHAnalyzerBase::SYSDIR SystDir=k_central, JHAnalyzerBase::PtBin SystPtBin=nPtBin, JHAnalyzerBase::SLT SystID=nSLT);
-  
+  vector<double> Get_bChargeTagID_MCEffs_SLT( int partonFlavour, vector<int> v_binidx);
+  //double Get_SLTEff_Corr_givenJet(const Jet& thisJet, const bool Has_muH, const bool Has_muL, const bool Has_eH, const bool Has_eL,
+  //				  JHAnalyzerBase::SYSDIR SystDir=k_central, JHAnalyzerBase::PtBin SystPtBin=nPtBin, JHAnalyzerBase::SLT SystID=nSLT);
+  double Get_SLTEff_Corr_givenJet(int this_partonFlavour, int ibin_muH, int ibin_muL, int ibin_eH, int ibin_eL,
+						  const bool Has_muH, const bool Has_muL, const bool Has_eH, const bool Has_eL,
+						  JHAnalyzerBase::SYSDIR SystDir=k_central, int SystBin=-1, int iSystSLT=-1);
+
   double Get_bChargeTagID_MCEffs_jH(int partonFlavour, double JetPt, double JetEta);
   double Get_HighScoreChargeTagID_Eff_Corr_givenJet(const Jet& thisJet, const bool pass_jH,
 						    JHAnalyzerBase::SYSDIR SystDir=k_central, JHAnalyzerBase::PtBin SystPtBin=nPtBin, JHAnalyzerBase::EtaBin SystEtaBin=nEtaBin);
   double Get_bChargeAcc_MC(int partonFlavour, int thisChargeID,double JetPt, double JetEta);
   ////-----bchargetagid----////
   //---Corrleated Component---//
-  double arr_r_bChargeID_SLT_CorrUp[nSLT][nPtBin];
-  double arr_r_bChargeID_SLT_CorrDown[nSLT][nPtBin];
+  vector <vector <double>> r_bChargeID_SLT_CorrUp; // id //bin
+  vector <vector <double>> r_bChargeID_SLT_CorrDown;
   //---Uncorr. Component
-  double arr_r_bChargeID_SLT_UnCorr_bPlusUp[nSLT][nPtBin];
-  double arr_r_bChargeID_SLT_UnCorr_bPlusDown[nSLT][nPtBin];
+  vector <vector <double>> r_bChargeID_SLT_UnCorr_bPlusUp;
+  vector <vector <double>> r_bChargeID_SLT_UnCorr_bPlusDown;
 
-  double arr_r_bChargeID_SLT_UnCorr_bMinusUp[nSLT][nPtBin];
-  double arr_r_bChargeID_SLT_UnCorr_bMinusDown[nSLT][nPtBin];
+  vector <vector <double>> r_bChargeID_SLT_UnCorr_bMinusUp;
+  vector <vector <double>> r_bChargeID_SLT_UnCorr_bMinusDown;
 
   //---Corrleated Component--//
-  double arr_r_bChargeID_Jet_CorrUp[nPtBin][nEtaBin];
-  double arr_r_bChargeID_Jet_CorrDown[nPtBin][nEtaBin];
+  vector <vector <double>> r_bChargeID_Jet_CorrUp;
+  vector <vector <double>> r_bChargeID_Jet_CorrDown;
   //---Uncorr. Component
-  double arr_r_bChargeID_Jet_UnCorr_bPlusUp[nPtBin][nEtaBin];
-  double arr_r_bChargeID_Jet_UnCorr_bPlusDown[nPtBin][nEtaBin];
+  vector <vector <double>> r_bChargeID_Jet_UnCorr_bPlusUp;
+  vector <vector <double>> r_bChargeID_Jet_UnCorr_bPlusDown;
 
-  double arr_r_bChargeID_Jet_UnCorr_bMinusUp[nPtBin][nEtaBin];
-  double arr_r_bChargeID_Jet_UnCorr_bMinusDown[nPtBin][nEtaBin];
+  vector <vector <double>> r_bChargeID_Jet_UnCorr_bMinusUp;
+  vector <vector <double>> r_bChargeID_Jet_UnCorr_bMinusDown;
 
 
   ////-----bchargeacc----////
@@ -911,7 +920,7 @@ class JHAnalyzerBase : public AnalyzerCore {
 
 
   double Get_HighScoreChargeTagID_Eff_Corr(const vector<Jet> &_v_Jet, const vector<bool> _v_pass_jH);
-  double Get_SLTEff_Corr(const vector<Jet> &_v_Jet, const vector<bool> _v_Has_muH, const vector<bool> _v_Has_muL, const vector<bool> _v_Has_eH, const vector<bool> _v_Has_eL);
+  double Get_SLTEff_Corr(const vector<Jet> &_v_Jet, const vector<bool> &_v_Has_muH, const vector<bool> &_v_Has_muL, const vector<bool> &_v_Has_eH, const vector<bool> &_v_Has_eL);
   pair<int,int> GetMeasuredChargeAndID(const Jet& thisJet, bool ApplyAccCorr=true);
   double GetChargeAccCorr(const Jet& thisJet, int thisChargeID,int measured_charge);  
 
@@ -938,8 +947,9 @@ class JHAnalyzerBase : public AnalyzerCore {
   vector<TString> ConvertCutVectorToString(    const vector<double>& v_cut);
   TString GetPtBinName(double this_pt);
   int GetBinIndex_SLTEff(int sltid, double this_Pt,double this_mOverPt);
-
-
+  int CountNBins_bChargeID(int sltid);
+  int nbin_muH,nbin_muL,nbin_eH,nbin_eL;
+  vector<int> v_nbin_SLT;
 private:
   MomentumVar _CurrentSys;
   JetTagging::Parameters jtp;
