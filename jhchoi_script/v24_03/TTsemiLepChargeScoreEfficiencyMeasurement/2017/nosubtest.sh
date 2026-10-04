@@ -1,6 +1,6 @@
 mkdir -p _use_beff_dasym_JETPUID_L_newlepveto_chi2kincut_bdt2608.2_splitcharge_measure_bchargeeff_logs/
 
-FLAG="--userflags use_beff_dasym,JETPUID_L,newlepveto,chi2kincut,bdt2608.2,splitcharge,measure_bchargeeff"
+FLAG="--userflags runSys,use_beff_dasym,JETPUID_L,newlepveto,chi2kincut,bdt2608.2,splitcharge,apply_sltideff"
 SKIM="--skim SkimTree_SingleLepton_1DeepJetTightWP"
 
 

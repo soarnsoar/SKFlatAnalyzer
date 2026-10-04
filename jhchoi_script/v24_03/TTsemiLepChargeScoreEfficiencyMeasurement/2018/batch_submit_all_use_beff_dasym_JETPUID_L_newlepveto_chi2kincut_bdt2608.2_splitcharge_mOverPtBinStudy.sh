@@ -21,8 +21,8 @@ C_ST="--count 3"
 
 
 MEM="--memory 3200 --count 2"
-SKFlat.py -a TTsemiLepChargeScoreEfficiencyMeasurement  ${SKIM} -i SingleMuon -n 50 -e ${YEAR} $FLAG ${MAXJOB} ${MEM} &> _use_beff_dasym_JETPUID_L_newlepveto_chi2kincut_bdt2608.2_splitcharge_mOverPtBinStudy_logs/SingleMuon.log&
+SKFlat.py -a TTsemiLepChargeScoreEfficiencyMeasurement  ${SKIM} -i SingleMuon -n 150 -e ${YEAR} $FLAG ${MAXJOB} ${MEM} &> _use_beff_dasym_JETPUID_L_newlepveto_chi2kincut_bdt2608.2_splitcharge_mOverPtBinStudy_logs/SingleMuon.log&
 sleep 15
-SKFlat.py -a TTsemiLepChargeScoreEfficiencyMeasurement  ${SKIM} -i EGamma -n 50 -e ${YEAR} $FLAG ${MAXJOB} ${MEM} &> _use_beff_dasym_JETPUID_L_newlepveto_chi2kincut_bdt2608.2_splitcharge_mOverPtBinStudy_logs/EGamma.log&
+SKFlat.py -a TTsemiLepChargeScoreEfficiencyMeasurement  ${SKIM} -i EGamma -n 150 -e ${YEAR} $FLAG ${MAXJOB} ${MEM} &> _use_beff_dasym_JETPUID_L_newlepveto_chi2kincut_bdt2608.2_splitcharge_mOverPtBinStudy_logs/EGamma.log&
 
 
