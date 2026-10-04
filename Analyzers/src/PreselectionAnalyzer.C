@@ -509,6 +509,17 @@ void PreselectionAnalyzer::RunBasicZregion(){
     MeasureMC_bChargeIDEff({v_bjet[0]});
     return;
   }
+
+  //---
+  if(measure_bchargeeff_test){
+    if(nbjet!=1) return ;
+    if(met_pt > maxMET) return;//updated 251222
+    if(z_pt<min_z_pt) return;
+    //v_bjet
+    MeasureMC_bChargeIDEff_test({v_bjet[0]});
+    return;
+  }
+  
   
 
 

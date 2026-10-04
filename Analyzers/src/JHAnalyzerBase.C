@@ -58,6 +58,7 @@ void JHAnalyzerBase::initializeAnalyzer(){
   measure_btageff_partonFlavour=HasFlag("measure_btageff_partonFlavour");
   measure_btageff_partonFlavour_bonly=HasFlag("measure_btageff_partonFlavour_bonly");
   measure_bchargeeff=HasFlag("measure_bchargeeff");
+  measure_bchargeeff_test=HasFlag("measure_bchargeeff_test");
   measure_bchargeeff_pveto=HasFlag("measure_bchargeeff_pveto");
   measure_bchargeeff_pveto_v2=HasFlag("measure_bchargeeff_pveto_v2");
   measure_bchargeeff_pveto_v3=HasFlag("measure_bchargeeff_pveto_v3");
@@ -639,13 +640,14 @@ void JHAnalyzerBase::InitClassVariablesPerEvent(){
 
   if(Is_bChargeIDEffOn){
     ///----bchargeID Efficiency syst---//
+    /*
     nbin_muH=CountNBins_bChargeID(k_muH);
     nbin_muL=CountNBins_bChargeID(k_muL);
     nbin_eH=CountNBins_bChargeID(k_eH);
     nbin_eL=CountNBins_bChargeID(k_eL);
 
     v_nbin_SLT={nbin_muH,nbin_muL,nbin_eH,nbin_eL};
-    
+    */
 
     r_bChargeID_SLT_CorrUp={vector<double>(nbin_muH, 1.0), vector<double>(nbin_muL, 1.0), vector<double>(nbin_eH,  1.0), vector<double>(nbin_eL,  1.0)};
     r_bChargeID_SLT_CorrDown={vector<double>(nbin_muH, 1.0), vector<double>(nbin_muL, 1.0), vector<double>(nbin_eH,  1.0), vector<double>(nbin_eL,  1.0)};
@@ -6567,7 +6569,9 @@ void JHAnalyzerBase::Read_bChargeAcc_SF(){
 }
 
 void JHAnalyzerBase::Setup_bChargeIDEff(TString _bchargeid_mceff_filename, bool readsltonly){
+
   Is_bChargeIDEffOn=true;
+  DefineSLTBinning();
   Read_bChargeID_SF(readsltonly);
 
 
@@ -6607,34 +6611,46 @@ void JHAnalyzerBase::Setup_bChargeIDEff(TString _bchargeid_mceff_filename, bool 
   
   for(unsigned int i=0; i<v_bsign.size(); i++){
     for(unsigned int j=0; j<v_bChargeID.size(); j++){
+
+
       //Jet_2018_Has_eH_eff_bminus_num
       //Jet_2018_eff_bplus_denom
       TString thisSign=v_bsign[i];
       TString thisID=v_bChargeID[j];
+      cout<<"[JHAnalyzerBase::Setup_bChargeIDEff] setting "<< thisSign+"__"+thisID <<endl;
       //Jet_2018_eff_bminus_denom__eH
+      //Jet_2017_eff_bminus_denom__muL
       TString hden="Jet_"+DataEra+"_eff_"+thisSign+"_denom__"+thisID;
       //Jet_2018_eff_bminus_num__eH
       TString hnum="Jet_"+DataEra+"_eff_"+thisSign+"_num__"+thisID;
       if(thisID=="jH"){
-	//Jet_2018_eff_bplus_denom__NoSL
+	//Jet_2018_eff_bplus_denom__NoSL	
 	hden="Jet_"+DataEra+"_eff_"+thisSign+"_denom__NoSL";
 	//Jet_2018_jH_eff_bminus_num__NoSL
 	hnum="Jet_"+DataEra+"_"+thisID+"_eff_"+thisSign+"_num__NoSL";
       }
-      TH2D* this_hist=(TH2D*)fmcjet.Get(hnum)->Clone();      
-      TH2D* this_hist_den=(TH2D*)fmcjet.Get(hden);
+      TH1D* this_hist=(TH1D*)fmcjet.Get(hnum)->Clone();      
+      TH1D* this_hist_den=(TH1D*)fmcjet.Get(hden);
       this_hist->Divide(this_hist_den);
       this_hist->SetDirectory(0);
       map_effhist_bchargeID_mcjet[thisID+"__"+thisSign]=this_hist;
       
-      cout<<"[JHAnalyzerBase::Setup_bChargeIDEff] setting "<< thisSign+"__"+thisID <<endl;
+      cout<<"[DONE][JHAnalyzerBase::Setup_bChargeIDEff] setting "<< thisSign+"__"+thisID <<endl;
+      
     }
   }
   
   //rSyst
-
-
+  //----
+  nbin_muH=CountNBins_bChargeID(k_muH);
+  nbin_muL=CountNBins_bChargeID(k_muL);
+  nbin_eH=CountNBins_bChargeID(k_eH);
+  nbin_eL=CountNBins_bChargeID(k_eL);
   
+  v_nbin_SLT={nbin_muH,nbin_muL,nbin_eH,nbin_eL};
+
+
+  cout << "[JHAnalyzerBase::Setup_bChargeIDEff] DONE." << endl;
 
 }
 
@@ -7359,7 +7375,7 @@ void JHAnalyzerBase::MeasureMC_bChargeIDEff(vector<Jet> vJets ){
 
 }
     
-void JHAnalyzerBase::MeasureMC_bChargeIDEff_pveto_test(vector<Jet> vJets ){
+void JHAnalyzerBase::MeasureMC_bChargeIDEff_test(vector<Jet> vJets ){
 
   //cout << "v_genlepidx.size() -> " << v_genlepidx.size() << endl;
   
@@ -8612,7 +8628,7 @@ vector<double> JHAnalyzerBase::Get_bChargeTagID_MCEffs_SLT( int partonFlavour, v
   int iSLT=0;
   for (auto thisID : {"muH","muL","eH","eL"}) {    
     TString this_key = TString(thisID) + "__" + bsign;
-    TH2D* this_hist=map_effhist_bchargeID_mcjet[this_key];
+    TH1D* this_hist=map_effhist_bchargeID_mcjet[this_key];
     int this_bin = v_binidx[iSLT]+1;
     double this_eff=1.;
     this_eff=this_hist->GetBinContent(this_bin);
@@ -8625,7 +8641,8 @@ vector<double> JHAnalyzerBase::Get_bChargeTagID_MCEffs_SLT( int partonFlavour, v
 }
 
 double JHAnalyzerBase::Get_SLTEff_Corr(const vector<Jet> &_v_Jet, const vector<bool> &_v_Has_muH, const vector<bool> &_v_Has_muL, const vector<bool> &_v_Has_eH, const vector<bool> &_v_Has_eL){
-  //cout << "[JHAnalyzerBase::Get_SLTEff_Corr]" << endl;
+
+  // cout << "[JHAnalyzerBase::Get_SLTEff_Corr]" << endl;
   if(IsDATA) return 1.;
   unsigned int _nJet=_v_Jet.size();
   double ret=1.;
@@ -8634,6 +8651,8 @@ double JHAnalyzerBase::Get_SLTEff_Corr(const vector<Jet> &_v_Jet, const vector<b
   vector<int> v_ibin_muL;
   vector<int> v_ibin_eH;
   vector<int> v_ibin_eL;
+
+  vector<bool> v_IsPromptContam;
   for(unsigned int i=0;i<_nJet;i++){
     
     
@@ -8649,6 +8668,11 @@ double JHAnalyzerBase::Get_SLTEff_Corr(const vector<Jet> &_v_Jet, const vector<b
     v_ibin_eH.push_back(ibin_eH);
     v_ibin_eL.push_back(ibin_eL);
 
+    bool IsPromptContam=HasPromptLepWithinJet(_v_Jet[i]);
+    v_IsPromptContam.push_back(IsPromptContam);
+
+    //---case of skipping---//
+    if(IsPromptContam) continue;
     int this_hadronFlavour=_v_Jet[i].hadronFlavour();
     if(this_hadronFlavour!=5)continue;
     int this_partonFlavour=_v_Jet[i].partonFlavour();
@@ -8670,6 +8694,7 @@ double JHAnalyzerBase::Get_SLTEff_Corr(const vector<Jet> &_v_Jet, const vector<b
       double this_ptslt_uncorr_bMinusUp=1.;
       double this_ptslt_uncorr_bMinusDown=1.;
       for(int i=0;i<_nJet;i++){
+	if(v_IsPromptContam[i]) continue;
 	if( abs(_v_Jet[i].partonFlavour()) !=5  ) continue;
         if( _v_Jet[i].hadronFlavour() !=5  ) continue;
 	int this_partonFlavour=_v_Jet[i].partonFlavour();
@@ -8716,6 +8741,7 @@ double JHAnalyzerBase::Get_SLTEff_Corr(const vector<Jet> &_v_Jet, const vector<b
 
       }//end of set r's
       ///----Check/Debug
+      /*
       if((r_bChargeID_SLT_CorrUp[iSLT][iNui]-1)*(r_bChargeID_SLT_CorrDown[iSLT][iNui]-1)>0){
 	cout << "r_bChargeID_SLT_Corr is wrong-> iSLT=" << iSLT << ", iNui=" << iNui << ", Up=" << r_bChargeID_SLT_CorrUp[iSLT][iNui] << ", Down=" << r_bChargeID_SLT_CorrDown[iSLT][iNui] << endl;
       }
@@ -8726,8 +8752,18 @@ double JHAnalyzerBase::Get_SLTEff_Corr(const vector<Jet> &_v_Jet, const vector<b
 	cout << "r_bChargeID_SLT_UnCorr_bMinus is wrong-> iSLT=" << iSLT << ", iNui=" << iNui << ", Up=" << r_bChargeID_SLT_UnCorr_bMinusUp[iSLT][iNui] << ", Down=" << r_bChargeID_SLT_UnCorr_bMinusDown[iSLT][iNui] << endl;
       }      
 
+      if(r_bChargeID_SLT_CorrUp[iSLT][iNui]!=1){
+        cout << "r_bChargeID_SLT_Corr-> iSLT=" << iSLT << ", iNui=" << iNui << ", Up=" << r_bChargeID_SLT_CorrUp[iSLT][iNui] << ", Down=" << r_bChargeID_SLT_CorrDown[iSLT][iNui] << endl;
+      }
+      if(r_bChargeID_SLT_UnCorr_bPlusUp[iSLT][iNui]!=1){
+        cout << "r_bChargeID_SLT_UnCorr_bPlus -> iSLT=" << iSLT << ", iNui=" << iNui << ", Up=" << r_bChargeID_SLT_UnCorr_bPlusUp[iSLT][iNui] << ", Down=" << r_bChargeID_SLT_UnCorr_bPlusDown[iSLT][iNui] << endl;
+      }
+      if(r_bChargeID_SLT_UnCorr_bMinusUp[iSLT][iNui]!=1){
+        cout << "r_bChargeID_SLT_UnCorr_bMinus-> iSLT=" << iSLT << ", iNui=" << iNui << ", Up=" << r_bChargeID_SLT_UnCorr_bMinusUp[iSLT][iNui] << ", Down=" << r_bChargeID_SLT_UnCorr_bMinusDown[iSLT][iNui] << endl;
 
-      
+      }
+      */
+
       
     }//end of inui loop
 
@@ -8772,7 +8808,9 @@ double JHAnalyzerBase::Get_SLTEff_Corr_givenJet(int this_partonFlavour, int ibin
   vector<bool> v_slt={Has_muH,Has_muL,Has_eH,Has_eL};// # of SLT tagging
   for(int i_slt=0;i_slt<4;i_slt++){
     bool this_SLT = v_slt[i_slt];
+
     if(this_SLT){// multiplying SF only
+
       //cout << "apply iSLT=" << i_slt << " -> Has this SLT" << endl;
       nume *= Get_SF_bChargeTagID_SLT(this_origin,i_slt,v_ibin[i_slt],k_central);
     }else{// 1- eff
@@ -8836,7 +8874,7 @@ double JHAnalyzerBase::Get_bChargeTagID_MCEffs_jH(int partonFlavour, double JetP
   //Jet_2018_Has_eH_eff_bplus_num
   //Jet_2018_eff_bplus_denom
   TString this_key = "jH__" + bsign;
-  TH2D* this_hist=map_effhist_bchargeID_mcjet[this_key];
+  TH1D* this_hist=map_effhist_bchargeID_mcjet[this_key];
   int this_bin = this_hist->FindBin(JetEta,JetPt);
   double this_eff=1.;
   this_eff=this_hist->GetBinContent(this_bin);

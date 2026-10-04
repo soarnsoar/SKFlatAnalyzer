@@ -88,12 +88,14 @@ void TTsemiLepChargeScoreEfficiencyMeasurement::initializeAnalyzer(){
   //apply bchargeideff
   apply_bchargeideff=HasFlag("apply_bchargeideff");
   if(apply_bchargeideff){
-    Setup_bChargeIDEff("TTsemiLepChargeScoreEfficiencyMeasurement_"+MCSample+".root");
+    //Setup_bChargeIDEff("TTsemiLepChargeScoreEfficiencyMeasurement_"+MCSample+".root");
+    Setup_bChargeIDEff("TTsemiLepChargeScoreEfficiencyMeasurement_HADDED.root");
   }
 
   apply_sltideff=HasFlag("apply_sltideff");
   if(apply_sltideff){
-    Setup_bChargeIDEff("TTsemiLepChargeScoreEfficiencyMeasurement_"+MCSample+".root",true);
+    //Setup_bChargeIDEff("TTsemiLepChargeScoreEfficiencyMeasurement_"+MCSample+".root",true);
+    Setup_bChargeIDEff("TTsemiLepChargeScoreEfficiencyMeasurement_HADDED.root",true);
   }
   
   InitJetAssigenChi2Fitter();
@@ -340,7 +342,10 @@ void TTsemiLepChargeScoreEfficiencyMeasurement::Run(){
     MeasureMC_bChargeIDEff({v_tightjet[iblep],v_tightjet[ibhad]});
     return;
   }
-
+  if(measure_bchargeeff_test){
+    MeasureMC_bChargeIDEff_test({v_tightjet[iblep],v_tightjet[ibhad]});
+    return;
+  }
   
   RunBJet("bJetLeptonicSide",iblep,-1,Tlep_cand);
   RunBJet("bJetHadronicSide",ibhad,-1,Thad_cand);
@@ -510,7 +515,7 @@ void TTsemiLepChargeScoreEfficiencyMeasurement::RunBJet(TString bjetname, int bj
 
   //void TTsemiLepChargeScoreEfficiencyMeasurement::FillHistBJet(TString cutname, int bjetidx,int bgenidx, TLorentzVector& Tcand){
   if(!HighJetOnly || !runSys){
-    if(apply_bchargeideff){
+    if(apply_bchargeideff || apply_sltideff){
       double weight_SLT=Get_SLTEff_Corr({v_tightjet[bjetidx]},{n_muonHigh>0},{n_muonLow>0},{n_electronHigh>0},{n_electronLow>0});
       weight*=weight_SLT;
     }
@@ -659,7 +664,11 @@ void TTsemiLepChargeScoreEfficiencyMeasurement::RunBJet(TString bjetname, int bj
 	}else{
 	  FillHistBJet("Lepton"+LepSign+"_"+bjetname+"_NoSL_jH",           bjetidx,bgenidx,Tcand);
 	  //FillHistBJet("Lepton"+LepSign+"_"+bjetname+"_NoSL_jH"+cut_suffix_all,bjetidx,bgenidx,Tcand);
-	  FillHistBJet("Lepton"+LepSign+"_"+bjetname+"_NoSL_jH"+cut_suffix,bjetidx,bgenidx,Tcand);      
+	  FillHistBJet("Lepton"+LepSign+"_"+bjetname+"_NoSL_jH"+cut_suffix,bjetidx,bgenidx,Tcand);
+	  if(mOverPtBinStudy){
+	    FillHistBJet("Lepton"+LepSign+"_"+bjetname+"_NoSL_jH"+cut_suffix_Pt,bjetidx,bgenidx,Tcand);
+	    FillHistBJet("Lepton"+LepSign+"_"+bjetname+"_NoSL_jH"+cut_suffix_mOverPt,bjetidx,bgenidx,Tcand);
+	  }
 	}
       }
       else{
@@ -670,7 +679,11 @@ void TTsemiLepChargeScoreEfficiencyMeasurement::RunBJet(TString bjetname, int bj
 	}else{
 	  FillHistBJet("Lepton"+LepSign+"_"+bjetname+"_NoSL_jOthers",           bjetidx,bgenidx,Tcand);
 	  //FillHistBJet("Lepton"+LepSign+"_"+bjetname+"_NoSL_jOthers"+cut_suffix_all,bjetidx,bgenidx,Tcand);
-	  FillHistBJet("Lepton"+LepSign+"_"+bjetname+"_NoSL_jOthers"+cut_suffix,bjetidx,bgenidx,Tcand);      
+	  FillHistBJet("Lepton"+LepSign+"_"+bjetname+"_NoSL_jOthers"+cut_suffix,bjetidx,bgenidx,Tcand);
+	  if(mOverPtBinStudy){
+	    FillHistBJet("Lepton"+LepSign+"_"+bjetname+"_NoSL_jOthers"+cut_suffix_Pt,bjetidx,bgenidx,Tcand);
+	    FillHistBJet("Lepton"+LepSign+"_"+bjetname+"_NoSL_jOthers"+cut_suffix_mOverPt,bjetidx,bgenidx,Tcand);
+	  }
 	}
       }//[end] if jOthers
       weight=weight/weight_SLT/weight_HighScoreJet;
