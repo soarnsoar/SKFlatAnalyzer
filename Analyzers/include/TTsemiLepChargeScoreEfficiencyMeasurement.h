@@ -44,7 +44,7 @@ public:
   TString cut_suffix, cut_suffix_Pt, cut_suffix_mOverPt;
 
   TString cut_suffix_muH,cut_suffix_muL,cut_suffix_eH,cut_suffix_eL;
-
+  TString cut_suffix_jH;
   /*vector<double> v_cut_muH_PT30To50, v_cut_muH_PT50To70,v_cut_muH_PT70To100,v_cut_muH_PT100To140,v_cut_muH_PT140ToInf;
   vector<double> v_cut_muL_PT30To50, v_cut_muL_PT50To70,v_cut_muL_PT70To100,v_cut_muL_PT100To140,v_cut_muL_PT140ToInf;
   vector<double> v_cut_eH_PT30To50, v_cut_eH_PT50To70,v_cut_eH_PT70To100,v_cut_eH_PT100To140,v_cut_eH_PT140ToInf;
@@ -62,6 +62,8 @@ public:
   TString GetCutSuffix_muL(const Jet& _this_jet);
   TString GetCutSuffix_eH(const Jet& _this_jet);
   TString GetCutSuffix_eL(const Jet& _this_jet);
+
+  TString GetCutSuffix_jH(const Jet& _this_jet);
   
   
   
