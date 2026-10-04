@@ -629,6 +629,21 @@ int JHAnalyzerBase::CountNBins_bChargeID(int sltid){
   return ret;
 }
 
+int JHAnalyzerBase::CountNBins_bChargeID_jH(){
+  //DefineSLTBinning                                                                                                                                                                                                                        
+  const std::vector<double>* cuts[5] = {nullptr};
+
+  cuts[0] = &v_cut_jH_PT30To50;
+  cuts[1] = &v_cut_jH_PT50To70;
+  cuts[2] = &v_cut_jH_PT70To100;
+  cuts[3] = &v_cut_jH_PT100To140;
+  cuts[4] = &v_cut_jH_PT140ToInf;
+  
+  int ret=  cuts[0]->size()-1 + cuts[1]->size()-1 + cuts[2]->size()-1 + cuts[3]->size()-1 + cuts[4]->size()-1;
+  return ret;
+}
+
+
 void JHAnalyzerBase::InitClassVariablesPerEvent(){
   //--Event variables--//
   weight=1.;
@@ -996,13 +1011,13 @@ void JHAnalyzerBase::FillHistChargeIDEff(TString histname, double value, double 
     int this_nbins=v_nbin_SLT[iSLT];
     for(int ibin = 0 ; ibin < this_nbins;ibin++){
       //--Correlated--//
-      FillHistUp("bChargeID_SLT_Corr_SLTID"+TString::Itoa(iSLT, 10)+"_bin"+TString::Itoa(ibin,10)+DataEra,   histname, value,this_weight*r_bChargeID_SLT_CorrUp[iSLT][ibin],  n_bin,x_min,x_max);
-      FillHistDown("bChargeID_SLT_Corr_SLTID"+TString::Itoa(iSLT, 10)+"_bin"+TString::Itoa(ibin,10)+DataEra,   histname, value,this_weight*r_bChargeID_SLT_CorrDown[iSLT][ibin],  n_bin,x_min,x_max);
+      FillHistUp("bChargeID_SLT_Corr_SLTID"+TString::Itoa(iSLT, 10)+"_bin"+TString::Itoa(ibin,10)+"_"+DataEra,   histname, value,this_weight*r_bChargeID_SLT_CorrUp[iSLT][ibin],  n_bin,x_min,x_max);
+      FillHistDown("bChargeID_SLT_Corr_SLTID"+TString::Itoa(iSLT, 10)+"_bin"+TString::Itoa(ibin,10)+"_"+DataEra,   histname, value,this_weight*r_bChargeID_SLT_CorrDown[iSLT][ibin],  n_bin,x_min,x_max);
       //--UnCorr--//
-      FillHistUp("bChargeID_SLT_UnCorrPlus_SLTID"+TString::Itoa(iSLT, 10)+"_bin"+TString::Itoa(ibin,10)+DataEra,   histname, value,this_weight*r_bChargeID_SLT_UnCorr_bPlusUp[iSLT][ibin],  n_bin,x_min,x_max);
-      FillHistDown("bChargeID_SLT_UnCorrPlus_SLTID"+TString::Itoa(iSLT, 10)+"_bin"+TString::Itoa(ibin,10)+DataEra,   histname, value,this_weight*r_bChargeID_SLT_UnCorr_bPlusDown[iSLT][ibin],  n_bin,x_min,x_max);
-      FillHistUp("bChargeID_SLT_UnCorrMinus_SLTID"+TString::Itoa(iSLT, 10)+"_bin"+TString::Itoa(ibin,10)+DataEra,   histname, value,this_weight*r_bChargeID_SLT_UnCorr_bMinusUp[iSLT][ibin],  n_bin,x_min,x_max);
-      FillHistDown("bChargeID_SLT_UnCorrMinus_SLTID"+TString::Itoa(iSLT, 10)+"_bin"+TString::Itoa(ibin,10)+DataEra,   histname, value,this_weight*r_bChargeID_SLT_UnCorr_bMinusDown[iSLT][ibin],  n_bin,x_min,x_max);
+      FillHistUp("bChargeID_SLT_UnCorrPlus_SLTID"+TString::Itoa(iSLT, 10)+"_bin"+TString::Itoa(ibin,10)+"_"+DataEra,   histname, value,this_weight*r_bChargeID_SLT_UnCorr_bPlusUp[iSLT][ibin],  n_bin,x_min,x_max);
+      FillHistDown("bChargeID_SLT_UnCorrPlus_SLTID"+TString::Itoa(iSLT, 10)+"_bin"+TString::Itoa(ibin,10)+"_"+DataEra,   histname, value,this_weight*r_bChargeID_SLT_UnCorr_bPlusDown[iSLT][ibin],  n_bin,x_min,x_max);
+      FillHistUp("bChargeID_SLT_UnCorrMinus_SLTID"+TString::Itoa(iSLT, 10)+"_bin"+TString::Itoa(ibin,10)+"_"+DataEra,   histname, value,this_weight*r_bChargeID_SLT_UnCorr_bMinusUp[iSLT][ibin],  n_bin,x_min,x_max);
+      FillHistDown("bChargeID_SLT_UnCorrMinus_SLTID"+TString::Itoa(iSLT, 10)+"_bin"+TString::Itoa(ibin,10)+"_"+DataEra,   histname, value,this_weight*r_bChargeID_SLT_UnCorr_bMinusDown[iSLT][ibin],  n_bin,x_min,x_max);
       
     }//[end] ibin loop
   }//[end] islt loop
@@ -1015,13 +1030,13 @@ void JHAnalyzerBase::FillHistChargeIDEff(TString histname, double value, double 
     int this_nbins=v_nbin_SLT[iSLT];
     for(int ibin = 0 ; ibin < this_nbins;ibin++){
       //--Correlated--//
-      FillHistUp("bChargeID_SLT_Corr_SLTID"+TString::Itoa(iSLT, 10)+"_bin"+TString::Itoa(ibin,10)+DataEra,   histname, value,this_weight*r_bChargeID_SLT_CorrUp[iSLT][ibin],  n_bin,xbins);
-      FillHistDown("bChargeID_SLT_Corr_SLTID"+TString::Itoa(iSLT, 10)+"_bin"+TString::Itoa(ibin,10)+DataEra,   histname, value,this_weight*r_bChargeID_SLT_CorrDown[iSLT][ibin],  n_bin,xbins);
+      FillHistUp("bChargeID_SLT_Corr_SLTID"+TString::Itoa(iSLT, 10)+"_bin"+TString::Itoa(ibin,10)+"_"+DataEra,   histname, value,this_weight*r_bChargeID_SLT_CorrUp[iSLT][ibin],  n_bin,xbins);
+      FillHistDown("bChargeID_SLT_Corr_SLTID"+TString::Itoa(iSLT, 10)+"_bin"+TString::Itoa(ibin,10)+"_"+DataEra,   histname, value,this_weight*r_bChargeID_SLT_CorrDown[iSLT][ibin],  n_bin,xbins);
       //--UnCorr--//
-      FillHistUp("bChargeID_SLT_UnCorrPlus_SLTID"+TString::Itoa(iSLT, 10)+"_bin"+TString::Itoa(ibin,10)+DataEra,   histname, value,this_weight*r_bChargeID_SLT_UnCorr_bPlusUp[iSLT][ibin],  n_bin,xbins);
-      FillHistDown("bChargeID_SLT_UnCorrPlus_SLTID"+TString::Itoa(iSLT, 10)+"_bin"+TString::Itoa(ibin,10)+DataEra,   histname, value,this_weight*r_bChargeID_SLT_UnCorr_bPlusDown[iSLT][ibin],  n_bin,xbins);
-      FillHistUp("bChargeID_SLT_UnCorrMinus_SLTID"+TString::Itoa(iSLT, 10)+"_bin"+TString::Itoa(ibin,10)+DataEra,   histname, value,this_weight*r_bChargeID_SLT_UnCorr_bMinusUp[iSLT][ibin],  n_bin,xbins);
-      FillHistDown("bChargeID_SLT_UnCorrMinus_SLTID"+TString::Itoa(iSLT, 10)+"_bin"+TString::Itoa(ibin,10)+DataEra,   histname, value,this_weight*r_bChargeID_SLT_UnCorr_bMinusDown[iSLT][ibin],  n_bin,xbins);
+      FillHistUp("bChargeID_SLT_UnCorrPlus_SLTID"+TString::Itoa(iSLT, 10)+"_bin"+TString::Itoa(ibin,10)+"_"+DataEra,   histname, value,this_weight*r_bChargeID_SLT_UnCorr_bPlusUp[iSLT][ibin],  n_bin,xbins);
+      FillHistDown("bChargeID_SLT_UnCorrPlus_SLTID"+TString::Itoa(iSLT, 10)+"_bin"+TString::Itoa(ibin,10)+"_"+DataEra,   histname, value,this_weight*r_bChargeID_SLT_UnCorr_bPlusDown[iSLT][ibin],  n_bin,xbins);
+      FillHistUp("bChargeID_SLT_UnCorrMinus_SLTID"+TString::Itoa(iSLT, 10)+"_bin"+TString::Itoa(ibin,10)+"_"+DataEra,   histname, value,this_weight*r_bChargeID_SLT_UnCorr_bMinusUp[iSLT][ibin],  n_bin,xbins);
+      FillHistDown("bChargeID_SLT_UnCorrMinus_SLTID"+TString::Itoa(iSLT, 10)+"_bin"+TString::Itoa(ibin,10)+"_"+DataEra,   histname, value,this_weight*r_bChargeID_SLT_UnCorr_bMinusDown[iSLT][ibin],  n_bin,xbins);
     }//[end] ibin loop
   }//[end] islt loop
 }
@@ -7253,6 +7268,52 @@ int JHAnalyzerBase::GetBinIndex_SLTEff(int sltid,
     return offset + localIdx;
 }
 
+int JHAnalyzerBase::GetBinIndex_jHEff(double this_Pt,
+                                      double this_mOverPt)
+{
+    const std::vector<double>* cuts[5] = {nullptr};
+    cuts[0] = &v_cut_jH_PT30To50;
+    cuts[1] = &v_cut_jH_PT50To70;
+    cuts[2] = &v_cut_jH_PT70To100;
+    cuts[3] = &v_cut_jH_PT100To140;
+    cuts[4] = &v_cut_jH_PT140ToInf;
+
+
+    int ipt;
+
+    if      (this_Pt < 30)  return -1;
+    else if (this_Pt < 50)  ipt = 0;
+    else if (this_Pt < 70)  ipt = 1;
+    else if (this_Pt < 100) ipt = 2;
+    else if (this_Pt < 140) ipt = 3;
+    else                    ipt = 4;
+
+
+    const auto& edges = *cuts[ipt];
+
+    auto it = std::upper_bound( //get iterator of first one larger than given moverpt
+			       edges.begin(),
+			       edges.end(),
+			       this_mOverPt
+				);
+    
+    if (it == edges.begin() || it == edges.end())
+        return 1/0;
+
+    int localIdx = it - edges.begin() - 1;
+
+
+    int offset = 0;
+
+    for (int i = 0; i < ipt; ++i)
+        offset += cuts[i]->size() - 1;
+
+
+    return offset + localIdx;
+
+    
+}
+
 
 void JHAnalyzerBase::MeasureMC_bChargeIDEff(vector<Jet> vJets ){
 
@@ -7288,7 +7349,13 @@ void JHAnalyzerBase::MeasureMC_bChargeIDEff(vector<Jet> vJets ){
     (v_cut_eL_PT100To140.size() - 1) +
     (v_cut_eL_PT140ToInf.size() - 1);    
 
-  
+  int N_i_jH =
+    (v_cut_jH_PT30To50.size()   - 1) +
+    (v_cut_jH_PT50To70.size()   - 1) +
+    (v_cut_jH_PT70To100.size()  - 1) +
+    (v_cut_jH_PT100To140.size() - 1) +
+    (v_cut_jH_PT140ToInf.size() - 1);
+    
   for(auto& this_jet : vJets){
     if(fabs(this_jet.partonFlavour())!=5) continue;
     if(this_jet.hadronFlavour()!=5) continue;
@@ -7315,7 +7382,7 @@ void JHAnalyzerBase::MeasureMC_bChargeIDEff(vector<Jet> vJets ){
     int i_muL=GetBinIndex_SLTEff(k_muL,this_Pt,this_mOverPt);
     int i_eH=GetBinIndex_SLTEff(k_eH,this_Pt,this_mOverPt);
     int i_eL=GetBinIndex_SLTEff(k_eL,this_Pt,this_mOverPt);
-    
+    int i_jH=GetBinIndex_jHEff(this_Pt,this_mOverPt);
     //---Use 1D Instead. Write binidx
     AnalyzerCore::FillHist("Jet_"+DataEra+"_eff_"+flav+"_denom__muH",                 i_muH, weight,  N_i_muH, 0,N_i_muH);
     AnalyzerCore::FillHist("Jet_"+DataEra+"_eff_"+flav+"_denom__muH"+weight_sign_str, i_muH, weight,  N_i_muH, 0,N_i_muH);
@@ -7361,12 +7428,18 @@ void JHAnalyzerBase::MeasureMC_bChargeIDEff(vector<Jet> vJets ){
       //do not need to apply SLT tag eff corr because for given jet/pt/eta/origin, the same weight is multiplied to deno and nume both.So it is canceled out.
       //AnalyzerCore::FillHist("Jet_"+DataEra+"_eff_"+flav+"_denom__NoSL", this_Eta, this_Pt, weight, NEtaBin, etabins, NPtBin, ptbins);
       //AnalyzerCore::FillHist("Jet_"+DataEra+"_eff_"+flav+"_denom__NoSL"+weight_sign_str, this_Eta, this_Pt, weight, NEtaBin, etabins, NPtBin, ptbins);
+      AnalyzerCore::FillHist("Jet_"+DataEra+"_eff_"+flav+"_denom__jH",                 i_jH, weight,  N_i_jH, 0,N_i_jH);
+      AnalyzerCore::FillHist("Jet_"+DataEra+"_eff_"+flav+"_denom__jH"+weight_sign_str, i_jH, weight,  N_i_jH, 0,N_i_jH);
 
+
+      
       SetJetChargeScore(this_jet);
       int jetcharge_coeff=GetJetChargeScoreCoeff();
       if(jetcharge_coeff==1){//_NoSL_jH
 	//AnalyzerCore::FillHist("Jet_"+DataEra+"_jH_eff_"+flav+"_num__NoSL", this_Eta, this_Pt, weight, NEtaBin, etabins, NPtBin, ptbins);
         //AnalyzerCore::FillHist("Jet_"+DataEra+"_jH_eff_"+flav+"_num__NoSL"+weight_sign_str, this_Eta, this_Pt, weight, NEtaBin, etabins, NPtBin, ptbins);
+	AnalyzerCore::FillHist("Jet_"+DataEra+"_eff_"+flav+"_num__jH",                 i_jH, weight,  N_i_jH, 0,N_i_jH);
+	AnalyzerCore::FillHist("Jet_"+DataEra+"_eff_"+flav+"_num__jH"+weight_sign_str, i_jH, weight,  N_i_jH, 0,N_i_jH);
 
       }
     }
@@ -9293,6 +9366,11 @@ void JHAnalyzerBase::DefineSLTBinning(){//mOverPt bins
     v_cut_muL_PT70To100={0,0.1,0.15,1};
     v_cut_muL_PT100To140={0,0.1,0.15,1};
     v_cut_muL_PT140ToInf={0,0.1,1};
+    v_cut_jH_PT30To50={0,0.1,0.15,0.2,0.25,1};
+    v_cut_jH_PT50To70={0,0.1,0.15,0.2,0.25,1};
+    v_cut_jH_PT70To100={0,0.1,0.15,0.2,1};
+    v_cut_jH_PT100To140={0,0.1,0.15,0.2,1};
+    v_cut_jH_PT140ToInf={0,0.1,0.15,0.2,1};
 
   }
 
@@ -9317,6 +9395,12 @@ void JHAnalyzerBase::DefineSLTBinning(){//mOverPt bins
     v_cut_muL_PT70To100={0,0.1,0.15,1};
     v_cut_muL_PT100To140={0,0.1,0.15,1};
     v_cut_muL_PT140ToInf={0,0.1,1};
+    v_cut_jH_PT30To50={0,0.1,0.15,0.2,0.25,1};
+    v_cut_jH_PT50To70={0,0.1,0.15,0.2,0.25,1};
+    v_cut_jH_PT70To100={0,0.1,0.15,0.2,1};
+    v_cut_jH_PT100To140={0,0.1,0.15,0.2,1};
+    v_cut_jH_PT140ToInf={0,0.1,0.15,0.2,1};
+
 
   }
 
@@ -9341,6 +9425,11 @@ void JHAnalyzerBase::DefineSLTBinning(){//mOverPt bins
     v_cut_muL_PT70To100={0,0.1,0.15,0.2,1};
     v_cut_muL_PT100To140={0,0.1,0.15,1};
     v_cut_muL_PT140ToInf={0,0.1,0.15,1};
+    v_cut_jH_PT30To50={0,0.15,0.2,0.25,1};
+    v_cut_jH_PT50To70={0,0.1,0.15,0.2,0.25,1};
+    v_cut_jH_PT70To100={0,0.1,0.15,0.2,0.25,1};
+    v_cut_jH_PT100To140={0,0.1,0.15,0.2,1};
+    v_cut_jH_PT140ToInf={0,0.1,0.15,0.2,1};
 
   }
 
@@ -9365,6 +9454,11 @@ void JHAnalyzerBase::DefineSLTBinning(){//mOverPt bins
     v_cut_muL_PT70To100={0,0.1,0.15,0.2,1};
     v_cut_muL_PT100To140={0,0.1,0.15,1};
     v_cut_muL_PT140ToInf={0,0.1,0.15,1};
+    v_cut_jH_PT30To50={0,0.1,0.15,0.2,0.25,1};
+    v_cut_jH_PT50To70={0,0.1,0.15,0.2,0.25,1};
+    v_cut_jH_PT70To100={0,0.1,0.15,0.2,0.25,1};
+    v_cut_jH_PT100To140={0,0.1,0.15,0.2,1};
+    v_cut_jH_PT140ToInf={0,0.1,0.15,0.2,1};
 
   }
 
@@ -9392,6 +9486,12 @@ void JHAnalyzerBase::DefineSLTBinning(){//mOverPt bins
   str_v_cut_eL_PT70To100   = ConvertCutVectorToString(v_cut_eL_PT70To100);
   str_v_cut_eL_PT100To140  = ConvertCutVectorToString(v_cut_eL_PT100To140);
   str_v_cut_eL_PT140ToInf  = ConvertCutVectorToString(v_cut_eL_PT140ToInf);
+
+  str_v_cut_jH_PT30To50    = ConvertCutVectorToString(v_cut_jH_PT30To50);
+  str_v_cut_jH_PT50To70    = ConvertCutVectorToString(v_cut_jH_PT50To70);
+  str_v_cut_jH_PT70To100   = ConvertCutVectorToString(v_cut_jH_PT70To100);
+  str_v_cut_jH_PT100To140  = ConvertCutVectorToString(v_cut_jH_PT100To140);
+  str_v_cut_jH_PT140ToInf  = ConvertCutVectorToString(v_cut_jH_PT140ToInf);
 
 
 }

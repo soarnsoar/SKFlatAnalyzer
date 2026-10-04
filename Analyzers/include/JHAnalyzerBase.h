@@ -939,12 +939,19 @@ class JHAnalyzerBase : public AnalyzerCore {
   vector<double> v_cut_eH_PT30To50, v_cut_eH_PT50To70,v_cut_eH_PT70To100,v_cut_eH_PT100To140,v_cut_eH_PT140ToInf;
   vector<double> v_cut_eL_PT30To50, v_cut_eL_PT50To70,v_cut_eL_PT70To100,v_cut_eL_PT100To140,v_cut_eL_PT140ToInf;
 
+  vector<double> v_cut_jH_PT30To50, v_cut_jH_PT50To70,v_cut_jH_PT70To100,v_cut_jH_PT100To140,v_cut_jH_PT140ToInf;
+
 
   vector<TString> str_v_cut_muH_PT30To50, str_v_cut_muH_PT50To70,str_v_cut_muH_PT70To100,str_v_cut_muH_PT100To140,str_v_cut_muH_PT140ToInf;
   vector<TString> str_v_cut_muL_PT30To50, str_v_cut_muL_PT50To70,str_v_cut_muL_PT70To100,str_v_cut_muL_PT100To140,str_v_cut_muL_PT140ToInf;
   vector<TString> str_v_cut_eH_PT30To50, str_v_cut_eH_PT50To70,str_v_cut_eH_PT70To100,str_v_cut_eH_PT100To140,str_v_cut_eH_PT140ToInf;
   vector<TString> str_v_cut_eL_PT30To50, str_v_cut_eL_PT50To70,str_v_cut_eL_PT70To100,str_v_cut_eL_PT100To140,str_v_cut_eL_PT140ToInf;
+  
+  vector<TString> str_v_cut_jH_PT30To50, str_v_cut_jH_PT50To70,str_v_cut_jH_PT70To100,str_v_cut_jH_PT100To140,str_v_cut_jH_PT140ToInf;
 
+
+
+  
   void DefineSLTBinning();
   vector<TString> ConvertCutVectorToString(    const vector<double>& v_cut);
   TString GetPtBinName(double this_pt);
@@ -952,6 +959,12 @@ class JHAnalyzerBase : public AnalyzerCore {
   int CountNBins_bChargeID(int sltid);
   int nbin_muH,nbin_muL,nbin_eH,nbin_eL;
   vector<int> v_nbin_SLT;
+
+  int CountNBins_bChargeID_jH();
+  int GetBinIndex_jHEff(double this_Pt,
+			double this_mOverPt);
+
+  
 private:
   MomentumVar _CurrentSys;
   JetTagging::Parameters jtp;

@@ -83,7 +83,7 @@ void TTsemiLepChargeScoreEfficiencyMeasurement::initializeAnalyzer(){
   //HighJetOnly
   HighJetOnly=HasFlag("HighJetOnly");
   if(HighJetOnly){
-    Setup_bChargeIDEff("",true);
+    Setup_bChargeIDEff("TTsemiLepChargeScoreEfficiencyMeasurement_HADDED.root",true);
   }
   //apply bchargeideff
   apply_bchargeideff=HasFlag("apply_bchargeideff");
@@ -419,6 +419,8 @@ void TTsemiLepChargeScoreEfficiencyMeasurement::RunBJet(TString bjetname, int bj
   cut_suffix_eH= "__"+GetCutSuffix_eH(v_tightjet[bjetidx]);
   cut_suffix_eL= "__"+GetCutSuffix_eL(v_tightjet[bjetidx]);
 
+  cut_suffix_jH= "__"+GetCutSuffix_jH(v_tightjet[bjetidx]);
+
   
   //---denominator
   if(!runSys){
@@ -654,17 +656,18 @@ void TTsemiLepChargeScoreEfficiencyMeasurement::RunBJet(TString bjetname, int bj
       }else{
 	FillHistBJet("Lepton"+LepSign+"_"+bjetname+"_NoSL",           bjetidx,bgenidx,Tcand);
 	//FillHistBJet("Lepton"+LepSign+"_"+bjetname+"_NoSL"+cut_suffix_all,bjetidx,bgenidx,Tcand);
-	FillHistBJet("Lepton"+LepSign+"_"+bjetname+"_NoSL"+cut_suffix,bjetidx,bgenidx,Tcand);      
+	FillHistBJet("Lepton"+LepSign+"_"+bjetname+"_NoSL"+cut_suffix_jH,bjetidx,bgenidx,Tcand);
+	
       }      
       if(jetcharge_coeff==1){
 	if(!splitcharge){
 	  FillHistBJet("Lepton_"+bjetname+"_NoSL_jH",           bjetidx,bgenidx,Tcand);
 	  //FillHistBJet("Lepton_"+bjetname+"_NoSL_jH"+cut_suffix_all,bjetidx,bgenidx,Tcand);
-	  FillHistBJet("Lepton_"+bjetname+"_NoSL_jH"+cut_suffix,bjetidx,bgenidx,Tcand);
+	  FillHistBJet("Lepton_"+bjetname+"_NoSL_jH"+cut_suffix_jH,bjetidx,bgenidx,Tcand);
 	}else{
 	  FillHistBJet("Lepton"+LepSign+"_"+bjetname+"_NoSL_jH",           bjetidx,bgenidx,Tcand);
 	  //FillHistBJet("Lepton"+LepSign+"_"+bjetname+"_NoSL_jH"+cut_suffix_all,bjetidx,bgenidx,Tcand);
-	  FillHistBJet("Lepton"+LepSign+"_"+bjetname+"_NoSL_jH"+cut_suffix,bjetidx,bgenidx,Tcand);
+	  FillHistBJet("Lepton"+LepSign+"_"+bjetname+"_NoSL_jH"+cut_suffix_jH,bjetidx,bgenidx,Tcand);
 	  if(mOverPtBinStudy){
 	    FillHistBJet("Lepton"+LepSign+"_"+bjetname+"_NoSL_jH"+cut_suffix_Pt,bjetidx,bgenidx,Tcand);
 	    FillHistBJet("Lepton"+LepSign+"_"+bjetname+"_NoSL_jH"+cut_suffix_mOverPt,bjetidx,bgenidx,Tcand);
@@ -675,11 +678,11 @@ void TTsemiLepChargeScoreEfficiencyMeasurement::RunBJet(TString bjetname, int bj
 	if(!splitcharge){
 	  FillHistBJet("Lepton_"+bjetname+"_NoSL_jOthers",           bjetidx,bgenidx,Tcand);
 	  //FillHistBJet("Lepton_"+bjetname+"_NoSL_jOthers"+cut_suffix_all,bjetidx,bgenidx,Tcand);
-	  FillHistBJet("Lepton_"+bjetname+"_NoSL_jOthers"+cut_suffix,bjetidx,bgenidx,Tcand);
+	  FillHistBJet("Lepton_"+bjetname+"_NoSL_jOthers"+cut_suffix_jH,bjetidx,bgenidx,Tcand);
 	}else{
 	  FillHistBJet("Lepton"+LepSign+"_"+bjetname+"_NoSL_jOthers",           bjetidx,bgenidx,Tcand);
 	  //FillHistBJet("Lepton"+LepSign+"_"+bjetname+"_NoSL_jOthers"+cut_suffix_all,bjetidx,bgenidx,Tcand);
-	  FillHistBJet("Lepton"+LepSign+"_"+bjetname+"_NoSL_jOthers"+cut_suffix,bjetidx,bgenidx,Tcand);
+	  FillHistBJet("Lepton"+LepSign+"_"+bjetname+"_NoSL_jOthers"+cut_suffix_jH,bjetidx,bgenidx,Tcand);
 	  if(mOverPtBinStudy){
 	    FillHistBJet("Lepton"+LepSign+"_"+bjetname+"_NoSL_jOthers"+cut_suffix_Pt,bjetidx,bgenidx,Tcand);
 	    FillHistBJet("Lepton"+LepSign+"_"+bjetname+"_NoSL_jOthers"+cut_suffix_mOverPt,bjetidx,bgenidx,Tcand);
@@ -1088,6 +1091,76 @@ TString TTsemiLepChargeScoreEfficiencyMeasurement::GetCutSuffix_eL(const Jet& _t
 
   return ret;
 }
+TString TTsemiLepChargeScoreEfficiencyMeasurement::GetCutSuffix_jH(const Jet& _this_jet){
+
+  TString ret="";
+
+  double this_bjet_pt=_this_jet.Pt();
+  double this_mOverPt=_this_jet.M()/_this_jet.Pt();
+  if(this_bjet_pt > 140.){
+    ret="PT140ToInf";
+    for(size_t i = 0 ; i < v_cut_jH_PT140ToInf.size()-1 ; i++){
+      double this_cut=v_cut_jH_PT140ToInf[i+1];
+      if(this_mOverPt < this_cut){
+        ret+="__mOverPt_"+str_v_cut_jH_PT140ToInf[i]+"_"+str_v_cut_jH_PT140ToInf[i+1];
+        break;
+      }
+    }
+  }
+  else if(this_bjet_pt > 100.){
+    ret="PT100To140";
+
+    for(size_t i = 0 ; i < v_cut_jH_PT100To140.size()-1 ; i++){
+      double this_cut=v_cut_jH_PT100To140[i+1];
+      if(this_mOverPt < this_cut){
+        ret+="__mOverPt_"+str_v_cut_jH_PT100To140[i]+"_"+str_v_cut_jH_PT100To140[i+1];
+        break;
+      }
+    }
+
+  }
+  else if(this_bjet_pt > 70.){
+    ret="PT70To100";
+    for(size_t i = 0 ; i < v_cut_jH_PT70To100.size()-1 ; i++){
+      double this_cut=v_cut_jH_PT70To100[i+1];
+      if(this_mOverPt < this_cut){
+        ret+="__mOverPt_"+str_v_cut_jH_PT70To100[i]+"_"+str_v_cut_jH_PT70To100[i+1];
+        break;
+      }
+    }
+
+  }
+  else if(this_bjet_pt > 50.){
+    ret="PT50To70";
+    for(size_t i = 0 ; i < v_cut_jH_PT50To70.size()-1 ; i++){
+      double this_cut=v_cut_jH_PT50To70[i+1];
+      if(this_mOverPt < this_cut){
+        ret+="__mOverPt_"+str_v_cut_jH_PT50To70[i]+"_"+str_v_cut_jH_PT50To70[i+1];
+        break;
+      }
+    }
+
+  }
+  else if(this_bjet_pt > 30.){
+    ret="PT30To50";
+    for(size_t i = 0 ; i < v_cut_jH_PT30To50.size()-1 ; i++){
+      double this_cut=v_cut_jH_PT30To50[i+1];
+      if(this_mOverPt < this_cut){
+        ret+="__mOverPt_"+str_v_cut_jH_PT30To50[i]+"_"+str_v_cut_jH_PT30To50[i+1];
+        break;
+      }
+    }
+
+  }
+  else{
+    ret="PT0To30";
+  }
+
+
+
+  return ret;
+}
+
 
 
 
