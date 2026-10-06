@@ -1,25 +1,74 @@
-#!/usr/bin/env python2.7
+#!/usr/bin/env python3
+import ROOT
 import optparse
 from ExportShellCondorSetup_tamsa import Export
 from glob import glob
 from collections import OrderedDict
 import os
+import time
 from math import sqrt
 class hadd_submitter:
     def __init__(self,jobname):
         self.jobname=jobname
+    
+    def is_good_root_file(self, path):
+        fullpath=os.getcwd()+'/'+path
+        old_level = ROOT.gErrorIgnoreLevel
+        ROOT.gErrorIgnoreLevel = ROOT.kFatal
+
+        try:
+            f = ROOT.TFile.Open(path, "READ")
+        except OSError:
+            print('FAILTOOPEN->',fullpath)
+            return False
+        finally:
+            ROOT.gErrorIgnoreLevel = old_level
+
+        if not f:
+            print('FAILTOOPEN->',fullpath)
+            return False
+
+        if f.IsZombie():
+            f.Close()
+            print('FAILTOOPEN, ZOMBIE->',fullpath)
+
+            return False
+
+        if f.TestBit(ROOT.TFile.kRecovered):
+            f.Close()
+            print('FAILTOOPEN, RECOVERY->',fullpath)
+
+            return False
+
+        f.Close()
+        return True
+
+    
+    def CheckAllFiles(self):
+        AllFine=True
+        for this_file in self.filelist:
+            thisFine=self.is_good_root_file(this_file)
+            if thisFine==False:
+                AllFine=False
+                break
+        return AllFine
+    def CheckZombieAndWait(self):
+        while True:
+            if self.CheckAllFiles():break
+            time.sleep(300)
+            
     def GetFileList(self,search_phrase):
-        print "search_phrase=",search_phrase
+        print("search_phrase=",search_phrase)
         searches=search_phrase.split()
         self.filelist=[]
         for search in searches:
             self.filelist += glob(search)
 
-        print "[filelist]"
-        print self.filelist
+        print("[filelist]")
+        print(self.filelist)
 
         this_N=len(self.filelist)
-        print "automatically set njobs--->",int(sqrt(this_N))
+        print("automatically set njobs--->",int(sqrt(this_N)))
         self.SetNJobs(int(sqrt(this_N)))
         self.SetFileGroups()
     def SetNJobs(self,N):
@@ -154,8 +203,9 @@ if __name__ == '__main__':
    
    this_hadd=hadd_submitter(jobname)
    this_hadd.GetFileList(inputs)
+   this_hadd.CheckZombieAndWait()
    this_hadd.MakeJobsAll(finalpath)
    if submit:
        submit_command="condor_submit_dag "+"hadd_manager_"+this_hadd.jobname+".dag"
-       print submit_command
+       print(submit_command)
        os.system(submit_command)

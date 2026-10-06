@@ -94,7 +94,7 @@ def Export(WORKDIR,command,jobname,submit,ncpu,memory=False,nretry=3,nmax=False)
     os.system("touch "+WORKDIR+"/run.jid")
     if submit:
         submitcommand='condor_submit '+WORKDIR+'/run.jds > '+WORKDIR+'/run.jid'
-        print submitcommand
+        print(submitcommand)
         os.system(submitcommand)
 
 if __name__ == '__main__':
