@@ -359,13 +359,42 @@ void TTsemiLepChargeScoreEfficiencyMeasurement::Run(){
 void TTsemiLepChargeScoreEfficiencyMeasurement::RunBJet(TString bjetname, int bjetidx, int bgenidx, TLorentzVector &Tcand){
   //---Prompt Lep in the jet
   //---PromptSuffix
-  TString prompt_suffix="";
+
   if(!IsDATA){
+    TString psuffix="";
+    ///---
+    bool PromptContam=false;
+    bool HadronOthers=false;
+    TString PartonSuffix="";
     if(HasPromptLepWithinJet(v_tightjet[bjetidx])){
-      prompt_suffix="_PromptContam";
+      //p="_PromptContam";
+      PromptContam=true;
     }
+    int this_hadronFlavour=v_tightjet[bjetidx].hadronFlavour();
+    int this_partonFlavour = v_tightjet[bjetidx].partonFlavour();
+    
+    if(this_hadronFlavour!=5) HadronOthers=true;
+    if(this_partonFlavour==5){
+      PartonSuffix="Frombminus";
+    }else if(this_partonFlavour==-5){
+      PartonSuffix="Frombplus";
+    }else{
+      PartonSuffix="FromOthers";
+    }
+    //---
+    if(PromptContam){
+      psuffix="PromptContam";
+    }else if(HadronOthers){
+      psuffix="FromOthers";
+    }else{
+      psuffix=PartonSuffix;
+    }
+
+    
+    ProcessName=MCSample+"_"+psuffix;
+    
   }
-  
+  /*  
   ///---Let's Check matching OR not (if it is TTLJ sample <=> bgenidx>-1)---//
   int this_partonFlavour=-9999;
   int this_hadronFlavour=v_tightjet[bjetidx].hadronFlavour();
@@ -377,6 +406,7 @@ void TTsemiLepChargeScoreEfficiencyMeasurement::RunBJet(TString bjetname, int bj
   else{
     hsuffix="__HadronOthers";
   }
+  
   if(!IsDATA){
     this_partonFlavour = v_tightjet[bjetidx].partonFlavour();
     TString psuffix="From"+std::to_string(this_partonFlavour);
@@ -391,6 +421,8 @@ void TTsemiLepChargeScoreEfficiencyMeasurement::RunBJet(TString bjetname, int bj
     }
     ProcessName=MCSample+"_"+psuffix+hsuffix+prompt_suffix;
   }
+  */
+
   //---mOverPt Dist Check
   if(mOverPtOnly){
     FillHist("AllSelected_bjets/bjet_mOverPt", v_tightjet[bjetidx].M()/v_tightjet[bjetidx].Pt(),weight,8,0,0.4);
