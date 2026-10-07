@@ -393,6 +393,8 @@ void TTsemiLepChargeScoreEfficiencyMeasurement::RunBJet(TString bjetname, int bj
     
     ProcessName=MCSample+"_"+psuffix;
     if(MCSample.Contains("QCD_bEnriched")) ProcessName="QCD_bEnriched_"+psuffix;
+    if(MCSample.Contains("ZZ_pythia") || MCSample.Contains("WZ_pythia") || MCSample.Contains("WW_pythia") ) ProcessName="VV_"+psuffix;
+    if(IsDYSample || MCSample.Contains("WJets")) ProcessName="VJets_"+psuffix;
   }
   /*  
   ///---Let's Check matching OR not (if it is TTLJ sample <=> bgenidx>-1)---//
