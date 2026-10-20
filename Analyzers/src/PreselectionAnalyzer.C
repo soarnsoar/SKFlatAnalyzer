@@ -93,6 +93,7 @@ void PreselectionAnalyzer::initializeAnalyzer(){
   doxrange=HasFlag("doxrange");
   xrangetree=HasFlag("xrangetree");
   bdtcut=HasFlag("bdtcut");//applying bdtcut
+  addcharm=HasFlag("addcharm");
   //For x range study//
   if(xrangetree){
     jhchoi_newtree=new TTree("presel","presel");
@@ -1146,7 +1147,7 @@ void PreselectionAnalyzer::FillHistAllChannelWithSuffix(TString cutname){
 
 void PreselectionAnalyzer::FillHistAll(TString cutname){
 
-  FillHist(cutname+"/event",1,weight,1,0,1);
+  FillHist(cutname+"/event",0,weight,1,0,1);
   FillHist(cutname+"/nPV",nPV,weight,100,0,100);
   FillHist(cutname+"/vertex_Z",vertex_Z,weight,80,-20,20);
   FillHist(cutname+"/M_ll",vZ.M(),weight,60,60,120);
@@ -1276,6 +1277,8 @@ void PreselectionAnalyzer::TruthLoop(){
   IsDYbplus=0;
   IsDYbminus=0;
   IsBKG=0;
+  IsDYcplus=0;
+  IsDYcminus=0;
   x_b=100;
   x_g=100;
   suffix_true_nb="";
@@ -1296,11 +1299,14 @@ void PreselectionAnalyzer::TruthLoop(){
   int idx_lhe_b=-1;
   int pid_b=0;
 
+
+  
   unsigned int lhesize=lhes.size();
   for(unsigned int i = 0 ; i < lhesize; i++){
     int status=lhes[i].Status();
     int pid=lhes[i].ID();
     if(status==-1) continue;
+
     if(pid==5){
       nb+=1;
       idx_lhe_b=i;
@@ -1339,6 +1345,31 @@ void PreselectionAnalyzer::TruthLoop(){
     suffix_true_nb="_others"; //dy others
     i_proc=2;
     IsBKG=1;
+  }
+  //--- g+c scattering
+  if(addcharm){
+    if(abs(genWeight_id1)==4){
+      if(genWeight_id2==21){
+	if(genWeight_id1>0){
+	  IsDYcplus=1;
+	  suffix_true_nb="_cplus";
+	}else{
+	  IsDYcminus=1;
+	  suffix_true_nb="_cminus";
+	}
+      }
+    }else if(abs(genWeight_id2)==4){
+      if(genWeight_id1==21){
+	if(genWeight_id2>0){
+	  IsDYcplus=1;
+	  suffix_true_nb="_cplus";
+	}else{
+	  IsDYcminus=1;
+	  suffix_true_nb="_cminus";
+	}
+      }
+    }
+   
   }
   ProcessName=MCSample+suffix_true_nb;
 

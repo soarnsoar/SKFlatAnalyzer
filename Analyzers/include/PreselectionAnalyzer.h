@@ -87,6 +87,8 @@ public:
   
   bool doxrange,xrangetree;
   bool bdtcut;
+  bool addcharm;
+
   double maxMET,min_dphi_z_b,min_z_pt,max_ptzb;
 
   double x_b,x_g;
@@ -95,7 +97,7 @@ public:
   vector<pair<double,double>> e_score_region;
   vector<pair<double,double>> j_score_region; 
   //for optimization
-  bool IsDYbplus,IsDYbminus,IsBKG;
+  bool IsDYbplus,IsDYbminus,IsBKG,IsDYcplus,IsDYcminus;
   vector<double> v_muonscore;
   vector<double> v_muoncharge;
   vector<double> v_electronscore;
