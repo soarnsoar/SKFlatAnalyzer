@@ -128,6 +128,7 @@ bool TTsemiLepChargeScoreAccuracyMeasurement::CheckIsElectronChannel(){
   //SetElectronIdx(v_electronidx[0],v_electronidx[1]);
   //SetElectron(v_electron[0]);
   SetElectron(AllElectrons[v_electronidx[0]]);
+  v_tightelectronidx={v_electronidx[0]};
   return 1;
 }  
 
@@ -448,10 +449,10 @@ void TTsemiLepChargeScoreAccuracyMeasurement::RunBJet(TString bjetname, int bjet
     //double JHAnalyzerBase::Get_SLTEff_Corr(vector<Jet> &_v_Jet, vector<bool> _v_Has_muH, vector<bool> _v_Has_muL, vector<bool> _v_Has_eH, vector<bool> _v_Has_eL){
     if(!splitcharge){
       FillHistBJet("Lepton_"+bjetname+"_1muHOnly"+measured_charge_str,bjetidx,bgenidx,Tcand);
-      FillHistBJet("Lepton_"+bjetname+"_1muHOnly"+measured_charge_str+cut_suffix,bjetidx,bgenidx,Tcand);
+      FillHistBJet("Lepton_"+bjetname+"_1muHOnly"+measured_charge_str+cut_suffix_muH,bjetidx,bgenidx,Tcand);
     }else{
       FillHistBJet("Lepton"+LepSign+"_"+bjetname+"_1muHOnly"+measured_charge_str,           bjetidx,bgenidx,Tcand);
-      FillHistBJet("Lepton"+LepSign+"_"+bjetname+"_1muHOnly"+measured_charge_str+cut_suffix,bjetidx,bgenidx,Tcand);
+      FillHistBJet("Lepton"+LepSign+"_"+bjetname+"_1muHOnly"+measured_charge_str+cut_suffix_muH,bjetidx,bgenidx,Tcand);
     }
   }
   else if(n_muonHigh==0 && n_muonLow==1 && n_electronHigh==0 && n_electronLow==0){
@@ -460,10 +461,10 @@ void TTsemiLepChargeScoreAccuracyMeasurement::RunBJet(TString bjetname, int bjet
     measured_charge_str="_Measured"+measured_charge_str;
     if(!splitcharge){
       FillHistBJet("Lepton_"+bjetname+"_1muLOnly"+measured_charge_str,           bjetidx,bgenidx,Tcand);
-      FillHistBJet("Lepton_"+bjetname+"_1muLOnly"+measured_charge_str+cut_suffix,bjetidx,bgenidx,Tcand);
+      FillHistBJet("Lepton_"+bjetname+"_1muLOnly"+measured_charge_str+cut_suffix_muL,bjetidx,bgenidx,Tcand);
     }else{
       FillHistBJet("Lepton"+LepSign+"_"+bjetname+"_1muLOnly"+measured_charge_str,           bjetidx,bgenidx,Tcand);
-      FillHistBJet("Lepton"+LepSign+"_"+bjetname+"_1muLOnly"+measured_charge_str+cut_suffix,bjetidx,bgenidx,Tcand);
+      FillHistBJet("Lepton"+LepSign+"_"+bjetname+"_1muLOnly"+measured_charge_str+cut_suffix_muL,bjetidx,bgenidx,Tcand);
     }
   }
   else if(n_muonHigh==0 && n_muonLow==0 && n_electronHigh==1 && n_electronLow==0){
@@ -472,10 +473,10 @@ void TTsemiLepChargeScoreAccuracyMeasurement::RunBJet(TString bjetname, int bjet
     measured_charge_str="_Measured"+measured_charge_str;    
     if(!splitcharge){
       FillHistBJet("Lepton_"+bjetname+"_1eHOnly"+measured_charge_str,           bjetidx,bgenidx,Tcand);
-      FillHistBJet("Lepton_"+bjetname+"_1eHOnly"+measured_charge_str+cut_suffix,bjetidx,bgenidx,Tcand);
+      FillHistBJet("Lepton_"+bjetname+"_1eHOnly"+measured_charge_str+cut_suffix_eH,bjetidx,bgenidx,Tcand);
     }else{
       FillHistBJet("Lepton"+LepSign+"_"+bjetname+"_1eHOnly"+measured_charge_str,           bjetidx,bgenidx,Tcand);
-      FillHistBJet("Lepton"+LepSign+"_"+bjetname+"_1eHOnly"+measured_charge_str+cut_suffix,bjetidx,bgenidx,Tcand);
+      FillHistBJet("Lepton"+LepSign+"_"+bjetname+"_1eHOnly"+measured_charge_str+cut_suffix_eH,bjetidx,bgenidx,Tcand);
     }
   }
   else if(n_muonHigh==0 && n_muonLow==0 && n_electronHigh==0 && n_electronLow==1){
@@ -484,10 +485,10 @@ void TTsemiLepChargeScoreAccuracyMeasurement::RunBJet(TString bjetname, int bjet
     measured_charge_str="_Measured"+measured_charge_str;    
     if(!splitcharge){
       FillHistBJet("Lepton_"+bjetname+"_1eLOnly"+measured_charge_str,           bjetidx,bgenidx,Tcand);
-      FillHistBJet("Lepton_"+bjetname+"_1eLOnly"+measured_charge_str+cut_suffix,bjetidx,bgenidx,Tcand);
+      FillHistBJet("Lepton_"+bjetname+"_1eLOnly"+measured_charge_str+cut_suffix_eL,bjetidx,bgenidx,Tcand);
     }else{
       FillHistBJet("Lepton"+LepSign+"_"+bjetname+"_1eLOnly"+measured_charge_str,           bjetidx,bgenidx,Tcand);
-      FillHistBJet("Lepton"+LepSign+"_"+bjetname+"_1eLOnly"+measured_charge_str+cut_suffix,bjetidx,bgenidx,Tcand);
+      FillHistBJet("Lepton"+LepSign+"_"+bjetname+"_1eLOnly"+measured_charge_str+cut_suffix_eL,bjetidx,bgenidx,Tcand);
     }
   }  
   if(n_muonHigh==0 && n_muonLow==0 && n_electronHigh==0 && n_electronLow==0){
