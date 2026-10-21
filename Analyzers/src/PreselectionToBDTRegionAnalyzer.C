@@ -547,7 +547,7 @@ void PreselectionToBDTRegionAnalyzer::RunBasicZregion(){
   }
   else if(n_muonHigh==0 && n_muonLow==0 && n_electronHigh==0 && n_electronLow==0){
     int jetcharge_coeff=GetJetChargeScoreCoeff();
-    if(apply_chargeid_eff_corr) weight*=Get_HighScoreChargeTagID_Eff_Corr({v_bjet[0]},{jetcharge_coeff==1});
+    if(apply_chargeid_eff_corr) weight*=Get_jHEff_Corr({v_bjet[0]},{jetcharge_coeff==1});
     FillHist("ll_1b_noSLT/jetHighPASS",(jetcharge_coeff==1),weight,2,0,2);
     if(jetcharge_coeff==1){
       //RunJetHigh();

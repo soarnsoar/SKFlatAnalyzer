@@ -56,6 +56,7 @@ class JHAnalyzerBase : public AnalyzerCore {
   bool measure_bchargeeff_v4=false;
   
   bool measure_bchargeacc=false;
+  bool measure_bchargeacc_test=false;
 
   bool jetlepveto;
   TString jetidtight;
@@ -831,6 +832,10 @@ class JHAnalyzerBase : public AnalyzerCore {
   vector<vector <vector <TH1D*> > > v_h_SLT_EffSF; // borigin,iSLT,direction
   double Get_SF_bChargeTagID_SLT(int ib, int islt, int ibin, int idir);
 
+  //jH SF Hist
+  vector <vector <TH1D*> >  v_h_jH_EffSF; // borigin,direction
+  double Get_SF_bChargeTagID_jH(int ib, int ibin, int idir);
+
   
   void Read_bChargeAcc_SF();
   int getB(const std::string& s);
@@ -857,6 +862,8 @@ class JHAnalyzerBase : public AnalyzerCore {
   void MeasureMC_bChargeIDEff_test_v3(vector<Jet> vJets);
   void MeasureMC_bChargeIDEff_test_v4(vector<Jet> vJets);
   void MeasureMC_bChargeAcc(vector<Jet> vJets);
+  void MeasureMC_bChargeAcc_test(vector<Jet> vJets);
+  void MeasureMC_bChargeAcc_OLD(vector<Jet> vJets);
   //void JHAnalyzerBase::MeasureMC_bChargeAcc(vector<Jet> vJets )
   vector<int> Count_SLT(const Jet& this_Jet);
   vector<int> Count_SLT_test_v2(const Jet& this_Jet);
@@ -873,7 +880,12 @@ class JHAnalyzerBase : public AnalyzerCore {
 						  const bool Has_muH, const bool Has_muL, const bool Has_eH, const bool Has_eL,
 						  JHAnalyzerBase::SYSDIR SystDir=k_central, int SystBin=-1, int iSystSLT=-1);
 
-  double Get_bChargeTagID_MCEffs_jH(int partonFlavour, double JetPt, double JetEta);
+  double Get_bChargeTagID_MCEff_jH(int this_partonFlavour, int ibin);
+  double Get_jHEff_Corr_givenJet(int this_partonFlavour, int ibin,
+				 bool pass_jH,
+				 JHAnalyzerBase::SYSDIR SystDir=k_central, int SystBin=-1);
+
+  
   double Get_HighScoreChargeTagID_Eff_Corr_givenJet(const Jet& thisJet, const bool pass_jH,
 						    JHAnalyzerBase::SYSDIR SystDir=k_central, JHAnalyzerBase::PtBin SystPtBin=nPtBin, JHAnalyzerBase::EtaBin SystEtaBin=nEtaBin);
   double Get_bChargeAcc_MC(int partonFlavour, int thisChargeID,double JetPt, double JetEta);
@@ -889,14 +901,14 @@ class JHAnalyzerBase : public AnalyzerCore {
   vector <vector <double>> r_bChargeID_SLT_UnCorr_bMinusDown;
 
   //---Corrleated Component--//
-  vector <vector <double>> r_bChargeID_Jet_CorrUp;
-  vector <vector <double>> r_bChargeID_Jet_CorrDown;
+  vector<double> r_bChargeID_jH_CorrUp;
+  vector<double> r_bChargeID_jH_CorrDown;
   //---Uncorr. Component
-  vector <vector <double>> r_bChargeID_Jet_UnCorr_bPlusUp;
-  vector <vector <double>> r_bChargeID_Jet_UnCorr_bPlusDown;
+  vector<double> r_bChargeID_jH_UnCorr_bPlusUp;
+  vector<double> r_bChargeID_jH_UnCorr_bPlusDown;
 
-  vector <vector <double>> r_bChargeID_Jet_UnCorr_bMinusUp;
-  vector <vector <double>> r_bChargeID_Jet_UnCorr_bMinusDown;
+  vector<double> r_bChargeID_jH_UnCorr_bMinusUp;
+  vector<double> r_bChargeID_jH_UnCorr_bMinusDown;
 
 
   ////-----bchargeacc----////
@@ -921,7 +933,10 @@ class JHAnalyzerBase : public AnalyzerCore {
   double arr_r_bChargeAcc_Jet_UnCorr_bMinusDown[2][nPtBin][nEtaBin];  
 
 
-  double Get_HighScoreChargeTagID_Eff_Corr(const vector<Jet> &_v_Jet, const vector<bool> _v_pass_jH);
+  double Get_HighScoreChargeTagID_Eff_Corr(const vector<Jet> &_v_Jet, const vector<bool> _v_pass_jH);//OLD
+  
+  double Get_jHEff_Corr(const vector<Jet> &_v_Jet, const vector<bool> _v_pass_jH);
+
   double Get_SLTEff_Corr(const vector<Jet> &_v_Jet, const vector<bool> &_v_Has_muH, const vector<bool> &_v_Has_muL, const vector<bool> &_v_Has_eH, const vector<bool> &_v_Has_eL);
   pair<int,int> GetMeasuredChargeAndID(const Jet& thisJet, bool ApplyAccCorr=true);
   double GetChargeAccCorr(const Jet& thisJet, int thisChargeID,int measured_charge);  
@@ -959,7 +974,7 @@ class JHAnalyzerBase : public AnalyzerCore {
   int CountNBins_bChargeID(int sltid);
   int nbin_muH,nbin_muL,nbin_eH,nbin_eL;
   vector<int> v_nbin_SLT;
-
+  int nbin_jH;
   int CountNBins_bChargeID_jH();
   int GetBinIndex_jHEff(double this_Pt,
 			double this_mOverPt);

@@ -679,7 +679,7 @@ void TTsemiLepChargeScoreEfficiencyMeasurement::RunBJet(TString bjetname, int bj
       int jetcharge_coeff=GetJetChargeScoreCoeff();
       double weight_HighScoreJet=1.;
       if(apply_bchargeideff){
-	weight_HighScoreJet=Get_HighScoreChargeTagID_Eff_Corr({v_tightjet[bjetidx]},{jetcharge_coeff==1});
+	weight_HighScoreJet=Get_jHEff_Corr({v_tightjet[bjetidx]},{jetcharge_coeff==1});
 	weight*=weight_HighScoreJet;
       }
 

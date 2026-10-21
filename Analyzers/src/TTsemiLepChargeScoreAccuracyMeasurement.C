@@ -190,21 +190,6 @@ void TTsemiLepChargeScoreAccuracyMeasurement::RunReco(){
   njet=v_tightjet.size();
   if(v_tightjet.size()<4) return;
 
-  if(measure_bchargeeff){
-    SetEventWeight();
-    //vector<Jet> JHAnalyzerBase::GetBJet(const vector<Jet> &v_Tightjet){
-    vector<Jet> v_bjet=GetBJet(v_tightjet);
-    MeasureMC_bChargeIDEff(v_bjet);
-    return;
-  }
-
-
-  if(measure_bchargeacc){
-    SetEventWeight();
-    vector<Jet> v_bjet=GetBJet(v_tightjet);
-    MeasureMC_bChargeAcc(v_bjet);
-    return;
-  }
 
   
   //--Now Objects are ready--//
@@ -268,7 +253,26 @@ void TTsemiLepChargeScoreAccuracyMeasurement::Run(){
   }
   
 
-  
+  if(!IsDATA)GetPromptLepGenIdx();
+
+
+  if(measure_bchargeeff){
+    MeasureMC_bChargeIDEff({v_tightjet[iblep],v_tightjet[ibhad]});
+    return;
+  }
+
+
+  if(measure_bchargeacc){
+
+    MeasureMC_bChargeAcc({v_tightjet[iblep],v_tightjet[ibhad]});
+    return;
+  }
+
+  if(measure_bchargeacc_test){
+    MeasureMC_bChargeAcc_test({v_tightjet[iblep],v_tightjet[ibhad]});
+    return;
+  }
+ 
   RunBJet("bJetLeptonicSide",iblep,-1,Tlep_cand);
   RunBJet("bJetHadronicSide",ibhad,-1,Thad_cand);
 
@@ -280,30 +284,41 @@ void TTsemiLepChargeScoreAccuracyMeasurement::Run(){
 
 void TTsemiLepChargeScoreAccuracyMeasurement::RunBJet(TString bjetname, int bjetidx, int bgenidx, TLorentzVector &Tcand){
   
-  ///---Let's Check matching OR not (if it is TTLJ sample <=> bgenidx>-1)---//
-  int this_partonFlavour=-9999;
-  int this_hadronFlavour=v_tightjet[bjetidx].hadronFlavour();
-
-  TString hsuffix="__Hadron"+std::to_string(this_hadronFlavour);
-  if(this_hadronFlavour==5){
-    hsuffix="__HadronB";
-  }
-  else{
-    hsuffix="__HadronOthers";
-  }
   if(!IsDATA){
-    this_partonFlavour = v_tightjet[bjetidx].partonFlavour();
-    TString psuffix="From"+std::to_string(this_partonFlavour);
+    TString psuffix="";
+    ///---                                                                                                                                                                                                
+    bool PromptContam=false;
+    bool HadronOthers=false;
+    TString PartonSuffix="";
+    if(HasPromptLepWithinJet(v_tightjet[bjetidx])){
+      //p="_PromptContam";                                                                                                                                                                                
+      PromptContam=true;
+    }
+    int this_hadronFlavour=v_tightjet[bjetidx].hadronFlavour();
+    int this_partonFlavour = v_tightjet[bjetidx].partonFlavour();
+
+    if(this_hadronFlavour!=5) HadronOthers=true;
     if(this_partonFlavour==5){
-      psuffix="Frombminus";
+      PartonSuffix="Frombminus";
+    }else if(this_partonFlavour==-5){
+      PartonSuffix="Frombplus";
+    }else{
+      PartonSuffix="FromOthers";
     }
-    else if(this_partonFlavour==-5){
-      psuffix="Frombplus";
-    }
-    else{
+    //---                                                                                                                                                                                                 
+    if(PromptContam){
+      psuffix="PromptContam";
+    }else if(HadronOthers){
       psuffix="FromOthers";
+    }else{
+      psuffix=PartonSuffix;
     }
-    ProcessName=MCSample+"_"+psuffix+hsuffix;
+
+
+    ProcessName=MCSample+"_"+psuffix;
+    if(MCSample.Contains("QCD_bEnriched")) ProcessName="QCD_bEnriched_"+psuffix;
+    if(MCSample.Contains("ZZ_pythia") || MCSample.Contains("WZ_pythia") || MCSample.Contains("WW_pythia") ) ProcessName="VV_"+psuffix;
+    if(IsDYSample || MCSample.Contains("WJets")) ProcessName="VJets_"+psuffix;
   }
 
 
@@ -465,7 +480,7 @@ void TTsemiLepChargeScoreAccuracyMeasurement::RunBJet(TString bjetname, int bjet
     measured_charge_str="_Measured"+measured_charge_str;
 
     int jetcharge_coeff=GetJetChargeScoreCoeff();
-    double weight_HighScoreJet=Get_HighScoreChargeTagID_Eff_Corr({v_tightjet[bjetidx]},{jetcharge_coeff==1});
+    double weight_HighScoreJet=Get_jHEff_Corr({v_tightjet[bjetidx]},{jetcharge_coeff==1});
     weight*=weight_HighScoreJet;
     if(jetcharge_coeff==1){
       if(!splitcharge){
