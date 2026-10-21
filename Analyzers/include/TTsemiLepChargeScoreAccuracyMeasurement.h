@@ -39,8 +39,18 @@ public:
 
   void FillHistBJet(TString cutname, int bjetidx, int bgenidx, TLorentzVector &Tcand);
   TString GetCutSuffix(double this_bjet_pt, double this_bjet_eta,bool ignore_etabin=false);
-  TString cut_suffix;
+  TString GetCutSuffix_Pt(const Jet& _this_jet);
+  TString GetCutSuffix_mOverPt(const Jet& _this_jet);
 
+  TString GetCutSuffix_muH(const Jet& _this_jet);
+  TString GetCutSuffix_muL(const Jet& _this_jet);
+  TString GetCutSuffix_eH(const Jet& _this_jet);
+  TString GetCutSuffix_eL(const Jet& _this_jet);
+
+  TString GetCutSuffix_jH(const Jet& _this_jet);
+
+  TString cut_suffix, cut_suffix_Pt, cut_suffix_mOverPt;
+  TString cut_suffix_muH,cut_suffix_muL,cut_suffix_eH,cut_suffix_eL,cut_suffix_jH;
   
   void SetTopAndW();
   TString LepCh, LepSign;

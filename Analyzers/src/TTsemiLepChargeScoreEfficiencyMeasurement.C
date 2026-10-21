@@ -551,8 +551,9 @@ void TTsemiLepChargeScoreEfficiencyMeasurement::RunBJet(TString bjetname, int bj
 
   //void TTsemiLepChargeScoreEfficiencyMeasurement::FillHistBJet(TString cutname, int bjetidx,int bgenidx, TLorentzVector& Tcand){
   if(!HighJetOnly || !runSys){
+    double weight_SLT=1.;
     if(apply_bchargeideff || apply_sltideff){
-      double weight_SLT=Get_SLTEff_Corr({v_tightjet[bjetidx]},{n_muonHigh>0},{n_muonLow>0},{n_electronHigh>0},{n_electronLow>0});
+      weight_SLT=Get_SLTEff_Corr({v_tightjet[bjetidx]},{n_muonHigh>0},{n_muonLow>0},{n_electronHigh>0},{n_electronLow>0});
       weight*=weight_SLT;
     }
     if(n_muonHigh>0){
@@ -662,11 +663,12 @@ void TTsemiLepChargeScoreEfficiencyMeasurement::RunBJet(TString bjetname, int bj
 	FillHistBJet("Lepton"+LepSign+"_"+bjetname+"_No_eL"+cut_suffix_eL,bjetidx,bgenidx,Tcand);    
       }
     }
+    weight=weight/weight_SLT;
   }
   if(HighJetOnly||!runSys){//HighJetOnly
     if(n_muonHigh==0 && n_muonLow==0 && n_electronHigh==0 && n_electronLow==0){
       double weight_SLT=1.;
-      if(HighJetOnly||apply_bchargeideff||apply_sltideff){
+      if(HighJetOnly || apply_bchargeideff || apply_sltideff){
 	//double JHAnalyzerBase::Get_SLTEff_Corr(vector<Jet> &_v_Jet, vector<bool> _v_Has_muH, vector<bool> _v_Has_muL, vector<bool> _v_Has_eH, vector<bool> _v_Has_eL){
 	weight_SLT=Get_SLTEff_Corr({v_tightjet[bjetidx]},{0},{0},{0},{0});
 	weight=weight*weight_SLT;
