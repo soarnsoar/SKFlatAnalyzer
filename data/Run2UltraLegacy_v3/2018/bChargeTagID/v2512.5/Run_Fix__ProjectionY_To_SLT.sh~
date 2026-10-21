@@ -1,2 +1,0 @@
-ARR_FILES=($(ls ))
-
