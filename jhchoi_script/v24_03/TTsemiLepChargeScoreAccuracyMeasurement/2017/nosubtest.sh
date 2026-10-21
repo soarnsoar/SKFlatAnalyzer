@@ -1,0 +1,25 @@
+mkdir -p _use_beff_dasym_JETPUID_L_newlepveto_chi2kincut_bdt2608.2_splitcharge_logs/
+
+FLAG="--userflags use_beff_dasym,JETPUID_L,newlepveto,chi2kincut,bdt2608.2,splitcharge"
+SKIM="--skim SkimTree_SingleLepton_1DeepJetTightWP"
+
+
+YEAR=2017
+MAXJOB=" --nmax 800 "
+
+
+MEM_TT="--memory 6400" ##weight=3 -> 120
+C_TT="--count 3"
+MEM_DY="--memory 6300" ## weight=2 -> 20
+C_DY="--count 3"
+MEM_tW="--memory 6300"
+C_tW="--count 3"
+MEM_ST="--memory 6300"
+C_ST="--count 3"
+
+##--TTLJ
+NJOB=150
+if [[ "$HOSTNAME" == *knu* ]]; then
+    NJOB=300
+fi
+SKFlat.py -a TTsemiLepChargeScoreAccuracyMeasurement  ${SKIM} -i TTLJ_powheg -n 1 -e ${YEAR} $FLAG ${MAXJOB} ${MEM_TT} ${C_TT} --no_exec --reduction 10000
