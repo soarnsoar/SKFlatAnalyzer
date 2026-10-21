@@ -6,10 +6,11 @@ ARR_YEAR=(
 )
 
 ARR_ID=(
-    muH
+    #muH
     #muL
     #eH
     #eL
+    jH
 )
 
 #    ana=sys.argv[1]

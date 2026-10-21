@@ -6,6 +6,6 @@ ana=TTsemiLepChargeScoreEfficiencyMeasurement
 for YEAR in ${ARR_YEAR[@]};do
     #"../"+year+"/BTag/PreselectionAnalyzer_TTLJ_powheg.root"
     rm ${DATA_DIR}/${YEAR}/bChargeTagID/${ana}_HADDED.root
-    hadd -f ${DATA_DIR}/${YEAR}/bChargeTagID/${ana}_HADDED.root ${DATA_DIR}/${YEAR}/bChargeTagID/${ana}_*.root
+    hadd -f ${DATA_DIR}/${YEAR}/bChargeTagID/${ana}_HADDED.root ${DATA_DIR}/${YEAR}/bChargeTagID/${ana}_DYJets*MiNNLO*.root ${DATA_DIR}/${YEAR}/bChargeTagID/${ana}_*SingleTop*.root ${DATA_DIR}/${YEAR}/bChargeTagID/${ana}_TTL*powheg*.root 
     #ls ../${YEAR}/BTag/${ana}_${proc}_*.root 
 done

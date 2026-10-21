@@ -10,8 +10,9 @@ ARR_ID=(
     muL
     eH
     eL
+    jH
 )
-
+#ARR_ID=(jH)
 #    ana=sys.argv[1]
 #    year=sys.argv[2]
 #    ID=sys.argv[3]
