@@ -406,7 +406,7 @@ exit $EXITCODE
       if args.req_cpus:
         request_cpus='request_cpus = '+str(args.req_cpus)
       condor_group=''
-      if UI20:
+      if IsUI20:
           condor_group='accounting_group=group_cms'
       #strict_resource='requirements =   (TARGET.RemoteUserResourcesInUse +    max(RequestCpus, RequestMemory/3200)) <= 400'
       
