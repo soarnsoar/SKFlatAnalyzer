@@ -18,7 +18,7 @@ C_ST="--count 2"
 YEAR=2016a
 ##--TTLJ
 NJOB=80
-if [[ "$HOSTNAME" == *knu* ]]; then
+if [[ "$HOSTNAME" == *knu* || "$HOSTNAME" == *sdfarm* ]]; then
     NJOB=300
     MEM_TT="--memory 3200"
 fi
