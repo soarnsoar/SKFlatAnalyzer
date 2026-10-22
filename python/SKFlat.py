@@ -392,40 +392,7 @@ exit $EXITCODE
     run_commands.close()
 
     submit_command = open(base_rundir+'/submit.jds','w')
-    if IsUI10:
-      print>>submit_command,'''executable = {1}.sh
-universe   = vanilla
-arguments  = $(Process)
-requirements = OpSysMajorVer == 6
-log = condor.log
-getenv     = True
-should_transfer_files = YES
-when_to_transfer_output = ON_EXIT
-output = job_$(Process).log
-error = job_$(Process).err
-transfer_output_remaps = "hists.root = output/hists_$(Process).root"
-queue {0}
-'''.format(str(NJobs), commandsfilename)
-      submit_command.close()
-    elif IsUI20:
-      print>>submit_command,'''executable = {1}.sh
-universe   = vanilla
-requirements = ( HasSingularity == true )
-arguments  = $(Process)
-log = condor.log
-getenv     = True
-should_transfer_files = YES
-when_to_transfer_output = ON_EXIT
-output = job_$(Process).log
-error = job_$(Process).err
-accounting_group=group_cms
-+SingularityImage = "/cvmfs/singularity.opensciencegrid.org/opensciencegrid/osgvo-el6:latest"
-+SingularityBind = "/cvmfs, /cms, /share"
-transfer_output_remaps = "hists.root = output/hists_$(Process).root"
-queue {0}
-'''.format(str(NJobs), commandsfilename)
-      submit_command.close()
-    elif IsTAMSA or IsKNU:
+    if IsTAMSA or IsKNU or IsUI20:
       concurrency_limits=''
       if args.NMax:
         concurrency_limits='concurrency_limits = n'+str(args.NMax)+'.'+os.getenv("USER")
@@ -438,6 +405,9 @@ queue {0}
       request_cpus=''
       if args.req_cpus:
         request_cpus='request_cpus = '+str(args.req_cpus)
+      condor_group=''
+      if UI20:
+          condor_group='accounting_group=group_cms'
       #strict_resource='requirements =   (TARGET.RemoteUserResourcesInUse +    max(RequestCpus, RequestMemory/3200)) <= 400'
       
       #if args.nonstrict:
@@ -456,8 +426,9 @@ transfer_output_remaps = "hists.root = output/hists_$(Process).root"
 {2}
 {3}
 {4}
+{5}
 queue {0}
-'''.format(str(NJobs), commandsfilename,concurrency_limits,request_memory,request_cpus)
+'''.format(str(NJobs), commandsfilename,concurrency_limits,request_memory,request_cpus,condor_group)
       submit_command.close()
 
   CheckTotalNFile=0
