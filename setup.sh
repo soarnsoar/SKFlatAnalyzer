@@ -60,8 +60,10 @@ export NUMEXPR_NUM_THREADS=1
 if [[ $HOSTNAME == *"ui"*".sdfarm.kr"* ]]; then
 
   echo "@@@@ Working on KISTI"
-  export SKFlatRunlogDir="/cms/ldap_home/$USER/SKFlatRunlog/"
-  export SKFlatOutputDir="/cms/ldap_home/$USER/SKFlatOutput/"
+  #export SKFlatRunlogDir="/cms/ldap_home/$USER/SKFlatRunlog/"
+  #export SKFlatOutputDir="/cms/ldap_home/$USER/SKFlatOutput/"
+  export SKFlatRunlogDir="/cms_scratch/$USER/SKFlatRunlog/"
+  export SKFlatOutputDir="/cms_scratch/$USER/SKFlatOutput/"
 
 elif [[ $HOSTNAME == *"tamsa1"* ]]; then
 
