@@ -126,6 +126,11 @@ public:
   TString JETPUID="";
   //bool TurnOnFillHist;
 
+  //due to memory, split flag..
+  bool muHOnly, muLOnly, eHOnly, eLOnly, jHOnly, jOthersOnly;
+  bool RunOnly;
+
+  
   int i_LightJet1,i_LightJet2;
   int iblep;
   int ibhad;

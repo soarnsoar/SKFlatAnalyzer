@@ -81,7 +81,17 @@ void TTsemiLepChargeScoreAccuracyMeasurement::initializeAnalyzer(){
     
   }
 
+  //
 
+  muHOnly=HasFlag("muHOnly");
+  muLOnly=HasFlag("muLOnly");
+  eHOnly=HasFlag("eHOnly");
+  eLOnly=HasFlag("eLOnly");
+
+  jHOnly=HasFlag("jHOnly");
+  jOthersOnly=HasFlag("jOthersOnly");
+  RunOnly=0;
+  if(muHOnly||muLOnly||eHOnly||eLOnly||jHOnly||jOthersOnly) RunOnly=1;
 
 }
 
@@ -443,6 +453,7 @@ void TTsemiLepChargeScoreAccuracyMeasurement::RunBJet(TString bjetname, int bjet
   if(weight_SLT>0)weight*= weight_SLT;
 
   if(n_muonHigh==1 && n_muonLow==0 && n_electronHigh==0 && n_electronLow==0){
+    if(RunOnly && !muHOnly) return;
     int measured_charge=muonHigh->Charge();
     TString measured_charge_str= measured_charge > 0 ? "Plus" : measured_charge < 0 ? "Minus" : "Zero";
     measured_charge_str="_Measured"+measured_charge_str;
@@ -456,6 +467,7 @@ void TTsemiLepChargeScoreAccuracyMeasurement::RunBJet(TString bjetname, int bjet
     }
   }
   else if(n_muonHigh==0 && n_muonLow==1 && n_electronHigh==0 && n_electronLow==0){
+    if(RunOnly && !muLOnly) return;
     int measured_charge= -muonLow->Charge();
     TString measured_charge_str= measured_charge > 0 ? "Plus" : measured_charge < 0 ? "Minus" : "Zero";
     measured_charge_str="_Measured"+measured_charge_str;
@@ -468,6 +480,8 @@ void TTsemiLepChargeScoreAccuracyMeasurement::RunBJet(TString bjetname, int bjet
     }
   }
   else if(n_muonHigh==0 && n_muonLow==0 && n_electronHigh==1 && n_electronLow==0){
+    if(RunOnly && !eHOnly) return;
+
     int measured_charge= electronHigh->Charge();
     TString measured_charge_str= measured_charge > 0 ? "Plus" : measured_charge < 0 ? "Minus" : "Zero";
     measured_charge_str="_Measured"+measured_charge_str;    
@@ -480,6 +494,7 @@ void TTsemiLepChargeScoreAccuracyMeasurement::RunBJet(TString bjetname, int bjet
     }
   }
   else if(n_muonHigh==0 && n_muonLow==0 && n_electronHigh==0 && n_electronLow==1){
+    if(RunOnly && !eLOnly) return;	
     int measured_charge= -electronLow->Charge();
     TString measured_charge_str= measured_charge > 0 ? "Plus" : measured_charge < 0 ? "Minus" : "Zero";
     measured_charge_str="_Measured"+measured_charge_str;    
@@ -493,6 +508,7 @@ void TTsemiLepChargeScoreAccuracyMeasurement::RunBJet(TString bjetname, int bjet
   }  
   if(n_muonHigh==0 && n_muonLow==0 && n_electronHigh==0 && n_electronLow==0){
 
+
     SetJetChargeScore(v_tightjet[bjetidx]);
     jetscore=GetJetChargeScore();
     jetcharge=v_tightjet[bjetidx].Charge();
@@ -504,6 +520,7 @@ void TTsemiLepChargeScoreAccuracyMeasurement::RunBJet(TString bjetname, int bjet
     double weight_HighScoreJet=Get_jHEff_Corr({v_tightjet[bjetidx]},{jetcharge_coeff==1});
     weight*=weight_HighScoreJet;
     if(jetcharge_coeff==1){
+      if(RunOnly && !jHOnly) return;
       if(!splitcharge){
 	FillHistBJet("Lepton_"+bjetname+"_NoSL_jH"+measured_charge_str,           bjetidx,bgenidx,Tcand);
 	FillHistBJet("Lepton_"+bjetname+"_NoSL_jH"+measured_charge_str+cut_suffix_jH,bjetidx,bgenidx,Tcand);
@@ -513,6 +530,7 @@ void TTsemiLepChargeScoreAccuracyMeasurement::RunBJet(TString bjetname, int bjet
       }
     }
     else{
+      if(RunOnly && !jOthersOnly) return;
       if(!splitcharge){
 	FillHistBJet("Lepton_"+bjetname+"_NoSL_jOthers"+measured_charge_str,           bjetidx,bgenidx,Tcand);
 	FillHistBJet("Lepton_"+bjetname+"_NoSL_jOthers"+measured_charge_str+cut_suffix_jH,bjetidx,bgenidx,Tcand);
