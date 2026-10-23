@@ -6,6 +6,7 @@ from glob import glob
 from collections import OrderedDict
 import os
 import time
+from datetime import datetime
 from math import sqrt
 class hadd_submitter:
     def __init__(self,jobname):
@@ -55,6 +56,9 @@ class hadd_submitter:
     def CheckZombieAndWait(self):
         while True:
             if self.CheckAllFiles():break
+            print('sleep 5min....')
+            now = datetime.now()
+            print(now)
             time.sleep(300)
             
     def GetFileList(self,search_phrase):
@@ -115,7 +119,7 @@ class hadd_submitter:
         this_maxsize=self.GetMaxFileSize(_list)
         _req_memory=int(this_maxsize*nfiles)
         #r=3
-        r=4
+        r=5
         #if _req_memory < 13000:
         #    _req_memory=13000
         #elif _req_memory<30000:
