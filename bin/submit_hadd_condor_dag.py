@@ -126,8 +126,8 @@ class hadd_submitter:
         #    _req_memory=30000
         #if _req_memory > 200000 : _req_memory=200000
         _req_memory=_req_memory*r
-        if _req_memory < 2048:
-            _req_memory=2048
+        if _req_memory < 3200:
+            _req_memory=3200
         return _req_memory
     
     def MakeJobGroupIdx(self,j):
