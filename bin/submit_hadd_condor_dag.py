@@ -209,7 +209,13 @@ if __name__ == '__main__':
    this_hadd.GetFileList(inputs)
    this_hadd.CheckZombieAndWait()
    this_hadd.MakeJobsAll(finalpath)
+
+   group_opt=''
+   ##-append 'accounting_group = group_cms' 
+   HOSTNAME=os.getenv('HOSTNAME')
+   if 'sdfarm' in HOSTNAME:
+       group_opt=" -append 'accounting_group = group_cms' "
    if submit:
-       submit_command="condor_submit_dag "+"hadd_manager_"+this_hadd.jobname+".dag"
+       submit_command="condor_submit_dag "+group_opt+" hadd_manager_"+this_hadd.jobname+".dag"
        print(submit_command)
        os.system(submit_command)
