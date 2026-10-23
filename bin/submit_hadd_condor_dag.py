@@ -119,7 +119,8 @@ class hadd_submitter:
         this_maxsize=self.GetMaxFileSize(_list)
         _req_memory=int(this_maxsize*nfiles)
         #r=3
-        r=5
+        #r=5
+        r=7
         #if _req_memory < 13000:
         #    _req_memory=13000
         #elif _req_memory<30000:
