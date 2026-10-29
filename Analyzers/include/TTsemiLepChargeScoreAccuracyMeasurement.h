@@ -49,6 +49,8 @@ public:
 
   TString GetCutSuffix_jH(const Jet& _this_jet);
 
+  TString GetCutSuffix_By_0p15(const Jet& _this_jet);
+  
   TString cut_suffix, cut_suffix_Pt, cut_suffix_mOverPt;
   TString cut_suffix_muH,cut_suffix_muL,cut_suffix_eH,cut_suffix_eL,cut_suffix_jH;
   

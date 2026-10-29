@@ -547,14 +547,16 @@ void TTsemiLepChargeScoreEfficiencyMeasurement::RunBJet(TString bjetname, int bj
     }
 
   }//[end electron for loop]
-  
-
+  double weight_orig=weight;
+  bool weight_SLT_done=0;
+  bool weight_HighScoreJet_done=0;
   //void TTsemiLepChargeScoreEfficiencyMeasurement::FillHistBJet(TString cutname, int bjetidx,int bgenidx, TLorentzVector& Tcand){
   if(!HighJetOnly || !runSys){
     double weight_SLT=1.;
     if(apply_bchargeideff || apply_sltideff){
       weight_SLT=Get_SLTEff_Corr({v_tightjet[bjetidx]},{n_muonHigh>0},{n_muonLow>0},{n_electronHigh>0},{n_electronLow>0});
       weight*=weight_SLT;
+      weight_SLT_done=1;
     }
     if(n_muonHigh>0){
       if(!splitcharge){
@@ -663,15 +665,18 @@ void TTsemiLepChargeScoreEfficiencyMeasurement::RunBJet(TString bjetname, int bj
 	FillHistBJet("Lepton"+LepSign+"_"+bjetname+"_No_eL"+cut_suffix_eL,bjetidx,bgenidx,Tcand);    
       }
     }
-    weight=weight/weight_SLT;
+
   }
   if(HighJetOnly||!runSys){//HighJetOnly
     if(n_muonHigh==0 && n_muonLow==0 && n_electronHigh==0 && n_electronLow==0){
       double weight_SLT=1.;
       if(HighJetOnly || apply_bchargeideff || apply_sltideff){
 	//double JHAnalyzerBase::Get_SLTEff_Corr(vector<Jet> &_v_Jet, vector<bool> _v_Has_muH, vector<bool> _v_Has_muL, vector<bool> _v_Has_eH, vector<bool> _v_Has_eL){
-	weight_SLT=Get_SLTEff_Corr({v_tightjet[bjetidx]},{0},{0},{0},{0});
-	weight=weight*weight_SLT;
+	if(!weight_SLT_done){
+	  weight_SLT=Get_SLTEff_Corr({v_tightjet[bjetidx]},{0},{0},{0},{0});
+	  weight=weight*weight_SLT;
+	  weight_SLT_done=1;
+	}
       }
 
       
@@ -683,6 +688,7 @@ void TTsemiLepChargeScoreEfficiencyMeasurement::RunBJet(TString bjetname, int bj
       if(apply_bchargeideff){
 	weight_HighScoreJet=Get_jHEff_Corr({v_tightjet[bjetidx]},{jetcharge_coeff==1});
 	weight*=weight_HighScoreJet;
+	weight_HighScoreJet_done=1;
       }
 
       if(!splitcharge){//deno
@@ -725,9 +731,9 @@ void TTsemiLepChargeScoreEfficiencyMeasurement::RunBJet(TString bjetname, int bj
 	  }
 	}
       }//[end] if jOthers
-      weight=weight/weight_SLT/weight_HighScoreJet;
     }//[end] No SLT
   }//[end]HighJetOnly
+  weight=weight_orig;
 }
 
 TString TTsemiLepChargeScoreEfficiencyMeasurement::GetCutSuffix_OLD(double this_bjet_pt,double this_bjet_eta,bool ignore_etabin){

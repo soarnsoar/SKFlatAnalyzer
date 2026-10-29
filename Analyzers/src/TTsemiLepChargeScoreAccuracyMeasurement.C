@@ -349,13 +349,21 @@ void TTsemiLepChargeScoreAccuracyMeasurement::RunBJet(TString bjetname, int bjet
   cut_suffix_mOverPt=GetCutSuffix_mOverPt(v_tightjet[bjetidx]);
   cut_suffix="__"+cut_suffix_mOverPt+"__"+cut_suffix_Pt;
 
+  /*
   cut_suffix_muH= "__"+GetCutSuffix_muH(v_tightjet[bjetidx]);
   cut_suffix_muL= "__"+GetCutSuffix_muL(v_tightjet[bjetidx]);
   cut_suffix_eH= "__"+GetCutSuffix_eH(v_tightjet[bjetidx]);
   cut_suffix_eL= "__"+GetCutSuffix_eL(v_tightjet[bjetidx]);
 
   cut_suffix_jH= "__"+GetCutSuffix_jH(v_tightjet[bjetidx]);
+  */
 
+  //GetCutSuffix_By_0p15 -- 261029
+  cut_suffix_muH= "__"+GetCutSuffix_By_0p15(v_tightjet[bjetidx]);
+  cut_suffix_muL= "__"+GetCutSuffix_By_0p15(v_tightjet[bjetidx]);
+  cut_suffix_eH= "__"+GetCutSuffix_By_0p15(v_tightjet[bjetidx]);
+  cut_suffix_eL= "__"+GetCutSuffix_By_0p15(v_tightjet[bjetidx]);
+  cut_suffix_jH= "__"+GetCutSuffix_By_0p15(v_tightjet[bjetidx]);
   
   //cut_suffix=GetCutSuffix(v_tightjet[bjetidx].Pt(),v_tightjet[bjetidx].Eta(),noetabin);
   //TString cut_suffix_all=GetCutSuffix(v_tightjet[bjetidx].Pt(),v_tightjet[bjetidx].Eta(),false);
@@ -449,11 +457,15 @@ void TTsemiLepChargeScoreAccuracyMeasurement::RunBJet(TString bjetname, int bjet
   //void TTsemiLepChargeScoreAccuracyMeasurement::FillHistBJet(TString cutname, int bjetidx,int bgenidx, TLorentzVector& Tcand){
   ///
   double weight_SLT=1.;
+  double weight_orig=weight;
   weight_SLT=Get_SLTEff_Corr({v_tightjet[bjetidx]},{n_muonHigh>0},{n_muonLow>0},{n_electronHigh>0},{n_electronLow>0});
   if(weight_SLT>0)weight*= weight_SLT;
 
   if(n_muonHigh==1 && n_muonLow==0 && n_electronHigh==0 && n_electronLow==0){
-    if(RunOnly && !muHOnly) return;
+    if(RunOnly && !muHOnly){
+      weight=weight_orig;
+      return;
+    }
     int measured_charge=muonHigh->Charge();
     TString measured_charge_str= measured_charge > 0 ? "Plus" : measured_charge < 0 ? "Minus" : "Zero";
     measured_charge_str="_Measured"+measured_charge_str;
@@ -467,7 +479,10 @@ void TTsemiLepChargeScoreAccuracyMeasurement::RunBJet(TString bjetname, int bjet
     }
   }
   else if(n_muonHigh==0 && n_muonLow==1 && n_electronHigh==0 && n_electronLow==0){
-    if(RunOnly && !muLOnly) return;
+    if(RunOnly && !muLOnly) {
+      weight=weight_orig;
+      return;
+    }
     int measured_charge= -muonLow->Charge();
     TString measured_charge_str= measured_charge > 0 ? "Plus" : measured_charge < 0 ? "Minus" : "Zero";
     measured_charge_str="_Measured"+measured_charge_str;
@@ -480,8 +495,10 @@ void TTsemiLepChargeScoreAccuracyMeasurement::RunBJet(TString bjetname, int bjet
     }
   }
   else if(n_muonHigh==0 && n_muonLow==0 && n_electronHigh==1 && n_electronLow==0){
-    if(RunOnly && !eHOnly) return;
-
+    if(RunOnly && !eHOnly){
+      weight=weight_orig;
+      return;
+    }
     int measured_charge= electronHigh->Charge();
     TString measured_charge_str= measured_charge > 0 ? "Plus" : measured_charge < 0 ? "Minus" : "Zero";
     measured_charge_str="_Measured"+measured_charge_str;    
@@ -494,7 +511,10 @@ void TTsemiLepChargeScoreAccuracyMeasurement::RunBJet(TString bjetname, int bjet
     }
   }
   else if(n_muonHigh==0 && n_muonLow==0 && n_electronHigh==0 && n_electronLow==1){
-    if(RunOnly && !eLOnly) return;	
+    if(RunOnly && !eLOnly){
+      weight=weight_orig;
+      return;
+    }
     int measured_charge= -electronLow->Charge();
     TString measured_charge_str= measured_charge > 0 ? "Plus" : measured_charge < 0 ? "Minus" : "Zero";
     measured_charge_str="_Measured"+measured_charge_str;    
@@ -520,7 +540,10 @@ void TTsemiLepChargeScoreAccuracyMeasurement::RunBJet(TString bjetname, int bjet
     double weight_HighScoreJet=Get_jHEff_Corr({v_tightjet[bjetidx]},{jetcharge_coeff==1});
     weight*=weight_HighScoreJet;
     if(jetcharge_coeff==1){
-      if(RunOnly && !jHOnly) return;
+      if(RunOnly && !jHOnly){
+	weight=weight_orig;
+	return;
+      }
       if(!splitcharge){
 	FillHistBJet("Lepton_"+bjetname+"_NoSL_jH"+measured_charge_str,           bjetidx,bgenidx,Tcand);
 	FillHistBJet("Lepton_"+bjetname+"_NoSL_jH"+measured_charge_str+cut_suffix_jH,bjetidx,bgenidx,Tcand);
@@ -530,7 +553,10 @@ void TTsemiLepChargeScoreAccuracyMeasurement::RunBJet(TString bjetname, int bjet
       }
     }
     else{
-      if(RunOnly && !jOthersOnly) return;
+      if(RunOnly && !jOthersOnly){
+	weight=weight_orig;
+	return;
+      }
       if(!splitcharge){
 	FillHistBJet("Lepton_"+bjetname+"_NoSL_jOthers"+measured_charge_str,           bjetidx,bgenidx,Tcand);
 	FillHistBJet("Lepton_"+bjetname+"_NoSL_jOthers"+measured_charge_str+cut_suffix_jH,bjetidx,bgenidx,Tcand);
@@ -540,10 +566,11 @@ void TTsemiLepChargeScoreAccuracyMeasurement::RunBJet(TString bjetname, int bjet
       }
     }
 
-    weight=weight/weight_HighScoreJet;
+    //weight=weight/weight_HighScoreJet;
   }//[end] No SLT
-  if(weight_SLT>0)weight= weight/weight_SLT;
-
+  //if(weight_SLT>0)weight= weight/weight_SLT;
+  weight=weight_orig;
+  return;
 }
 
 TString TTsemiLepChargeScoreAccuracyMeasurement::GetCutSuffix_Pt(const Jet& _this_jet){
@@ -594,12 +621,44 @@ TString TTsemiLepChargeScoreAccuracyMeasurement::GetCutSuffix_mOverPt(const Jet&
 
 }
 
+TString TTsemiLepChargeScoreAccuracyMeasurement::GetCutSuffix_By_0p15(const Jet& _this_jet){
+  
 
+  TString ret="";
+  
+  double this_bjet_pt=_this_jet.Pt();
+  double this_mOverPt=_this_jet.M()/_this_jet.Pt();
+  
+  if(this_bjet_pt > 140.){
+    ret="PT140ToInf";
+  }
+  else if(this_bjet_pt > 100.){
+    ret="PT100To140";
+  }
+  else if(this_bjet_pt > 70.){
+    ret="PT70To100";
+  }
+  else if(this_bjet_pt > 50.){
+    ret="PT50To70";
+  }
+  else if(this_bjet_pt > 30.){
+    ret="PT30To50";
+  }
+  else{
+    ret="PT0To30";
+  }
+  
+  if(this_mOverPt < 0.15){
+    ret+="__mOverPt_0_0p15";
+  }else{
+    ret+="__mOverPt_0p15_1";
+  }
+    
+  return ret;
+}
 
 
 TString TTsemiLepChargeScoreAccuracyMeasurement::GetCutSuffix_muH(const Jet& _this_jet){
-
-
   TString ret="";
 
   double this_bjet_pt=_this_jet.Pt();
@@ -666,7 +725,10 @@ TString TTsemiLepChargeScoreAccuracyMeasurement::GetCutSuffix_muH(const Jet& _th
 
 
   return ret;
+
+
 }
+
 
 
 TString TTsemiLepChargeScoreAccuracyMeasurement::GetCutSuffix_muL(const Jet& _this_jet){
