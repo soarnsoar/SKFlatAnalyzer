@@ -19,7 +19,7 @@ C_ST="--count 3"
 
 ##--TTLJ
 NJOB=150
-if [[ "$HOSTNAME" == *knu* ]]; then
+if [[ "$HOSTNAME" == *knu* || "$HOSTNAME" == *sdfarm* ]]; then
     NJOB=300
 fi
 SKFlat.py -a TTsemiLepChargeScoreAccuracyMeasurement  ${SKIM} -i TTLJ_powheg -n 1 -e ${YEAR} $FLAG ${MAXJOB} ${MEM_TT} ${C_TT} --no_exec --reduction 10000

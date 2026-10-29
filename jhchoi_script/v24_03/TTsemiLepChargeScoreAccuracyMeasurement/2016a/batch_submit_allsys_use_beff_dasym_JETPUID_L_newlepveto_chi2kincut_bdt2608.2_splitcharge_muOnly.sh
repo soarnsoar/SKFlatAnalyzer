@@ -21,7 +21,7 @@ NJOB=80
 if [[ "$HOSTNAME" == *knu* || "$HOSTNAME" == *sdfarm* ]]; then
     NJOB=300
 fi    
-#if [[ "$HOSTNAME" == *knu* ]]; then
+#if [[ "$HOSTNAME" == *knu* || "$HOSTNAME" == *sdfarm* ]]; then
 #    NJOB=300
 #    MEM_TT="--memory 3200"
 #fi

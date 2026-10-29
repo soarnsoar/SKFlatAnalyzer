@@ -17,14 +17,14 @@ C_ST="--count 4"
 YEAR=2016a
 ##--TTLJ
 NJOB=80
-if [[ "$HOSTNAME" == *knu* ]]; then
+if [[ "$HOSTNAME" == *knu* || "$HOSTNAME" == *sdfarm* ]]; then
     NJOB=300
 fi
 SKFlat.py -a TTsemiLepChargeScoreAccuracyMeasurement  ${SKIM} -i TTLJ_powheg -n ${NJOB} -e ${YEAR} $FLAG ${MAXJOB} ${MEM_TT} ${C_TT} &> _use_beff_dasym_JETPUID_L_newlepveto_chi2kincut_bdt2608.2_splitcharge_syslogs/TTLJ_powheg.log&
 sleep 15
 ##--TTLL
 NJOB=50
-if [[ "$HOSTNAME" == *knu* ]]; then
+if [[ "$HOSTNAME" == *knu* || "$HOSTNAME" == *sdfarm* ]]; then
     NJOB=300
 fi
 SKFlat.py -a TTsemiLepChargeScoreAccuracyMeasurement  ${SKIM} -i TTLL_powheg -n ${NJOB} -e ${YEAR} $FLAG ${MAXJOB} ${MEM_TT} ${C_TT} &> _use_beff_dasym_JETPUID_L_newlepveto_chi2kincut_bdt2608.2_splitcharge_syslogs/TTLL_powheg.log&
