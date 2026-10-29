@@ -6,6 +6,7 @@ import math
 #source $CMS_PATH/cmsset_default.sh
 
 def Export(WORKDIR,command,jobname,submit,ncpu,memory=False,nretry=3,nmax=False):
+    HOSTNAME=os.getenv("HOSTNAME")
     command='('+command+')'
     os.system('mkdir -p '+WORKDIR)
     f=open(WORKDIR+'/run.sh','w')
@@ -69,6 +70,8 @@ def Export(WORKDIR,command,jobname,submit,ncpu,memory=False,nretry=3,nmax=False)
     lines.append('output = '+os.getcwd()+'/'+WORKDIR+'/run.out')
     lines.append('error = '+os.getcwd()+'/'+WORKDIR+'/run.err')
     lines.append('log = '+os.getcwd()+'/'+WORKDIR+'/run.log')
+    if 'sdfarm' in HOSTNAME :##kisti
+        lines.append('accounting_group=group_cms')            
     consumption='1' ## consumption of concurrency limit 
     if memory:
         lines.append('request_memory = '+str(int(memory))+' MB \n')

@@ -3,7 +3,8 @@
 
 #include <iostream>
 #include <TString.h>
-#include "/usr/include/boost/math/tools/cxx03_warn.hpp" // to detour c++03 bug during compiling
+//#include "/usr/include/boost/math/tools/cxx03_warn.hpp" // to detour c++03 bug during compiling
+#include <boost/math/tools/cxx03_warn.hpp> // to detour the c++03 bug
 #include "boost/math/special_functions/erf.hpp"
 //#include <cmath>
 class AsymCrystalBall{

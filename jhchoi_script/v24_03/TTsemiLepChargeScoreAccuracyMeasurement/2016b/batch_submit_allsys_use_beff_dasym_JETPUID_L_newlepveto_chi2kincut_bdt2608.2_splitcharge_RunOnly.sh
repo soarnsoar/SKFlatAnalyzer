@@ -28,17 +28,22 @@ YEAR=2016b
 
 ##---TTLJ
 NJOB=80
+#if [[ "$HOSTNAME" == *knu* ]]; then
+#    NJOB=300
+#    MEM_TT="--memory 3200"
+#fi
 if [[ "$HOSTNAME" == *knu* || "$HOSTNAME" == *sdfarm* ]]; then
     NJOB=300
-    MEM_TT="--memory 3200"
 fi
+
+
 SKFlat.py -a TTsemiLepChargeScoreAccuracyMeasurement  ${SKIM} -i TTLJ_powheg -n ${NJOB} -e ${YEAR} $FLAG ${MAXJOB} ${MEM_TT} ${C_TT} &> _use_beff_dasym_JETPUID_L_newlepveto_chi2kincut_bdt2608.2_splitcharge_${ThisID}Only_syslogs/TTLJ_powheg.log&
 sleep 15
 ##---TTLL
 NJOB=20
-if [[ "$HOSTNAME" == *knu* ]]; then
-    NJOB=300
-fi
+#if [[ "$HOSTNAME" == *knu* ]]; then
+#    NJOB=300
+#fi
 SKFlat.py -a TTsemiLepChargeScoreAccuracyMeasurement  ${SKIM} -i TTLL_powheg -n ${NJOB} -e ${YEAR} $FLAG ${MAXJOB} ${MEM_TT} ${C_TT} &> _use_beff_dasym_JETPUID_L_newlepveto_chi2kincut_bdt2608.2_splitcharge_${ThisID}Only_syslogs/TTLL_powheg.log&
 sleep 15
 ##--DY
