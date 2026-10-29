@@ -4,7 +4,7 @@
 #grep -r "err" 201*/ApplyBtagSF_use_beff_JETPUID_L_chi2kincut_syslogs/*.log|grep -v HT|grep ERR
 
 logdirs=(
-_use_beff_dasym_JETPUID_L_newlepveto_chi2kincut_bdt2608.2_splitcharge_measure_bchargeacc_test_logs
+    _use_beff_dasym_JETPUID_L_newlepveto_chi2kincut_bdt2608.2_splitcharge_*
 )
 for logdir in ${logdirs[@]};do
     grep -r "rr" 201*/${logdir}/*.log|grep -v HT

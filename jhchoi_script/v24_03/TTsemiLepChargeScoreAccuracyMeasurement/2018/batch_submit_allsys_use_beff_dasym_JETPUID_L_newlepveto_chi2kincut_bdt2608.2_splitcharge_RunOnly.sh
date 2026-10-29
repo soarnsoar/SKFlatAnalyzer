@@ -33,7 +33,7 @@ fi
 SKFlat.py -a TTsemiLepChargeScoreAccuracyMeasurement  ${SKIM} -i TTLJ_powheg -n ${NJOB} -e ${YEAR} $FLAG ${MAXJOB} ${MEM_TT} ${C_TT} &> _use_beff_dasym_JETPUID_L_newlepveto_chi2kincut_bdt2608.2_splitcharge_${ThisID}Only_syslogs/TTLJ_powheg.log&
 sleep 15
 ##---TTLL
-NJOB=30
+NJOB=100
 if [[ "$HOSTNAME" == *knu* || "$HOSTNAME" == *sdfarm* ]]; then
     NJOB=300
 fi

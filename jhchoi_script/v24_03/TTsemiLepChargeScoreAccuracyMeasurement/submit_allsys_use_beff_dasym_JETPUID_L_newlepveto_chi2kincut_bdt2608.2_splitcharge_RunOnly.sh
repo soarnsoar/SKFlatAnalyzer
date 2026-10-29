@@ -1,14 +1,15 @@
 ARR_ID=(
     #muH
-    muL
+    #muL
     #eH
     #eL
-    #jH
+    jH
     #jOthers
 )
 
 
 ARR_DIR=(2017 2016a 2016b 2018)
+#ARR_DIR=(2016a 2016b 2018)
 for ID in ${ARR_ID[@]};do
     for D in ${ARR_DIR[@]};do
 	echo ${D}

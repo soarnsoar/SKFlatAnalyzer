@@ -26,7 +26,7 @@ SKFlat.py -a TTsemiLepChargeScoreAccuracyMeasurement  ${SKIM} -i TTLJ_powheg -n 
 sleep 15
 
 ##---TTLL
-NJOB=30
+NJOB=100
 if [[ "$HOSTNAME" == *knu* ]]; then
     NJOB=300
 fi
