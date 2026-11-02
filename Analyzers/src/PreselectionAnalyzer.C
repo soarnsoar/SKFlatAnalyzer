@@ -94,6 +94,7 @@ void PreselectionAnalyzer::initializeAnalyzer(){
   xrangetree=HasFlag("xrangetree");
   bdtcut=HasFlag("bdtcut");//applying bdtcut
   addcharm=HasFlag("addcharm");
+  
   //For x range study//
   if(xrangetree){
     jhchoi_newtree=new TTree("presel","presel");
@@ -551,7 +552,10 @@ void PreselectionAnalyzer::RunBasicZregion(){
   FillHistAllChannel("After__maxMET__max_ptzb__min_z_pt");
 
 
-
+  if( moverpt_pu_test){
+    FillHist_nPV_VS_mOverPt("Presel",nPV,v_bjet[0]);
+    return;
+  }
 
 
   if(IsDYbplus || IsDYbminus){

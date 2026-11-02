@@ -72,6 +72,7 @@ void JHAnalyzerBase::initializeAnalyzer(){
 
   measure_bchargeacc=HasFlag("measure_bchargeacc");
   measure_bchargeacc_test=HasFlag("measure_bchargeacc_test");
+  moverpt_pu_test=HasFlag("moverpt_pu_test");
   UsePfMET=HasFlag("pfmet");
   if(UsePfMET){
     cout << "[jhchoi] UsePfMET!!" << endl;
@@ -9841,4 +9842,67 @@ vector<TString> JHAnalyzerBase::ConvertCutVectorToString(    const vector<double
   return ret;
 }
 
-  
+
+void JHAnalyzerBase::FillHist_nPV_VS_mOverPt(TString _cutname, double _nPV, const Jet& thisJet){
+
+  double this_pt = thisJet.Pt();
+  double this_m = thisJet.M();
+
+  if(this_pt <= 0.) return;
+
+  double _mOverPt = this_m / this_pt;
+
+  // Jet Pt bin
+  TString ptBin = "";
+
+  if(this_pt >= 140.)     ptBin = "PT140_Inf";
+  else if(this_pt >= 100.) ptBin = "PT100_140";
+  else if(this_pt >= 70.)  ptBin = "PT70_100";
+  else if(this_pt >= 50.)  ptBin = "PT50_70";
+  else if(this_pt >= 30.)  ptBin = "PT30_50";
+
+  // 2D histogram (inclusive)
+  AnalyzerCore::FillHist(_cutname+"/nPV_VS_mOverPt/"+ProcessName,
+                         _nPV, _mOverPt,
+                         weight,
+                         100, 0, 100,
+                         12, 0, 0.6);
+
+  // 2D histogram (Pt binned)
+  if(ptBin != ""){
+    AnalyzerCore::FillHist(_cutname+"/nPV_VS_mOverPt_"+ptBin+"/"+ProcessName,
+                           _nPV, _mOverPt,
+                           weight,
+                           100, 0, 100,
+                           12, 0, 0.6);
+  }
+
+  // mOverPt bin
+  TString mBin = "";
+
+  if(_mOverPt > 0.55)      mBin = "0p55_1";
+  else if(_mOverPt > 0.5)  mBin = "0p5_0p55";
+  else if(_mOverPt > 0.45) mBin = "0p45_0p5";
+  else if(_mOverPt > 0.4)  mBin = "0p4_0p45";
+  else if(_mOverPt > 0.35) mBin = "0p35_0p4";
+  else if(_mOverPt > 0.3)  mBin = "0p3_0p35";
+  else if(_mOverPt > 0.25) mBin = "0p25_0p3";
+  else if(_mOverPt > 0.2)  mBin = "0p2_0p25";
+  else if(_mOverPt > 0.15) mBin = "0p15_0p2";
+  else if(_mOverPt > 0.1)  mBin = "0p1_0p15";
+  else if(_mOverPt > 0.05) mBin = "0p05_0p1";
+  else if(_mOverPt >= 0.) mBin = "0_0p05";
+
+  if(mBin == "") return;
+
+  // 1D nPV histogram (inclusive)
+  AnalyzerCore::FillHist(_cutname+"/nPV__mOverPt_"+mBin+"/"+ProcessName,
+                         _nPV, weight, 100, 0, 100);
+
+  // 1D nPV histogram (Pt binned)
+  if(ptBin != ""){
+    AnalyzerCore::FillHist(_cutname+"/nPV__mOverPt_"+mBin+"_"+ptBin+"/"+ProcessName,
+                           _nPV, weight, 100, 0, 100);
+  }
+}
+

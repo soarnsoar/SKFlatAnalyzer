@@ -60,7 +60,8 @@ class JHAnalyzerBase : public AnalyzerCore {
 
   bool jetlepveto;
   TString jetidtight;
-  
+
+  bool moverpt_pu_test;
   //--end flags
   //--flag for test
   bool muonscale00event;
@@ -978,6 +979,7 @@ class JHAnalyzerBase : public AnalyzerCore {
   int CountNBins_bChargeID_jH();
   int GetBinIndex_jHEff(double this_Pt,
 			double this_mOverPt);
+  void FillHist_nPV_VS_mOverPt(TString _cutname,double _nPV, const Jet& thisJet);
 
   
 private:
