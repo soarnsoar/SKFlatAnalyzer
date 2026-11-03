@@ -811,7 +811,7 @@ class JHAnalyzerBase : public AnalyzerCore {
     "eH",
     "eL"
   };
-  enum bChargeID{k_1muHOnly,k_1muLOnly,k_1eHOnly,k_1eLOnly,k_NoSL_jH,k_NoSL_jOthers};
+  enum bChargeID{k_1muHOnly,k_1muLOnly,k_1eHOnly,k_1eLOnly,k_NoSL_jH,k_NoSL_jOthers,n_bChargeID};
   inline static const char* bChargeAccIDName[6]={
     "1muHOnly",
     "1muLOnly",
@@ -836,6 +836,10 @@ class JHAnalyzerBase : public AnalyzerCore {
   //jH SF Hist
   vector <vector <TH1D*> >  v_h_jH_EffSF; // borigin,direction
   double Get_SF_bChargeTagID_jH(int ib, int ibin, int idir);
+
+  //acc SF Hist
+  vector<vector <vector <TH1D*> > > v_h_AccSF; //borigin, ibchargeid,direction
+  double Get_SF_bChargeAcc(int ib, int ibchargeid, int ibin, int idir);
 
   
   void Read_bChargeAcc_SF();
@@ -872,7 +876,7 @@ class JHAnalyzerBase : public AnalyzerCore {
   vector<int> Count_SLT_test_v4(const Jet& this_Jet);
   //map<TString,TH2D*> map_effhist_bchargeID_mcjet;
   map<TString,TH1D*> map_effhist_bchargeID_mcjet;
-  map<TString,TH2D*> map_acchist_bchargeID_mcjet;
+  map<TString,TH1D*> map_acchist_bchargeID_mcjet;
 
   vector<double> Get_bChargeTagID_MCEffs_SLT( int partonFlavour, vector<int> v_binidx);
   //double Get_SLTEff_Corr_givenJet(const Jet& thisJet, const bool Has_muH, const bool Has_muL, const bool Has_eH, const bool Has_eL,
@@ -889,7 +893,8 @@ class JHAnalyzerBase : public AnalyzerCore {
   
   double Get_HighScoreChargeTagID_Eff_Corr_givenJet(const Jet& thisJet, const bool pass_jH,
 						    JHAnalyzerBase::SYSDIR SystDir=k_central, JHAnalyzerBase::PtBin SystPtBin=nPtBin, JHAnalyzerBase::EtaBin SystEtaBin=nEtaBin);
-  double Get_bChargeAcc_MC(int partonFlavour, int thisChargeID,double JetPt, double JetEta);
+  //double Get_bChargeAcc_MC(int partonFlavour, int thisChargeID,double JetPt, double JetEta);
+  double Get_bChargeAcc_MC(int partonFlavour, int thisChargeID, int this_binidx);
   ////-----bchargetagid----////
   //---Corrleated Component---//
   vector <vector <double>> r_bChargeID_SLT_CorrUp; // id //bin
@@ -914,24 +919,18 @@ class JHAnalyzerBase : public AnalyzerCore {
 
   ////-----bchargeacc----////
   //---Corrleated Component---//
-  double arr_r_bChargeAcc_SLT_CorrUp[nSLT][nPtBin];
-  double arr_r_bChargeAcc_SLT_CorrDown[nSLT][nPtBin];
+  vector <vector <double>> r_bChargeID_Acc_CorrUp; // id //bin
+  vector <vector <double>> r_bChargeID_Acc_CorrDown;
+
   //---Uncorr. Component
-  double arr_r_bChargeAcc_SLT_UnCorr_bPlusUp[nSLT][nPtBin];
-  double arr_r_bChargeAcc_SLT_UnCorr_bPlusDown[nSLT][nPtBin];
+  vector <vector <double>> r_bChargeID_Acc_UnCorr_bPlusUp;
+  vector <vector <double>> r_bChargeID_Acc_UnCorr_bPlusDown;
 
-  double arr_r_bChargeAcc_SLT_UnCorr_bMinusUp[nSLT][nPtBin];
-  double arr_r_bChargeAcc_SLT_UnCorr_bMinusDown[nSLT][nPtBin];
+  vector <vector <double>> r_bChargeID_Acc_UnCorr_bMinusUp;
+  vector <vector <double>> r_bChargeID_Acc_UnCorr_bMinusDown;
 
-  //---Corrleated Component--//
-  double arr_r_bChargeAcc_Jet_CorrUp[2][nPtBin][nEtaBin];
-  double arr_r_bChargeAcc_Jet_CorrDown[2][nPtBin][nEtaBin];
-  //---Uncorr. Component
-  double arr_r_bChargeAcc_Jet_UnCorr_bPlusUp[2][nPtBin][nEtaBin];
-  double arr_r_bChargeAcc_Jet_UnCorr_bPlusDown[2][nPtBin][nEtaBin];
 
-  double arr_r_bChargeAcc_Jet_UnCorr_bMinusUp[2][nPtBin][nEtaBin];
-  double arr_r_bChargeAcc_Jet_UnCorr_bMinusDown[2][nPtBin][nEtaBin];  
+
 
 
   double Get_HighScoreChargeTagID_Eff_Corr(const vector<Jet> &_v_Jet, const vector<bool> _v_pass_jH);//OLD
@@ -949,7 +948,7 @@ class JHAnalyzerBase : public AnalyzerCore {
   vector<int> v_genlepidx;
   void GetPromptLepGenIdx();
   bool HasPromptLepWithinJet(const Jet& thisJet);
-  //
+  //--bchargeid eff
   vector<double> v_cut_muH_PT30To50, v_cut_muH_PT50To70,v_cut_muH_PT70To100,v_cut_muH_PT100To140,v_cut_muH_PT140ToInf;
   vector<double> v_cut_muL_PT30To50, v_cut_muL_PT50To70,v_cut_muL_PT70To100,v_cut_muL_PT100To140,v_cut_muL_PT140ToInf;
   vector<double> v_cut_eH_PT30To50, v_cut_eH_PT50To70,v_cut_eH_PT70To100,v_cut_eH_PT100To140,v_cut_eH_PT140ToInf;
@@ -964,21 +963,48 @@ class JHAnalyzerBase : public AnalyzerCore {
   vector<TString> str_v_cut_eL_PT30To50, str_v_cut_eL_PT50To70,str_v_cut_eL_PT70To100,str_v_cut_eL_PT100To140,str_v_cut_eL_PT140ToInf;
   
   vector<TString> str_v_cut_jH_PT30To50, str_v_cut_jH_PT50To70,str_v_cut_jH_PT70To100,str_v_cut_jH_PT100To140,str_v_cut_jH_PT140ToInf;
+  //
 
 
 
   
-  void DefineSLTBinning();
+  
+  void DefineChargeIDBinning();
   vector<TString> ConvertCutVectorToString(    const vector<double>& v_cut);
   TString GetPtBinName(double this_pt);
   int GetBinIndex_SLTEff(int sltid, double this_Pt,double this_mOverPt);
-  int CountNBins_bChargeID(int sltid);
+  int CountNBins_bChargeIDEff(int sltid);
   int nbin_muH,nbin_muL,nbin_eH,nbin_eL;
   vector<int> v_nbin_SLT;
   int nbin_jH;
-  int CountNBins_bChargeID_jH();
+  int CountNBins_bChargeIDEff_jH();
   int GetBinIndex_jHEff(double this_Pt,
 			double this_mOverPt);
+
+
+  //bchargeid acc
+  vector<double> v_cutacc_muH_PT30To50, v_cutacc_muH_PT50To70,v_cutacc_muH_PT70To100,v_cutacc_muH_PT100To140,v_cutacc_muH_PT140ToInf;
+  vector<double> v_cutacc_muL_PT30To50, v_cutacc_muL_PT50To70,v_cutacc_muL_PT70To100,v_cutacc_muL_PT100To140,v_cutacc_muL_PT140ToInf;
+  vector<double> v_cutacc_eH_PT30To50, v_cutacc_eH_PT50To70,v_cutacc_eH_PT70To100,v_cutacc_eH_PT100To140,v_cutacc_eH_PT140ToInf;
+  vector<double> v_cutacc_eL_PT30To50, v_cutacc_eL_PT50To70,v_cutacc_eL_PT70To100,v_cutacc_eL_PT100To140,v_cutacc_eL_PT140ToInf;
+  vector<double> v_cutacc_jH_PT30To50, v_cutacc_jH_PT50To70,v_cutacc_jH_PT70To100,v_cutacc_jH_PT100To140,v_cutacc_jH_PT140ToInf;
+  vector<double> v_cutacc_jOthers_PT30To50, v_cutacc_jOthers_PT50To70,v_cutacc_jOthers_PT70To100,v_cutacc_jOthers_PT100To140,v_cutacc_jOthers_PT140ToInf;
+
+
+  vector<TString> str_v_cutacc_muH_PT30To50, str_v_cutacc_muH_PT50To70,str_v_cutacc_muH_PT70To100,str_v_cutacc_muH_PT100To140,str_v_cutacc_muH_PT140ToInf;
+  vector<TString> str_v_cutacc_muL_PT30To50, str_v_cutacc_muL_PT50To70,str_v_cutacc_muL_PT70To100,str_v_cutacc_muL_PT100To140,str_v_cutacc_muL_PT140ToInf;
+  vector<TString> str_v_cutacc_eH_PT30To50, str_v_cutacc_eH_PT50To70,str_v_cutacc_eH_PT70To100,str_v_cutacc_eH_PT100To140,str_v_cutacc_eH_PT140ToInf;
+  vector<TString> str_v_cutacc_eL_PT30To50, str_v_cutacc_eL_PT50To70,str_v_cutacc_eL_PT70To100,str_v_cutacc_eL_PT100To140,str_v_cutacc_eL_PT140ToInf;
+  vector<TString> str_v_cutacc_jH_PT30To50, str_v_cutacc_jH_PT50To70,str_v_cutacc_jH_PT70To100,str_v_cutacc_jH_PT100To140,str_v_cutacc_jH_PT140ToInf;
+  vector<TString> str_v_cutacc_jOthers_PT30To50, str_v_cutacc_jOthers_PT50To70,str_v_cutacc_jOthers_PT70To100,str_v_cutacc_jOthers_PT100To140,str_v_cutacc_jOthers_PT140ToInf;
+
+  int GetBinIndex_Acc(int bchargeid, double this_Pt,double this_mOverPt);
+  int CountNBins_bChargeIDAcc(int bchargeid);
+  int nbin_muHacc,nbin_muLacc,nbin_eHacc,nbin_eLacc,nbin_jHacc,nbin_jOthersacc;
+  vector<int> v_nbin_acc;
+
+  
+  ///----mOverPt Properties
   void FillHist_nPV_VS_mOverPt(TString _cutname,double _nPV, const Jet& thisJet);
 
   

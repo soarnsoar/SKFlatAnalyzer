@@ -120,7 +120,7 @@ void JHAnalyzerBase::initializeAnalyzer(){
 
   //----bChargeID
   //Setup_bChargeIDEff();
-  DefineSLTBinning();
+  DefineChargeIDBinning();
 }
 
 
@@ -589,8 +589,8 @@ void JHAnalyzerBase::InitBtagSys(){
   }
 }
 
-int JHAnalyzerBase::CountNBins_bChargeID(int sltid){
-  //DefineSLTBinning
+int JHAnalyzerBase::CountNBins_bChargeIDEff(int sltid){
+  //DefineChargeIDBinning
   const std::vector<double>* cuts[5] = {nullptr};
 
   switch (sltid) {
@@ -631,8 +631,8 @@ int JHAnalyzerBase::CountNBins_bChargeID(int sltid){
   return ret;
 }
 
-int JHAnalyzerBase::CountNBins_bChargeID_jH(){
-  //DefineSLTBinning                                                                                                                                                                                                                        
+int JHAnalyzerBase::CountNBins_bChargeIDEff_jH(){
+  //DefineChargeIDBinning                                                                                                                                                                                                                        
   const std::vector<double>* cuts[5] = {nullptr};
 
   cuts[0] = &v_cut_jH_PT30To50;
@@ -641,6 +641,65 @@ int JHAnalyzerBase::CountNBins_bChargeID_jH(){
   cuts[3] = &v_cut_jH_PT100To140;
   cuts[4] = &v_cut_jH_PT140ToInf;
   
+  int ret=  cuts[0]->size()-1 + cuts[1]->size()-1 + cuts[2]->size()-1 + cuts[3]->size()-1 + cuts[4]->size()-1;
+  return ret;
+}
+
+int JHAnalyzerBase::CountNBins_bChargeIDAcc(int bchargeid){
+  //DefineChargeIDBinning
+  const std::vector<double>* cuts[5] = {nullptr};
+
+  switch (bchargeid) {
+  
+  case k_1muHOnly:
+    cuts[0] = &v_cutacc_muH_PT30To50;
+    cuts[1] = &v_cutacc_muH_PT50To70;
+    cuts[2] = &v_cutacc_muH_PT70To100;
+    cuts[3] = &v_cutacc_muH_PT100To140;
+    cuts[4] = &v_cutacc_muH_PT140ToInf;
+    break;
+    
+  case k_1muLOnly:
+    cuts[0] = &v_cutacc_muL_PT30To50;
+    cuts[1] = &v_cutacc_muL_PT50To70;
+    cuts[2] = &v_cutacc_muL_PT70To100;
+    cuts[3] = &v_cutacc_muL_PT100To140;
+    cuts[4] = &v_cutacc_muL_PT140ToInf;
+    break;
+    
+  case k_1eHOnly:
+    cuts[0] = &v_cutacc_eH_PT30To50;
+    cuts[1] = &v_cutacc_eH_PT50To70;
+    cuts[2] = &v_cutacc_eH_PT70To100;
+    cuts[3] = &v_cutacc_eH_PT100To140;
+    cuts[4] = &v_cutacc_eH_PT140ToInf;
+    break;
+    
+  case k_1eLOnly:
+    cuts[0] = &v_cutacc_eL_PT30To50;
+    cuts[1] = &v_cutacc_eL_PT50To70;
+    cuts[2] = &v_cutacc_eL_PT70To100;
+    cuts[3] = &v_cutacc_eL_PT100To140;
+    cuts[4] = &v_cutacc_eL_PT140ToInf;
+    break;
+    
+  case k_NoSL_jH:
+    cuts[0] = &v_cutacc_jH_PT30To50;
+    cuts[1] = &v_cutacc_jH_PT50To70;
+    cuts[2] = &v_cutacc_jH_PT70To100;
+    cuts[3] = &v_cutacc_jH_PT100To140;
+    cuts[4] = &v_cutacc_jH_PT140ToInf;
+    break;
+
+  case k_NoSL_jOthers:
+    cuts[0] = &v_cutacc_jOthers_PT30To50;
+    cuts[1] = &v_cutacc_jOthers_PT50To70;
+    cuts[2] = &v_cutacc_jOthers_PT70To100;
+    cuts[3] = &v_cutacc_jOthers_PT100To140;
+    cuts[4] = &v_cutacc_jOthers_PT140ToInf;
+    break;
+
+  }
   int ret=  cuts[0]->size()-1 + cuts[1]->size()-1 + cuts[2]->size()-1 + cuts[3]->size()-1 + cuts[4]->size()-1;
   return ret;
 }
@@ -658,10 +717,10 @@ void JHAnalyzerBase::InitClassVariablesPerEvent(){
   if(Is_bChargeIDEffOn){
     ///----bchargeID Efficiency syst---//
     /*
-    nbin_muH=CountNBins_bChargeID(k_muH);
-    nbin_muL=CountNBins_bChargeID(k_muL);
-    nbin_eH=CountNBins_bChargeID(k_eH);
-    nbin_eL=CountNBins_bChargeID(k_eL);
+    nbin_muH=CountNBins_bChargeIDEff(k_muH);
+    nbin_muL=CountNBins_bChargeIDEff(k_muL);
+    nbin_eH=CountNBins_bChargeIDEff(k_eH);
+    nbin_eL=CountNBins_bChargeIDEff(k_eL);
 
     v_nbin_SLT={nbin_muH,nbin_muL,nbin_eH,nbin_eL};
     */
@@ -690,35 +749,14 @@ void JHAnalyzerBase::InitClassVariablesPerEvent(){
   }
 
   if(Is_bChargeAccOn){
-    /// -----charge accuracy syst----///
-    for (int ipt = 0; ipt < nPtBin; ++ipt) {
-      for (int islt = 0; islt < nSLT; ++islt) {
-	arr_r_bChargeAcc_SLT_CorrUp[islt][ipt]   = 1.0;
-	arr_r_bChargeAcc_SLT_CorrDown[islt][ipt] = 1.0;
-	
-	arr_r_bChargeAcc_SLT_UnCorr_bPlusUp[islt][ipt]   = 1.0;
-	arr_r_bChargeAcc_SLT_UnCorr_bPlusDown[islt][ipt]   = 1.0;
-	
-	arr_r_bChargeAcc_SLT_UnCorr_bMinusUp[islt][ipt] = 1.0;
-	arr_r_bChargeAcc_SLT_UnCorr_bMinusDown[islt][ipt] = 1.0;
-      }
-    }
-    //---jH/jOthers                                                                                                                                                                                         
-    for (int ipt = 0; ipt < nPtBin; ++ipt) {
-      for (int ieta = 0; ieta < nEtaBin; ++ieta) {
-	for (int ij =0 ; ij < 2; ++ij){
-	  arr_r_bChargeAcc_Jet_CorrUp[ij][ipt][ieta]   = 1.0;
-	  arr_r_bChargeAcc_Jet_CorrDown[ij][ipt][ieta] = 1.0;
-	  
-	  arr_r_bChargeAcc_Jet_UnCorr_bPlusUp[ij][ipt][ieta]   = 1.0;
-	  arr_r_bChargeAcc_Jet_UnCorr_bPlusDown[ij][ipt][ieta] = 1.0;
-	  
-	  arr_r_bChargeAcc_Jet_UnCorr_bMinusUp[ij][ipt][ieta]   = 1.0;
-	  arr_r_bChargeAcc_Jet_UnCorr_bMinusDown[ij][ipt][ieta] = 1.0;
-	}
-	
-      }
-    }
+
+    r_bChargeID_Acc_CorrUp={vector<double>(nbin_muHacc, 1.0), vector<double>(nbin_muLacc, 1.0), vector<double>(nbin_eHacc,  1.0), vector<double>(nbin_eLacc,  1.0), vector<double>(nbin_jHacc,  1.0),vector<double>(nbin_jOthersacc,  1.0)};
+    r_bChargeID_Acc_CorrDown={vector<double>(nbin_muHacc, 1.0), vector<double>(nbin_muLacc, 1.0), vector<double>(nbin_eHacc,  1.0), vector<double>(nbin_eLacc,  1.0), vector<double>(nbin_jHacc,  1.0),vector<double>(nbin_jOthersacc,  1.0)};
+    r_bChargeID_Acc_UnCorr_bPlusUp={vector<double>(nbin_muHacc, 1.0), vector<double>(nbin_muLacc, 1.0), vector<double>(nbin_eHacc,  1.0), vector<double>(nbin_eLacc,  1.0), vector<double>(nbin_jHacc,  1.0),vector<double>(nbin_jOthersacc,  1.0)};
+    r_bChargeID_Acc_UnCorr_bPlusDown={vector<double>(nbin_muHacc, 1.0), vector<double>(nbin_muLacc, 1.0), vector<double>(nbin_eHacc,  1.0), vector<double>(nbin_eLacc,  1.0), vector<double>(nbin_jHacc,  1.0),vector<double>(nbin_jOthersacc,  1.0)};
+    r_bChargeID_Acc_UnCorr_bMinusUp={vector<double>(nbin_muHacc, 1.0), vector<double>(nbin_muLacc, 1.0), vector<double>(nbin_eHacc,  1.0), vector<double>(nbin_eLacc,  1.0), vector<double>(nbin_jHacc,  1.0),vector<double>(nbin_jOthersacc,  1.0)};
+    r_bChargeID_Acc_UnCorr_bMinusDown={vector<double>(nbin_muHacc, 1.0), vector<double>(nbin_muLacc, 1.0), vector<double>(nbin_eHacc,  1.0), vector<double>(nbin_eLacc,  1.0), vector<double>(nbin_jHacc,  1.0),vector<double>(nbin_jOthersacc,  1.0)};
+
   }
 
   
@@ -1088,64 +1126,43 @@ void JHAnalyzerBase::FillHistChargeIDEff(TString histname, double value, double 
 
 void JHAnalyzerBase::FillHistChargeAcc(TString histname, double value, double this_weight, int n_bin, double x_min, double x_max){
   //---SLT n_bin,x_min,x_max
-  //cout << "[JHAnalyzerBase::FillHistChargeAcc]" << endl;
-  for (int iPtBin = 0; iPtBin < nPtBin; ++iPtBin) {
-    for (int iSLT = 0; iSLT < nSLT; ++iSLT) {
+  for (int ibchargeid = 0; ibchargeid < n_bChargeID; ++ibchargeid) {
+    int this_nbins=v_nbin_acc[ibchargeid];
+    for(int ibin = 0 ; ibin < this_nbins;ibin++){
       //--Correlated--//
-      FillHistUp("bChargeAcc_SLT_Corr_"+TString(PtBinName[iPtBin])+TString(bChargeAccIDName[iSLT])+DataEra,   histname, value,this_weight*arr_r_bChargeAcc_SLT_CorrUp[iSLT][iPtBin],  n_bin,x_min,x_max);
-      FillHistDown("bChargeAcc_SLT_Corr_"+TString(PtBinName[iPtBin])+TString(bChargeAccIDName[iSLT])+DataEra,   histname, value,this_weight*arr_r_bChargeAcc_SLT_CorrDown[iSLT][iPtBin],  n_bin,x_min,x_max);
+      FillHistUp("bChargeAcc_Corr_bChargeID"+TString::Itoa(ibchargeid, 10)+"_bin"+TString::Itoa(ibin,10)+"_"+DataEra,   histname, value,this_weight*r_bChargeID_Acc_CorrUp[ibchargeid][ibin],  n_bin,x_min,x_max);
+      FillHistDown("bChargeAcc_Corr_bChargeID"+TString::Itoa(ibchargeid, 10)+"_bin"+TString::Itoa(ibin,10)+"_"+DataEra,   histname, value,this_weight*r_bChargeID_Acc_CorrDown[ibchargeid][ibin],  n_bin,x_min,x_max);
       //--UnCorr--//
-      FillHistUp("bChargeAcc_SLT_UnCorrPlus_"+TString(PtBinName[iPtBin])+TString(bChargeAccIDName[iSLT])+DataEra,   histname, value,this_weight*arr_r_bChargeAcc_SLT_UnCorr_bPlusUp[iSLT][iPtBin],  n_bin,x_min,x_max);
-      FillHistDown("bChargeAcc_SLT_UnCorrPlus_"+TString(PtBinName[iPtBin])+TString(bChargeAccIDName[iSLT])+DataEra,   histname, value,this_weight*arr_r_bChargeAcc_SLT_UnCorr_bPlusDown[iSLT][iPtBin],  n_bin,x_min,x_max);
-      FillHistUp("bChargeAcc_SLT_UnCorrMinus_"+TString(PtBinName[iPtBin])+TString(bChargeAccIDName[iSLT])+DataEra,   histname, value,this_weight*arr_r_bChargeAcc_SLT_UnCorr_bMinusUp[iSLT][iPtBin],  n_bin,x_min,x_max);
-      FillHistDown("bChargeAcc_SLT_UnCorrMinus_"+TString(PtBinName[iPtBin])+TString(bChargeAccIDName[iSLT])+DataEra,   histname, value,this_weight*arr_r_bChargeAcc_SLT_UnCorr_bMinusDown[iSLT][iPtBin],  n_bin,x_min,x_max);
+      FillHistUp("bChargeAcc_UnCorrPlus_bChargeID"+TString::Itoa(ibchargeid, 10)+"_bin"+TString::Itoa(ibin,10)+"_"+DataEra,   histname, value,this_weight*r_bChargeID_Acc_UnCorr_bPlusUp[ibchargeid][ibin],  n_bin,x_min,x_max);
+      FillHistDown("bChargeAcc_UnCorrPlus_bChargeID"+TString::Itoa(ibchargeid, 10)+"_bin"+TString::Itoa(ibin,10)+"_"+DataEra,   histname, value,this_weight*r_bChargeID_Acc_UnCorr_bPlusDown[ibchargeid][ibin],  n_bin,x_min,x_max);
 
-    }//[end] SLT loop
-    for (int iEtaBin = 0; iEtaBin < nEtaBin; ++iEtaBin){//    for(unsigned int iEtaBin;iEtaBin<nEtaBin;iEtaBin++){
-      for(int ij=0; ij < 2; ++ij){
-	//--Correlated--//
-	FillHistUp("bChargeAcc_Jet_Corr_"+TString(PtBinName[iPtBin])+TString(EtaBinName[iEtaBin])+TString(bChargeAccIDName[ij+4])+DataEra,   histname, value,this_weight*arr_r_bChargeAcc_Jet_CorrUp[ij][iPtBin][iEtaBin],  n_bin,x_min,x_max);
-	FillHistDown("bChargeAcc_Jet_Corr_"+TString(PtBinName[iPtBin])+TString(EtaBinName[iEtaBin])+TString(bChargeAccIDName[ij+4])+DataEra,   histname, value,this_weight*arr_r_bChargeAcc_Jet_CorrDown[ij][iPtBin][iEtaBin],  n_bin,x_min,x_max);
-	//--UnCorr--//
-	FillHistUp("bChargeAcc_Jet_UnCorrPlus_"+TString(PtBinName[iPtBin])+TString(EtaBinName[iEtaBin])+TString(bChargeAccIDName[ij+4])+DataEra,   histname, value,this_weight*arr_r_bChargeAcc_Jet_UnCorr_bPlusUp[ij][iPtBin][iEtaBin],  n_bin,x_min,x_max);
-	FillHistDown("bChargeAcc_Jet_UnCorrPlus_"+TString(PtBinName[iPtBin])+TString(EtaBinName[iEtaBin])+TString(bChargeAccIDName[ij+4])+DataEra,   histname, value,this_weight*arr_r_bChargeAcc_Jet_UnCorr_bPlusDown[ij][iPtBin][iEtaBin],  n_bin,x_min,x_max);
-	FillHistUp("bChargeAcc_Jet_UnCorrMinus_"+TString(PtBinName[iPtBin])+TString(EtaBinName[iEtaBin])+TString(bChargeAccIDName[ij+4])+DataEra,   histname, value,this_weight*arr_r_bChargeAcc_Jet_UnCorr_bMinusUp[ij][iPtBin][iEtaBin],  n_bin,x_min,x_max);
-	FillHistDown("bChargeAcc_Jet_UnCorrMinus_"+TString(PtBinName[iPtBin])+TString(EtaBinName[iEtaBin])+TString(bChargeAccIDName[ij+4])+DataEra,   histname, value,this_weight*arr_r_bChargeAcc_Jet_UnCorr_bMinusDown[ij][iPtBin][iEtaBin],  n_bin,x_min,x_max);
-      }//[end]jetchargeid type 
-      
-    }//[end] etabin loop
-  }//[end] ptbin loop
+      FillHistUp("bChargeAcc_UnCorrMinus_bChargeID"+TString::Itoa(ibchargeid, 10)+"_bin"+TString::Itoa(ibin,10)+"_"+DataEra,   histname, value,this_weight*r_bChargeID_Acc_UnCorr_bMinusUp[ibchargeid][ibin],  n_bin,x_min,x_max);
+      FillHistDown("bChargeAcc_UnCorrMinus_bChargeID"+TString::Itoa(ibchargeid, 10)+"_bin"+TString::Itoa(ibin,10)+"_"+DataEra,   histname, value,this_weight*r_bChargeID_Acc_UnCorr_bMinusDown[ibchargeid][ibin],  n_bin,x_min,x_max);
+
+    }//[end] ibin loop
+  }//[end]ibchargeid loop
 }
 
 
 void JHAnalyzerBase::FillHistChargeAcc(TString histname, double value, double this_weight, int n_bin, double *xbins){
-  //---SLT n_bin,xbins
+  //---n_bin,xbins
 
-  for (int iPtBin = 0; iPtBin < nPtBin; ++iPtBin) {
-    for (int iSLT = 0; iSLT < nSLT; ++iSLT) {
-      
+  for (int ibchargeid = 0; ibchargeid < n_bChargeID; ++ibchargeid) {
+    int this_nbins=v_nbin_acc[ibchargeid];
+    for(int ibin = 0 ; ibin < this_nbins;ibin++){
       //--Correlated--//
-      FillHistUp("bChargeAcc_SLT_Corr_"+TString(PtBinName[iPtBin])+TString(bChargeAccIDName[iSLT])+DataEra,   histname, value,this_weight*arr_r_bChargeAcc_SLT_CorrUp[iSLT][iPtBin],  n_bin,xbins);
-      FillHistDown("bChargeAcc_SLT_Corr_"+TString(PtBinName[iPtBin])+TString(bChargeAccIDName[iSLT])+DataEra,   histname, value,this_weight*arr_r_bChargeAcc_SLT_CorrDown[iSLT][iPtBin],  n_bin,xbins);
+      FillHistUp("bChargeAcc_Corr_bChargeID"+TString::Itoa(ibchargeid, 10)+"_bin"+TString::Itoa(ibin,10)+"_"+DataEra,   histname, value,this_weight*r_bChargeID_Acc_CorrUp[ibchargeid][ibin],  n_bin,xbins);
+      FillHistDown("bChargeAcc_Corr_bChargeID"+TString::Itoa(ibchargeid, 10)+"_bin"+TString::Itoa(ibin,10)+"_"+DataEra,   histname, value,this_weight*r_bChargeID_Acc_CorrDown[ibchargeid][ibin],  n_bin,xbins);
       //--UnCorr--//
-      FillHistUp("bChargeAcc_SLT_UnCorrPlus_"+TString(PtBinName[iPtBin])+TString(bChargeAccIDName[iSLT])+DataEra,   histname, value,this_weight*arr_r_bChargeAcc_SLT_UnCorr_bPlusUp[iSLT][iPtBin],  n_bin,xbins);
-      FillHistDown("bChargeAcc_SLT_UnCorrPlus_"+TString(PtBinName[iPtBin])+TString(bChargeAccIDName[iSLT])+DataEra,   histname, value,this_weight*arr_r_bChargeAcc_SLT_UnCorr_bPlusDown[iSLT][iPtBin],  n_bin,xbins);
-      FillHistUp("bChargeAcc_SLT_UnCorrMinus_"+TString(PtBinName[iPtBin])+TString(bChargeAccIDName[iSLT])+DataEra,   histname, value,this_weight*arr_r_bChargeAcc_SLT_UnCorr_bMinusUp[iSLT][iPtBin],  n_bin,xbins);
-      FillHistDown("bChargeAcc_SLT_UnCorrMinus_"+TString(PtBinName[iPtBin])+TString(bChargeAccIDName[iSLT])+DataEra,   histname, value,this_weight*arr_r_bChargeAcc_SLT_UnCorr_bMinusDown[iSLT][iPtBin],  n_bin,xbins);
-    }//[end] SLT loop
-    for (int iEtaBin = 0; iEtaBin < nEtaBin; ++iEtaBin){//    for(unsigned int iEtaBin;iEtaBin<nEtaBin;iEtaBin++){
-      for(int ij=0; ij < 2; ++ij){
-	//--Correlated--//
-	FillHistUp("bChargeAcc_Jet_Corr_"+TString(PtBinName[iPtBin])+TString(EtaBinName[iEtaBin])+TString(bChargeAccIDName[ij+4])+DataEra,   histname, value,this_weight*arr_r_bChargeAcc_Jet_CorrUp[ij][iPtBin][iEtaBin],  n_bin,xbins);
-	FillHistDown("bChargeAcc_Jet_Corr_"+TString(PtBinName[iPtBin])+TString(EtaBinName[iEtaBin])+TString(bChargeAccIDName[ij+4])+DataEra,   histname, value,this_weight*arr_r_bChargeAcc_Jet_CorrDown[ij][iPtBin][iEtaBin],  n_bin,xbins);
-	//--UnCorr--//
-	FillHistUp("bChargeAcc_Jet_UnCorrPlus_"+TString(PtBinName[iPtBin])+TString(EtaBinName[iEtaBin])+TString(bChargeAccIDName[ij+4])+DataEra,   histname, value,this_weight*arr_r_bChargeAcc_Jet_UnCorr_bPlusUp[ij][iPtBin][iEtaBin],  n_bin,xbins);
-	FillHistDown("bChargeAcc_Jet_UnCorrPlus_"+TString(PtBinName[iPtBin])+TString(EtaBinName[iEtaBin])+TString(bChargeAccIDName[ij+4])+DataEra,   histname, value,this_weight*arr_r_bChargeAcc_Jet_UnCorr_bPlusDown[ij][iPtBin][iEtaBin],  n_bin,xbins);
-	FillHistUp("bChargeAcc_Jet_UnCorrMinus_"+TString(PtBinName[iPtBin])+TString(EtaBinName[iEtaBin])+TString(bChargeAccIDName[ij+4])+DataEra,   histname, value,this_weight*arr_r_bChargeAcc_Jet_UnCorr_bMinusUp[ij][iPtBin][iEtaBin],  n_bin,xbins);
-	FillHistDown("bChargeAcc_Jet_UnCorrMinus_"+TString(PtBinName[iPtBin])+TString(EtaBinName[iEtaBin])+TString(bChargeAccIDName[ij+4])+DataEra,   histname, value,this_weight*arr_r_bChargeAcc_Jet_UnCorr_bMinusDown[ij][iPtBin][iEtaBin],  n_bin,xbins);
-      }//[end]jetchargeid type 
-    }//[end] etabin loop
-  }//[end] ptbin loop
+      FillHistUp("bChargeAcc_UnCorrPlus_bChargeID"+TString::Itoa(ibchargeid, 10)+"_bin"+TString::Itoa(ibin,10)+"_"+DataEra,   histname, value,this_weight*r_bChargeID_Acc_UnCorr_bPlusUp[ibchargeid][ibin],  n_bin,xbins);
+      FillHistDown("bChargeAcc_UnCorrPlus_bChargeID"+TString::Itoa(ibchargeid, 10)+"_bin"+TString::Itoa(ibin,10)+"_"+DataEra,   histname, value,this_weight*r_bChargeID_Acc_UnCorr_bPlusDown[ibchargeid][ibin],  n_bin,xbins);
+      
+      FillHistUp("bChargeAcc_UnCorrMinus_bChargeID"+TString::Itoa(ibchargeid, 10)+"_bin"+TString::Itoa(ibin,10)+"_"+DataEra,   histname, value,this_weight*r_bChargeID_Acc_UnCorr_bMinusUp[ibchargeid][ibin],  n_bin,xbins);
+      FillHistDown("bChargeAcc_UnCorrMinus_bChargeID"+TString::Itoa(ibchargeid, 10)+"_bin"+TString::Itoa(ibin,10)+"_"+DataEra,   histname, value,this_weight*r_bChargeID_Acc_UnCorr_bMinusDown[ibchargeid][ibin],  n_bin,xbins);
+            
+    }//[end] ibin loop
+  }//[end]ibchargeid loop
+  
 }
 
 
@@ -6459,6 +6476,9 @@ double JHAnalyzerBase::Get_SF_bChargeTagID_jH(int ib, int ibin, int idir){
 
 }
 
+double JHAnalyzerBase::Get_SF_bChargeAcc(int ib, int ibchargeid, int ibin, int idir){
+  return v_h_AccSF[ib][ibchargeid][idir]->GetBinContent(ibin+1);
+}
 
 
 void JHAnalyzerBase::Read_bChargeID_SF_OLD(bool readsltonly){
@@ -6575,100 +6595,49 @@ void JHAnalyzerBase::Read_bChargeID_SF_OLD(bool readsltonly){
 
 
 void JHAnalyzerBase::Read_bChargeAcc_SF(){
-  //----SLT----//
+
   TString datapath=getenv("DATA_DIR");
-  TString sltpath=datapath+"/"+DataEra+"/bChargeAcc/SF/SLT/SF_bChargeAcc_SLT_"+DataEra+".txt";
-  cout << "SLT Charge Acc->" << sltpath << endl;
-  std::ifstream sltfile(sltpath.Data());
-  if (!sltfile.is_open()) {
-    std::cerr << "file open failed: " << sltpath << std::endl;
-    exit(ENODATA);
-  }
+  TString accpath=datapath+"/"+DataEra+"/bChargeAcc/SF/Combine/bChargeIDAcc_SF_"+DataEra+".txt";
+  cout << "Charge Acc->" << accpath << endl;
 
-  std::string _b, _lep, _pt, _sysdir;
-  double _val;
+  TFile *tfile_acc=TFile::Open(accpath);
+  v_h_AccSF.resize(
+		   nJetOrigin,
+		   vector<vector<TH1D*>>(
+					 n_bChargeID,
+					 vector<TH1D*>(nSYSDIR, nullptr)
+					 )
+		   );
+  //
+  int ib=0;
+  for(auto this_origin : {"bplus","bminus"}){
+    int ibchargeid=0;
+    for( auto this_bchargeid : {"muH","muL","eH","eL","jH","jOthers"}){
+      //  enum SYSDIR{ k_central=0, k_uncorrUp, k_uncorrDown, k_corrUp, k_corrDown, nSYSDIR };                                                                                   
+      int idir=0;
+      for( auto this_dir : {"central","uncorr_up","uncorr_down","corr_up","corr_down"}){
+        TString hname =TString(this_bchargeid)+"/SF_"+this_origin+"_"+this_dir;
+        TH1D* htmp=(TH1D*)tfile_acc->Get(hname);
+        v_h_AccSF[ib][ibchargeid][idir]=(TH1D*)htmp->Clone();
+        v_h_AccSF[ib][ibchargeid][idir]->SetDirectory(0);
 
-  while (sltfile >> _b >> _lep >> _pt >> _sysdir >> _val) {
-    int _ib = getB(_b);
-    int _il = getIDAcc(_lep);
-    int _ip = getPT(_pt);
-    int _is = getSysDir(_sysdir);
-    
-    if (_ib<0 || _il<0 || _ip<0 || _is<0) continue;
-    
-    SF_bChargeAcc_SLT[_ib][_il][_ip][_is] = _val;
-  }
-  //----jH,jOthers----//
-  TString NoSLpath=datapath+"/"+DataEra+"/bChargeAcc/SF/NoSL/SF_bChargeAcc_NoSL_"+DataEra+".txt";
-  cout << "j Acc Eff->" << NoSLpath << endl;
-  std::ifstream NoSLfile(NoSLpath.Data());
-  if (!NoSLfile.is_open()) {
-    std::cerr << "file open failed: " << NoSLpath << std::endl;
-    exit(ENODATA);
-  }
-  //std::string _b, _lep, _pt, _eta, _sysdir;
-  double _val2;
-  std::string _b2, _jet2, _pt2, _eta2, _sysdir2;
-  
-  while (NoSLfile >> _b2 >> _jet2 >> _pt2 >> _eta2 >> _sysdir2 >> _val2) {
-    cout << "_b2=" << _b2 << "_jet2" << _jet2 << " _pt2=" << _pt2 << " _eta2=" << _eta2 << " _sysdir2=" << _sysdir2 << " _val2=" << _val2 << endl;
-    int _ib2 = getB(_b2);
-    int _ij2 = getIDAcc(_jet2)-4;//idx_jetchargeid=idxID-4 
-    int _ip2 = getPT(_pt2);
-    int _ie2 = getEta(_eta2);
-    int _is2 = getSysDir(_sysdir2);
+        idir+=1;
+      }// end of dir loop                                                                                                                                                        
 
-    if (_ib2<0 || _ij2<0 || _ip2<0 || _ie2<0 || _is2<0){
-      cout << "!!!! At least one of the index is not read " << endl;
-      cout << "_ib2="<<_ib2<< "_ij2" << _ij2 << " _ip2="<<_ip2<<" _ie2="<<_ie2<<" _is2="<<_is2<<endl;
-      continue;
-    }
-    SF_bChargeAcc_Jet[_ib2][_ij2][_ip2][_ie2][_is2] = _val2;
+      ibchargeid+=1;
+    }//end of slt loop                                                                                                                                                           
+    ib+=1;
+  }//end of ib loop                                                                                                                                                              
 
-
-  }
-  
-
-  ///----Print---//
-
-  for(int ib = 0 ; ib < nJetOrigin; ++ib){
-    JetOrigin this_jetorigin = static_cast<JetOrigin>(ib);
-    for (int ip = 0; ip < nPtBin; ++ip) {
-      PtBin this_ptbin = static_cast<PtBin>(ip);
-      for(int il =0; il < 4; ++il){
-	bChargeID thisChargeID = static_cast<bChargeID>(il);
-	for(int is = 0; is < nSYSDIR; ++is){ 
-	  SYSDIR this_sysdir = static_cast<SYSDIR>(is);
-	  cout << "[JetChargeAcc]this_jetorigin=" << this_jetorigin << " this_ptbin="<< this_ptbin <<" thisChargeID="<<thisChargeID <<" this_sysdir="<<this_sysdir <<"->" <<SF_bChargeAcc_SLT[this_jetorigin][thisChargeID][this_ptbin][this_sysdir] << endl;
-	}//is
-      }//ie
-    }//ip
-  }//ib
-  //    SF_bChargeTagID_Jet[_ib][_ip][_ie][_is] = _val;
-  for(int ib = 0 ; ib < nJetOrigin; ++ib){
-    JetOrigin this_jetorigin = static_cast<JetOrigin>(ib);
-    for(int ij =0; ij < 2; ++ij){
-      //bChargeID thisChargeID = static_cast<bChargeID>(ij);
-      for (int ip = 0; ip < nPtBin; ++ip) {
-	PtBin this_ptbin = static_cast<PtBin>(ip);
-	for(int ie =0; ie < nEtaBin; ++ie){
-	  EtaBin this_etabin = static_cast<EtaBin>(ie);
-	  for(int is = 0; is < nSYSDIR; ++is){ 
-	    SYSDIR this_sysdir = static_cast<SYSDIR>(is);
-	    cout << "[JetChargeAcc]this_jetorigin=" << this_jetorigin << " ij=" << ij << " this_ptbin="<< this_ptbin <<" this_etabin="<<this_etabin <<" this_sysdir="<<this_sysdir<<"->" <<SF_bChargeAcc_Jet[this_jetorigin][ij][this_ptbin][this_etabin][this_sysdir] << endl;
-	  }//is
-	}//ie
-      }//ip
-    }//ij
-  }//i 
-
+  tfile_acc->Close();
+  delete tfile_acc;
   
 }
 
 void JHAnalyzerBase::Setup_bChargeIDEff(TString _bchargeid_mceff_filename, bool readsltonly){
 
   Is_bChargeIDEffOn=true;
-  DefineSLTBinning();
+  DefineChargeIDBinning();
   Read_bChargeID_SF(readsltonly);
 
 
@@ -6738,16 +6707,16 @@ void JHAnalyzerBase::Setup_bChargeIDEff(TString _bchargeid_mceff_filename, bool 
   
   //rSyst
   //----
-  nbin_muH=CountNBins_bChargeID(k_muH);
-  nbin_muL=CountNBins_bChargeID(k_muL);
-  nbin_eH=CountNBins_bChargeID(k_eH);
-  nbin_eL=CountNBins_bChargeID(k_eL);
+  nbin_muH=CountNBins_bChargeIDEff(k_muH);
+  nbin_muL=CountNBins_bChargeIDEff(k_muL);
+  nbin_eH=CountNBins_bChargeIDEff(k_eH);
+  nbin_eL=CountNBins_bChargeIDEff(k_eL);
   
   v_nbin_SLT={nbin_muH,nbin_muL,nbin_eH,nbin_eL};
 
   //jH
-  nbin_jH=CountNBins_bChargeID_jH();
-  //CountNBins_bChargeID_jH
+  nbin_jH=CountNBins_bChargeIDEff_jH();
+  //CountNBins_bChargeIDEff_jH
   cout << "[JHAnalyzerBase::Setup_bChargeIDEff] DONE." << endl;
 
 }
@@ -6755,6 +6724,7 @@ void JHAnalyzerBase::Setup_bChargeIDEff(TString _bchargeid_mceff_filename, bool 
 
 void JHAnalyzerBase::Setup_bChargeAcc(TString _bchargeacc_mc_filename){
   Is_bChargeAccOn=true;
+  DefineChargeIDBinning();
   Read_bChargeAcc_SF();
 
 
@@ -6763,7 +6733,7 @@ void JHAnalyzerBase::Setup_bChargeAcc(TString _bchargeacc_mc_filename){
   
   ///Load MC Eff//
   //Setup_bChargeAcc
-  TString default_bchargeacc_file="hadd_TTLJ_TTLL.root";
+  TString default_bchargeacc_file="TTsemiLepChargeScoreEfficiencyMeasurement_HADDED.root";
   TString datapath=getenv("DATA_DIR");
   if(_bchargeacc_mc_filename==""){
     cout << "[jhchoi]Use default bchargeacc eff" << endl;
@@ -6793,54 +6763,34 @@ void JHAnalyzerBase::Setup_bChargeAcc(TString _bchargeacc_mc_filename){
   for(unsigned int i=0; i<v_bsign.size(); i++){
     for(unsigned int j=0; j<v_bChargeID.size(); j++){
 
-      //Jet_2018_Has_eH_eff_bminus_num
-      //Jet_2018_eff_bplus_denom
       TString thisSign=v_bsign[i];
       TString thisID=v_bChargeID[j];
       cout<<"[JHAnalyzerBase::Setup_bChargeAcc] setting "<< thisSign+"__"+thisID <<endl;
       TString hden="Jet_"+DataEra+"_acc_"+thisSign+"_chargeid"+std::to_string(j)+"_denom";
-      TString hnum="Jet_"+DataEra+"_acc_"+thisSign+"_chargeid"+to_string(j)+"_num";
+      TString hnum="Jet_"+DataEra+"_acc_"+thisSign+"_chargeid"+std::to_string(j)+"_num";
 
-      TH2D* this_hist=(TH2D*)fmcjet.Get(hnum)->Clone();      
-      TH2D* this_hist_den=(TH2D*)fmcjet.Get(hden);
+      TH1D* this_hist=(TH1D*)fmcjet.Get(hnum)->Clone();      
+      TH1D* this_hist_den=(TH1D*)fmcjet.Get(hden);
       this_hist->Divide(this_hist_den);
       this_hist->SetDirectory(0);
       map_acchist_bchargeID_mcjet[thisID+"__"+thisSign]=this_hist;
       
+      cout<<"[DONE][JHAnalyzerBase::Setup_bChargeAcc] setting "<< thisSign+"__"+thisID <<endl;
 
     }
   }
   
   //rSyst
-  //---SLT
-  for (int ipt = 0; ipt < nPtBin; ++ipt) {
-    for (int islt = 0; islt < nSLT; ++islt) {
-      arr_r_bChargeAcc_SLT_CorrUp[islt][ipt]   = 1.0;
-      arr_r_bChargeAcc_SLT_CorrDown[islt][ipt] = 1.0;
+  nbin_muHacc=CountNBins_bChargeIDAcc(k_1muHOnly);
+  nbin_muLacc=CountNBins_bChargeIDAcc(k_1muLOnly);
+  nbin_eHacc=CountNBins_bChargeIDAcc(k_1eHOnly);
+  nbin_eLacc=CountNBins_bChargeIDAcc(k_1eLOnly);
+  nbin_jHacc=CountNBins_bChargeIDAcc(k_NoSL_jH);
+  nbin_jOthersacc=CountNBins_bChargeIDAcc(k_NoSL_jOthers);
 
-      arr_r_bChargeAcc_SLT_UnCorr_bPlusUp[islt][ipt]   = 1.0;
-      arr_r_bChargeAcc_SLT_UnCorr_bPlusDown[islt][ipt]   = 1.0;
+  v_nbin_acc={nbin_muHacc,nbin_muLacc,nbin_eHacc,nbin_eLacc, nbin_jHacc, nbin_jOthersacc};
 
-      arr_r_bChargeAcc_SLT_UnCorr_bMinusUp[islt][ipt] = 1.0;
-      arr_r_bChargeAcc_SLT_UnCorr_bMinusDown[islt][ipt] = 1.0;
-    }
-  }  
-  //---jH/jOthers
-  for (int ipt = 0; ipt < nPtBin; ++ipt) {
-    for (int ieta = 0; ieta < nEtaBin; ++ieta) {
-      for (int ij =0 ; ij < 2; ++ij){
-	arr_r_bChargeAcc_Jet_CorrUp[ij][ipt][ieta]   = 1.0;
-	arr_r_bChargeAcc_Jet_CorrDown[ij][ipt][ieta] = 1.0;
-	
-	arr_r_bChargeAcc_Jet_UnCorr_bPlusUp[ij][ipt][ieta]   = 1.0;
-	arr_r_bChargeAcc_Jet_UnCorr_bPlusDown[ij][ipt][ieta] = 1.0;
-	
-	arr_r_bChargeAcc_Jet_UnCorr_bMinusUp[ij][ipt][ieta]   = 1.0;
-	arr_r_bChargeAcc_Jet_UnCorr_bMinusDown[ij][ipt][ieta] = 1.0;
-      }
 
-    }
-  }
 
   
 
@@ -7396,6 +7346,106 @@ int JHAnalyzerBase::GetBinIndex_jHEff(double this_Pt,
 
     
 }
+
+
+//acc
+
+int JHAnalyzerBase::GetBinIndex_Acc(int bchargeid,
+                                      double this_Pt,
+                                      double this_mOverPt)
+{
+    const std::vector<double>* cuts[5] = {nullptr};
+
+    switch (bchargeid) {
+
+    case k_1muHOnly:
+      cuts[0] = &v_cutacc_muH_PT30To50;
+      cuts[1] = &v_cutacc_muH_PT50To70;
+      cuts[2] = &v_cutacc_muH_PT70To100;
+      cuts[3] = &v_cutacc_muH_PT100To140;
+      cuts[4] = &v_cutacc_muH_PT140ToInf;
+      break;
+      
+    case k_1muLOnly:
+      cuts[0] = &v_cutacc_muL_PT30To50;
+      cuts[1] = &v_cutacc_muL_PT50To70;
+      cuts[2] = &v_cutacc_muL_PT70To100;
+      cuts[3] = &v_cutacc_muL_PT100To140;
+      cuts[4] = &v_cutacc_muL_PT140ToInf;
+      break;
+      
+    case k_1eHOnly:
+      cuts[0] = &v_cutacc_eH_PT30To50;
+      cuts[1] = &v_cutacc_eH_PT50To70;
+      cuts[2] = &v_cutacc_eH_PT70To100;
+      cuts[3] = &v_cutacc_eH_PT100To140;
+      cuts[4] = &v_cutacc_eH_PT140ToInf;
+      break;
+      
+    case k_1eLOnly:
+      cuts[0] = &v_cutacc_eL_PT30To50;
+      cuts[1] = &v_cutacc_eL_PT50To70;
+      cuts[2] = &v_cutacc_eL_PT70To100;
+      cuts[3] = &v_cutacc_eL_PT100To140;
+      cuts[4] = &v_cutacc_eL_PT140ToInf;
+      break;
+      
+    case k_NoSL_jH:
+      cuts[0] = &v_cutacc_jH_PT30To50;
+      cuts[1] = &v_cutacc_jH_PT50To70;
+      cuts[2] = &v_cutacc_jH_PT70To100;
+      cuts[3] = &v_cutacc_jH_PT100To140;
+      cuts[4] = &v_cutacc_jH_PT140ToInf;
+      break;
+    case k_NoSL_jOthers:
+      cuts[0] = &v_cutacc_jOthers_PT30To50;
+      cuts[1] = &v_cutacc_jOthers_PT50To70;
+      cuts[2] = &v_cutacc_jOthers_PT70To100;
+      cuts[3] = &v_cutacc_jOthers_PT100To140;
+      cuts[4] = &v_cutacc_jOthers_PT140ToInf;
+      break;
+
+      
+    default:
+        return 1/0;
+    }
+
+
+    int ipt;
+
+    if      (this_Pt < 30)  return -1;
+    else if (this_Pt < 50)  ipt = 0;
+    else if (this_Pt < 70)  ipt = 1;
+    else if (this_Pt < 100) ipt = 2;
+    else if (this_Pt < 140) ipt = 3;
+    else                    ipt = 4;
+
+
+    const auto& edges = *cuts[ipt];
+
+    auto it = std::upper_bound( //get iterator of first one larger than given moverpt
+        edges.begin(),
+        edges.end(),
+        this_mOverPt
+    );
+
+    if (it == edges.begin() || it == edges.end())
+        return 1/0;
+
+    int localIdx = it - edges.begin() - 1;
+
+
+    int offset = 0;
+
+    for (int i = 0; i < ipt; ++i)
+        offset += cuts[i]->size() - 1;
+
+
+    return offset + localIdx;
+}
+
+
+
 
 
 void JHAnalyzerBase::MeasureMC_bChargeIDEff(vector<Jet> vJets ){
@@ -8585,19 +8635,52 @@ void JHAnalyzerBase::MeasureMC_bChargeAcc_test(vector<Jet> vJets ){
 
 void JHAnalyzerBase::MeasureMC_bChargeAcc(vector<Jet> vJets ){
   TString weight_sign_str= weight > 0 ? "_POS" : "_NEG";
-  vector<double> vec_etabins = {0.0, 0.8, 1.6, 2., 2.5};
-  vector<double> vec_ptbins = {20., 30., 50., 70., 100., 140.};
-  double etabins[5]= {0.0, 0.8, 1.6, 2., 2.5};
-  double etabins_all[2]= {0.0, 2.5};
-  double ptbins[6]= {30.,50.,70.,100.,140.,1000.};
-  const int NEtaBin = 4;
-  const int NEtaBinAll = 1;
-  const int NPtBin = 5;
-  //add moverpt
-  double mOverPtbins[21] = {0,0.05,0.1,0.15, 0.2,0.25, 0.3,0.35, 0.4,0.45, 0.5,0.55, 0.6,0.65, 0.7,0.75, 0.8,0.85, 0.9,0.95, 1};
-  const int NmOverPtBin=20;
-  
-  
+
+  int N_i_muH =
+    (v_cutacc_muH_PT30To50.size()   - 1) +
+    (v_cutacc_muH_PT50To70.size()   - 1) +
+    (v_cutacc_muH_PT70To100.size()  - 1) +
+    (v_cutacc_muH_PT100To140.size() - 1) +
+    (v_cutacc_muH_PT140ToInf.size() - 1);
+
+  int N_i_muL =
+    (v_cutacc_muL_PT30To50.size()   - 1) +
+    (v_cutacc_muL_PT50To70.size()   - 1) +
+    (v_cutacc_muL_PT70To100.size()  - 1) +
+    (v_cutacc_muL_PT100To140.size() - 1) +
+    (v_cutacc_muL_PT140ToInf.size() - 1);
+
+  int N_i_eH =
+    (v_cutacc_eH_PT30To50.size()   - 1) +
+    (v_cutacc_eH_PT50To70.size()   - 1) +
+    (v_cutacc_eH_PT70To100.size()  - 1) +
+    (v_cutacc_eH_PT100To140.size() - 1) +
+    (v_cutacc_eH_PT140ToInf.size() - 1);
+
+  int N_i_eL =
+    (v_cutacc_eL_PT30To50.size()   - 1) +
+    (v_cutacc_eL_PT50To70.size()   - 1) +
+    (v_cutacc_eL_PT70To100.size()  - 1) +
+    (v_cutacc_eL_PT100To140.size() - 1) +
+    (v_cutacc_eL_PT140ToInf.size() - 1);
+
+  int N_i_jH =
+    (v_cutacc_jH_PT30To50.size()   - 1) +
+    (v_cutacc_jH_PT50To70.size()   - 1) +
+    (v_cutacc_jH_PT70To100.size()  - 1) +
+    (v_cutacc_jH_PT100To140.size() - 1) +
+    (v_cutacc_jH_PT140ToInf.size() - 1);
+
+
+  int N_i_jOthers =
+    (v_cutacc_jOthers_PT30To50.size()   - 1) +
+    (v_cutacc_jOthers_PT50To70.size()   - 1) +
+    (v_cutacc_jOthers_PT70To100.size()  - 1) +
+    (v_cutacc_jOthers_PT100To140.size() - 1) +
+    (v_cutacc_jOthers_PT140ToInf.size() - 1);
+
+
+  vector<int> v_N_i={N_i_muH,N_i_muL,N_i_eH,N_i_eL,N_i_jH,N_i_jOthers};
   for(auto& this_jet : vJets){
     if(fabs(this_jet.partonFlavour())!=5) continue;
     if(this_jet.hadronFlavour()!=5) continue;
@@ -8614,38 +8697,29 @@ void JHAnalyzerBase::MeasureMC_bChargeAcc(vector<Jet> vJets ){
 
     
     TString flav= this_jet.partonFlavour() > 0 ? "bminus" : "bplus";
-    double this_Eta = fabs(this_jet.Eta());
     double this_Pt = this_jet.Pt()>1000. ? 999. : this_jet.Pt();
-
-
+    double this_mOverPt=this_jet.M()/this_jet.Pt();
 
     
     auto this_charge_and_id =GetMeasuredChargeAndID(this_jet,false);
+    //pair<int,int> JHAnalyzerBase::GetMeasuredChargeAndID(const Jet& thisJet, bool ApplyAccCorr){
     int this_charge=this_charge_and_id.first;
-    int this_chargeid=this_charge_and_id.second;
+    int this_chargeid=this_charge_and_id.second; //muH : 0 , muL : 1 , eH : 2, eL :3, jH : 4 , jO : 5
     if(this_chargeid<0) continue;
     bool isMeasuredCorrect=false;
     if(this_jet.partonFlavour()*this_charge <0) isMeasuredCorrect=true; 
-    
+    int this_binidx=GetBinIndex_Acc(this_chargeid,this_Pt,this_mOverPt);
+
    
-    if(this_chargeid<4){//SLT
-      AnalyzerCore::FillHist("Jet_"+DataEra+"_acc_"+flav+"_chargeid"+std::to_string(this_chargeid)+"_denom", this_Eta, this_Pt, fabs(weight), NEtaBinAll, etabins_all, NPtBin, ptbins);
-      AnalyzerCore::FillHist("Jet_"+DataEra+"_acc_"+flav+"_chargeid"+std::to_string(this_chargeid)+"_denom"+weight_sign_str, this_Eta, this_Pt, weight, NEtaBinAll, etabins_all, NPtBin, ptbins);
-      if(isMeasuredCorrect){
-	AnalyzerCore::FillHist("Jet_"+DataEra+"_acc_"+flav+"_chargeid"+std::to_string(this_chargeid)+"_num", this_Eta, this_Pt, fabs(weight), NEtaBinAll, etabins_all, NPtBin, ptbins);
-	AnalyzerCore::FillHist("Jet_"+DataEra+"_acc_"+flav+"_chargeid"+std::to_string(this_chargeid)+"_num"+weight_sign_str, this_Eta, this_Pt, weight, NEtaBinAll, etabins_all, NPtBin, ptbins);
-      }
-    }else{
-      AnalyzerCore::FillHist("Jet_"+DataEra+"_acc_"+flav+"_chargeid"+std::to_string(this_chargeid)+"_denom", this_Eta, this_Pt, fabs(weight), NEtaBin, etabins, NPtBin, ptbins);
-      AnalyzerCore::FillHist("Jet_"+DataEra+"_acc_"+flav+"_chargeid"+std::to_string(this_chargeid)+"_denom"+weight_sign_str, this_Eta, this_Pt, weight, NEtaBin, etabins, NPtBin, ptbins);
-      if(isMeasuredCorrect){
-	AnalyzerCore::FillHist("Jet_"+DataEra+"_acc_"+flav+"_chargeid"+std::to_string(this_chargeid)+"_num", this_Eta, this_Pt, fabs(weight), NEtaBin, etabins, NPtBin, ptbins);
-	AnalyzerCore::FillHist("Jet_"+DataEra+"_acc_"+flav+"_chargeid"+std::to_string(this_chargeid)+"_num"+weight_sign_str, this_Eta, this_Pt, weight, NEtaBin, etabins, NPtBin, ptbins);
-      }
+
+    AnalyzerCore::FillHist("Jet_"+DataEra+"_acc_"+flav+"_chargeid"+std::to_string(this_chargeid)+"_denom",                 this_binidx, weight, v_N_i[this_chargeid],0,v_N_i[this_chargeid]);
+    AnalyzerCore::FillHist("Jet_"+DataEra+"_acc_"+flav+"_chargeid"+std::to_string(this_chargeid)+"_denom"+weight_sign_str, this_binidx, weight, v_N_i[this_chargeid],0,v_N_i[this_chargeid]);
+    if(isMeasuredCorrect){
+      AnalyzerCore::FillHist("Jet_"+DataEra+"_acc_"+flav+"_chargeid"+std::to_string(this_chargeid)+"_num",                 this_binidx, weight, v_N_i[this_chargeid],0,v_N_i[this_chargeid]);
+      AnalyzerCore::FillHist("Jet_"+DataEra+"_acc_"+flav+"_chargeid"+std::to_string(this_chargeid)+"_num"+weight_sign_str, this_binidx, weight, v_N_i[this_chargeid],0,v_N_i[this_chargeid]);
     }
+
   }
-
-
 }
 
 
@@ -9427,131 +9501,68 @@ double JHAnalyzerBase::GetChargeAccCorr(const Jet& thisJet, int thisChargeID, in
 
   double ret=1.;
   double thisJetPt=thisJet.Pt();
-  JHAnalyzerBase::PtBin thisJetPtBin=nPtBin;
-  if(thisJetPt<50.){
-    thisJetPtBin=kPT30To50;
-  }else if(thisJetPt<70.){
-    thisJetPtBin=kPT50To70;
-  }else if(thisJetPt<100.){
-    thisJetPtBin=kPT70To100;
-  }else if(thisJetPt<140.){
-    thisJetPtBin=kPT100To140;
-  }else{
-    thisJetPtBin=kPT140ToInf;
-  }
+  double this_mOverPt=thisJet.M()/thisJet.Pt();
 
-  double mc_acc=Get_bChargeAcc_MC(this_partonFlavour,thisChargeID,thisJet.Pt(),thisJet.Eta());
+  int this_binidx=GetBinIndex_Acc(thisChargeID,thisJetPt,this_mOverPt);
+  //int JHAnalyzerBase::GetBinIndex_Acc(int bchargeid,
+  // double this_Pt,
+  //                                  double this_mOverPt)
+  double mc_acc=Get_bChargeAcc_MC(this_partonFlavour,thisChargeID,this_binidx);
   if(mc_acc<0) return 1.;
   if(mc_acc>1) return 0.;      
 
   double SF_acc=1.;
 
-  //------SLT-----//
-  if(thisChargeID<4){ //SLT//
-    //SF_bChargeAcc_SLT[_ib][_il][_ip][_is]
-    //SF_bChargeAcc_Jet[_ib2][_ij2][_ip2][_ie2][_is2] 
-    SF_acc= SF_bChargeAcc_SLT[thisJetOrigin][thisChargeID][thisJetPtBin][k_central];
-    if(SF_acc*mc_acc>1) return 1.;
-    if(SF_acc*mc_acc<0) return 1.;
-
-    if(IsMeasuredCorrectly){
-      ret*=SF_acc;
-      if(runSys && runWeightBase){
-	arr_r_bChargeAcc_SLT_CorrUp[thisChargeID][thisJetPtBin] *= SF_bChargeAcc_SLT[thisJetOrigin][thisChargeID][thisJetPtBin][k_corrUp]/SF_acc;
-	arr_r_bChargeAcc_SLT_CorrDown[thisChargeID][thisJetPtBin] *= SF_bChargeAcc_SLT[thisJetOrigin][thisChargeID][thisJetPtBin][k_corrDown]/SF_acc;
-	if(this_partonFlavour<0){
-	  arr_r_bChargeAcc_SLT_UnCorr_bPlusUp[thisChargeID][thisJetPtBin] *= SF_bChargeAcc_SLT[thisJetOrigin][thisChargeID][thisJetPtBin][k_uncorrUp]/SF_acc;
-	  arr_r_bChargeAcc_SLT_UnCorr_bPlusDown[thisChargeID][thisJetPtBin] *= SF_bChargeAcc_SLT[thisJetOrigin][thisChargeID][thisJetPtBin][k_uncorrDown]/SF_acc;
-	}else{
-	  arr_r_bChargeAcc_SLT_UnCorr_bMinusUp[thisChargeID][thisJetPtBin] *= SF_bChargeAcc_SLT[thisJetOrigin][thisChargeID][thisJetPtBin][k_uncorrUp]/SF_acc;
-	  arr_r_bChargeAcc_SLT_UnCorr_bMinusDown[thisChargeID][thisJetPtBin] *= SF_bChargeAcc_SLT[thisJetOrigin][thisChargeID][thisJetPtBin][k_uncorrDown]/SF_acc;
-	}
-      }//if sys
-      
-    }//measured correctly
-    else{
-      ret *= (1-mc_acc*SF_acc)/(1-mc_acc);
-      if(runSys && runWeightBase){
-	arr_r_bChargeAcc_SLT_CorrUp[thisChargeID][thisJetPtBin] *= (1-mc_acc*SF_bChargeAcc_SLT[thisJetOrigin][thisChargeID][thisJetPtBin][k_corrUp])/(1-mc_acc*SF_acc);
-	arr_r_bChargeAcc_SLT_CorrDown[thisChargeID][thisJetPtBin] *= (1-mc_acc*SF_bChargeAcc_SLT[thisJetOrigin][thisChargeID][thisJetPtBin][k_corrDown])/(1-mc_acc*SF_acc);
-	if(this_partonFlavour<0){
-	  arr_r_bChargeAcc_SLT_UnCorr_bPlusUp[thisChargeID][thisJetPtBin] *= (1-mc_acc*SF_bChargeAcc_SLT[thisJetOrigin][thisChargeID][thisJetPtBin][k_uncorrUp])/(1-mc_acc*SF_acc);
-	  arr_r_bChargeAcc_SLT_UnCorr_bPlusDown[thisChargeID][thisJetPtBin] *= (1-mc_acc*SF_bChargeAcc_SLT[thisJetOrigin][thisChargeID][thisJetPtBin][k_uncorrDown])/(1-mc_acc*SF_acc);
-	}else{
-	  arr_r_bChargeAcc_SLT_UnCorr_bMinusUp[thisChargeID][thisJetPtBin] *= (1-mc_acc*SF_bChargeAcc_SLT[thisJetOrigin][thisChargeID][thisJetPtBin][k_uncorrUp])/(1-mc_acc*SF_acc);
-	  arr_r_bChargeAcc_SLT_UnCorr_bMinusDown[thisChargeID][thisJetPtBin] *= (1-mc_acc*SF_bChargeAcc_SLT[thisJetOrigin][thisChargeID][thisJetPtBin][k_uncorrDown])/(1-mc_acc*SF_acc);
-	}
-      }//if sys
-    }//if measured oppositely
-
-    ///-----Jet Charge Type -----//
-  }else{//Jet Charge
-    double thisJetEta=fabs(thisJet.Eta());
-    JHAnalyzerBase::EtaBin thisJetEtaBin=nEtaBin;
-    if(thisJetEta<0.8){
-      thisJetEtaBin=kEta0To0p8;
-    }else if(thisJetEta<1.6){
-      thisJetEtaBin=kEta0p8To1p6;
-    }else if(thisJetEta<2.0){
-      thisJetEtaBin=kEta1p6To2;
-    }else if(thisJetEta<2.5){
-      thisJetEtaBin=kEta2To2p5;
-    }
-    SF_acc= SF_bChargeAcc_Jet[thisJetOrigin][thisChargeID-4][thisJetPtBin][thisJetEtaBin][k_central];
-    if(SF_acc*mc_acc>1) return 1.;
-    if(SF_acc*mc_acc<0) return 1.;
-
-    if(IsMeasuredCorrectly){
-      ret*=SF_acc;
-      if(runSys && runWeightBase){
-        arr_r_bChargeAcc_Jet_CorrUp[thisChargeID-4][thisJetPtBin][thisJetEtaBin] *= SF_bChargeAcc_Jet[thisJetOrigin][thisChargeID-4][thisJetPtBin][thisJetEtaBin][k_corrUp]/SF_acc;
-        arr_r_bChargeAcc_Jet_CorrDown[thisChargeID-4][thisJetPtBin][thisJetEtaBin] *= SF_bChargeAcc_Jet[thisJetOrigin][thisChargeID-4][thisJetPtBin][thisJetEtaBin][k_corrDown]/SF_acc;
-        if(this_partonFlavour<0){
-          arr_r_bChargeAcc_Jet_UnCorr_bPlusUp[thisChargeID-4][thisJetPtBin][thisJetEtaBin] *= SF_bChargeAcc_Jet[thisJetOrigin][thisChargeID-4][thisJetPtBin][thisJetEtaBin][k_uncorrUp]/SF_acc;
-          arr_r_bChargeAcc_Jet_UnCorr_bPlusDown[thisChargeID-4][thisJetPtBin][thisJetEtaBin] *= SF_bChargeAcc_Jet[thisJetOrigin][thisChargeID-4][thisJetPtBin][thisJetEtaBin][k_uncorrDown]/SF_acc;
-        }else{
-          arr_r_bChargeAcc_Jet_UnCorr_bMinusUp[thisChargeID-4][thisJetPtBin][thisJetEtaBin] *= SF_bChargeAcc_Jet[thisJetOrigin][thisChargeID-4][thisJetPtBin][thisJetEtaBin][k_uncorrUp]/SF_acc;
-          arr_r_bChargeAcc_Jet_UnCorr_bMinusDown[thisChargeID-4][thisJetPtBin][thisJetEtaBin] *= SF_bChargeAcc_Jet[thisJetOrigin][thisChargeID-4][thisJetPtBin][thisJetEtaBin][k_uncorrDown]/SF_acc;
-        }
-      }//if sys
-      
-    }//IsMeasuredCorrectly
-    else{
-      ret *= (1-mc_acc*SF_acc)/(1-mc_acc);
-
-      if(runSys && runWeightBase){
+  SF_acc=Get_SF_bChargeAcc(thisJetOrigin, thisChargeID, this_binidx, k_central);
+  if(SF_acc*mc_acc>1) return 1.;
+  if(SF_acc*mc_acc<0) return 1.;
+  
+  if(IsMeasuredCorrectly){
+    ret*=SF_acc;
+    if(runSys && runWeightBase){
+      r_bChargeID_Acc_CorrUp[thisChargeID][this_binidx]   *= Get_SF_bChargeAcc(thisJetOrigin, thisChargeID, this_binidx, k_corrUp)/SF_acc;
+      r_bChargeID_Acc_CorrDown[thisChargeID][this_binidx] *= Get_SF_bChargeAcc(thisJetOrigin, thisChargeID, this_binidx, k_corrDown)/SF_acc;
+      if(this_partonFlavour<0){//bplus
+	r_bChargeID_Acc_UnCorr_bPlusUp[thisChargeID][this_binidx]   *= Get_SF_bChargeAcc(thisJetOrigin, thisChargeID, this_binidx, k_uncorrUp)/SF_acc;
+	r_bChargeID_Acc_UnCorr_bPlusDown[thisChargeID][this_binidx] *= Get_SF_bChargeAcc(thisJetOrigin, thisChargeID, this_binidx, k_uncorrDown)/SF_acc;	  
 	
-	arr_r_bChargeAcc_Jet_CorrUp[thisChargeID-4][thisJetPtBin][thisJetEtaBin] *= (1-mc_acc*SF_bChargeAcc_Jet[thisJetOrigin][thisChargeID-4][thisJetPtBin][thisJetEtaBin][k_corrUp])/(1-mc_acc*SF_acc);
-	arr_r_bChargeAcc_Jet_CorrDown[thisChargeID-4][thisJetPtBin][thisJetEtaBin] *= (1-mc_acc*SF_bChargeAcc_Jet[thisJetOrigin][thisChargeID-4][thisJetPtBin][thisJetEtaBin][k_corrDown])/(1-mc_acc*SF_acc);
-	if(this_partonFlavour<0){
-	  arr_r_bChargeAcc_Jet_UnCorr_bPlusUp[thisChargeID-4][thisJetPtBin][thisJetEtaBin] *= (1-mc_acc*SF_bChargeAcc_Jet[thisJetOrigin][thisChargeID-4][thisJetPtBin][thisJetEtaBin][k_uncorrUp])/(1-mc_acc*SF_acc);
-	  arr_r_bChargeAcc_Jet_UnCorr_bPlusDown[thisChargeID-4][thisJetPtBin][thisJetEtaBin] *= (1-mc_acc*SF_bChargeAcc_Jet[thisJetOrigin][thisChargeID-4][thisJetPtBin][thisJetEtaBin][k_uncorrDown])/(1-mc_acc*SF_acc);
-	}else{
-	  arr_r_bChargeAcc_Jet_UnCorr_bMinusUp[thisChargeID-4][thisJetPtBin][thisJetEtaBin] *= (1-mc_acc*SF_bChargeAcc_Jet[thisJetOrigin][thisChargeID-4][thisJetPtBin][thisJetEtaBin][k_uncorrUp])/(1-mc_acc*SF_acc);
-	  arr_r_bChargeAcc_Jet_UnCorr_bMinusDown[thisChargeID-4][thisJetPtBin][thisJetEtaBin] *= (1-mc_acc*SF_bChargeAcc_Jet[thisJetOrigin][thisChargeID-4][thisJetPtBin][thisJetEtaBin][k_uncorrDown])/(1-mc_acc*SF_acc);
-	}
-      }//if sys
-      
-    }//not IsMeasuredCorrectly
+      }else{
+	r_bChargeID_Acc_UnCorr_bMinusUp[thisChargeID][this_binidx]   *= Get_SF_bChargeAcc(thisJetOrigin, thisChargeID, this_binidx, k_uncorrUp)/SF_acc;
+	r_bChargeID_Acc_UnCorr_bMinusDown[thisChargeID][this_binidx] *= Get_SF_bChargeAcc(thisJetOrigin, thisChargeID, this_binidx, k_uncorrDown)/SF_acc;	  
+      }
+    }//if sys
     
-  }
+  }//measured correctly
+  else{
+    ret *= (1-mc_acc*SF_acc)/(1-mc_acc);
+    if(runSys && runWeightBase){
+      r_bChargeID_Acc_CorrUp[thisChargeID][this_binidx] *= (1-mc_acc*Get_SF_bChargeAcc(thisJetOrigin, thisChargeID, this_binidx, k_corrUp))/(1-mc_acc*SF_acc);
+      r_bChargeID_Acc_CorrDown[thisChargeID][this_binidx] *= (1-mc_acc*Get_SF_bChargeAcc(thisJetOrigin, thisChargeID, this_binidx, k_corrDown))/(1-mc_acc*SF_acc);
+      if(this_partonFlavour<0){
+	r_bChargeID_Acc_UnCorr_bPlusUp[thisChargeID][this_binidx]   *= (1-mc_acc*Get_SF_bChargeAcc(thisJetOrigin, thisChargeID, this_binidx, k_uncorrUp))/(1-mc_acc*SF_acc);
+	r_bChargeID_Acc_UnCorr_bPlusDown[thisChargeID][this_binidx] *= (1-mc_acc*Get_SF_bChargeAcc(thisJetOrigin, thisChargeID, this_binidx, k_uncorrDown))/(1-mc_acc*SF_acc);
+      }else{
+	r_bChargeID_Acc_UnCorr_bMinusUp[thisChargeID][this_binidx]   *= (1-mc_acc*Get_SF_bChargeAcc(thisJetOrigin, thisChargeID, this_binidx, k_uncorrUp))/(1-mc_acc*SF_acc);
+	r_bChargeID_Acc_UnCorr_bMinusDown[thisChargeID][this_binidx] *= (1-mc_acc*Get_SF_bChargeAcc(thisJetOrigin, thisChargeID, this_binidx, k_uncorrDown))/(1-mc_acc*SF_acc);
+      }//if bminus
+    }//if sys
+  }//if measured oppositely
 
-    
+
+  
   return ret;
 }
 ///for new lepton veto
-double JHAnalyzerBase::Get_bChargeAcc_MC(int partonFlavour, int thisChargeID,double JetPt, double JetEta){
+double JHAnalyzerBase::Get_bChargeAcc_MC(int partonFlavour, int thisChargeID, int this_binidx){
+  //Get_bChargeAcc_MC(this_partonFlavour,thisChargeID,this_binidx);
   if(IsDATA) return 1.;
   if(abs(partonFlavour)!=5) return 1.;
-  if(JetPt<30) JetPt = 30.;
-  if(JetPt>=140.) JetPt = 141.;
-  JetEta=fabs(JetEta);
-  if(JetEta>2.5) return 1.;
   TString bsign= partonFlavour > 0 ? "bminus" : "bplus";
+  double ret=1;
   TString ChargeAccID=bChargeAccIDName[thisChargeID];
   TString this_key = ChargeAccID + "__" + bsign;
-  TH2D* this_hist=map_acchist_bchargeID_mcjet[this_key];
-  int this_bin = this_hist->FindBin(JetEta,JetPt);
+  TH1D* this_hist=map_acchist_bchargeID_mcjet[this_key];
+  int this_bin = this_binidx+1;
   double this_acc=1.;
   this_acc=this_hist->GetBinContent(this_bin);
   if(this_acc<=0.) this_acc = 1E-10;
@@ -9675,8 +9686,8 @@ bool JHAnalyzerBase::HasPromptLepWithinJet(const Jet& thisJet){
 
 
 
-void JHAnalyzerBase::DefineSLTBinning(){//mOverPt bins                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                     
-  //  TString cut_suffix_muH,cut_suffix_muL,cut_suffix_eH,cut_suffix_eL;                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                              
+void JHAnalyzerBase::DefineChargeIDBinning(){//mOverPt bins
+  
   if(DataEra=="2016preVFP"){
     v_cut_eH_PT30To50={0,0.15,0.2,0.25,1};
     v_cut_eH_PT50To70={0,0.1,0.15,0.2,1};
@@ -9704,6 +9715,11 @@ void JHAnalyzerBase::DefineSLTBinning(){//mOverPt bins
     v_cut_jH_PT100To140={0,0.1,0.15,0.2,1};
     v_cut_jH_PT140ToInf={0,0.1,0.15,0.2,1};
 
+
+
+
+
+    
   }
 
   if(DataEra=="2016postVFP"){
@@ -9825,7 +9841,77 @@ void JHAnalyzerBase::DefineSLTBinning(){//mOverPt bins
   str_v_cut_jH_PT100To140  = ConvertCutVectorToString(v_cut_jH_PT100To140);
   str_v_cut_jH_PT140ToInf  = ConvertCutVectorToString(v_cut_jH_PT140ToInf);
 
+  //acc
+  v_cutacc_eH_PT30To50={0,0.15,1};
+  v_cutacc_eH_PT50To70={0,0.15,1};
+  v_cutacc_eH_PT70To100={0,0.15,1};
+  v_cutacc_eH_PT100To140={0,0.15,1};
+  v_cutacc_eH_PT140ToInf={0,0.15,1};
+  v_cutacc_eL_PT30To50={0,0.15,1};
+  v_cutacc_eL_PT50To70={0,0.15,1};
+  v_cutacc_eL_PT70To100={0,0.15,1};
+  v_cutacc_eL_PT100To140={0,1};
+  v_cutacc_eL_PT140ToInf={0,1};
+  v_cutacc_muH_PT30To50={0,0.15,1};
+  v_cutacc_muH_PT50To70={0,0.15,1};
+  v_cutacc_muH_PT70To100={0,0.15,1};
+  v_cutacc_muH_PT100To140={0,0.15,1};
+  v_cutacc_muH_PT140ToInf={0,0.15,1};
+  v_cutacc_muL_PT30To50={0,0.15,1};
+  v_cutacc_muL_PT50To70={0,0.15,1};
+  v_cutacc_muL_PT70To100={0,0.15,1};
+  v_cutacc_muL_PT100To140={0,1};
+  v_cutacc_muL_PT140ToInf={0,1};
+  v_cutacc_jH_PT30To50={0,0.15,1};
+  v_cutacc_jH_PT50To70={0,0.15,1};
+  v_cutacc_jH_PT70To100={0,0.15,1};
+  v_cutacc_jH_PT100To140={0,0.15,1};
+  v_cutacc_jH_PT140ToInf={0,0.15,1};
 
+  v_cutacc_jOthers_PT30To50={0,0.15,1};
+  v_cutacc_jOthers_PT50To70={0,0.15,1};
+  v_cutacc_jOthers_PT70To100={0,0.15,1};
+  v_cutacc_jOthers_PT100To140={0,0.15,1};
+  v_cutacc_jOthers_PT140ToInf={0,0.15,1};
+
+
+  str_v_cutacc_muH_PT30To50   = ConvertCutVectorToString(v_cutacc_muH_PT30To50);
+  str_v_cutacc_muH_PT50To70   = ConvertCutVectorToString(v_cutacc_muH_PT50To70);
+  str_v_cutacc_muH_PT70To100  = ConvertCutVectorToString(v_cutacc_muH_PT70To100);
+  str_v_cutacc_muH_PT100To140 = ConvertCutVectorToString(v_cutacc_muH_PT100To140);
+  str_v_cutacc_muH_PT140ToInf = ConvertCutVectorToString(v_cutacc_muH_PT140ToInf);
+
+  str_v_cutacc_muL_PT30To50   = ConvertCutVectorToString(v_cutacc_muL_PT30To50);
+  str_v_cutacc_muL_PT50To70   = ConvertCutVectorToString(v_cutacc_muL_PT50To70);
+  str_v_cutacc_muL_PT70To100  = ConvertCutVectorToString(v_cutacc_muL_PT70To100);
+  str_v_cutacc_muL_PT100To140 = ConvertCutVectorToString(v_cutacc_muL_PT100To140);
+  str_v_cutacc_muL_PT140ToInf = ConvertCutVectorToString(v_cutacc_muL_PT140ToInf);
+
+  str_v_cutacc_eH_PT30To50    = ConvertCutVectorToString(v_cutacc_eH_PT30To50);
+  str_v_cutacc_eH_PT50To70    = ConvertCutVectorToString(v_cutacc_eH_PT50To70);
+  str_v_cutacc_eH_PT70To100   = ConvertCutVectorToString(v_cutacc_eH_PT70To100);
+  str_v_cutacc_eH_PT100To140  = ConvertCutVectorToString(v_cutacc_eH_PT100To140);
+  str_v_cutacc_eH_PT140ToInf  = ConvertCutVectorToString(v_cutacc_eH_PT140ToInf);
+
+  str_v_cutacc_eL_PT30To50    = ConvertCutVectorToString(v_cutacc_eL_PT30To50);
+  str_v_cutacc_eL_PT50To70    = ConvertCutVectorToString(v_cutacc_eL_PT50To70);
+  str_v_cutacc_eL_PT70To100   = ConvertCutVectorToString(v_cutacc_eL_PT70To100);
+  str_v_cutacc_eL_PT100To140  = ConvertCutVectorToString(v_cutacc_eL_PT100To140);
+  str_v_cutacc_eL_PT140ToInf  = ConvertCutVectorToString(v_cutacc_eL_PT140ToInf);
+
+  str_v_cutacc_jH_PT30To50    = ConvertCutVectorToString(v_cutacc_jH_PT30To50);
+  str_v_cutacc_jH_PT50To70    = ConvertCutVectorToString(v_cutacc_jH_PT50To70);
+  str_v_cutacc_jH_PT70To100   = ConvertCutVectorToString(v_cutacc_jH_PT70To100);
+  str_v_cutacc_jH_PT100To140  = ConvertCutVectorToString(v_cutacc_jH_PT100To140);
+  str_v_cutacc_jH_PT140ToInf  = ConvertCutVectorToString(v_cutacc_jH_PT140ToInf);
+
+  str_v_cutacc_jOthers_PT30To50    = ConvertCutVectorToString(v_cutacc_jOthers_PT30To50);
+  str_v_cutacc_jOthers_PT50To70    = ConvertCutVectorToString(v_cutacc_jOthers_PT50To70);
+  str_v_cutacc_jOthers_PT70To100   = ConvertCutVectorToString(v_cutacc_jOthers_PT70To100);
+  str_v_cutacc_jOthers_PT100To140  = ConvertCutVectorToString(v_cutacc_jOthers_PT100To140);
+  str_v_cutacc_jOthers_PT140ToInf  = ConvertCutVectorToString(v_cutacc_jOthers_PT140ToInf);
+
+  
 }
 
     
