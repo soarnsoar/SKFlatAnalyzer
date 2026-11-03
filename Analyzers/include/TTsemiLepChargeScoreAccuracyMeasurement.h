@@ -6,7 +6,7 @@
 class TTsemiLepChargeScoreAccuracyMeasurement : public JHAnalyzerBase {
 
 public:
-
+  bool Is2016;
   void initializeAnalyzer() override;
   void EventLoop() override;
   void TruthLoop() override;
@@ -49,7 +49,11 @@ public:
 
   TString GetCutSuffix_jH(const Jet& _this_jet);
 
-  TString GetCutSuffix_By_0p15(const Jet& _this_jet);
+  TString GetCutSuffix_ARG_mOverPt(const Jet& _this_jet);
+  TString GetCutSuffix_No_mOverPtBinning_ForPTOver100(const Jet& _this_jet);
+  //GetCutSuffix_No_mOverPtBinning_ForPTOver100
+  TString GetCutSuffix_By__0p15(const Jet& _this_jet);
+  
   
   TString cut_suffix, cut_suffix_Pt, cut_suffix_mOverPt;
   TString cut_suffix_muH,cut_suffix_muL,cut_suffix_eH,cut_suffix_eL,cut_suffix_jH;

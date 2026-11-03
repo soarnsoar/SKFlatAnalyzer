@@ -12,6 +12,7 @@ TTsemiLepChargeScoreAccuracyMeasurement::~TTsemiLepChargeScoreAccuracyMeasuremen
 }
 
 void TTsemiLepChargeScoreAccuracyMeasurement::initializeAnalyzer(){
+  Is2016=DataEra.Contains("2016");
   cout << "[TTsemiLepChargeScoreAccuracyMeasurement::initializeAnalyzer]" << endl;
   //TTsemiLepChargeScoreAccuracyMeasurement
 
@@ -358,12 +359,14 @@ void TTsemiLepChargeScoreAccuracyMeasurement::RunBJet(TString bjetname, int bjet
   cut_suffix_jH= "__"+GetCutSuffix_jH(v_tightjet[bjetidx]);
   */
 
-  //GetCutSuffix_By_0p15 -- 261029
-  cut_suffix_muH= "__"+GetCutSuffix_By_0p15(v_tightjet[bjetidx]);
-  cut_suffix_muL= "__"+GetCutSuffix_By_0p15(v_tightjet[bjetidx]);
-  cut_suffix_eH= "__"+GetCutSuffix_By_0p15(v_tightjet[bjetidx]);
-  cut_suffix_eL= "__"+GetCutSuffix_By_0p15(v_tightjet[bjetidx]);
-  cut_suffix_jH= "__"+GetCutSuffix_By_0p15(v_tightjet[bjetidx]);
+  //GetCutSuffix_By__0p15  || GetCutSuffix_No_mOverPtBinning_ForPTOver100 261030
+  cut_suffix_muH= "__"+GetCutSuffix_By__0p15(v_tightjet[bjetidx]);
+  //cut_suffix_muL= Is2016 ? "__"+GetCutSuffix_No_mOverPtBinning_ForPTOver100(v_tightjet[bjetidx]) : "__"+GetCutSuffix_By__0p15(v_tightjet[bjetidx]);
+  cut_suffix_muL= "__"+GetCutSuffix_No_mOverPtBinning_ForPTOver100(v_tightjet[bjetidx]);
+  cut_suffix_eH= "__"+GetCutSuffix_By__0p15(v_tightjet[bjetidx]);
+  //cut_suffix_eL= Is2016 ? "__"+GetCutSuffix_No_mOverPtBinning_ForPTOver100(v_tightjet[bjetidx]) : "__"+GetCutSuffix_By__0p15(v_tightjet[bjetidx]);
+  cut_suffix_eL= "__"+GetCutSuffix_No_mOverPtBinning_ForPTOver100(v_tightjet[bjetidx]);
+  cut_suffix_jH= "__"+GetCutSuffix_By__0p15(v_tightjet[bjetidx]);
   
   //cut_suffix=GetCutSuffix(v_tightjet[bjetidx].Pt(),v_tightjet[bjetidx].Eta(),noetabin);
   //TString cut_suffix_all=GetCutSuffix(v_tightjet[bjetidx].Pt(),v_tightjet[bjetidx].Eta(),false);
@@ -621,7 +624,7 @@ TString TTsemiLepChargeScoreAccuracyMeasurement::GetCutSuffix_mOverPt(const Jet&
 
 }
 
-TString TTsemiLepChargeScoreAccuracyMeasurement::GetCutSuffix_By_0p15(const Jet& _this_jet){
+TString TTsemiLepChargeScoreAccuracyMeasurement::GetCutSuffix_By__0p15(const Jet& _this_jet){
   
 
   TString ret="";
@@ -653,6 +656,55 @@ TString TTsemiLepChargeScoreAccuracyMeasurement::GetCutSuffix_By_0p15(const Jet&
   }else{
     ret+="__mOverPt_0p15_1";
   }
+    
+  return ret;
+}
+
+
+
+TString TTsemiLepChargeScoreAccuracyMeasurement::GetCutSuffix_No_mOverPtBinning_ForPTOver100(const Jet& _this_jet){
+  
+
+  TString ret="";
+  
+  double this_bjet_pt=_this_jet.Pt();
+  double this_mOverPt=_this_jet.M()/_this_jet.Pt();
+  
+  //if(this_bjet_pt > 140.){
+  //  ret="PT140ToInf";
+  //}
+  bool IsOver100=0;
+  if(this_bjet_pt > 140.){
+    ret="PT140ToInf";
+    IsOver100=1;
+  }
+  else if(this_bjet_pt > 100.){
+    ret="PT100To140";
+    IsOver100=1;
+  }  
+  else if(this_bjet_pt > 70.){
+    ret="PT70To100";
+  }
+  else if(this_bjet_pt > 50.){
+    ret="PT50To70";
+  }
+  else if(this_bjet_pt > 30.){
+    ret="PT30To50";
+  }
+  else{
+    ret="PT0To30";
+  }
+  
+  if(IsOver100){
+    ret+="__mOverPt_0_1";
+    return ret;    
+  }
+  if(this_mOverPt < 0.15){
+    ret+="__mOverPt_0_0p15";
+  }else{
+    ret+="__mOverPt_0p15_1";
+  }
+
     
   return ret;
 }
