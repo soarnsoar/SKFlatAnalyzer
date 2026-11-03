@@ -292,7 +292,13 @@ void TTsemiLepChargeScoreAccuracyMeasurement::Run(){
     MeasureMC_bChargeAcc_test({v_tightjet[iblep],v_tightjet[ibhad]});
     return;
   }
- 
+
+  if( moverpt_pu_test){
+    FillHist_nPV_VS_mOverPt("ttsemilep_enriched_lepside",nPV,v_tightjet[iblep]);
+    FillHist_nPV_VS_mOverPt("ttsemilep_enriched_hadside",nPV,v_tightjet[ibhad]);
+    return;
+  }
+  
   RunBJet("bJetLeptonicSide",iblep,-1,Tlep_cand);
   RunBJet("bJetHadronicSide",ibhad,-1,Thad_cand);
 
