@@ -283,7 +283,6 @@ void TTsemiLepChargeScoreAccuracyMeasurement::Run(){
 
 
   if(measure_bchargeacc){
-
     MeasureMC_bChargeAcc({v_tightjet[iblep],v_tightjet[ibhad]});
     return;
   }
