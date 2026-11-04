@@ -1,0 +1,11 @@
+#2018__1muLOnly
+BINLIST=(
+PT30To50__mOverPt_0_0p15 
+PT30To50__mOverPt_0p15_1 
+PT50To70__mOverPt_0_0p15 
+PT50To70__mOverPt_0p15_1 
+PT70To100__mOverPt_0_0p15 
+PT70To100__mOverPt_0p15_1 
+PT100To140__mOverPt_0_1 
+PT140ToInf__mOverPt_0_1
+)
