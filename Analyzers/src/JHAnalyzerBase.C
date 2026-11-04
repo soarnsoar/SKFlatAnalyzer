@@ -8681,6 +8681,34 @@ void JHAnalyzerBase::MeasureMC_bChargeAcc(vector<Jet> vJets ){
 
 
   vector<int> v_N_i={N_i_muH,N_i_muL,N_i_eH,N_i_eL,N_i_jH,N_i_jOthers};
+
+
+  //apply slt and jh tagging weights
+  for(auto& this_jet : vJets){
+    if(fabs(this_jet.partonFlavour())!=5) continue;
+    if(this_jet.hadronFlavour()!=5) continue;
+
+    bool HasPromptLep=false;
+    for(int ig=0; ig<v_genlepidx.size();ig++){
+      int this_genidx=v_genlepidx[ig];
+      if(this_jet.DeltaR(gens[this_genidx])<0.4){
+        HasPromptLep=true;
+        break;
+      }
+    }
+    if(HasPromptLep) continue;
+
+
+    TString flav= this_jet.partonFlavour() > 0 ? "bminus" : "bplus";
+    double this_Pt = this_jet.Pt()>1000. ? 999. : this_jet.Pt();
+    double this_mOverPt=this_jet.M()/this_jet.Pt();
+
+
+    auto this_charge_and_id =GetMeasuredChargeAndID(this_jet,false);//here, weight is corrected one by one
+  }
+  
+  double weight_corr=weight;//fully corrected
+  
   for(auto& this_jet : vJets){
     if(fabs(this_jet.partonFlavour())!=5) continue;
     if(this_jet.hadronFlavour()!=5) continue;
@@ -8702,8 +8730,10 @@ void JHAnalyzerBase::MeasureMC_bChargeAcc(vector<Jet> vJets ){
 
     
     auto this_charge_and_id =GetMeasuredChargeAndID(this_jet,false);
+    weight=weight_corr;//restore weight
     //pair<int,int> JHAnalyzerBase::GetMeasuredChargeAndID(const Jet& thisJet, bool ApplyAccCorr){
     int this_charge=this_charge_and_id.first;
+    if (this_charge==0) continue;
     int this_chargeid=this_charge_and_id.second; //muH : 0 , muL : 1 , eH : 2, eL :3, jH : 4 , jO : 5
     if(this_chargeid<0) continue;
     bool isMeasuredCorrect=false;

@@ -150,7 +150,7 @@ public:
   int ibhad;
   int iq1;
   int iq2;
-  int vz_fit;
+  double vz_fit;
 
   TLorentzVector Tlep_cand,Thad_cand,Wlep_cand,Whad_cand,neutrino_cand;
   
