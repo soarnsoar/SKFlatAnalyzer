@@ -11,10 +11,11 @@ hostname=os.getenv('HOSTNAME')
 list_year=["2016preVFP", "2016postVFP", "2017", "2018"]
 
 
-ANANAME="TTsemiLepChargeScoreEfficiencyMeasurement"
-suffix='use_beff_dasym__JETPUID_L__newlepveto__chi2kincut__bdt2608.2__splitcharge__measure_bchargeeff__'
+#ANANAME="TTsemiLepChargeScoreEfficiencyMeasurement"
+#suffix='use_beff_dasym__JETPUID_L__newlepveto__chi2kincut__bdt2608.2__splitcharge__measure_bchargeeff__'
 
-
+ANANAME="PreselectionToBDTRegionAnalyzer"
+suffix="jetpuid_loose__use_beffasym__newlepveto__bdt2608.2__bdtcut__measure_bchargeeff__"
 
 
 
@@ -23,6 +24,9 @@ for YEAR in list_year:
     from_dir="/data9/Users/jhchoi/SKFlatOutput/Run2UltraLegacy_v3/"+ANANAME+"/"+str(YEAR)+"/"+suffix
     if 'knu' in hostname:
         from_dir='/u/user/jhchoi/scratch/SKFlatOutput/Run2UltraLegacy_v3/'+ANANAME+"/"+str(YEAR)+"/"+suffix
+    if 'sdfarm' in hostname:
+        from_dir="/cms_scratch/jhchoi/SKFlatOutput/Run2UltraLegacy_v3/"+ANANAME+"/"+str(YEAR)+"/"+suffix
+        
     to_dir=SKFlat_WD+"/data/Run2UltraLegacy_v3/"+str(YEAR)+"/bChargeTagID/"
 
     list_rootfile=glob.glob(from_dir+"/*.root")

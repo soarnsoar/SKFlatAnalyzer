@@ -18,8 +18,10 @@ ARR_ID=(
 #    ID=sys.argv[3]
 #    ListToDrawStr=sys.argv[4]
 
-ana='TTsemiLepChargeScoreEfficiencyMeasurement'
+#ana='TTsemiLepChargeScoreEfficiencyMeasurement'
 #ProcList="TTLJ,TTLJ,tW_top,tW_antitop,ST_sch,ST_tch_top,ST_tch_antitop"
+
+ana=PreselectionToBDTRegionAnalyzer
 
 for YEAR in ${ARR_YEAR[@]};do
     for ID in ${ARR_ID[@]};do

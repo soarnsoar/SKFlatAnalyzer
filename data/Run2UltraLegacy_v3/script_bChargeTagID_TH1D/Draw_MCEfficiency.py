@@ -1,6 +1,6 @@
 import runpy,ROOT,os,sys
 from collections import OrderedDict
-
+ROOT.gROOT.SetBatch(1)
 leg_x1=0.2
 leg_x2=0.5
 
