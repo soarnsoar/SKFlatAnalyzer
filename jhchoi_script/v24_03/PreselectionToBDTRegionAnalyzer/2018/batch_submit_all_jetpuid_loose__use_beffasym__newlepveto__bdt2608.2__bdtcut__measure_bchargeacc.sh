@@ -2,7 +2,7 @@
 #mkdir -p jetpuid_loose_lepveto_logs/
 mkdir -p jetpuid_loose_use_beffasym_newlepveto_bdt2608.2_bdtcut_measure_bchargeacc_logs/
 
-SKIM="--skim SkimTree_SingleLepton_1DeepJetTightWP"
+SKIM="--skim SkimTree_Dilepton_1DeepJetTightWP"
 FLAG="--userflags jetpuid_loose,use_beffasym,newlepveto,bdt2608.2,bdtcut,measure_bchargeacc"
 
 
