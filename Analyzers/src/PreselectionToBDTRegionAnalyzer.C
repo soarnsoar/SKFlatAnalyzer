@@ -24,7 +24,8 @@ void PreselectionToBDTRegionAnalyzer::initializeAnalyzer(){
     //void AnalyzerCore::SetBTagMCEff_Filename(TString _btagmceff_filename)
     //if(!IsDATA) AnalyzerCore::SetBTagMCEff_Filename("PreselectionAnalyzer_"+MCSample+".root",true);// with kincut
     //if(!IsDATA) AnalyzerCore::SetBTagMCEff_Filename("",true);// with kincut
-    if(!IsDATA) AnalyzerCore::SetBTagMCEff_Filename("PreselectionToBDTRegionAnalyzer_"+MCSample+".root");// with kincut
+    //if(!IsDATA) AnalyzerCore::SetBTagMCEff_Filename("PreselectionToBDTRegionAnalyzer_"+MCSample+".root");// with kincut
+    if(!IsDATA) AnalyzerCore::SetBTagMCEff_Filename("");
 	
     //use default mc eff
   }
@@ -120,7 +121,8 @@ void PreselectionToBDTRegionAnalyzer::initializeAnalyzer(){
     LoadChargeScoreTool("2608.2","2608.2","2608.2",bdtcut);
   }
   else{
-    LoadChargeScoreTool("2512.3","2512.3","2512.3",0);
+    LoadChargeScoreTool("2608.2","2608.2","2608.2",bdtcut);
+    //LoadChargeScoreTool("2512.3","2512.3","2512.3",0);
   }
 
   
@@ -159,17 +161,23 @@ void PreselectionToBDTRegionAnalyzer::initializeAnalyzer(){
   max_ptzb=-1;
 
   apply_chargeid_eff_corr=HasFlag("apply_chargeid_eff_corr");
-  if(apply_chargeid_eff_corr){
+  if(apply_chargeid_eff_corr || measure_bchargeacc){
     cout << "apply_chargeid_eff_corr!!" << endl;
-    //Setup_bChargeIDEff("PreselectionToBDTRegionAnalyzer_"+MCSample+".root");
-    Setup_bChargeIDEff();
+    TString bCahrgeEffFileName="PreselectionToBDTRegionAnalyzer_HADDED.root";
+    if(IsDYSample) bCahrgeEffFileName="PreselectionToBDTRegionAnalyzer_DY_HADDED.root";
+    if(IsTTSample) bCahrgeEffFileName="PreselectionToBDTRegionAnalyzer_"+MCSample+".root";
+    Setup_bChargeIDEff(bCahrgeEffFileName);
   }
 
   apply_chargeid_acc_corr=HasFlag("apply_chargeid_acc_corr");
   
   if(apply_chargeid_acc_corr){
     cout << "apply_chargeid_acc_corr!!" << endl;
-    Setup_bChargeAcc();
+    TString bCahrgeAccFileName="PreselectionToBDTRegionAnalyzer_HADDED.root";
+    if(IsDYSample) bCahrgeAccFileName="PreselectionToBDTRegionAnalyzer_DY_HADDED.root";
+    if(IsTTSample) bCahrgeAccFileName="PreselectionToBDTRegionAnalyzer_"+MCSample+".root";
+
+    Setup_bChargeAcc(bCahrgeAccFileName);
   }
 }
 
@@ -330,6 +338,12 @@ void PreselectionToBDTRegionAnalyzer::RunBasicZregion(){
     return;
   }
 
+  if(measure_bchargeacc){
+    MeasureMC_bChargeAcc(v_bjet);
+    return;
+  }
+
+  
   
   bjet_y=v_bjet[0].Rapidity();
   bjet_eta=v_bjet[0].Eta();
@@ -701,6 +715,7 @@ void PreselectionToBDTRegionAnalyzer::FillHist(TString histname, double value, d
   JHAnalyzerBase::FillHist(histname,value,weight,n_bin,x_min,x_max);
   //if(check_tmva_input) return;
   //if(bdtopt) return;
+  return;
   if(!runSys ){
     /*
     N_1_weightmap["pu"]=GetPileUpWeight(nPileUp,0) ? 1/GetPileUpWeight(nPileUp,0) : 0;
@@ -719,7 +734,7 @@ void PreselectionToBDTRegionAnalyzer::FillHist(TString histname, double value, d
     N_1_weightmap["w_ElectronRECO"]=w_ElectronRECO[0][0] ? 1/w_ElectronRECO[0][0] : 0;
     N_1_weightmap["w_ElectronTrigger"]=w_ElectronTrigger[0][0] ? 1/w_ElectronTrigger[0][0] : 0;
     */
-    N_1_weightmap["btagsf"]=btagsf ? 1/btagsf : 0;
+    //N_1_weightmap["btagsf"]=btagsf ? 1/btagsf : 0;
     //N_1_weightmap["jetpuidsf"]=jetpuidsf ? 1/jetpuidsf : 0;
 
     for(const auto& pair : N_1_weightmap){
@@ -846,6 +861,11 @@ void PreselectionToBDTRegionAnalyzer::EventLoop(){
 
 
 void PreselectionToBDTRegionAnalyzer::TruthLoop(){
+  //simplify the sample names
+  if(MCSample.Contains("QCD_bEnriched")) ProcessName="QCD_bEnriched";
+  if(MCSample.Contains("ZZ_pythia") || MCSample.Contains("WZ_pythia") || MCSample.Contains("WW_pythia") ) ProcessName="VV";
+  //
+  
   suffix_xscale="";
   IsDYbplus=0;
   IsDYbminus=0;
@@ -924,6 +944,10 @@ void PreselectionToBDTRegionAnalyzer::TruthLoop(){
   }
   ProcessName=MCSample+suffix_true_nb;
   if(addxsuffix) ProcessName+=suffix_xscale;
+
+  //
+  if(!IsDATA)GetPromptLepGenIdx();
+
 }
 
   

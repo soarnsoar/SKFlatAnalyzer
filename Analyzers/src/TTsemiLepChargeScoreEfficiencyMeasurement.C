@@ -110,7 +110,8 @@ void TTsemiLepChargeScoreEfficiencyMeasurement::initializeAnalyzer(){
 
   }  
   else{
-    LoadChargeScoreTool("2512.5","2512.5","2512.5",true);
+    LoadChargeScoreTool("2608.2","2608.2","2608.2",true);
+    //LoadChargeScoreTool("2512.5","2512.5","2512.5",true);
   }
 
 

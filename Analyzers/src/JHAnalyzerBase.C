@@ -6597,7 +6597,7 @@ void JHAnalyzerBase::Read_bChargeID_SF_OLD(bool readsltonly){
 void JHAnalyzerBase::Read_bChargeAcc_SF(){
 
   TString datapath=getenv("DATA_DIR");
-  TString accpath=datapath+"/"+DataEra+"/bChargeAcc/SF/Combine/bChargeIDAcc_SF_"+DataEra+".txt";
+  TString accpath=datapath+"/"+DataEra+"/bChargeAcc/SF/Combine/bChargeIDAcc_SF_"+DataEra+".root";
   cout << "Charge Acc->" << accpath << endl;
 
   TFile *tfile_acc=TFile::Open(accpath);
@@ -6612,7 +6612,7 @@ void JHAnalyzerBase::Read_bChargeAcc_SF(){
   int ib=0;
   for(auto this_origin : {"bplus","bminus"}){
     int ibchargeid=0;
-    for( auto this_bchargeid : {"muH","muL","eH","eL","jH","jOthers"}){
+    for( auto this_bchargeid : {"1muHOnly","1muLOnly","1eHOnly","1eLOnly","NoSL_jH","NoSL_jOthers"}){
       //  enum SYSDIR{ k_central=0, k_uncorrUp, k_uncorrDown, k_corrUp, k_corrDown, nSYSDIR };                                                                                   
       int idir=0;
       for( auto this_dir : {"central","uncorr_up","uncorr_down","corr_up","corr_down"}){
@@ -6766,6 +6766,8 @@ void JHAnalyzerBase::Setup_bChargeAcc(TString _bchargeacc_mc_filename){
       TString thisSign=v_bsign[i];
       TString thisID=v_bChargeID[j];
       cout<<"[JHAnalyzerBase::Setup_bChargeAcc] setting "<< thisSign+"__"+thisID <<endl;
+      //Jet_2018_acc_bplus_chargeid1_num
+      //Jet_2018_acc_bplus_chargeid1_denom
       TString hden="Jet_"+DataEra+"_acc_"+thisSign+"_chargeid"+std::to_string(j)+"_denom";
       TString hnum="Jet_"+DataEra+"_acc_"+thisSign+"_chargeid"+std::to_string(j)+"_num";
 
@@ -9524,6 +9526,7 @@ double JHAnalyzerBase::GetChargeAccCorr(const Jet& thisJet, int thisChargeID, in
   int this_partonFlavour=thisJet.partonFlavour();
   if(abs(this_partonFlavour)!=5) return 1.;
   if(thisJet.hadronFlavour()!=5) return 1.;
+  if(HasPromptLepWithinJet(thisJet)) return 1.;
   if(measured_charge==0) return 1.;
   bool IsMeasuredCorrectly=false;
   if(this_partonFlavour *measured_charge <0 ) IsMeasuredCorrectly = true;
