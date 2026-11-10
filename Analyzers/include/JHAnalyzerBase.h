@@ -57,7 +57,7 @@ class JHAnalyzerBase : public AnalyzerCore {
   
   bool measure_bchargeacc=false;
   bool measure_bchargeacc_test=false;
-
+  bool measure_bchargeacc_testlep=false;
   bool jetlepveto;
   TString jetidtight;
 
@@ -667,7 +667,7 @@ class JHAnalyzerBase : public AnalyzerCore {
   void SetChargeScoreCut_2409_2();
   void SetMuonChargeScore(Muon &_this_bmuon, const Jet &_this_bjet);
   void SetElectronChargeScore(Electron &_this_belectron, const Jet &_this_bjet);
-  void SetJetChargeScore(const Jet &_this_bjet);
+  void SetJetChargeScore(Jet &_this_bjet);
   double GetMuonChargeScore();
   double GetMuonChargeScoreCoeff();
   double GetElectronChargeScore();
@@ -868,16 +868,19 @@ class JHAnalyzerBase : public AnalyzerCore {
   void MeasureMC_bChargeIDEff_test_v4(vector<Jet> vJets);
   void MeasureMC_bChargeAcc(vector<Jet> vJets);
   void MeasureMC_bChargeAcc_test(vector<Jet> vJets);
+  void MeasureMC_bChargeAcc_testlep(vector<Jet> vJets);
   void MeasureMC_bChargeAcc_OLD(vector<Jet> vJets);
   //void JHAnalyzerBase::MeasureMC_bChargeAcc(vector<Jet> vJets )
-  vector<int> Count_SLT(const Jet& this_Jet);
-  vector<int> Count_SLT_test_v2(const Jet& this_Jet);
-  vector<int> Count_SLT_test_v3(const Jet& this_Jet);
-  vector<int> Count_SLT_test_v4(const Jet& this_Jet);
+  vector<int> Count_SLT(Jet& this_Jet);
+  vector<int> Count_SLT_test_v2(Jet& this_Jet);
+  vector<int> Count_SLT_test_v3(Jet& this_Jet);
+  vector<int> Count_SLT_test_v4(Jet& this_Jet);
   //map<TString,TH2D*> map_effhist_bchargeID_mcjet;
   map<TString,TH1D*> map_effhist_bchargeID_mcjet;
   map<TString,TH1D*> map_acchist_bchargeID_mcjet;
 
+  bool Get_Pass_jH(Jet& this_Jet);
+  
   vector<double> Get_bChargeTagID_MCEffs_SLT( int partonFlavour, vector<int> v_binidx);
   //double Get_SLTEff_Corr_givenJet(const Jet& thisJet, const bool Has_muH, const bool Has_muL, const bool Has_eH, const bool Has_eL,
   //				  JHAnalyzerBase::SYSDIR SystDir=k_central, JHAnalyzerBase::PtBin SystPtBin=nPtBin, JHAnalyzerBase::SLT SystID=nSLT);
@@ -938,7 +941,7 @@ class JHAnalyzerBase : public AnalyzerCore {
   double Get_jHEff_Corr(const vector<Jet> &_v_Jet, const vector<bool> _v_pass_jH);
 
   double Get_SLTEff_Corr(const vector<Jet> &_v_Jet, const vector<bool> &_v_Has_muH, const vector<bool> &_v_Has_muL, const vector<bool> &_v_Has_eH, const vector<bool> &_v_Has_eL);
-  pair<int,int> GetMeasuredChargeAndID(const Jet& thisJet, bool ApplyAccCorr=true);
+  pair<int,int> GetMeasuredChargeAndID( Jet& thisJet, bool ApplyAccCorr=true);
   double GetChargeAccCorr(const Jet& thisJet, int thisChargeID,int measured_charge);  
 
   //---new add. lepton veto

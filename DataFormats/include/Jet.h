@@ -62,17 +62,31 @@ public:
   double GetMuonEnergyFraction() const;
   double GetPileupJetId() const;
   
-  //----BCharge
-  int GetBCharge() const;
-  void SetBCharge(int _charge);
+  //----bCharge
+  int GetbCharge() const;
+  void SetbCharge(int _charge);
   bool GetNotUsingOppositeCharge() const;
   void SetNotUsingOppositeCharge(bool _isUsing);
   int GetMuonIdxInBjet() const;
   void SetMuonIdxInBjet(int _im);
   int GetElectronIdxInBjet() const;
   void SetElectronIdxInBjet(int _ie);
-  double GetBChargeScore() const;
-  void SetBChargeScore(double _score);
+  double GetbChargeScore() const;
+  void SetbChargeScore(double _score);
+
+  void Set_n_muH(int _n);
+  void Set_n_muL(int _n);
+  void Set_n_eH(int _n);
+  void Set_n_eL(int _n);
+
+
+  int Get_n_muH();
+  int Get_n_muL();
+  int Get_n_eH();
+  int Get_n_eL();
+
+  void SetbChargeID(int _id);
+  int GetbChargeID();
 private:
 
   double  j_area;
@@ -107,12 +121,17 @@ private:
 
 
   //---jhchoi
-  int j_BCharge;
+  int j_bCharge;
   bool j_NotUsingOppositeCharge;
   int j_MuonIdxInBjet;
   int j_ElectronIdxInBjet;
-  double j_BChargeScore;
+  double j_bChargeScore;
+  int j_bChargeID;
 
+  int j_n_muH;
+  int j_n_muL;
+  int j_n_eH;
+  int j_n_eL;
   ClassDef(Jet,1)
 };
 

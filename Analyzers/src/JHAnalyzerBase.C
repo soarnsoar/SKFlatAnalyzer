@@ -72,6 +72,7 @@ void JHAnalyzerBase::initializeAnalyzer(){
 
   measure_bchargeacc=HasFlag("measure_bchargeacc");
   measure_bchargeacc_test=HasFlag("measure_bchargeacc_test");
+  measure_bchargeacc_testlep=HasFlag("measure_bchargeacc_testlep");
   moverpt_pu_test=HasFlag("moverpt_pu_test");
   UsePfMET=HasFlag("pfmet");
   if(UsePfMET){
@@ -4939,7 +4940,7 @@ double JHAnalyzerBase::GetElectronChargeScoreCoeff(){
 }
 
 
-void JHAnalyzerBase::SetJetChargeScore(const Jet &_this_bjet){
+void JHAnalyzerBase::SetJetChargeScore(Jet &_this_bjet){
   //cout << "JHAnalyzerBase::SetJetChargeScore" << endl;
   
   //jhchoitemp
@@ -8635,6 +8636,151 @@ void JHAnalyzerBase::MeasureMC_bChargeAcc_test(vector<Jet> vJets ){
 
 
 
+void JHAnalyzerBase::MeasureMC_bChargeAcc_testlep(vector<Jet> vJets ){
+  TString weight_sign_str= weight > 0 ? "_POS" : "_NEG";
+
+  double etabins[5]= {0.0, 0.8, 1.6, 2., 2.5};
+  double etabins_all[2]= {0.0, 2.5};
+  double ptbins[6]= {30.,50.,70.,100.,140.,1000.};
+  const int NEtaBin = 4;
+  const int NEtaBinAll = 1;
+  const int NPtBin = 5;
+  //add moverpt
+  double mOverPtbins[21] = {0,0.05,0.1,0.15, 0.2,0.25, 0.3,0.35, 0.4,0.45, 0.5,0.55, 0.6,0.65, 0.7,0.75, 0.8,0.85, 0.9,0.95, 1};
+  const int NmOverPtBin=20;
+  //add leppt
+  double LepPtbins[11] = {5,7,10,15,20,25,30,40,50,70,100};
+  const int NLepPtBins=10;
+
+
+  
+  for(auto& this_jet : vJets){
+    if(fabs(this_jet.partonFlavour())!=5) continue;
+    if(this_jet.hadronFlavour()!=5) continue;
+
+    bool HasPromptLep=false;
+    for(int ig=0; ig<v_genlepidx.size();ig++){
+      int this_genidx=v_genlepidx[ig];
+      if(this_jet.DeltaR(gens[this_genidx])<0.4){
+        HasPromptLep=true;
+        break;
+      }
+    }
+    if(HasPromptLep) continue;
+
+    
+    TString flav= this_jet.partonFlavour() > 0 ? "bminus" : "bplus";
+    double this_Eta = fabs(this_jet.Eta());
+    double this_Pt = this_jet.Pt()>1000. ? 999. : this_jet.Pt();
+
+    double this_mOverPt=this_jet.M()/this_jet.Pt();
+    if (this_mOverPt>=1) this_mOverPt=0.99;
+
+
+    
+    auto this_charge_and_id =GetMeasuredChargeAndID(this_jet,false);//in GetMeasuredChargeAndID, Count_SLT is run
+    int this_charge=this_charge_and_id.first;
+    int this_chargeid=this_charge_and_id.second;
+    if(this_chargeid<0) continue;
+    bool isMeasuredCorrect=false;
+    if(this_jet.partonFlavour()*this_charge <0) isMeasuredCorrect=true; 
+    //---sot lep pt eta
+    double LepPt=-1;
+    double LepEta=-1;
+    if(this_chargeid<4){
+      if(this_chargeid==0 || this_chargeid==1){//muH
+	int lepidx=this_jet.GetMuonIdxInBjet();;
+	LepPt=AllMuons[lepidx].Pt();
+	LepEta=fabs(AllMuons[lepidx].Eta());
+	
+
+      }else{
+	int lepidx=this_jet.GetElectronIdxInBjet();;
+	LepPt=AllElectrons[lepidx].Pt();
+	LepEta=fabs(AllElectrons[lepidx].Eta());
+
+      }
+    }
+    //---
+    if(this_chargeid<4){//SLT
+      AnalyzerCore::FillHist("Jet_"+DataEra+"_acc_"+flav+"_chargeid"+std::to_string(this_chargeid)+"_denom", this_Eta, this_Pt, weight, NEtaBinAll, etabins_all, NPtBin, ptbins);
+      AnalyzerCore::FillHist("Jet_"+DataEra+"_acc_"+flav+"_chargeid"+std::to_string(this_chargeid)+"_denom"+weight_sign_str, this_Eta, this_Pt, weight, NEtaBinAll, etabins_all, NPtBin, ptbins);
+
+      AnalyzerCore::FillHist("Jet_"+DataEra+"_acc_"+flav+"_chargeid"+std::to_string(this_chargeid)+"_denom__Eta", this_Eta, this_Pt, weight, NEtaBin, etabins, NPtBin, ptbins);
+      AnalyzerCore::FillHist("Jet_"+DataEra+"_acc_"+flav+"_chargeid"+std::to_string(this_chargeid)+"_denom__Eta"+weight_sign_str, this_Eta, this_Pt, weight, NEtaBin, etabins, NPtBin, ptbins);
+
+      AnalyzerCore::FillHist("Jet_"+DataEra+"_acc_"+flav+"_chargeid"+std::to_string(this_chargeid)+"_denom__mOverPt", this_mOverPt, this_Pt, weight, NmOverPtBin, mOverPtbins, NPtBin, ptbins);
+      AnalyzerCore::FillHist("Jet_"+DataEra+"_acc_"+flav+"_chargeid"+std::to_string(this_chargeid)+"_denom__mOverPt"+weight_sign_str, this_mOverPt, this_Pt, weight, NmOverPtBin, mOverPtbins, NPtBin, ptbins);
+
+
+      AnalyzerCore::FillHist("Jet_"+DataEra+"_acc_"+flav+"_chargeid"+std::to_string(this_chargeid)+"_denom__LepPt", LepPt, this_Pt, weight, NLepPtBins, LepPtbins, NPtBin, ptbins);
+      AnalyzerCore::FillHist("Jet_"+DataEra+"_acc_"+flav+"_chargeid"+std::to_string(this_chargeid)+"_denom__LepPt"+weight_sign_str, LepPt, this_Pt, weight, NLepPtBins, LepPtbins, NPtBin, ptbins);
+
+
+      AnalyzerCore::FillHist("Jet_"+DataEra+"_acc_"+flav+"_chargeid"+std::to_string(this_chargeid)+"_denom__LepPt__mOverPt", LepPt, this_mOverPt, weight, NLepPtBins, LepPtbins, NmOverPtBin, mOverPtbins);
+      AnalyzerCore::FillHist("Jet_"+DataEra+"_acc_"+flav+"_chargeid"+std::to_string(this_chargeid)+"_denom__LepPt__mOverPt"+weight_sign_str, LepPt, this_mOverPt, weight, NLepPtBins, LepPtbins, NmOverPtBin, mOverPtbins);
+
+      AnalyzerCore::FillHist("Jet_"+DataEra+"_acc_"+flav+"_chargeid"+std::to_string(this_chargeid)+"_denom__LepPt__LepEta", LepPt, LepEta, weight, NLepPtBins, LepPtbins, NEtaBin, etabins);
+      AnalyzerCore::FillHist("Jet_"+DataEra+"_acc_"+flav+"_chargeid"+std::to_string(this_chargeid)+"_denom__LepPt__LepEta"+weight_sign_str, LepPt, LepEta, weight, NLepPtBins, LepPtbins, NEtaBin, etabins);
+
+      AnalyzerCore::FillHist("Jet_"+DataEra+"_acc_"+flav+"_chargeid"+std::to_string(this_chargeid)+"_denom__LepEta__mOverPt", LepEta, this_mOverPt, weight, NEtaBin, etabins, NmOverPtBin, mOverPtbins);
+      AnalyzerCore::FillHist("Jet_"+DataEra+"_acc_"+flav+"_chargeid"+std::to_string(this_chargeid)+"_denom__LepEta__mOverPt"+weight_sign_str, LepEta, this_mOverPt, weight, NEtaBin, etabins, NmOverPtBin, mOverPtbins);
+      
+      if(isMeasuredCorrect){
+	AnalyzerCore::FillHist("Jet_"+DataEra+"_acc_"+flav+"_chargeid"+std::to_string(this_chargeid)+"_num", this_Eta, this_Pt, weight, NEtaBinAll, etabins_all, NPtBin, ptbins);
+	AnalyzerCore::FillHist("Jet_"+DataEra+"_acc_"+flav+"_chargeid"+std::to_string(this_chargeid)+"_num"+weight_sign_str, this_Eta, this_Pt, weight, NEtaBinAll, etabins_all, NPtBin, ptbins);
+
+	AnalyzerCore::FillHist("Jet_"+DataEra+"_acc_"+flav+"_chargeid"+std::to_string(this_chargeid)+"_num__Eta", this_Eta, this_Pt, weight, NEtaBin, etabins, NPtBin, ptbins);
+	AnalyzerCore::FillHist("Jet_"+DataEra+"_acc_"+flav+"_chargeid"+std::to_string(this_chargeid)+"_num__Eta"+weight_sign_str, this_Eta, this_Pt, weight, NEtaBin, etabins, NPtBin, ptbins);
+
+	AnalyzerCore::FillHist("Jet_"+DataEra+"_acc_"+flav+"_chargeid"+std::to_string(this_chargeid)+"_num__mOverPt", this_mOverPt, this_Pt, weight, NmOverPtBin, mOverPtbins, NPtBin, ptbins);
+	AnalyzerCore::FillHist("Jet_"+DataEra+"_acc_"+flav+"_chargeid"+std::to_string(this_chargeid)+"_num__mOverPt"+weight_sign_str, this_mOverPt, this_Pt, weight, NmOverPtBin, mOverPtbins, NPtBin, ptbins);
+
+	AnalyzerCore::FillHist("Jet_"+DataEra+"_acc_"+flav+"_chargeid"+std::to_string(this_chargeid)+"_num__LepPt", LepPt, this_Pt, weight, NLepPtBins, LepPtbins, NPtBin, ptbins);
+	AnalyzerCore::FillHist("Jet_"+DataEra+"_acc_"+flav+"_chargeid"+std::to_string(this_chargeid)+"_num__LepPt"+weight_sign_str, LepPt, this_Pt, weight, NLepPtBins, LepPtbins, NPtBin, ptbins);
+
+      AnalyzerCore::FillHist("Jet_"+DataEra+"_acc_"+flav+"_chargeid"+std::to_string(this_chargeid)+"_num__LepPt__mOverPt", LepPt, this_mOverPt, weight, NLepPtBins, LepPtbins, NmOverPtBin, mOverPtbins);
+      AnalyzerCore::FillHist("Jet_"+DataEra+"_acc_"+flav+"_chargeid"+std::to_string(this_chargeid)+"_num__LepPt__mOverPt"+weight_sign_str, LepPt, this_mOverPt, weight, NLepPtBins, LepPtbins, NmOverPtBin, mOverPtbins);
+
+      AnalyzerCore::FillHist("Jet_"+DataEra+"_acc_"+flav+"_chargeid"+std::to_string(this_chargeid)+"_num__LepPt__LepEta", LepPt, LepEta, weight, NLepPtBins, LepPtbins, NEtaBin, etabins);
+      AnalyzerCore::FillHist("Jet_"+DataEra+"_acc_"+flav+"_chargeid"+std::to_string(this_chargeid)+"_num__LepPt__LepEta"+weight_sign_str, LepPt, LepEta, weight, NLepPtBins, LepPtbins, NEtaBin, etabins);
+
+      AnalyzerCore::FillHist("Jet_"+DataEra+"_acc_"+flav+"_chargeid"+std::to_string(this_chargeid)+"_num__LepEta__mOverPt", LepEta, this_mOverPt, weight, NEtaBin, etabins, NmOverPtBin, mOverPtbins);
+      AnalyzerCore::FillHist("Jet_"+DataEra+"_acc_"+flav+"_chargeid"+std::to_string(this_chargeid)+"_num__LepEta__mOverPt"+weight_sign_str, LepEta, this_mOverPt, weight, NEtaBin, etabins, NmOverPtBin, mOverPtbins);
+	
+      }
+    }else{
+      AnalyzerCore::FillHist("Jet_"+DataEra+"_acc_"+flav+"_chargeid"+std::to_string(this_chargeid)+"_denom", this_Eta, this_Pt, weight, NEtaBinAll, etabins_all, NPtBin, ptbins);
+      AnalyzerCore::FillHist("Jet_"+DataEra+"_acc_"+flav+"_chargeid"+std::to_string(this_chargeid)+"_denom"+weight_sign_str, this_Eta, this_Pt, weight, NEtaBinAll, etabins_all, NPtBin, ptbins);
+
+      AnalyzerCore::FillHist("Jet_"+DataEra+"_acc_"+flav+"_chargeid"+std::to_string(this_chargeid)+"_denom__Eta", this_Eta, this_Pt, weight, NEtaBin, etabins, NPtBin, ptbins);
+      AnalyzerCore::FillHist("Jet_"+DataEra+"_acc_"+flav+"_chargeid"+std::to_string(this_chargeid)+"_denom__Eta"+weight_sign_str, this_Eta, this_Pt, weight, NEtaBin, etabins, NPtBin, ptbins);
+
+      AnalyzerCore::FillHist("Jet_"+DataEra+"_acc_"+flav+"_chargeid"+std::to_string(this_chargeid)+"_denom__mOverPt", this_mOverPt, this_Pt, weight, NmOverPtBin, mOverPtbins, NPtBin, ptbins);
+      AnalyzerCore::FillHist("Jet_"+DataEra+"_acc_"+flav+"_chargeid"+std::to_string(this_chargeid)+"_denom__mOverPt"+weight_sign_str, this_mOverPt, this_Pt, weight, NmOverPtBin, mOverPtbins, NPtBin, ptbins);
+
+      if(isMeasuredCorrect){
+	AnalyzerCore::FillHist("Jet_"+DataEra+"_acc_"+flav+"_chargeid"+std::to_string(this_chargeid)+"_num", this_Eta, this_Pt, weight, NEtaBinAll, etabins_all, NPtBin, ptbins);
+	AnalyzerCore::FillHist("Jet_"+DataEra+"_acc_"+flav+"_chargeid"+std::to_string(this_chargeid)+"_num"+weight_sign_str, this_Eta, this_Pt, weight, NEtaBinAll, etabins_all, NPtBin, ptbins);
+
+	AnalyzerCore::FillHist("Jet_"+DataEra+"_acc_"+flav+"_chargeid"+std::to_string(this_chargeid)+"_num__Eta", this_Eta, this_Pt, weight, NEtaBin, etabins, NPtBin, ptbins);
+	AnalyzerCore::FillHist("Jet_"+DataEra+"_acc_"+flav+"_chargeid"+std::to_string(this_chargeid)+"_num__Eta"+weight_sign_str, this_Eta, this_Pt, weight, NEtaBin, etabins, NPtBin, ptbins);
+
+	AnalyzerCore::FillHist("Jet_"+DataEra+"_acc_"+flav+"_chargeid"+std::to_string(this_chargeid)+"_num__mOverPt", this_mOverPt, this_Pt, weight, NmOverPtBin, mOverPtbins, NPtBin, ptbins);
+	AnalyzerCore::FillHist("Jet_"+DataEra+"_acc_"+flav+"_chargeid"+std::to_string(this_chargeid)+"_num__mOverPt"+weight_sign_str, this_mOverPt, this_Pt, weight, NmOverPtBin, mOverPtbins, NPtBin, ptbins);
+	
+      }
+    }
+  }
+
+
+}
+
+
+
+
+
+
 void JHAnalyzerBase::MeasureMC_bChargeAcc(vector<Jet> vJets ){
   TString weight_sign_str= weight > 0 ? "_POS" : "_NEG";
 
@@ -8731,7 +8877,7 @@ void JHAnalyzerBase::MeasureMC_bChargeAcc(vector<Jet> vJets ){
     double this_mOverPt=this_jet.M()/this_jet.Pt();
 
     
-    auto this_charge_and_id =GetMeasuredChargeAndID(this_jet,false);
+    auto this_charge_and_id =GetMeasuredChargeAndID(this_jet,false);//
     weight=weight_corr;//restore weight
     //pair<int,int> JHAnalyzerBase::GetMeasuredChargeAndID(const Jet& thisJet, bool ApplyAccCorr){
     int this_charge=this_charge_and_id.first;
@@ -8757,15 +8903,19 @@ void JHAnalyzerBase::MeasureMC_bChargeAcc(vector<Jet> vJets ){
 
 
 
-vector<int> JHAnalyzerBase::Count_SLT(const Jet& this_Jet){//v2608.2
+vector<int> JHAnalyzerBase::Count_SLT(Jet& this_Jet){//v2608.2
   int n_muonHigh=0;
   int n_muonLow=0;
   int n_electronHigh=0;
   int n_electronLow=0;
   int last_measured_charge=0;
 
-  
+  int muidx_muH=-1;
+  int muidx_muL=-1;
+  int i_muon=-1;
+  double last_muon_score=-999.;
   for(auto& muon : AllMuons){
+    i_muon+=1;
     if(muon.Pt() < 5.) continue;
     if(muon.DeltaR(this_Jet) > 0.4) continue;
     //if(muon.RelIso() > 10.) continue;
@@ -8781,14 +8931,24 @@ vector<int> JHAnalyzerBase::Count_SLT(const Jet& this_Jet){//v2608.2
     if(this_muon_coeff==1){
       n_muonHigh+=1;
       last_measured_charge=muon.Charge();
+      last_muon_score=GetMuonChargeScore();
+      muidx_muH=i_muon;
     }else if(this_muon_coeff==-1){
       n_muonLow+=1;
       last_measured_charge=-muon.Charge();
+      last_muon_score=GetMuonChargeScore();
+      muidx_muL=i_muon;
     }
 
   }//[end muon for loop]
-  
+
+  int i_electron=-1;
+  int elidx_eH=-1;
+  int elidx_eL=-1;
+  double last_electron_score=-999.;
+
   for(auto& electron : AllElectrons){
+    i_electron+=1;
     if(electron.Pt() < 5.) continue;
     if(electron.DeltaR(this_Jet) > 0.4) continue;
     if(!electron.IsGsfCtfScPixChargeConsistent()) continue;
@@ -8802,9 +8962,13 @@ vector<int> JHAnalyzerBase::Count_SLT(const Jet& this_Jet){//v2608.2
     if(this_electron_coeff==1){
       n_electronHigh+=1;
       last_measured_charge=electron.Charge();
+      last_electron_score=GetElectronChargeScore();
+      elidx_eH=i_electron;
     }else if(this_electron_coeff==-1){
       n_electronLow+=1;
       last_measured_charge=-electron.Charge();
+      last_electron_score=GetElectronChargeScore();
+      elidx_eL=i_electron;
     }
 
   }//[end electron for loop]
@@ -8816,13 +8980,63 @@ vector<int> JHAnalyzerBase::Count_SLT(const Jet& this_Jet){//v2608.2
   ret.push_back(n_electronHigh);
   ret.push_back(n_electronLow);
   ret.push_back(last_measured_charge);
+  //
+  this_Jet.Set_n_muH(n_muonHigh);
+  this_Jet.Set_n_muL(n_muonLow);
+  this_Jet.Set_n_eH(n_electronHigh);
+  this_Jet.Set_n_eL(n_electronLow);
+  //determine slt id
+  if(n_muonHigh==1 && n_muonLow==0 && n_electronHigh==0 && n_electronLow==0){
+    this_Jet.SetbChargeID(0);
+    this_Jet.SetMuonIdxInBjet(muidx_muH);
+    this_Jet.SetbCharge(last_measured_charge);
+    this_Jet.SetbChargeScore(last_muon_score);
+  }
+  else if(n_muonHigh==0 && n_muonLow==1 && n_electronHigh==0 && n_electronLow==0){
+    this_Jet.SetbChargeID(1);
+    this_Jet.SetMuonIdxInBjet(muidx_muL);
+    this_Jet.SetbCharge(last_measured_charge);
+    this_Jet.SetbChargeScore(last_muon_score);
+  }
+  else if(n_muonHigh==0 && n_muonLow==0 && n_electronHigh==1 && n_electronLow==0){
+    this_Jet.SetbChargeID(2);
+    this_Jet.SetElectronIdxInBjet(elidx_eH);
+    this_Jet.SetbCharge(last_measured_charge);
+    this_Jet.SetbChargeScore(last_electron_score);
+  }
+  else if(n_muonHigh==0 && n_muonLow==0 && n_electronHigh==0 && n_electronLow==1){
+    this_Jet.SetbChargeID(3);
+    this_Jet.SetElectronIdxInBjet(elidx_eL);
+    this_Jet.SetbCharge(last_measured_charge);
+    this_Jet.SetbChargeScore(last_electron_score);
+  }
+  return ret;
+}
+
+bool JHAnalyzerBase::Get_Pass_jH(Jet& this_Jet){
+  SetJetChargeScore(this_Jet);
+  double this_jetscore=GetJetChargeScore();
+  double this_jetcharge=this_Jet.Charge();
+
+  int this_measured_charge= this_jetcharge > 0 ? +1 : this_jetcharge < 0 ? -1 : 0 ;
+  this_Jet.SetbCharge(this_measured_charge);
+  int this_jetcharge_coeff=GetJetChargeScoreCoeff();
+  this_Jet.SetbChargeScore(this_jetscore);
+  bool ret=false;
+  if(this_jetcharge_coeff==1){
+    this_Jet.SetbChargeID(4);
+    ret=true;
+  }
+  else{
+    this_Jet.SetbChargeID(5);
+    ret=false;
+
+  }
   return ret;
 }
 
 
-
-
-vector<int> JHAnalyzerBase::Count_SLT_test_v2(const Jet& this_Jet){
+vector<int> JHAnalyzerBase::Count_SLT_test_v2(Jet& this_Jet){
   int n_muonHigh=0;
   int n_muonLow=0;
   int n_electronHigh=0;
@@ -8894,7 +9108,7 @@ vector<int> JHAnalyzerBase::Count_SLT_test_v2(const Jet& this_Jet){
 
 
 
-vector<int> JHAnalyzerBase::Count_SLT_test_v3(const Jet& this_Jet){
+vector<int> JHAnalyzerBase::Count_SLT_test_v3(Jet& this_Jet){
   int n_muonHigh=0;
   int n_muonLow=0;
   int n_electronHigh=0;
@@ -8966,7 +9180,7 @@ vector<int> JHAnalyzerBase::Count_SLT_test_v3(const Jet& this_Jet){
 
 
 
-vector<int> JHAnalyzerBase::Count_SLT_test_v4(const Jet& this_Jet){
+vector<int> JHAnalyzerBase::Count_SLT_test_v4(Jet& this_Jet){
   int n_muonHigh=0;
   int n_muonLow=0;
   int n_electronHigh=0;
@@ -9477,7 +9691,7 @@ double JHAnalyzerBase::Get_jHEff_Corr_givenJet(int this_partonFlavour, int ibin,
 }
 
 
-pair<int,int> JHAnalyzerBase::GetMeasuredChargeAndID(const Jet& thisJet, bool ApplyAccCorr){
+pair<int,int> JHAnalyzerBase::GetMeasuredChargeAndID( Jet& thisJet, bool ApplyAccCorr){
   int thisChargeID=-1;
   ////(1) Count SLT
   std::vector<int> v_nSLT=Count_SLT(thisJet);

@@ -130,11 +130,11 @@ void OneBjet::RunReco(){
     int bCand_ie=std::get<3>(bCand_Charge_info);
     double bCnad_ChargeScore=std::get<4>(bCand_Charge_info);
 
-    v_tightjet[i_bjet].SetBCharge(bCand_Charge);
+    v_tightjet[i_bjet].SetbCharge(bCand_Charge);
     v_tightjet[i_bjet].SetNotUsingOppositeCharge(bCand_NotUseOppositeCharge);
     v_tightjet[i_bjet].SetMuonIdxInBjet(bCand_im);
     v_tightjet[i_bjet].SetElectronIdxInBjet(bCand_ie);
-    v_tightjet[i_bjet].SetBChargeScore(bCnad_ChargeScore);
+    v_tightjet[i_bjet].SetbChargeScore(bCnad_ChargeScore);
     */
 
     FillHist("AllLep/pt_b",v_tightjet[i_bjet].Pt(),weight,100,0,300);
@@ -188,11 +188,11 @@ void OneBjet::FillHistCommon(TString cutname){
 }
 void OneBjet::FillHistAllB(TString cutname){
   for(auto &i_bjet : v_bjetidx){
-    int BCharge=v_tightjet[i_bjet].GetBCharge(); // if abs ==1 : muon / abs==2 : electron / abs==3:goodbjet / abs==4:badbjet
+    int bCharge=v_tightjet[i_bjet].GetbCharge(); // if abs ==1 : muon / abs==2 : electron / abs==3:goodbjet / abs==4:badbjet
     bool NotUsingOppositeCharge=v_tightjet[i_bjet].GetNotUsingOppositeCharge();
     //int MuonIdxInBjet=v_tightjet[i_bjet].GetMuonIdxInBjet();
     //int ElectronIdxInBjet=v_tightjet[i_bjet].GetElectronIdxInBjet();
-    //double BChargeScore=v_tightjet[i_bjet].GetBChargeScore();
+    //double bChargeScore=v_tightjet[i_bjet].GetbChargeScore();
 
     ///--SetProcessName//
     if(!IsDATA){
@@ -205,7 +205,7 @@ void OneBjet::FillHistAllB(TString cutname){
     }
     FillHistBInfo(cutname, i_bjet);
 
-    if(abs(BCharge)==1){
+    if(abs(bCharge)==1){
       FillHistBInfo(cutname+"__UseMuonCharge", i_bjet);
       if(NotUsingOppositeCharge){
 	FillHistBInfo(cutname+"__UseMuonChargeSame", i_bjet);
@@ -215,7 +215,7 @@ void OneBjet::FillHistAllB(TString cutname){
       }
 
     }// [END] if using muoncharge
-    else if(abs(BCharge)==2){
+    else if(abs(bCharge)==2){
       FillHistBInfo(cutname+"__UseElectronCharge", i_bjet);
       if(NotUsingOppositeCharge){
 	FillHistBInfo(cutname+"__UseElectronChargeSame", i_bjet);
@@ -225,7 +225,7 @@ void OneBjet::FillHistAllB(TString cutname){
       }
     }//[END] if using electroncharge
 
-    else if(abs(BCharge)==3){
+    else if(abs(bCharge)==3){
       FillHistBInfo(cutname+"__UseJetChargeGood", i_bjet);
     }//[END]  using good bjet charge
     else{
@@ -243,7 +243,7 @@ void OneBjet::FillHistBInfo(TString cutname, int i_bjet){
   FillHist(cutname+"/eta_b",v_tightjet[i_bjet].Eta(),weight,60,-3,3);
 
   FillHist(cutname+"/partonFlavour",v_tightjet[i_bjet].partonFlavour(),weight,27,-6,27);
-  FillHist(cutname+"/BChargeScore",v_tightjet[i_bjet].GetBChargeScore(),weight,100,0,1);
+  FillHist(cutname+"/bChargeScore",v_tightjet[i_bjet].GetbChargeScore(),weight,100,0,1);
 
 
 

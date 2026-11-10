@@ -291,6 +291,12 @@ void TTsemiLepChargeScoreAccuracyMeasurement::Run(){
     MeasureMC_bChargeAcc_test({v_tightjet[iblep],v_tightjet[ibhad]});
     return;
   }
+  if(measure_bchargeacc_testlep){
+    MeasureMC_bChargeAcc_testlep({v_tightjet[iblep],v_tightjet[ibhad]});
+    return;
+  }
+
+
 
   if( moverpt_pu_test){
     FillHist_nPV_VS_mOverPt("ttsemilep_enriched_lepside",nPV,v_tightjet[iblep]);

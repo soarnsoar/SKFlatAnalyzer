@@ -33,14 +33,17 @@ Jet::Jet() : Particle() {
   
   j_tightJetID=false;
   j_tightLepVetoJetID=false;
-
-  j_BCharge=0;
+  //-----bchargeid
+  j_bCharge=0;
   j_NotUsingOppositeCharge=false;
   j_MuonIdxInBjet=-1;
   j_ElectronIdxInBjet=-1;
-  j_BChargeScore=-999;
-  
-
+  j_bChargeScore=-999;
+  j_bChargeID=-1;
+  j_n_muH=0;
+  j_n_muL=0;
+  j_n_eH=0;
+  j_n_eL=0;
 }
 
 Jet::~Jet(){
@@ -152,11 +155,11 @@ double Jet::GetPileupJetId() const {
 }
 
 //---bJetCharge info
-int Jet::GetBCharge() const {
-  return j_BCharge;
+int Jet::GetbCharge() const {
+  return j_bCharge;
 }
-void Jet::SetBCharge(int _charge){
-  j_BCharge=_charge;
+void Jet::SetbCharge(int _charge){
+  j_bCharge=_charge;
 }
 
 bool Jet::GetNotUsingOppositeCharge() const{
@@ -180,9 +183,43 @@ void Jet::SetElectronIdxInBjet(int _ie){
   j_ElectronIdxInBjet=_ie;
 }
 
-double Jet::GetBChargeScore() const{
-  return j_BChargeScore;
+double Jet::GetbChargeScore() const{
+  return j_bChargeScore;
 }
-void Jet::SetBChargeScore(double _score){
-  j_BChargeScore=_score;
+void Jet::SetbChargeScore(double _score){
+  j_bChargeScore=_score;
+}
+
+
+void Jet::Set_n_muH(int _n){
+  j_n_muH=_n;
+}
+void Jet::Set_n_muL(int _n){
+  j_n_muL=_n;
+}
+void Jet::Set_n_eH(int _n){
+  j_n_eH=_n;
+}
+void Jet::Set_n_eL(int _n){
+  j_n_eL=_n;
+}
+
+int Jet::Get_n_muH(){
+  return j_n_muH;
+}
+int Jet::Get_n_muL(){
+    return j_n_muL;
+}
+int Jet::Get_n_eH(){
+    return j_n_eH;
+}
+int Jet::Get_n_eL(){
+    return j_n_eL;
+}
+
+void Jet::SetbChargeID(int _id){
+  j_bChargeID=_id;
+}
+int Jet::GetbChargeID(){
+  return j_bChargeID;
 }
