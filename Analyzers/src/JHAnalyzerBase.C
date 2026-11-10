@@ -2056,37 +2056,72 @@ TLorentzVector JHAnalyzerBase::GetShiftedMET(int sys){
   }
   else{
     cout << "no MET shift for sys==" << sys << endl;
+    1/0;
   }
+
+  TLorentzVector nominalMET=CurrentMET_roch;
+
+  ///-------get delta of px,py in skfat, then apply dpx dpy to current met...
+
+
   
-  double pt=0;
-  double phi=0;
-  TLorentzVector this_met;  
+  
+  
+  double newpt=0;
+  double newphi=0;
+  double oldpt=0;
+  double oldphi=0;
+  TLorentzVector newmet,oldmet;  
   if(UsePfMET){
     if(UsePhiCorrMET){
-      pt=pfMET_Type1_PhiCor_pt_shifts->at(idx);
-      phi=pfMET_Type1_PhiCor_phi_shifts->at(idx);
-      this_met.SetPtEtaPhiM(pt,0,phi,0);
+      newpt=pfMET_Type1_PhiCor_pt_shifts->at(idx);
+      newphi=pfMET_Type1_PhiCor_phi_shifts->at(idx);
+
+      oldpt=pfMET_Type1_PhiCor_pt;
+      oldphi=pfMET_Type1_PhiCor_phi;
+
     }
     else{
-      pt=pfMET_Type1_pt_shifts->at(idx);
-      phi=pfMET_Type1_phi_shifts->at(idx);
-      this_met.SetPtEtaPhiM(pt,0,phi,0);
+      newpt=pfMET_Type1_pt_shifts->at(idx);
+      newphi=pfMET_Type1_phi_shifts->at(idx);
+
+      oldpt=pfMET_Type1_pt;
+      oldphi=pfMET_Type1_phi;
     }
   } 
   else{//puppi
     if(UsePhiCorrMET){
       //----No sys yet!!!
-      pt=PuppiMET_Type1_PhiCor_pt;
-      phi=PuppiMET_Type1_PhiCor_phi;
-      this_met.SetPtEtaPhiM(pt,0,phi,0);
+      newpt=PuppiMET_Type1_PhiCor_pt;
+      newphi=PuppiMET_Type1_PhiCor_phi;
+
+      oldpt=PuppiMET_Type1_PhiCor_pt;
+      oldphi=PuppiMET_Type1_PhiCor_phi;
+
     }
     else{
-      pt=PuppiMET_Type1_pt_shifts->at(idx);
-      phi=PuppiMET_Type1_phi_shifts->at(idx);
-      this_met.SetPtEtaPhiM(pt,0,phi,0);
+      newpt=PuppiMET_Type1_pt_shifts->at(idx);
+      newphi=PuppiMET_Type1_phi_shifts->at(idx);
+
+      oldpt=PuppiMET_Type1_pt;
+      oldphi=PuppiMET_Type1_phi;
       
     }
   }
+  newmet.SetPtEtaPhiM(newpt,0,newphi,0);
+  oldmet.SetPtEtaPhiM(oldpt,0,oldphi,0);
+
+  double dpx=0, dpy=0; //shift - nominal in skflat
+  dpx=newmet.Px() - oldmet.Px();
+  dpy=newmet.Py() - oldmet.Py();
+
+  //---Then apply delta px,py to current met
+  double current_px= nominalMET.Px();
+  double current_py= nominalMET.Py();
+  double updated_px= current_px+dpx;
+  double updated_py= current_py+dpy;
+  TLorentzVector this_met;
+  this_met.SetPxPyPzE(updated_px,updated_py,0,sqrt(updated_px*updated_px+updated_py*updated_py));
   return this_met;
 
 
