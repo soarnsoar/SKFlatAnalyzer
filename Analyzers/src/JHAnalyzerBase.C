@@ -7738,22 +7738,22 @@ void JHAnalyzerBase::MeasureMC_bChargeIDEff_test(vector<Jet> vJets , bool rm_pro
     AnalyzerCore::FillHist("Jet_"+DataEra+"_eff_"+flav+"_denom__mOverPt__Eta", this_Eta, this_mOverPt, weight, NEtaBin, etabins, NmOverPtBin, mOverPtbins);
     AnalyzerCore::FillHist("Jet_"+DataEra+"_eff_"+flav+"_denom__mOverPt_incl", this_Eta, this_mOverPt, weight, NEtaBinAll, etabins_all, NmOverPtBin, mOverPtbins);
     
-    AnalyzerCore::FillHist("Jet_"+DataEra+"_eff_"+flav+"_denom__mOverPt2", this_Pt, this_mOverPt2, weight, NPtBin, ptbins, NmOverPt2Bin, mOverPt2bins);
-    AnalyzerCore::FillHist("Jet_"+DataEra+"_eff_"+flav+"_denom__mOverPt2__Eta", this_Eta, this_mOverPt2, weight, NEtaBin, etabins, NmOverPt2Bin, mOverPt2bins);
-    AnalyzerCore::FillHist("Jet_"+DataEra+"_eff_"+flav+"_denom__mOverPt2_incl", this_Eta, this_mOverPt2, weight, NEtaBinAll, etabins_all, NmOverPt2Bin, mOverPt2bins);
+    //AnalyzerCore::FillHist("Jet_"+DataEra+"_eff_"+flav+"_denom__mOverPt2", this_Pt, this_mOverPt2, weight, NPtBin, ptbins, NmOverPt2Bin, mOverPt2bins);
+    //AnalyzerCore::FillHist("Jet_"+DataEra+"_eff_"+flav+"_denom__mOverPt2__Eta", this_Eta, this_mOverPt2, weight, NEtaBin, etabins, NmOverPt2Bin, mOverPt2bins);
+    //AnalyzerCore::FillHist("Jet_"+DataEra+"_eff_"+flav+"_denom__mOverPt2_incl", this_Eta, this_mOverPt2, weight, NEtaBinAll, etabins_all, NmOverPt2Bin, mOverPt2bins);
 
 
-    AnalyzerCore::FillHist("Jet_"+DataEra+"_eff_"+flav+"_denom__m2OverPt", this_Pt, this_m2OverPt, weight, NPtBin, ptbins, Nm2OverPtBin, m2OverPtbins);
-    AnalyzerCore::FillHist("Jet_"+DataEra+"_eff_"+flav+"_denom__m2OverPt__Eta", this_Eta, this_m2OverPt, weight, NEtaBin, etabins, Nm2OverPtBin, m2OverPtbins);
-    AnalyzerCore::FillHist("Jet_"+DataEra+"_eff_"+flav+"_denom__m2OverPt_incl", this_Eta, this_m2OverPt, weight, NEtaBinAll, etabins_all, Nm2OverPtBin, m2OverPtbins);
+    //AnalyzerCore::FillHist("Jet_"+DataEra+"_eff_"+flav+"_denom__m2OverPt", this_Pt, this_m2OverPt, weight, NPtBin, ptbins, Nm2OverPtBin, m2OverPtbins);
+    //AnalyzerCore::FillHist("Jet_"+DataEra+"_eff_"+flav+"_denom__m2OverPt__Eta", this_Eta, this_m2OverPt, weight, NEtaBin, etabins, Nm2OverPtBin, m2OverPtbins);
+    //AnalyzerCore::FillHist("Jet_"+DataEra+"_eff_"+flav+"_denom__m2OverPt_incl", this_Eta, this_m2OverPt, weight, NEtaBinAll, etabins_all, Nm2OverPtBin, m2OverPtbins);
 
-    AnalyzerCore::FillHist("Jet_"+DataEra+"_eff_"+flav+"_denom__m3OverPt", this_Pt, this_m3OverPt, weight, NPtBin, ptbins, Nm3OverPtBin, m3OverPtbins);
-    AnalyzerCore::FillHist("Jet_"+DataEra+"_eff_"+flav+"_denom__m3OverPt__Eta", this_Eta, this_m3OverPt, weight, NEtaBin, etabins, Nm3OverPtBin, m3OverPtbins);
-    AnalyzerCore::FillHist("Jet_"+DataEra+"_eff_"+flav+"_denom__m3OverPt_incl", this_Eta, this_m3OverPt, weight, NEtaBinAll, etabins_all, Nm3OverPtBin, m3OverPtbins);
+    //AnalyzerCore::FillHist("Jet_"+DataEra+"_eff_"+flav+"_denom__m3OverPt", this_Pt, this_m3OverPt, weight, NPtBin, ptbins, Nm3OverPtBin, m3OverPtbins);
+    //AnalyzerCore::FillHist("Jet_"+DataEra+"_eff_"+flav+"_denom__m3OverPt__Eta", this_Eta, this_m3OverPt, weight, NEtaBin, etabins, Nm3OverPtBin, m3OverPtbins);
+    //AnalyzerCore::FillHist("Jet_"+DataEra+"_eff_"+flav+"_denom__m3OverPt_incl", this_Eta, this_m3OverPt, weight, NEtaBinAll, etabins_all, Nm3OverPtBin, m3OverPtbins);
 
-    AnalyzerCore::FillHist("Jet_"+DataEra+"_eff_"+flav+"_denom__m3OverPt2", this_Pt, this_m3OverPt2, weight, NPtBin, ptbins, Nm3OverPt2Bin, m3OverPt2bins);
-    AnalyzerCore::FillHist("Jet_"+DataEra+"_eff_"+flav+"_denom__m3OverPt2__Eta", this_Eta, this_m3OverPt2, weight, NEtaBin, etabins, Nm3OverPt2Bin, m3OverPt2bins);
-    AnalyzerCore::FillHist("Jet_"+DataEra+"_eff_"+flav+"_denom__m3OverPt2_incl", this_Eta, this_m3OverPt2, weight, NEtaBinAll, etabins_all, Nm3OverPt2Bin, m3OverPt2bins);
+    //AnalyzerCore::FillHist("Jet_"+DataEra+"_eff_"+flav+"_denom__m3OverPt2", this_Pt, this_m3OverPt2, weight, NPtBin, ptbins, Nm3OverPt2Bin, m3OverPt2bins);
+    //AnalyzerCore::FillHist("Jet_"+DataEra+"_eff_"+flav+"_denom__m3OverPt2__Eta", this_Eta, this_m3OverPt2, weight, NEtaBin, etabins, Nm3OverPt2Bin, m3OverPt2bins);
+    //AnalyzerCore::FillHist("Jet_"+DataEra+"_eff_"+flav+"_denom__m3OverPt2_incl", this_Eta, this_m3OverPt2, weight, NEtaBinAll, etabins_all, Nm3OverPt2Bin, m3OverPt2bins);
     
     std::vector<int> v_nSLT=Count_SLT(this_jet);
     int n_muH=v_nSLT[0];
@@ -7774,21 +7774,21 @@ void JHAnalyzerBase::MeasureMC_bChargeIDEff_test(vector<Jet> vJets , bool rm_pro
       AnalyzerCore::FillHist("Jet_"+DataEra+"_Has_muH_eff_"+flav+"_num__mOverPt_incl", this_Eta, this_mOverPt, weight, NEtaBinAll, etabins_all, NmOverPtBin, mOverPtbins);
 
 
-      AnalyzerCore::FillHist("Jet_"+DataEra+"_Has_muH_eff_"+flav+"_num__mOverPt2", this_Pt, this_mOverPt2, weight, NPtBin, ptbins, NmOverPt2Bin, mOverPt2bins);
-      AnalyzerCore::FillHist("Jet_"+DataEra+"_Has_muH_eff_"+flav+"_num__mOverPt2__Eta", this_Eta, this_mOverPt2, weight, NEtaBin, etabins, NmOverPt2Bin, mOverPt2bins);
-      AnalyzerCore::FillHist("Jet_"+DataEra+"_Has_muH_eff_"+flav+"_num__mOverPt2_incl", this_Eta, this_mOverPt2, weight, NEtaBinAll, etabins_all, NmOverPt2Bin, mOverPt2bins);
+      //AnalyzerCore::FillHist("Jet_"+DataEra+"_Has_muH_eff_"+flav+"_num__mOverPt2", this_Pt, this_mOverPt2, weight, NPtBin, ptbins, NmOverPt2Bin, mOverPt2bins);
+      //AnalyzerCore::FillHist("Jet_"+DataEra+"_Has_muH_eff_"+flav+"_num__mOverPt2__Eta", this_Eta, this_mOverPt2, weight, NEtaBin, etabins, NmOverPt2Bin, mOverPt2bins);
+      //AnalyzerCore::FillHist("Jet_"+DataEra+"_Has_muH_eff_"+flav+"_num__mOverPt2_incl", this_Eta, this_mOverPt2, weight, NEtaBinAll, etabins_all, NmOverPt2Bin, mOverPt2bins);
 
-      AnalyzerCore::FillHist("Jet_"+DataEra+"_Has_muH_eff_"+flav+"_num__m2OverPt", this_Pt, this_m2OverPt, weight, NPtBin, ptbins, Nm2OverPtBin, m2OverPtbins);
-      AnalyzerCore::FillHist("Jet_"+DataEra+"_Has_muH_eff_"+flav+"_num__m2OverPt__Eta", this_Eta, this_m2OverPt, weight, NEtaBin, etabins, Nm2OverPtBin, m2OverPtbins);
-      AnalyzerCore::FillHist("Jet_"+DataEra+"_Has_muH_eff_"+flav+"_num__m2OverPt_incl", this_Eta, this_m2OverPt, weight, NEtaBinAll, etabins_all, Nm2OverPtBin, m2OverPtbins);
+      //AnalyzerCore::FillHist("Jet_"+DataEra+"_Has_muH_eff_"+flav+"_num__m2OverPt", this_Pt, this_m2OverPt, weight, NPtBin, ptbins, Nm2OverPtBin, m2OverPtbins);
+      //AnalyzerCore::FillHist("Jet_"+DataEra+"_Has_muH_eff_"+flav+"_num__m2OverPt__Eta", this_Eta, this_m2OverPt, weight, NEtaBin, etabins, Nm2OverPtBin, m2OverPtbins);
+      //AnalyzerCore::FillHist("Jet_"+DataEra+"_Has_muH_eff_"+flav+"_num__m2OverPt_incl", this_Eta, this_m2OverPt, weight, NEtaBinAll, etabins_all, Nm2OverPtBin, m2OverPtbins);
 
-      AnalyzerCore::FillHist("Jet_"+DataEra+"_Has_muH_eff_"+flav+"_num__m3OverPt", this_Pt, this_m3OverPt, weight, NPtBin, ptbins, Nm3OverPtBin, m3OverPtbins);
-      AnalyzerCore::FillHist("Jet_"+DataEra+"_Has_muH_eff_"+flav+"_num__m3OverPt__Eta", this_Eta, this_m3OverPt, weight, NEtaBin, etabins, Nm3OverPtBin, m3OverPtbins);
-      AnalyzerCore::FillHist("Jet_"+DataEra+"_Has_muH_eff_"+flav+"_num__m3OverPt_incl", this_Eta, this_m3OverPt, weight, NEtaBinAll, etabins_all, Nm3OverPtBin, m3OverPtbins);
+      //AnalyzerCore::FillHist("Jet_"+DataEra+"_Has_muH_eff_"+flav+"_num__m3OverPt", this_Pt, this_m3OverPt, weight, NPtBin, ptbins, Nm3OverPtBin, m3OverPtbins);
+      //AnalyzerCore::FillHist("Jet_"+DataEra+"_Has_muH_eff_"+flav+"_num__m3OverPt__Eta", this_Eta, this_m3OverPt, weight, NEtaBin, etabins, Nm3OverPtBin, m3OverPtbins);
+      //AnalyzerCore::FillHist("Jet_"+DataEra+"_Has_muH_eff_"+flav+"_num__m3OverPt_incl", this_Eta, this_m3OverPt, weight, NEtaBinAll, etabins_all, Nm3OverPtBin, m3OverPtbins);
 
-      AnalyzerCore::FillHist("Jet_"+DataEra+"_Has_muH_eff_"+flav+"_num__m3OverPt2", this_Pt, this_m3OverPt2, weight, NPtBin, ptbins, Nm3OverPt2Bin, m3OverPt2bins);
-      AnalyzerCore::FillHist("Jet_"+DataEra+"_Has_muH_eff_"+flav+"_num__m3OverPt2__Eta", this_Eta, this_m3OverPt2, weight, NEtaBin, etabins, Nm3OverPt2Bin, m3OverPt2bins);
-      AnalyzerCore::FillHist("Jet_"+DataEra+"_Has_muH_eff_"+flav+"_num__m3OverPt2_incl", this_Eta, this_m3OverPt2, weight, NEtaBinAll, etabins_all, Nm3OverPt2Bin, m3OverPt2bins);      
+      //AnalyzerCore::FillHist("Jet_"+DataEra+"_Has_muH_eff_"+flav+"_num__m3OverPt2", this_Pt, this_m3OverPt2, weight, NPtBin, ptbins, Nm3OverPt2Bin, m3OverPt2bins);
+      //AnalyzerCore::FillHist("Jet_"+DataEra+"_Has_muH_eff_"+flav+"_num__m3OverPt2__Eta", this_Eta, this_m3OverPt2, weight, NEtaBin, etabins, Nm3OverPt2Bin, m3OverPt2bins);
+      //AnalyzerCore::FillHist("Jet_"+DataEra+"_Has_muH_eff_"+flav+"_num__m3OverPt2_incl", this_Eta, this_m3OverPt2, weight, NEtaBinAll, etabins_all, Nm3OverPt2Bin, m3OverPt2bins);      
       
 
     }
@@ -7804,6 +7804,8 @@ void JHAnalyzerBase::MeasureMC_bChargeIDEff_test(vector<Jet> vJets , bool rm_pro
       AnalyzerCore::FillHist("Jet_"+DataEra+"_Has_muL_eff_"+flav+"_num__mOverPt__Eta", this_Eta, this_mOverPt, weight, NEtaBin, etabins, NmOverPtBin, mOverPtbins);
       AnalyzerCore::FillHist("Jet_"+DataEra+"_Has_muL_eff_"+flav+"_num__mOverPt_incl", this_Eta, this_mOverPt, weight, NEtaBinAll, etabins_all, NmOverPtBin, mOverPtbins);
 
+
+      /*
       AnalyzerCore::FillHist("Jet_"+DataEra+"_Has_muL_eff_"+flav+"_num__mOverPt2", this_Pt, this_mOverPt2, weight, NPtBin, ptbins, NmOverPt2Bin, mOverPt2bins);
       AnalyzerCore::FillHist("Jet_"+DataEra+"_Has_muL_eff_"+flav+"_num__mOverPt2__Eta", this_Eta, this_mOverPt2, weight, NEtaBin, etabins, NmOverPt2Bin, mOverPt2bins);
       AnalyzerCore::FillHist("Jet_"+DataEra+"_Has_muL_eff_"+flav+"_num__mOverPt2_incl", this_Eta, this_mOverPt2, weight, NEtaBinAll, etabins_all, NmOverPt2Bin, mOverPt2bins);
@@ -7822,7 +7824,7 @@ void JHAnalyzerBase::MeasureMC_bChargeIDEff_test(vector<Jet> vJets , bool rm_pro
       AnalyzerCore::FillHist("Jet_"+DataEra+"_Has_muL_eff_"+flav+"_num__m3OverPt2", this_Pt, this_m3OverPt2, weight, NPtBin, ptbins, Nm3OverPt2Bin, m3OverPt2bins);
       AnalyzerCore::FillHist("Jet_"+DataEra+"_Has_muL_eff_"+flav+"_num__m3OverPt2__Eta", this_Eta, this_m3OverPt2, weight, NEtaBin, etabins, Nm3OverPt2Bin, m3OverPt2bins);
       AnalyzerCore::FillHist("Jet_"+DataEra+"_Has_muL_eff_"+flav+"_num__m3OverPt2_incl", this_Eta, this_m3OverPt2, weight, NEtaBinAll, etabins_all, Nm3OverPt2Bin, m3OverPt2bins);
-
+      */
 
 
     }
@@ -7838,7 +7840,7 @@ void JHAnalyzerBase::MeasureMC_bChargeIDEff_test(vector<Jet> vJets , bool rm_pro
       AnalyzerCore::FillHist("Jet_"+DataEra+"_Has_eH_eff_"+flav+"_num__mOverPt__Eta", this_Eta, this_mOverPt, weight, NEtaBin, etabins, NmOverPtBin, mOverPtbins);
       AnalyzerCore::FillHist("Jet_"+DataEra+"_Has_eH_eff_"+flav+"_num__mOverPt_incl", this_Eta, this_mOverPt, weight, NEtaBinAll, etabins_all, NmOverPtBin, mOverPtbins);
 
-
+      /*
       AnalyzerCore::FillHist("Jet_"+DataEra+"_Has_eH_eff_"+flav+"_num__mOverPt2", this_Pt, this_mOverPt2, weight, NPtBin, ptbins, NmOverPt2Bin, mOverPt2bins);
       AnalyzerCore::FillHist("Jet_"+DataEra+"_Has_eH_eff_"+flav+"_num__mOverPt2__Eta", this_Eta, this_mOverPt2, weight, NEtaBin, etabins, NmOverPt2Bin, mOverPt2bins);
       AnalyzerCore::FillHist("Jet_"+DataEra+"_Has_eH_eff_"+flav+"_num__mOverPt2_incl", this_Eta, this_mOverPt2, weight, NEtaBinAll, etabins_all, NmOverPt2Bin, mOverPt2bins);
@@ -7855,7 +7857,7 @@ void JHAnalyzerBase::MeasureMC_bChargeIDEff_test(vector<Jet> vJets , bool rm_pro
       AnalyzerCore::FillHist("Jet_"+DataEra+"_Has_eH_eff_"+flav+"_num__m3OverPt2", this_Pt, this_m3OverPt2, weight, NPtBin, ptbins, Nm3OverPt2Bin, m3OverPt2bins);
       AnalyzerCore::FillHist("Jet_"+DataEra+"_Has_eH_eff_"+flav+"_num__m3OverPt2__Eta", this_Eta, this_m3OverPt2, weight, NEtaBin, etabins, Nm3OverPt2Bin, m3OverPt2bins);
       AnalyzerCore::FillHist("Jet_"+DataEra+"_Has_eH_eff_"+flav+"_num__m3OverPt2_incl", this_Eta, this_m3OverPt2, weight, NEtaBinAll, etabins_all, Nm3OverPt2Bin, m3OverPt2bins);
-
+      */
     }
     if(n_eL>0){
       AnalyzerCore::FillHist("Jet_"+DataEra+"_Has_eL_eff_"+flav+"_num", this_Eta, this_Pt, weight, NEtaBinAll, etabins_all, NPtBin, ptbins);
@@ -7870,7 +7872,7 @@ void JHAnalyzerBase::MeasureMC_bChargeIDEff_test(vector<Jet> vJets , bool rm_pro
       AnalyzerCore::FillHist("Jet_"+DataEra+"_Has_eL_eff_"+flav+"_num__mOverPt__Eta", this_Eta, this_mOverPt, weight, NEtaBin, etabins, NmOverPtBin, mOverPtbins);
       AnalyzerCore::FillHist("Jet_"+DataEra+"_Has_eL_eff_"+flav+"_num__mOverPt_incl", this_Eta, this_mOverPt, weight, NEtaBinAll, etabins_all, NmOverPtBin, mOverPtbins);
 
-
+      /*
       AnalyzerCore::FillHist("Jet_"+DataEra+"_Has_eL_eff_"+flav+"_num__mOverPt2", this_Pt, this_mOverPt2, weight, NPtBin, ptbins, NmOverPt2Bin, mOverPt2bins);
       AnalyzerCore::FillHist("Jet_"+DataEra+"_Has_eL_eff_"+flav+"_num__mOverPt2__Eta", this_Eta, this_mOverPt2, weight, NEtaBin, etabins, NmOverPt2Bin, mOverPt2bins);
       AnalyzerCore::FillHist("Jet_"+DataEra+"_Has_eL_eff_"+flav+"_num__mOverPt2_incl", this_Eta, this_mOverPt2, weight, NEtaBinAll, etabins_all, NmOverPt2Bin, mOverPt2bins);
@@ -7888,7 +7890,7 @@ void JHAnalyzerBase::MeasureMC_bChargeIDEff_test(vector<Jet> vJets , bool rm_pro
       AnalyzerCore::FillHist("Jet_"+DataEra+"_Has_eL_eff_"+flav+"_num__m3OverPt2", this_Pt, this_m3OverPt2, weight, NPtBin, ptbins, Nm3OverPt2Bin, m3OverPt2bins);
       AnalyzerCore::FillHist("Jet_"+DataEra+"_Has_eL_eff_"+flav+"_num__m3OverPt2__Eta", this_Eta, this_m3OverPt2, weight, NEtaBin, etabins, Nm3OverPt2Bin, m3OverPt2bins);
       AnalyzerCore::FillHist("Jet_"+DataEra+"_Has_eL_eff_"+flav+"_num__m3OverPt2_incl", this_Eta, this_m3OverPt2, weight, NEtaBinAll, etabins_all, Nm3OverPt2Bin, m3OverPt2bins);      
-
+      */
       
     }
     if(n_muH==0 && n_muL==0 && n_eH==0 && n_eL==0){
@@ -7904,7 +7906,7 @@ void JHAnalyzerBase::MeasureMC_bChargeIDEff_test(vector<Jet> vJets , bool rm_pro
       AnalyzerCore::FillHist("Jet_"+DataEra+"_eff_"+flav+"_denom__NoSL__mOverPt__Eta", this_Eta, this_mOverPt, weight, NEtaBin, etabins, NmOverPtBin, mOverPtbins);
       AnalyzerCore::FillHist("Jet_"+DataEra+"_eff_"+flav+"_denom__NoSL__mOverPt_incl", this_Eta, this_mOverPt, weight, NEtaBinAll, etabins_all, NmOverPtBin, mOverPtbins);
 
-
+      /*
       AnalyzerCore::FillHist("Jet_"+DataEra+"_eff_"+flav+"_denom__NoSL__mOverPt2", this_Pt, this_mOverPt2, weight, NPtBin, ptbins, NmOverPt2Bin, mOverPt2bins);
       AnalyzerCore::FillHist("Jet_"+DataEra+"_eff_"+flav+"_denom__NoSL__mOverPt2__Eta", this_Eta, this_mOverPt2, weight, NEtaBin, etabins, NmOverPt2Bin, mOverPt2bins);
       AnalyzerCore::FillHist("Jet_"+DataEra+"_eff_"+flav+"_denom__NoSL__mOverPt2_incl", this_Eta, this_mOverPt2, weight, NEtaBinAll, etabins_all, NmOverPt2Bin, mOverPt2bins);
@@ -7924,7 +7926,7 @@ void JHAnalyzerBase::MeasureMC_bChargeIDEff_test(vector<Jet> vJets , bool rm_pro
       AnalyzerCore::FillHist("Jet_"+DataEra+"_eff_"+flav+"_denom__NoSL__m3OverPt2__Eta", this_Eta, this_m3OverPt2, weight, NEtaBin, etabins, Nm3OverPt2Bin, m3OverPt2bins);
       AnalyzerCore::FillHist("Jet_"+DataEra+"_eff_"+flav+"_denom__NoSL__m3OverPt2_incl", this_Eta, this_m3OverPt2, weight, NEtaBinAll, etabins_all, Nm3OverPt2Bin, m3OverPt2bins);
 	
-
+      */
       
       SetJetChargeScore(this_jet);      
       int jetcharge_coeff=GetJetChargeScoreCoeff();
@@ -7941,7 +7943,7 @@ void JHAnalyzerBase::MeasureMC_bChargeIDEff_test(vector<Jet> vJets , bool rm_pro
 	AnalyzerCore::FillHist("Jet_"+DataEra+"_jH_eff_"+flav+"_num__NoSL__mOverPt_incl", this_Eta, this_mOverPt, weight, NEtaBinAll, etabins_all, NmOverPtBin, mOverPtbins);
 
 
-
+	/*
 	AnalyzerCore::FillHist("Jet_"+DataEra+"_jH_eff_"+flav+"_num__NoSL__mOverPt2", this_Pt, this_mOverPt2, weight, NPtBin, ptbins, NmOverPt2Bin, mOverPt2bins);
 	AnalyzerCore::FillHist("Jet_"+DataEra+"_jH_eff_"+flav+"_num__NoSL__mOverPt2__Eta", this_Eta, this_mOverPt2, weight, NEtaBin, etabins, NmOverPt2Bin, mOverPt2bins);
 	AnalyzerCore::FillHist("Jet_"+DataEra+"_jH_eff_"+flav+"_num__NoSL__mOverPt2_incl", this_Eta, this_mOverPt2, weight, NEtaBinAll, etabins_all, NmOverPt2Bin, mOverPt2bins);
@@ -7959,7 +7961,7 @@ void JHAnalyzerBase::MeasureMC_bChargeIDEff_test(vector<Jet> vJets , bool rm_pro
 	AnalyzerCore::FillHist("Jet_"+DataEra+"_jH_eff_"+flav+"_num__NoSL__m3OverPt2", this_Pt, this_m3OverPt2, weight, NPtBin, ptbins, Nm3OverPt2Bin, m3OverPt2bins);
 	AnalyzerCore::FillHist("Jet_"+DataEra+"_jH_eff_"+flav+"_num__NoSL__m3OverPt2__Eta", this_Eta, this_m3OverPt2, weight, NEtaBin, etabins, Nm3OverPt2Bin, m3OverPt2bins);
 	AnalyzerCore::FillHist("Jet_"+DataEra+"_jH_eff_"+flav+"_num__NoSL__m3OverPt2_incl", this_Eta, this_m3OverPt2, weight, NEtaBinAll, etabins_all, Nm3OverPt2Bin, m3OverPt2bins);
-
+	*/
 
       }
     }
