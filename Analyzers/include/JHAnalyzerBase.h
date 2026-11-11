@@ -46,6 +46,7 @@ class JHAnalyzerBase : public AnalyzerCore {
   bool measure_btageff_partonFlavour_bonly=false;
   bool measure_bchargeeff=false;
   bool measure_bchargeeff_test=false;
+  bool measure_bchargeeff_test_noplepveto=false;
   bool measure_bchargeeff_pveto=false;
   bool measure_bchargeeff_pveto_v2=false;
   bool measure_bchargeeff_pveto_v3=false;
@@ -858,7 +859,7 @@ class JHAnalyzerBase : public AnalyzerCore {
   bool Is_bChargeAccOn=false;
   void MeasureMC_bChargeIDEff(vector<Jet> vJets);
   void MeasureMC_bChargeIDEff_OLD(vector<Jet> vJets);
-  void MeasureMC_bChargeIDEff_test(vector<Jet> vJets);
+  void MeasureMC_bChargeIDEff_test(vector<Jet> vJets, bool rm_prompt=true);
   void MeasureMC_bChargeIDEff_pveto_v2(vector<Jet> vJets);
   void MeasureMC_bChargeIDEff_pveto_v3(vector<Jet> vJets);
   void MeasureMC_bChargeIDEff_pveto_v4(vector<Jet> vJets);

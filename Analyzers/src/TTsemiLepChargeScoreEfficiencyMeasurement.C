@@ -336,7 +336,7 @@ void TTsemiLepChargeScoreEfficiencyMeasurement::Run(){
   }
 
   //---Get PromptLep in genlevel
-  if(!IsDATA)GetPromptLepGenIdx();
+  //if(!IsDATA)GetPromptLepGenIdx();
 
   ////----
   if(measure_bchargeeff){
@@ -1279,6 +1279,8 @@ void TTsemiLepChargeScoreEfficiencyMeasurement::EventLoop(){
 
 
 void TTsemiLepChargeScoreEfficiencyMeasurement::TruthLoop(){
+  if(!IsDATA)GetPromptLepGenIdx();
+
   //it must be TTLJ samples
   if (IsTTLJSample){
     TTsemiLepChargeScoreEfficiencyMeasurement::RunLHEinfo();

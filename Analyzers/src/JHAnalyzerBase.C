@@ -59,6 +59,7 @@ void JHAnalyzerBase::initializeAnalyzer(){
   measure_btageff_partonFlavour_bonly=HasFlag("measure_btageff_partonFlavour_bonly");
   measure_bchargeeff=HasFlag("measure_bchargeeff");
   measure_bchargeeff_test=HasFlag("measure_bchargeeff_test");
+  measure_bchargeeff_test_noplepveto=HasFlag("measure_bchargeeff_test_noplepveto");
   measure_bchargeeff_pveto=HasFlag("measure_bchargeeff_pveto");
   measure_bchargeeff_pveto_v2=HasFlag("measure_bchargeeff_pveto_v2");
   measure_bchargeeff_pveto_v3=HasFlag("measure_bchargeeff_pveto_v3");
@@ -7619,7 +7620,7 @@ void JHAnalyzerBase::MeasureMC_bChargeIDEff(vector<Jet> vJets ){
 
 }
     
-void JHAnalyzerBase::MeasureMC_bChargeIDEff_test(vector<Jet> vJets ){
+void JHAnalyzerBase::MeasureMC_bChargeIDEff_test(vector<Jet> vJets , bool rm_prompt){
 
   //cout << "v_genlepidx.size() -> " << v_genlepidx.size() << endl;
   
@@ -7694,6 +7695,7 @@ void JHAnalyzerBase::MeasureMC_bChargeIDEff_test(vector<Jet> vJets ){
     if(this_jet.hadronFlavour()!=5) continue;
     bool HasPromptLep=false;
     for(int ig=0; ig<v_genlepidx.size();ig++){
+      if(!rm_prompt) break;
       //cout << "Pt=" << v_genlepidx[ig].Pt() << " Eta = " << v_genlepidx[ig].Eta() << " Phi=" << v_genlepidx[ig].Phi() << endl;
       int this_genidx=v_genlepidx[ig];
       if(this_jet.DeltaR(gens[this_genidx])<0.4){
