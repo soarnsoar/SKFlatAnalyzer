@@ -87,7 +87,7 @@ public:
   
   bool doxrange,xrangetree;
   bool bdtcut;
-  bool addcharm;
+  bool addcharm, addud;
 
   double maxMET,min_dphi_z_b,min_z_pt,max_ptzb;
 

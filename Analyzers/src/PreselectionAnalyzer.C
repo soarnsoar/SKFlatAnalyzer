@@ -94,6 +94,7 @@ void PreselectionAnalyzer::initializeAnalyzer(){
   xrangetree=HasFlag("xrangetree");
   bdtcut=HasFlag("bdtcut");//applying bdtcut
   addcharm=HasFlag("addcharm");
+  addud=HasFlag("addud");
   
   //For x range study//
   if(xrangetree){
@@ -1377,6 +1378,46 @@ void PreselectionAnalyzer::TruthLoop(){
     }
    
   }
+  //---u + g scattering
+  if(addud){
+    if(abs(genWeight_id1)==2){
+      if(genWeight_id2==21){
+	if(genWeight_id1>0){
+	  suffix_true_nb="_uplus";
+	}else{
+	  suffix_true_nb="_uminus";
+	}
+      }
+    }else if(abs(genWeight_id2)==2){
+      if(genWeight_id1==21){
+	if(genWeight_id2>0){
+	  suffix_true_nb="_uplus";
+	}else{
+	  suffix_true_nb="_uminus";
+	}
+      }
+    }else if(abs(genWeight_id1)==1){
+      if(genWeight_id2==21){
+        if(genWeight_id1>0){
+          suffix_true_nb="_dminus";
+        }else{
+          suffix_true_nb="_dplus";
+        }
+      }
+    }else if(abs(genWeight_id2)==1){
+      if(genWeight_id1==21){
+        if(genWeight_id2>0){
+          suffix_true_nb="_dminus";
+        }else{
+          suffix_true_nb="_dplus";
+        }
+      }
+    }
+
+   
+  }//addud
+
+  
   ProcessName=MCSample+suffix_true_nb;
 
 }
