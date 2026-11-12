@@ -4,11 +4,13 @@ import ROOT
 from collections import OrderedDict
 from array import array
 class TH2ToTH1_Converter:
-    def __init__(self, h2,xname, yname):
+    def __init__(self, h2,xname, yname, xmax=None, ymax=None):
         self.h2=h2
         self.dict_xdist=OrderedDict()##xdistribution
         self.dict_ydist=OrderedDict()
-        
+
+        self.xbinmax=xmax
+        self.ybinmax=ymax
         self.xname=xname
         self.yname=yname
 
@@ -21,14 +23,23 @@ class TH2ToTH1_Converter:
         self.nx=self.xaxis.GetNbins()
         self.xbins=[]
         for i in range(1,self.nx+2):
-            self.xbins.append(self.xaxis.GetBinLowEdge(i))
+            this_lowedge=self.xaxis.GetBinLowEdge(i)
+            if this_lowedge>self.xbinmax:
+                self.xbins.append(self.xbinmax)
+                break
+            self.xbins.append(this_lowedge)
 
     
         self.yaxis=self.h2.GetYaxis()
         self.ny=self.yaxis.GetNbins()
         self.ybins=[]
         for i in range(1,self.ny+2):
-            self.ybins.append(self.yaxis.GetBinLowEdge(i))
+            this_lowedge=self.yaxis.GetBinLowEdge(i)
+            if this_lowedge>self.ybinmax:
+                self.ybins.append(self.ybinmax)
+                break
+
+            self.ybins.append(this_lowedge)
     
         ##---Make EmptyHist
         self.hx_empty=ROOT.TH1D("x_empty","x_empty",len(self.xbins)-1,array("d",self.xbins))

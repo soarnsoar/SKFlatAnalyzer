@@ -11,7 +11,7 @@ CURDIR=os.getcwd()
 
 #_SkimTree_Dilepton
 list_year=["2016preVFP", "2016postVFP", "2017", "2018"]
-list_year=["2018"]
+#list_year=["2018"]
 
 #ANANAME="TTsemiLepChargeScoreEfficiencyMeasurement_TightMatch"
 #ANANAME="TTsemiLepBtagChargeAsymEfficiencyMeasurement_BINNING"
@@ -23,17 +23,6 @@ list_year=["2018"]
 #suffix="jetpuid_loose__newlepveto__use_beffasym__bdt_v2608_2__bdtcut__measure_bchargeeff_pveto__"
 ANANAME="TTsemiLepChargeScoreEfficiencyMeasurement"
 suffix='use_beff_dasym__JETPUID_L__newlepveto__chi2kincut__bdt2608.2__splitcharge__measure_bchargeeff_test__'
-#suffix="use_beff_dasym__JETPUID_L__newlepveto__chi2kincut__bdt2608.2__splitcharge__noetabin__measure_bchargeeff_pveto__"
-#suffix="use_beff_dasym__JETPUID_L__bdt2512.5__measure_bchargeeff__"
-#suffix='use_beff_dasym__JETPUID_L__noveto__newlepveto__chi2kincut__bdt2608.2__splitcharge__noetabin__measure_bchargeeff__'
-#suffix="use_beff_dasym__JETPUID_L__newlepveto__chi2kincut__bdt2608.2__splitcharge__noetabin__jetlepveto__measure_bchargeeff__"
-#suffix="use_beff_dasym__JETPUID_L__chi2kincut__bdt2608.2__splitcharge__noetabin__measure_bchargeeff__"
-#suffix="use_beff_dasym__JETPUID_L__chi2kincut__bdt2608.2__splitcharge__noetabin__jetlepveto__measure_bchargeeff__"
-#suffix='use_beff_dasym__JETPUID_L__chi2kincut__bdt2608.2__splitcharge__noetabin__jetlepveto__measure_bchargeeff_pveto__'
-#use_beff_dasym__JETPUID_L__chi2kincut__bdt2608.2__splitcharge__noetabin__measure_bchargeeff_v2__/
-#use_beff_dasym__JETPUID_L__chi2kincut__bdt2608.2__splitcharge__noetabin__measure_bchargeeff_v3__/
-#use_beff_dasym__JETPUID_L__noveto__newlepveto__chi2kincut__bdt2608.2__splitcharge__noetabin__measure_bchargeeff_v2__/
-#use_beff_dasym__JETPUID_L__noveto__newlepveto__chi2kincut__bdt2608.2__splitcharge__noetabin__measure_bchargeeff_v3__/
 
 
 search='*'
@@ -43,7 +32,7 @@ for YEAR in list_year:
     from_dir="/data9/Users/jhchoi/SKFlatOutput/Run2UltraLegacy_v3/"+ANANAME+"/"+str(YEAR)+"/"+suffix
     if 'knu' in hostname:
         from_dir='/u/user/jhchoi/scratch/SKFlatOutput/Run2UltraLegacy_v3/'+ANANAME+"/"+str(YEAR)+"/"+suffix
-    to_dir=CURDIR+"/eff_hists"
+    to_dir=CURDIR+"/eff_hists"+YEAR
 
     #os.system("ls "+from_dir)
     list_rootfile=glob.glob(from_dir+"/"+search+".root")

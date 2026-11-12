@@ -1,8 +1,10 @@
 import ROOT
 
-#yearlist=["2016preVFP","2016postVFP","2017","2018"]
-yearlist=[#"2016preVFP","2016postVFP","2017",
-          "2018"]
+yearlist=["2016preVFP","2016postVFP","2017","2018"]
+#yearlist=[#"2016preVFP","2016postVFP","2017",
+#    #"2018"
+#    "2017"
+#]
 for year in yearlist:
     default_file="FileForEmpty/"+year+"/hadd.root"
     default_tfile=ROOT.TFile.Open(default_file)

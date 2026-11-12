@@ -8,9 +8,9 @@ def GetEffTH2(filepath,year,bchargeid,flav,suffix=""):
     year=str(year)
     nume_name="Jet_"+year+"_"+bchargeid+"_eff_"+flav+"_num"+suffix
     deno_name="Jet_"+year+"_eff_"+flav+"_denom"+suffix
-    print('nume_name=',nume_name)
-    print('deno_name=',deno_name)
-    print(filepath)
+    #print('nume_name=',nume_name)
+    #print('deno_name=',deno_name)
+    #print(filepath)
     tfile=ROOT.TFile.Open(filepath)
     h_nume=tfile.Get(nume_name)
     h_deno=tfile.Get(deno_name)
@@ -79,13 +79,13 @@ def Compare_TH1(list_h,list_name,savename,savedir):
     del c1
 
 
-def Run(ana,year,default_filename,bchargeid,procs,suffix=""):
+def Run(ana,year,default_filename,default_name,bchargeid,procs,suffix,xmax,ymax):
 
 
     year=str(year)
 
     #fpath_default=DATA_DIR+"/"+year+"/bChargeTagID/"+ana+"_HADDED.root"
-    fpath_default="eff_hists/"+default_filename+".root"
+    fpath_default="eff_hists"+year+"/"+default_filename+".root"
     h2_defualt_bminus=GetEffTH2(fpath_default,year,bchargeid,'bminus',suffix)
     h2_defualt_bplus=GetEffTH2(fpath_default,year,bchargeid,'bplus',suffix)
     
@@ -93,12 +93,12 @@ def Run(ana,year,default_filename,bchargeid,procs,suffix=""):
 
     ##----Get defualt h2's h1s
 
-    converter_default_bminus=TH2ToTH1_Converter(h2_defualt_bminus,"x","y")
+    converter_default_bminus=TH2ToTH1_Converter(h2_defualt_bminus,"x","y",xmax,ymax)
     converter_default_bminus.Run()
     dict_hx_default_bminus=converter_default_bminus.GetHistDictX()
     dict_hy_default_bminus=converter_default_bminus.GetHistDictY()
 
-    converter_default_bplus=TH2ToTH1_Converter(h2_defualt_bplus,"x","y")
+    converter_default_bplus=TH2ToTH1_Converter(h2_defualt_bplus,"x","y",xmax,ymax)
     converter_default_bplus.Run()
     dict_hx_default_bplus=converter_default_bplus.GetHistDictX()
     dict_hy_default_bplus=converter_default_bplus.GetHistDictY()
@@ -118,13 +118,16 @@ def Run(ana,year,default_filename,bchargeid,procs,suffix=""):
     
     for proc in procs:
         #this_fpath=DATA_DIR+"/"+year+"/bChargeTagID/"+ana+"_"+proc+".root"
-        this_fpath='eff_hists/'+ana+"_"+proc+".root"
-        if not os.path.isfile(this_fpath) : continue
+        this_fpath='eff_hists'+year+'/'+ana+"_"+proc+".root"
+        if not os.path.isfile(this_fpath) :
+            print('skip->',proc)
+ 
+            continue
         this_tfile=ROOT.TFile.Open(this_fpath)
 
         
         dict_h2_Presel_bminus[proc]=GetEffTH2(this_fpath,year,bchargeid,'bminus',suffix)
-        dict_converter_bminus[proc]=TH2ToTH1_Converter(dict_h2_Presel_bminus[proc],"x","y")
+        dict_converter_bminus[proc]=TH2ToTH1_Converter(dict_h2_Presel_bminus[proc],"x","y",xmax,ymax)
         dict_converter_bminus[proc].Run()
         dict_hx_Presel_bminus[proc]=dict_converter_bminus[proc].GetHistDictX()
         dict_hy_Presel_bminus[proc]=dict_converter_bminus[proc].GetHistDictY()
@@ -132,7 +135,7 @@ def Run(ana,year,default_filename,bchargeid,procs,suffix=""):
 
         
         dict_h2_Presel_bplus[proc]=GetEffTH2(this_fpath,year,bchargeid,'bplus',suffix)
-        dict_converter_bplus[proc]=TH2ToTH1_Converter(dict_h2_Presel_bplus[proc],"x","y")
+        dict_converter_bplus[proc]=TH2ToTH1_Converter(dict_h2_Presel_bplus[proc],"x","y",xmax,ymax)
         dict_converter_bplus[proc].Run()
         dict_hx_Presel_bplus[proc]=dict_converter_bplus[proc].GetHistDictX()
         dict_hy_Presel_bplus[proc]=dict_converter_bplus[proc].GetHistDictY()        
@@ -147,7 +150,7 @@ def Run(ana,year,default_filename,bchargeid,procs,suffix=""):
             
             Compare_TH1(
                 [deepcopy(dict_hx_default_bminus[xdistname]), deepcopy(dict_hx_default_bplus[xdistname]), deepcopy(dict_hx_Presel_bminus[proc][xdistname]),deepcopy(dict_hx_Presel_bplus[proc][xdistname])],
-                [default_filename+" b^{-}", default_filename+" b^{+}",proc+" b^{-}",proc+" b^{+}"],
+                [default_name+" b^{-}", default_name+" b^{+}",proc+" b^{-}",proc+" b^{+}"],
                 proc+"__"+xdistname,
                 outdirname
             )
@@ -159,7 +162,7 @@ def Run(ana,year,default_filename,bchargeid,procs,suffix=""):
             #def Compare_TH1(list_h,list_name,savename,savedir)            
             Compare_TH1(
                 [deepcopy(dict_hy_default_bminus[ydistname]), deepcopy(dict_hy_default_bplus[ydistname]), deepcopy(dict_hy_Presel_bminus[proc][ydistname]),deepcopy(dict_hy_Presel_bplus[proc][ydistname])],
-                [default_filename+" b^{-}", default_filename+" b^{+}",proc+" b^{-}",proc+" b^{+}"],
+                [default_name+" b^{-}", default_name+" b^{+}",proc+" b^{-}",proc+" b^{+}"],
                 proc+"__"+ydistname,
                 outdirname
             )
@@ -170,57 +173,69 @@ if __name__ == '__main__':
     analist=["TTsemiLepChargeScoreEfficiencyMeasurement"]
     #analist=["PreselectionAnalyzer"]
     list_year=["2016preVFP","2016postVFP","2017","2018"]
-    list_year=["2018"]
+    #list_year=["2018"]
     list_sltid=['Has_muH',"Has_muL","Has_eH","Has_eL"]
     #list_sltid=['Has_muH']
-    procs=["TTLL_powheg","TTLJ_powheg","TTJJ_powheg","DYJetsToMuMu_MiNNLO","DYJetsToEE_MiNNLO","DYJetsToTauTau_MiNNLO"]+\
-        ["SingleTop_sch_Lep","SingleTop_tch_top_Incl","SingleTop_tch_antitop_Incl","SingleTop_tW_antitop_NoFullyHad","SingleTop_tW_top_NoFullyHad"]\
-        #+["WW_pythia","WZ_pythia","ZZ_pythia"]#+["WJets_MG"]
+    procs=[
+        'SingleTop_tW_antitop_NoFullyHad',
+        'SingleTop_tW_top_NoFullyHad',
+        'SingleTop_tch_antitop_Incl',
+        'SingleTop_tch_top_Incl',
+        #'DYJets',
+        #'QCD',
+        'ST_top',
+        'ST_antitop',
+        'TTLL_powheg'
+    ]
+    #procs=["TTLL_powheg","TTLJ_powheg","TTJJ_powheg","DYJetsToMuMu_MiNNLO","DYJetsToEE_MiNNLO","DYJetsToTauTau_MiNNLO"]+\
+    #    ["SingleTop_sch_Lep","SingleTop_tch_top_Incl","SingleTop_tch_antitop_Incl","SingleTop_tW_antitop_NoFullyHad","SingleTop_tW_top_NoFullyHad"]\
+    #    #+["WW_pythia","WZ_pythia","ZZ_pythia"]#+["WJets_MG"]
     #procs=['SingleTop_tW_antitop_NoFullyHad']
     #default_filename='TTsemiLepChargeScoreEfficiencyMeasurement_SingleTop_tW_top_NoFullyHad'
     default_filename='TTsemiLepChargeScoreEfficiencyMeasurement_TTLJ_powheg'
+    default_name='TTLJ_powheg'
     #default_filename='PreselectionAnalyzer_TTLL_powheg'
     for ana in analist:
         for year in list_year:
             for sltid in list_sltid:
-                continue
-                Run(ana,year,default_filename,sltid,procs)
-                #Run(ana,year,default_filename,sltid,procs,"__Mass")
-                #Run(ana,year,default_filename,sltid,procs,"__Mass_incl")
-                #Run(ana,year,default_filename,sltid,procs,"__Mass__Eta")
+                #continue
+                Run(ana,year,default_filename,default_name,sltid,procs,"",200,200)
+                #Run(ana,year,default_filename,default_name,sltid,procs,"__Mass")
+                #Run(ana,year,default_filename,default_name,sltid,procs,"__Mass_incl")
+                #Run(ana,year,default_filename,default_name,sltid,procs,"__Mass__Eta")
                 
-                Run(ana,year,default_filename,sltid,procs,"__mOverPt")
-                Run(ana,year,default_filename,sltid,procs,"__mOverPt_incl")
-                Run(ana,year,default_filename,sltid,procs,"__mOverPt__Eta")
+                Run(ana,year,default_filename,default_name,sltid,procs,"__mOverPt",200,200)
+                Run(ana,year,default_filename,default_name,sltid,procs,"__mOverPt_incl",200,200)
+                Run(ana,year,default_filename,default_name,sltid,procs,"__mOverPt__Eta",200,200)
 
-                #Run(ana,year,default_filename,sltid,procs,"__mOverPt2")
-                #Run(ana,year,default_filename,sltid,procs,"__mOverPt2_incl")
-                #Run(ana,year,default_filename,sltid,procs,"__mOverPt2__Eta")
+                #Run(ana,year,default_filename,default_name,sltid,procs,"__mOverPt2")
+                #Run(ana,year,default_filename,default_name,sltid,procs,"__mOverPt2_incl")
+                #Run(ana,year,default_filename,default_name,sltid,procs,"__mOverPt2__Eta")
 
-                #Run(ana,year,default_filename,sltid,procs,"__m2OverPt")
-                #Run(ana,year,default_filename,sltid,procs,"__m2OverPt_incl")
-                #Run(ana,year,default_filename,sltid,procs,"__m2OverPt__Eta")
+                #Run(ana,year,default_filename,default_name,sltid,procs,"__m2OverPt")
+                #Run(ana,year,default_filename,default_name,sltid,procs,"__m2OverPt_incl")
+                #Run(ana,year,default_filename,default_name,sltid,procs,"__m2OverPt__Eta")
 
-                #Run(ana,year,default_filename,sltid,procs,"__m3OverPt2")
-                #Run(ana,year,default_filename,sltid,procs,"__m3OverPt2_incl")
-                #Run(ana,year,default_filename,sltid,procs,"__m3OverPt2__Eta")
-                #Run(ana,year,default_filename,sltid,procs,"__mOverPt__Eta")
+                #Run(ana,year,default_filename,default_name,sltid,procs,"__m3OverPt2")
+                #Run(ana,year,default_filename,default_name,sltid,procs,"__m3OverPt2_incl")
+                #Run(ana,year,default_filename,default_name,sltid,procs,"__m3OverPt2__Eta")
+                #Run(ana,year,default_filename,default_name,sltid,procs,"__mOverPt__Eta")
 
-            #Run(ana,year,default_filename,'jH',procs)
+            #Run(ana,year,default_filename,default_name,'jH',procs)
                 
-            Run(ana,year,default_filename,'jH',procs,'__NoSL')
-            #Run(ana,year,default_filename,'jH',procs,'__NoSL__Mass')
-            #Run(ana,year,default_filename,'jH',procs,'__NoSL__Mass_incl')
+            Run(ana,year,default_filename,default_name,'jH',procs,'__NoSL',200,200)
+            #Run(ana,year,default_filename,default_name,'jH',procs,'__NoSL__Mass')
+            #Run(ana,year,default_filename,default_name,'jH',procs,'__NoSL__Mass_incl')
             
-            Run(ana,year,default_filename,'jH',procs,'__NoSL__mOverPt')
-            Run(ana,year,default_filename,'jH',procs,'__NoSL__mOverPt_incl')
-            Run(ana,year,default_filename,'jH',procs,'__NoSL__mOverPt__Eta')
+            Run(ana,year,default_filename,default_name,'jH',procs,'__NoSL__mOverPt',200,200)
+            Run(ana,year,default_filename,default_name,'jH',procs,'__NoSL__mOverPt_incl',200,200)
+            Run(ana,year,default_filename,default_name,'jH',procs,'__NoSL__mOverPt__Eta',200,200)
             
-            #Run(ana,year,default_filename,'jH',procs,'__NoSL__mOverPt2')
-            #Run(ana,year,default_filename,'jH',procs,'__NoSL__mOverPt2_incl')
+            #Run(ana,year,default_filename,default_name,'jH',procs,'__NoSL__mOverPt2')
+            #Run(ana,year,default_filename,default_name,'jH',procs,'__NoSL__mOverPt2_incl')
 
-            #Run(ana,year,default_filename,'jH',procs,'__NoSL__m2OverPt')
-            #Run(ana,year,default_filename,'jH',procs,'__NoSL__m2OverPt_incl')
+            #Run(ana,year,default_filename,default_name,'jH',procs,'__NoSL__m2OverPt')
+            #Run(ana,year,default_filename,default_name,'jH',procs,'__NoSL__m2OverPt_incl')
 
-            #Run(ana,year,default_filename,'jH',procs,'__NoSL__mOverPt__Eta')
+            #Run(ana,year,default_filename,default_name,'jH',procs,'__NoSL__mOverPt__Eta')
 
