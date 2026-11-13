@@ -27,12 +27,14 @@ class JHAnalyzerBase : public AnalyzerCore {
 
   //GetPDFSetIDCode
   int GetPDFSetIDCode();
+  TString GetPDFSetIDName();
   TString PDFalias;
 
   //Basic Global Object
   TString ProcessName;
   Event ev;
   //---flags
+  bool bPDFsym;
   bool runSys;
   bool runMomSys;
   bool runSysMom00;
@@ -1011,7 +1013,18 @@ class JHAnalyzerBase : public AnalyzerCore {
   ///----mOverPt Properties
   void FillHist_nPV_VS_mOverPt(TString _cutname,double _nPV, const Jet& thisJet);
 
+  //---reweight for bpdf sym
+  void Setup_bPDFsym();
+  double Get_r_bPDFsym();
+  double Get_r_bPDFsym(int member);
+  double Get_r_bPDFsym_AlphaSDown();
+  double Get_r_bPDFsym_AlphaSUp();
+  vector<double> v_r_bPDFsym;
+  vector<double> v_r_bPDFsym_AlphaS; //down / up
   
+  double r_bPDFsym;
+  void Load_r_bPDFsym();
+  bool PDFHasAlphaSvar;
 private:
   MomentumVar _CurrentSys;
   JetTagging::Parameters jtp;

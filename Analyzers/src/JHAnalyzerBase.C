@@ -45,6 +45,9 @@ void JHAnalyzerBase::initializeAnalyzer(){
   AnalyzerCore::SetupRoccoR();
   if(IsDYSample)  AnalyzerCore::SetupZptWeight();
   InitSystematicMomentumVariations();
+  //bPDF sym weight
+  //bPDFsym=HasFlag("bPDFsym");
+  bPDFsym=true;
   runSys=HasFlag("runSys");
   //runSysMom00=HasFlag("runSysMom00");
   weightonly=HasFlag("weightonly");
@@ -123,7 +126,15 @@ void JHAnalyzerBase::initializeAnalyzer(){
   //----bChargeID
   //Setup_bChargeIDEff();
   DefineChargeIDBinning();
+
+  //--Make bPDF sym
+  if(bPDFsym && !IsDATA){
+    Setup_bPDFsym();
+
+
+  }
 }
+
 
 
 
@@ -182,6 +193,25 @@ int JHAnalyzerBase::GetPDFSetIDCode(){
   //NNPDF31_nnlo_hessian_pdfas
   else{
     return 306000;
+  }
+}
+
+
+TString JHAnalyzerBase::GetPDFSetIDName(){
+  //id=325500
+  //NNPDF31_nnlo_as_0118_nf_4_mc_hessian
+  if(MCSample.Contains("SingleTop_tch_antitop_Incl") || MCSample.Contains("SingleTop_tch_top_Incl") || MCSample.Contains("SingleTop_sch_Lep") ){
+    return "NNPDF31_nnlo_as_0118_nf_4_mc_hessian";
+  }
+  //id=325300
+  //NNPDF31_nnlo_as_0118_mc_hessian_pdfas
+  else if(MCSample.Contains("WJets_MG")){
+    return "NNPDF31_nnlo_as_0118_mc_hessian_pdfas";
+  }
+  //id=306000
+  //NNPDF31_nnlo_hessian_pdfas
+  else{
+    return "NNPDF31_nnlo_hessian_pdfas";
   }
 }
 
@@ -300,6 +330,8 @@ void JHAnalyzerBase::executeEvent(){
   runWeightBase=true;
   SetSysStructure();
 
+
+  
   //cout << "[nominal & weightbase run]"<< endl;
   //timer.Start();
 
@@ -330,6 +362,7 @@ void JHAnalyzerBase::executeEvent(){
   //---Momentum variations--//
   runWeightBase=false;
   SetSysStructure();//remove sysvariation weights
+
 
   //cout << "[JetMet scale run]" << endl;
   //timer.Start();
@@ -442,6 +475,9 @@ void JHAnalyzerBase::SetEventBaseSysWeight(){
   z0weight=1.; weakweight=1.;zptweight=1;topptweight=1.;
   if(IsDATA) return;
   //zptweight , weakweight, z0weight
+  v_r_bPDFsym.assign(weight_PDF->size(), 1.);
+  v_r_bPDFsym_AlphaS.assign(weight_AlphaS->size(), 1.);
+  if(bPDFsym) Load_r_bPDFsym();
 
   lhes=GetLHEs();
   gens=GetGens();
@@ -762,7 +798,9 @@ void JHAnalyzerBase::InitClassVariablesPerEvent(){
   }
 
   
-  
+  if(!IsDATA && bPDFsym){
+    weight*=r_bPDFsym;
+  }
 }
 
 void JHAnalyzerBase::FillHist(TString histname, double value, double this_weight, int n_bin, double x_min, double x_max){
@@ -925,7 +963,7 @@ void JHAnalyzerBase::FillHistPDF(TString histname, double value, double this_wei
   int _size=weight_PDF->size();
   for(auto& _wsyst : *weight_PDF){
     if(std::isnan(_wsyst)) _wsyst=1;
-    FillHistIdx2(PDFalias,_size,idx,histname,value,this_weight*_wsyst,n_bin,x_min,x_max);
+    FillHistIdx2(PDFalias,_size,idx,histname,value,this_weight*_wsyst*v_r_bPDFsym[idx],n_bin,x_min,x_max);
     idx+=1;
   }
 }
@@ -934,7 +972,7 @@ void JHAnalyzerBase::FillHistPDF(TString histname, double value, double this_wei
   int _size=weight_PDF->size();
   for(auto& _wsyst : *weight_PDF){
     if(std::isnan(_wsyst)) _wsyst=1;
-    FillHistIdx2(PDFalias,_size,idx,histname,value,this_weight*_wsyst,n_bin,xbins);
+    FillHistIdx2(PDFalias,_size,idx,histname,value,this_weight*_wsyst*v_r_bPDFsym[idx],n_bin,xbins);
     idx+=1;
   }
 }
@@ -962,7 +1000,7 @@ void JHAnalyzerBase::FillHistAlphaS(TString histname, double value, double this_
   int idx=0;
   int _size=weight_AlphaS->size();
   for(const auto& _wsyst : *weight_AlphaS){
-    FillHistIdx2(PDFalias+"_AlphaS",_size,idx,histname,value,this_weight*_wsyst,n_bin,x_min,x_max);
+    FillHistIdx2(PDFalias+"_AlphaS",_size,idx,histname,value,this_weight*_wsyst*v_r_bPDFsym_AlphaS[idx],n_bin,x_min,x_max);
     idx+=1;
   }
 }
@@ -970,7 +1008,7 @@ void JHAnalyzerBase::FillHistAlphaS(TString histname, double value, double this_
   int idx=0;
   int _size=weight_AlphaS->size();
   for(const auto& _wsyst : *weight_AlphaS){
-    FillHistIdx2(PDFalias+"_AlphaS",_size,idx,histname,value,this_weight*_wsyst,n_bin,xbins);
+    FillHistIdx2(PDFalias+"_AlphaS",_size,idx,histname,value,this_weight*_wsyst*v_r_bPDFsym_AlphaS[idx],n_bin,xbins);
     idx+=1;
   }
 }
@@ -10278,3 +10316,211 @@ void JHAnalyzerBase::FillHist_nPV_VS_mOverPt(TString _cutname, double _nPV, cons
   }
 }
 
+
+
+
+///Make b and bbar PDF weight symmetric!
+
+void JHAnalyzerBase::Setup_bPDFsym(){
+
+  TString this_pdfname=GetPDFSetIDName();
+  
+  LHAPDFHandler LHAPDFHandler_Prod;
+  LHAPDFHandler_Prod.CentralPDFName = this_pdfname;
+  LHAPDFHandler_Prod.init();
+  
+  LHAPDFHandler LHAPDFHandler_New;
+  LHAPDFHandler_New.CentralPDFName = this_pdfname;//same
+  LHAPDFHandler_New.ErrorSetMember_Start = 1;
+  LHAPDFHandler_New.ErrorSetMember_End = 100;
+  if(this_pdfname.Contains("nf_4_mc")){
+    LHAPDFHandler_New.AlphaSMember_Down = -1;
+    LHAPDFHandler_New.AlphaSMember_Up = -1;
+    PDFHasAlphaSvar=false;
+  }else{
+    LHAPDFHandler_New.AlphaSMember_Down = 101;
+    LHAPDFHandler_New.AlphaSMember_Up = 102;
+    PDFHasAlphaSvar=true;
+  }
+  LHAPDFHandler_New.init();
+  
+  pdfReweight->SetProdPDF( LHAPDFHandler_Prod.PDFCentral );
+  pdfReweight->SetNewPDF( LHAPDFHandler_New.PDFCentral );
+  pdfReweight->SetNewPDFErrorSet( LHAPDFHandler_New.PDFErrorSet );
+  pdfReweight->SetNewPDFAlphaS( LHAPDFHandler_New.PDFAlphaSDown, LHAPDFHandler_New.PDFAlphaSUp );
+
+
+}
+
+double JHAnalyzerBase::Get_r_bPDFsym(){
+
+  double ret=1;
+  //1) only for b and bbar
+  if(fabs(genWeight_id1)!=5 && fabs(genWeight_id2)!=5) return ret;
+
+  if(fabs(genWeight_id1)==5){
+    double wpdf_this_p = pdfReweight->ProdPDF->xfxQ(genWeight_id1, genWeight_X1, genWeight_Q);
+    double wpdf_anti_p = pdfReweight->ProdPDF->xfxQ(-genWeight_id1, genWeight_X1, genWeight_Q);
+
+    bool isValid=true;
+    if(wpdf_this_p==0) isValid=false;
+    if(std::isnan(wpdf_this_p)) isValid=false;
+    if(std::isnan(wpdf_anti_p)) isValid=false;
+    
+    double this_r = isValid ? (wpdf_this_p+wpdf_anti_p)/(2*wpdf_this_p) : 1.;
+    ret*=this_r;
+  }
+
+  if(fabs(genWeight_id2)==5){
+    double wpdf_this_p = pdfReweight->ProdPDF->xfxQ(genWeight_id2, genWeight_X2, genWeight_Q);
+    double wpdf_anti_p = pdfReweight->ProdPDF->xfxQ(-genWeight_id2, genWeight_X2, genWeight_Q);
+    bool isValid=true;
+    if(wpdf_this_p==0) isValid=false;
+    if(std::isnan(wpdf_this_p)) isValid=false;
+    if(std::isnan(wpdf_anti_p)) isValid=false;
+
+    double this_r = isValid ? (wpdf_this_p+wpdf_anti_p)/(2*wpdf_this_p) : 1.;
+    ret*=this_r;
+  }
+
+  return ret;
+
+}
+
+
+double JHAnalyzerBase::Get_r_bPDFsym(int member){
+
+  double ret=1;
+  //1) only for b and bbar
+  if(fabs(genWeight_id1)!=5 && fabs(genWeight_id2)!=5) return ret;
+
+  if(fabs(genWeight_id1)==5){
+    double wpdf_this_p = pdfReweight->PDFErrorSet.at(member)->xfxQ(genWeight_id1, genWeight_X1, genWeight_Q);
+    double wpdf_anti_p = pdfReweight->PDFErrorSet.at(member)->xfxQ(-genWeight_id1, genWeight_X1, genWeight_Q);
+    bool isValid=true;
+    if(wpdf_this_p==0) isValid=false;
+    if(std::isnan(wpdf_this_p)) isValid=false;
+    if(std::isnan(wpdf_anti_p)) isValid=false;
+
+    double this_r = isValid ? (wpdf_this_p+wpdf_anti_p)/(2*wpdf_this_p) : 1.;
+
+    ret*=this_r;
+  }
+
+  if(fabs(genWeight_id2)==5){
+    double wpdf_this_p = pdfReweight->PDFErrorSet.at(member)->xfxQ(genWeight_id2, genWeight_X2, genWeight_Q);
+    double wpdf_anti_p = pdfReweight->PDFErrorSet.at(member)->xfxQ(-genWeight_id2, genWeight_X2, genWeight_Q);
+    bool isValid=true;
+    if(wpdf_this_p==0) isValid=false;
+    if(std::isnan(wpdf_this_p)) isValid=false;
+    if(std::isnan(wpdf_anti_p)) isValid=false;
+
+    double this_r = isValid ? (wpdf_this_p+wpdf_anti_p)/(2*wpdf_this_p) : 1.;
+
+    ret*=this_r;
+  }
+
+  return ret;
+
+}
+
+
+double JHAnalyzerBase::Get_r_bPDFsym_AlphaSDown(){
+
+  double ret=1;
+  //1) only for b and bbar
+  if(fabs(genWeight_id1)!=5 && fabs(genWeight_id2)!=5) return ret;
+
+  if(fabs(genWeight_id1)==5){
+    double wpdf_this_p = pdfReweight->NewPDFAlphaSDown->xfxQ(genWeight_id1, genWeight_X1, genWeight_Q);
+    double wpdf_anti_p = pdfReweight->NewPDFAlphaSDown->xfxQ(-genWeight_id1, genWeight_X1, genWeight_Q);
+    bool isValid=true;
+    if(wpdf_this_p==0) isValid=false;
+    if(std::isnan(wpdf_this_p)) isValid=false;
+    if(std::isnan(wpdf_anti_p)) isValid=false;
+
+    double this_r = isValid ? (wpdf_this_p+wpdf_anti_p)/(2*wpdf_this_p) : 1.;
+
+    ret*=this_r;
+  }
+
+  if(fabs(genWeight_id2)==5){
+    double wpdf_this_p = pdfReweight->NewPDFAlphaSDown->xfxQ(genWeight_id2, genWeight_X2, genWeight_Q);
+    double wpdf_anti_p = pdfReweight->NewPDFAlphaSDown->xfxQ(-genWeight_id2, genWeight_X2, genWeight_Q);
+    bool isValid=true;
+    if(wpdf_this_p==0) isValid=false;
+    if(std::isnan(wpdf_this_p)) isValid=false;
+    if(std::isnan(wpdf_anti_p)) isValid=false;
+
+    double this_r = isValid ? (wpdf_this_p+wpdf_anti_p)/(2*wpdf_this_p) : 1.;
+
+    ret*=this_r;
+  }
+
+  return ret;
+
+}
+
+
+double JHAnalyzerBase::Get_r_bPDFsym_AlphaSUp(){
+
+  double ret=1;
+  //1) only for b and bbar
+  if(fabs(genWeight_id1)!=5 && fabs(genWeight_id2)!=5) return ret;
+
+  if(fabs(genWeight_id1)==5){
+    double wpdf_this_p = pdfReweight->NewPDFAlphaSUp->xfxQ(genWeight_id1, genWeight_X1, genWeight_Q);
+    double wpdf_anti_p = pdfReweight->NewPDFAlphaSUp->xfxQ(-genWeight_id1, genWeight_X1, genWeight_Q);
+    bool isValid=true;
+    if(wpdf_this_p==0) isValid=false;
+    if(std::isnan(wpdf_this_p)) isValid=false;
+    if(std::isnan(wpdf_anti_p)) isValid=false;
+
+    double this_r = isValid ? (wpdf_this_p+wpdf_anti_p)/(2*wpdf_this_p) : 1.;
+
+    ret*=this_r;
+  }
+
+  if(fabs(genWeight_id2)==5){
+    double wpdf_this_p = pdfReweight->NewPDFAlphaSUp->xfxQ(genWeight_id2, genWeight_X2, genWeight_Q);
+    double wpdf_anti_p = pdfReweight->NewPDFAlphaSUp->xfxQ(-genWeight_id2, genWeight_X2, genWeight_Q);
+    bool isValid=true;
+    if(wpdf_this_p==0) isValid=false;
+    if(std::isnan(wpdf_this_p)) isValid=false;
+    if(std::isnan(wpdf_anti_p)) isValid=false;
+
+    double this_r = isValid ? (wpdf_this_p+wpdf_anti_p)/(2*wpdf_this_p) : 1.;
+
+    ret*=this_r;
+  }
+
+  return ret;
+
+}
+
+
+void JHAnalyzerBase::Load_r_bPDFsym(){
+  v_r_bPDFsym.clear();
+  v_r_bPDFsym_AlphaS.clear();
+  //---centerl r
+  r_bPDFsym=Get_r_bPDFsym();
+  //---syst r
+  int n_mem=pdfReweight->PDFErrorSet.size();
+  for(int i =0; i < n_mem; i++){
+    double this_r=Get_r_bPDFsym(i)/r_bPDFsym; // because nominal r_bPDFsym is already applied to weight
+    //so restore the weight to original one then applied sym factor of ith member
+    v_r_bPDFsym.push_back(this_r);
+  }
+  //---Alpha s
+  double r_bPDFsym_AlphaSUp=1.;
+  double r_bPDFsym_AlphaSDown=1.;
+  if(PDFHasAlphaSvar){
+    r_bPDFsym_AlphaSUp=Get_r_bPDFsym_AlphaSUp()/r_bPDFsym;
+    r_bPDFsym_AlphaSDown=Get_r_bPDFsym_AlphaSDown()/r_bPDFsym;
+
+  }
+  
+  
+  v_r_bPDFsym_AlphaS.push_back(r_bPDFsym_AlphaSDown);
+  v_r_bPDFsym_AlphaS.push_back(r_bPDFsym_AlphaSUp);
+}
