@@ -94,6 +94,9 @@ public:
 
   //---xragne
   TString suffix_xscale;
+
+  //flag for this ana
+  bool prob_factor_test;
 };
 
 

@@ -99,6 +99,10 @@ void PreselectionToBDTRegionAnalyzer::initializeAnalyzer(){
 
   addxsuffix=HasFlag("addxsuffix");
   addregionsuffix=HasFlag("addregionsuffix");
+
+
+  prob_factor_test=HasFlag("prob_factor_test");
+  
   //charge
   cout << "[LoadChargeScoreTool]" << endl;
   //void LoadChargeScoreTool(TString muon_version="2512.4",TString electron_version="2512.4", TString jet_version="2512.4", bool applycut=false);
@@ -484,13 +488,18 @@ void PreselectionToBDTRegionAnalyzer::RunBasicZregion(){
   jetcharge=v_bjet[0].Charge();
 
   ///----determine the type of this event---//
-  if(n_muonHigh<10 && n_muonLow<10 && n_electronHigh<10 && n_electronLow<10){
-    if(!runSys)FillHist("ll_1b/nSLT",n_muonHigh_MC+n_muonLow_MC*10+n_electronHigh_MC*100+n_electronLow_MC*1000,weight,10000,0,10000);
-    if(!runSys)FillHist("ll_1b/HasSLT",(n_muonHigh_MC>0)
+  if(prob_factor_test){
+    //if(n_muonHigh<10 && n_muonLow<10 && n_electronHigh<10 && n_electronLow<10){
+    
+    if(!runSys &&n_muonHigh<10 && n_muonLow<10 && n_electronHigh<10 && n_electronLow<10){
+      FillHist("ll_1b/nSLT",n_muonHigh_MC+n_muonLow_MC*10+n_electronHigh_MC*100+n_electronLow_MC*1000,weight,10000,0,10000);
+   
+      FillHist("ll_1b/HasSLT",(n_muonHigh_MC>0)
 			+(n_muonLow_MC>0)*2
 			+(n_electronHigh_MC>0)*4
 			+(n_electronLow_MC>0)*8
 			,weight,20,0,20);
+    }
     if(!runSys&&!IsDATA){
       //this_jet.hadronFlavour()
       int _this_hadronFlavour=v_bjet[0].hadronFlavour();
@@ -499,12 +508,13 @@ void PreselectionToBDTRegionAnalyzer::RunBasicZregion(){
       //  AnalyzerCore::FillHist("all/nmuons/"+ProcessName,AllMuons.size(),1,100,0.,100.);
       if(_this_hadronFlavour==5){
 	if(_this_partonFlavour==-5){
-	  AnalyzerCore::FillHist("ll_1b/HasSLT/bplusJet",_n_SLT_bit,weight,20,0,20);
+	  AnalyzerCore::FillHist("ll_1b/HasSLT_MC/bplusJet",_n_SLT_bit,weight,20,0,20);
 	}else if(_this_partonFlavour==5){
-	  AnalyzerCore::FillHist("ll_1b/HasSLT/bminusJet",_n_SLT_bit,weight,20,0,20);
+	  AnalyzerCore::FillHist("ll_1b/HasSLT_MC/bminusJet",_n_SLT_bit,weight,20,0,20);
 	}
       }
     }//!runsys !isdata
+    return;
   }
 
   if(apply_chargeid_eff_corr){
