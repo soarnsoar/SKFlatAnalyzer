@@ -9999,6 +9999,7 @@ void JHAnalyzerBase::GetPromptLepGenIdx(){
 }
 
 bool JHAnalyzerBase::HasPromptLepWithinJet(const Jet& thisJet){
+  if(IsDATA) return 0;
   bool HasPromptLep=false;
   for(int ig=0; ig<v_genlepidx.size();ig++){
     int this_genidx=v_genlepidx[ig];

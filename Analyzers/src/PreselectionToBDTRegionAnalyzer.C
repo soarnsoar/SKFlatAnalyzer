@@ -393,6 +393,9 @@ void PreselectionToBDTRegionAnalyzer::RunBasicZregion(){
 
   int n_muonHigh=0;
   int n_muonLow=0;
+
+  int n_muonHigh_MC=0;
+  int n_muonLow_MC=0;
   
   double muonHigh_score=-999.;
   double muonLow_score=-999.;
@@ -402,12 +405,16 @@ void PreselectionToBDTRegionAnalyzer::RunBasicZregion(){
 
   int n_electronHigh=0;
   int n_electronLow=0;
+  
+  int n_electronHigh_MC=0;
+  int n_electronLow_MC=0;
 
   double electronHigh_score=-999.;
   double electronLow_score=-999.;  
 
   float measured_charge=0;
-  
+
+  bool HasPromptLep=HasPromptLepWithinJet(v_bjet[0])  ;
   
   for(auto& muon : AllMuons){
     if(muon.Pt() < 5.) continue;
@@ -422,13 +429,17 @@ void PreselectionToBDTRegionAnalyzer::RunBasicZregion(){
     SetMuonChargeScore(muon,v_bjet[0]);
     double this_muon_score=GetMuonChargeScore();
     int this_muon_coeff=GetMuonChargeScoreCoeff();// if pass HighCut -> +1 // if pass LowCut -> -1
+
+    
     if(this_muon_coeff==1){
       muonHigh=&muon;
       n_muonHigh+=1;
+      if(!HasPromptLep) n_muonHigh_MC+=1;
       muonHigh_score=this_muon_score;
     }else if(this_muon_coeff==-1){
       muonLow=&muon;
       n_muonLow+=1;
+      if(!HasPromptLep) n_muonLow_MC+=1;
       muonLow_score=this_muon_score;
     }
 
@@ -452,12 +463,17 @@ void PreselectionToBDTRegionAnalyzer::RunBasicZregion(){
       electronHigh=&electron;
       n_electronHigh+=1;
       electronHigh_score=this_electron_score;
+      if(!HasPromptLep) n_electronHigh_MC+=1;
+	    
     }else if(this_electron_coeff==-1){
       electronLow=&electron;
       n_electronLow+=1;
       electronLow_score=this_electron_score;
+      if(!HasPromptLep) n_electronLow_MC+=1;
+	    
     }
 
+    
 
     
   }//[end electron for loop]
@@ -469,13 +485,26 @@ void PreselectionToBDTRegionAnalyzer::RunBasicZregion(){
 
   ///----determine the type of this event---//
   if(n_muonHigh<10 && n_muonLow<10 && n_electronHigh<10 && n_electronLow<10){
-    if(!runSys)FillHist("ll_1b/nSLT",n_muonHigh+n_muonLow*10+n_electronHigh*100+n_electronLow*1000,weight,10000,0,10000);
-    if(!runSys)FillHist("ll_1b/HasSLT",(n_muonHigh>0)
-			+(n_muonLow>0)*2
-			+(n_electronHigh>0)*4
-			+(n_electronLow>0)*8
+    if(!runSys)FillHist("ll_1b/nSLT",n_muonHigh_MC+n_muonLow_MC*10+n_electronHigh_MC*100+n_electronLow_MC*1000,weight,10000,0,10000);
+    if(!runSys)FillHist("ll_1b/HasSLT",(n_muonHigh_MC>0)
+			+(n_muonLow_MC>0)*2
+			+(n_electronHigh_MC>0)*4
+			+(n_electronLow_MC>0)*8
 			,weight,20,0,20);
-    
+    if(!runSys&&!IsDATA){
+      //this_jet.hadronFlavour()
+      int _this_hadronFlavour=v_bjet[0].hadronFlavour();
+      int _this_partonFlavour=v_bjet[0].partonFlavour();
+      int _n_SLT_bit=(n_muonHigh_MC>0)+(n_muonLow_MC>0)*2+(n_electronHigh_MC>0)*4+(n_electronLow_MC>0)*8;
+      //  AnalyzerCore::FillHist("all/nmuons/"+ProcessName,AllMuons.size(),1,100,0.,100.);
+      if(_this_hadronFlavour==5){
+	if(_this_partonFlavour==-5){
+	  AnalyzerCore::FillHist("ll_1b/HasSLT/bplusJet",_n_SLT_bit,weight,20,0,20);
+	}else if(_this_partonFlavour==5){
+	  AnalyzerCore::FillHist("ll_1b/HasSLT/bminusJet",_n_SLT_bit,weight,20,0,20);
+	}
+      }
+    }//!runsys !isdata
   }
 
   if(apply_chargeid_eff_corr){
@@ -491,8 +520,8 @@ void PreselectionToBDTRegionAnalyzer::RunBasicZregion(){
     //Get_bmuonvar(muon,v_bjet[0])
     //double JHAnalyzerBase::Get_SLTEff_Corr_givenJet(Jet& thisJet, bool Has_muH, bool Has_muL, bool Has_eH,bool Has_eL,
     //               JHAnalyzerBase::SYSDIR SystDir, JHAnalyzerBase::PtBin SystPtBin, JHAnalyzerBase::SLT SystID){
-
-
+    
+    
     bmuonvar this_bmuonvar=Get_bmuonvar(*muonHigh,v_bjet[0]);
     bjetvar this_bjetvar=Get_bjetvar(v_bjet[0]);
     measured_charge=muonHigh->Charge();
@@ -633,12 +662,12 @@ void PreselectionToBDTRegionAnalyzer::RunBasicZregion(){
 
   
   
-}//[end]RunBasic Zregion
+  }//[end]RunBasic Zregion
 
 
 
-
-void PreselectionToBDTRegionAnalyzer::FillHistAll_bmuon(TString cutname,bmuonvar this_bmuon){
+  
+  void PreselectionToBDTRegionAnalyzer::FillHistAll_bmuon(TString cutname,bmuonvar this_bmuon){
   FillHist(cutname+"/bmuon_P_jetrest",this_bmuon.P_jetrest,weight,100,0,10);
   FillHist(cutname+"/bmuon_ptwrtjet",this_bmuon.ptwrtjet,weight,100,0,10);
   FillHist(cutname+"/bmuon_dR_l_j",this_bmuon.dR_l_j,weight,40,0,0.4);
