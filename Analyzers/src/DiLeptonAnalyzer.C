@@ -153,7 +153,7 @@ void DiLeptonAnalyzer::RunBasicZregion(){
   }
   //----Jet---//
   v_tightlep={l1,l2};
-  v_tightjet=GetTightJet(v_tightlep,30,jetetacut,"tight",_JETPUID);
+  v_tightjet=GetTightJet(v_tightlep,30,jetetacut,"tightLepVeto",_JETPUID);
   v_bjet=GetBJet(v_tightjet);
 
   njet=v_tightjet.size();

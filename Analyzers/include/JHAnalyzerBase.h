@@ -309,7 +309,7 @@ class JHAnalyzerBase : public AnalyzerCore {
   void SetIsDoubleLeptonTrigger();
   void PrintSFStructure();
   //vector<int> GetIdxTightJet(const vector<Lepton> &TightLeptonCollection ,double ptmin, double etacut, TString JetID="tight" );
-  vector<Jet> GetTightJet(const vector<Lepton> &TightLeptonCollection ,double ptmin, double etacut, TString JetID="tight", TString _JETPUID="",bool apply_vetomap=true);
+  vector<Jet> GetTightJet(const vector<Lepton> &TightLeptonCollection ,double ptmin, double etacut, TString JetID="tightLepVeto", TString _JETPUID="",bool apply_vetomap=true);
   //vector<Jet*> GetPointerTightJet(const vector<Lepton*> &TightLeptonCollection ,double ptmin, double etacut, TString JetID="tight" );
   //vector<int> GetIdxBJet(const vector<int> &v_TightjetIdx);
   vector<Jet> GetBJet(const vector<Jet> &v_Tightjet);

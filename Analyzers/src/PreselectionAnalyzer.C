@@ -427,7 +427,7 @@ void PreselectionAnalyzer::RunBasicZregion(){
   }
   //----Jet---//
   v_tightlep={l1,l2};
-  v_tightjet=GetTightJet(v_tightlep,30,jetetacut,"tight",_JETPUID);
+  v_tightjet=GetTightJet(v_tightlep,30,jetetacut,"tightLepVeto",_JETPUID);
   v_bjet=GetBJet(v_tightjet);
   //v_bjetidx=GetBJetIdx(v_tightjet);
   //v_bjet.clear();
@@ -1129,7 +1129,8 @@ void PreselectionAnalyzer::FillHistAll_bjet(TString cutname,bjetvar this_bjet){
   FillHist(cutname+"/bjet_NeutralMultiplicity",this_bjet.NeutralMultiplicity,weight,60,0,60);
   FillHist(cutname+"/bjet_charge",this_bjet.charge,weight,50,-1,1);
   FillHist(cutname+"/bjet_abs_charge",this_bjet.abs_charge,weight,50,0,1);
-  //FillHist(cutname+"/bjet_partonFlavour",this_bjet.partonFlavour,weight,27,-6,21);
+  FillHist(cutname+"/bjet_partonFlavour",this_bjet.partonFlavour,weight,27,-6,21);
+  FillHist(cutname+"/bjet_hadronFlavour",this_bjet.hadronFlavour,weight,27,-6,21);
 
 }
 
@@ -1183,6 +1184,9 @@ void PreselectionAnalyzer::FillHistAll(TString cutname){
     FillHist(cutname+"/dphi_z_b",dphi_z_b,weight,40,0,4);
     FillHist(cutname+"/ptzb",ptzb,weight,120,0,600);
     FillHist(cutname+"/Zpt",vZ.Pt(),weight,200,0,200);
+    FillHist(cutname+"/bjet_partonFlavour",v_bjet[0].partonFlavour(),weight,27,-6,21);
+    FillHist(cutname+"/bjet_hadronFlavour",v_bjet[0].hadronFlavour(),weight,27,-6,21);
+    
   }
   
   if(njet>0){

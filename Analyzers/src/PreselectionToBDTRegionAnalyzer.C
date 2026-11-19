@@ -303,7 +303,7 @@ void PreselectionToBDTRegionAnalyzer::RunBasicZregion(){
   }
   //----Jet---//
   v_tightlep={l1,l2};
-  v_tightjet=GetTightJet(v_tightlep,30,jetetacut,"tight",_JETPUID);
+  v_tightjet=GetTightJet(v_tightlep,30,jetetacut,"tightLepVeto",_JETPUID);
   v_bjet=GetBJet(v_tightjet);
 
 
@@ -746,7 +746,8 @@ void PreselectionToBDTRegionAnalyzer::FillHistAll_bjet(TString cutname,bjetvar t
   FillHist(cutname+"/bjet_NeutralMultiplicity",this_bjet.NeutralMultiplicity,weight,60,0,60);
   FillHist(cutname+"/bjet_charge",this_bjet.charge,weight,50,-1,1);
   FillHist(cutname+"/bjet_abs_charge",this_bjet.abs_charge,weight,50,0,1);
-  //FillHist(cutname+"/bjet_partonFlavour",this_bjet.partonFlavour,weight,27,-6,21);
+  FillHist(cutname+"/bjet_partonFlavour",this_bjet.partonFlavour,weight,27,-6,21);
+  FillHist(cutname+"/bjet_hadronFlavour",this_bjet.hadronFlavour,weight,27,-6,21);
 
 }
 

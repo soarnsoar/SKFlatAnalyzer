@@ -193,7 +193,7 @@ void TTsemiLepBtagChargeAsymEfficiencyMeasurement_BINNING::RunReco(){
   LepSign= l1.Charge() > 0 ? "Plus" : "Minus";
   //----Jet---//
   v_tightlep={l1};
-  v_tightjet=GetTightJet(v_tightlep,30,jetetacut,jetidtight,JETPUID,!NoJetVeto);
+  v_tightjet=GetTightJet(v_tightlep,30,jetetacut,"tightLepVeto",JETPUID,!NoJetVeto);
 
   if(measure_btageff_tight){
     SetEventWeight();
