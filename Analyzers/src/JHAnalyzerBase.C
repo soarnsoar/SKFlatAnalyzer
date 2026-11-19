@@ -835,11 +835,10 @@ void JHAnalyzerBase::InitClassVariablesPerEvent(){
   
   if(!IsDATA && bPDFsym){
     bool has_valid_nom=(r_bPDFsym!=0) && (!std::isnan(r_bPDFsym));
-    if(has_valid_nom){
-      weight*=r_bPDFsym;
-      AnalyzerCore::FillHist("r_bPDFsym",r_bPDFsym,1,100,0.5,1.5);
+    if(!has_valid_nom) r_bPDFsym=1.;
+    weight*=r_bPDFsym;
+    //  AnalyzerCore::FillHist("r_bPDFsym",r_bPDFsym,1,100,0.95,1.05);
 
-    }
   }
 }
 
@@ -10600,6 +10599,11 @@ void JHAnalyzerBase::Load_r_bPDFsym(){
     double this_r= has_valid_nom ? Get_r_bPDFsym(i)/r_bPDFsym : 1.0; // because nominal r_bPDFsym is already applied to weight
     //so restore the weight to original one then applied sym factor of ith member
     v_r_bPDFsym.push_back(this_r);
+
+    // pdf_ith_mem * r_sym_nom  * this_r -> must be pdf_ith_mem_symmed
+    //so, this_r = r_sym_for_ithmem / r_sym_nom  
+    
+    AnalyzerCore::FillHist("r_bPDFsym/"+std::to_string(i),this_r,1,100,0.95,1.05);
   }
   //---Alpha s
   double r_bPDFsym_AlphaSUp=1.;
@@ -10607,10 +10611,15 @@ void JHAnalyzerBase::Load_r_bPDFsym(){
   if(PDFHasAlphaSvar){
     r_bPDFsym_AlphaSUp= has_valid_nom ? Get_r_bPDFsym_AlphaSUp()/r_bPDFsym : 1.0;
     r_bPDFsym_AlphaSDown= has_valid_nom ? Get_r_bPDFsym_AlphaSDown()/r_bPDFsym : 1.0;
-
+    AnalyzerCore::FillHist("r_bPDFsym/r_bPDFsym_AlphaSUp",r_bPDFsym_AlphaSUp,1,100,0.95,1.05);
+    AnalyzerCore::FillHist("r_bPDFsym/r_bPDFsym_AlphaSDown",r_bPDFsym_AlphaSDown,1,100,0.95,1.05);
+   
   }
   
   
   v_r_bPDFsym_AlphaS.push_back(r_bPDFsym_AlphaSDown);
   v_r_bPDFsym_AlphaS.push_back(r_bPDFsym_AlphaSUp);
+
+  AnalyzerCore::FillHist("r_bPDFsym/nom",r_bPDFsym,1,100,0.95,1.05);
+  
 }
