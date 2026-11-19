@@ -290,6 +290,7 @@ void JHAnalyzerBase::InitSystematicMomentumVariations(){
   }
   //----vJESSourcesVar
   for(unsigned int idx1=0; idx1<JECSources.size();idx1++){
+    if(JECSources[idx1]=="Total") continue;
     vector<JESSourcesVar> this_v;
     for(int idx2=0; idx2 < 2;idx2++){
       JESSourcesVar thisvar;
@@ -491,6 +492,11 @@ void JHAnalyzerBase::executeEvent(){
 
   //---Add JES sources----//
   if(jsource){
+    //setup
+    
+    for(auto jec_source : JECSources)   SetupJECUncertainty(jec_source, "AK4PFchs");
+
+    //
     for(const auto &_vsys : vJESSourcesVar){
       for(const auto &sys : _vsys){
 	SetSys(sys);
@@ -833,6 +839,8 @@ void JHAnalyzerBase::InitClassVariablesPerEvent(){
     bool has_valid_nom=(r_bPDFsym!=0) && (!std::isnan(r_bPDFsym));
     if(has_valid_nom){
       weight*=r_bPDFsym;
+      AnalyzerCore::FillHist("r_bPDFsym",r_bPDFsym,1,100,0.5,1.5);
+
     }
   }
 }
