@@ -299,12 +299,12 @@ void JHAnalyzerBase::InitSystematicMomentumVariations(){
       thisvar.source=JECSources[idx1];
       thisvar.dir= idx2==0 ? "Up" : "Down";
       thisvar.dir_int= idx2==0 ? 1 : -1;
-      thisvar.name=thisvar.source+thisvar.dir;
+      thisvar.name="jesBySource"
       this_v.push_back(thisvar);
     }
     vJESSourcesVar.push_back(this_v);
   }
-
+  cout << "vJESSourcesVar.size()=" << vJESSourcesVar.size() << endl;
   
   
 }
@@ -495,8 +495,6 @@ void JHAnalyzerBase::executeEvent(){
   //---Add JES sources----//
   if(jsource){
 
-
-    //
     for(const auto &_vsys : vJESSourcesVar){
       for(const auto &sys : _vsys){
 	SetSys(sys);
