@@ -299,7 +299,7 @@ void JHAnalyzerBase::InitSystematicMomentumVariations(){
       thisvar.source=JECSources[idx1];
       thisvar.dir= idx2==0 ? "Up" : "Down";
       thisvar.dir_int= idx2==0 ? 1 : -1;
-      thisvar.name="jesBySource"
+      thisvar.name="jesBySource";
       this_v.push_back(thisvar);
     }
     vJESSourcesVar.push_back(this_v);
