@@ -48,6 +48,7 @@ void JHAnalyzerBase::initializeAnalyzer(){
   //bPDF sym weight
   //bPDFsym=HasFlag("bPDFsym");
   bPDFsym=true;
+  jsource=HasFlag("jsource");
   runSys=HasFlag("runSys");
   //runSysMom00=HasFlag("runSysMom00");
   weightonly=HasFlag("weightonly");
@@ -287,6 +288,22 @@ void JHAnalyzerBase::InitSystematicMomentumVariations(){
     }
     vElectronMomentumVar.push_back(this_v);
   }
+  //----vJESSourcesVar
+  for(unsigned int idx1=0; idx1<JECSources.size();idx1++){
+    vector<JESSourcesVar> this_v;
+    for(int idx2=0; idx2 < 2;idx2++){
+      JESSourcesVar thisvar;
+      thisvar.source=JECSources[idx1];
+      thisvar.dir= idx2==0 ? "Up" : "Down";
+      thisvar.dir_int= idx2==0 ? 1 : -1;
+      thisvar.name=thisvar.source+thisvar.dir;
+      this_v.push_back(thisvar);
+    }
+    vJESSourcesVar.push_back(this_v);
+  }
+
+  
+  
 }
 
 JHAnalyzerBase::~JHAnalyzerBase(){
@@ -470,6 +487,20 @@ void JHAnalyzerBase::executeEvent(){
     //timer.Reset();
 
   }//[END]not simple_lepscale
+
+
+  //---Add JES sources----//
+  if(jsource){
+    for(const auto &_vsys : vJESSourcesVar){
+      for(const auto &sys : _vsys){
+	SetSys(sys);
+	InitClassVariablesPerEvent();
+	InitBtagSys();
+	
+	EventLoop();
+      }
+    }
+  }
 }
 void JHAnalyzerBase::SetEventBaseSysWeight(){
   z0weight=1.; weakweight=1.;zptweight=1;topptweight=1.;
@@ -1808,7 +1839,29 @@ void JHAnalyzerBase::SetSys(ElectronMomentumVar _sys){
   */
   
 }
+void JHAnalyzerBase::SetSys(JESSourcesVar _sys){
+  sysname_current=_sys.name;
+  TString this_jes_source=_sys.source;
+  TString this_dir=_sys.dir;
+  int dir_int=_sys.dir_int;
+  
+  AllMuons=AllMuons_roch;
+  std::sort(AllMuons.begin(), AllMuons.end(), PtComparing);
+  AllElectrons=AllElectrons_roch;
+  std::sort(AllElectrons.begin(), AllElectrons.end(), PtComparing);
 
+  //std::vector<Jet> AnalyzerCore::ScaleJetsIndividualSource(const std::vector<Jet>& jets, int sys, TString source){
+
+  AllJets=ScaleJetsIndividualSource(AllJets_raw,dir_int,this_jes_source);
+  std::sort(AllJets.begin(), AllJets.end(), PtComparing);
+
+  //TLorentzVector JHAnalyzerBase::UpdateMETByJetNewOld(const TLorentzVector &met_orig, const vector<Jet> v_JetNew, const vector<Jet> v_JetOld,){
+  CurrentMET=UpdateMETByJetNewOld(CurrentMET_roch,AllJets,AllJets_raw);
+
+  sysidx1_current=this_jes_source;
+  sysidx2_current=this_dir;
+
+}
 
 
 void JHAnalyzerBase::InitAllObjects(){
@@ -2060,6 +2113,32 @@ TLorentzVector JHAnalyzerBase::UpdateMETByJetScale(const TLorentzVector &met_ori
   return METout;
 
 }
+
+TLorentzVector JHAnalyzerBase::UpdateMETByJetNewOld(const TLorentzVector &met_orig, const vector<Jet> &v_JetNew, const vector<Jet> &v_JetOld){
+  
+  double met_x = met_orig.Px();
+  double met_y = met_orig.Py();
+  
+  double px_orig=0., py_orig=0.;
+  double px_corrected=0., py_corrected=0.;
+  for(const auto& jet : v_JetOld){
+    px_orig+= jet.Px();
+    py_orig+= jet.Py();
+  }
+  for(const auto& jet : v_JetNew){
+    px_corrected += jet.Px();
+    py_corrected += jet.Py();
+    
+  }
+  met_x = met_x + px_orig - px_corrected;
+  met_y = met_y + py_orig - py_corrected;
+
+  TLorentzVector METout;
+  METout.SetPxPyPzE(met_x,met_y,0,sqrt(met_x*met_x+met_y*met_y));
+  return METout;
+
+}
+
 
 TLorentzVector JHAnalyzerBase::UpdateMETByJetSmear(const TLorentzVector &met_orig, int sys){
   //it is needed because Rochester Correction is an additional corretion after miniAOD.

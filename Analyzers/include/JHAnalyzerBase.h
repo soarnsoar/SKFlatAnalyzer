@@ -34,6 +34,7 @@ class JHAnalyzerBase : public AnalyzerCore {
   TString ProcessName;
   Event ev;
   //---flags
+  bool jsource;
   bool bPDFsym;
   bool runSys;
   bool runMomSys;
@@ -109,6 +110,8 @@ class JHAnalyzerBase : public AnalyzerCore {
   TLorentzVector UpdateMETByElectronScale(const TLorentzVector &met);
   TLorentzVector UpdateMETByJetScale(const TLorentzVector &met, int sys);
   TLorentzVector UpdateMETByJetSmear(const TLorentzVector &met, int sys);
+  TLorentzVector UpdateMETByJetNewOld(const TLorentzVector &met_orig, const vector<Jet> &v_JetNew, const vector<Jet> &v_JetOld);
+
   TLorentzVector GetShiftedMET(int sys);
   TLorentzVector CurrentMET_raw, CurrentMET_roch, CurrentMET; 
   //CurrentMET_roch -> correct_puppimet_by_rochcorr
@@ -230,6 +233,7 @@ class JHAnalyzerBase : public AnalyzerCore {
   //void ClearReservedHist();
   
   //syst
+  //---Except lep mom vars
   struct MomentumVar{
     TString name="nominal";
     TString dir="0";
@@ -242,7 +246,8 @@ class JHAnalyzerBase : public AnalyzerCore {
     electronscaleUp, electronscaleDown, 
     metUp,metDown;
   vector<MomentumVar> vMomentumVar;
-  //LeptonMomentumVar
+
+  //---LeptonMomentumVar
   struct MuonMomentumVar{
     TString name="muonscale";
     int idx1=0;
@@ -254,8 +259,21 @@ class JHAnalyzerBase : public AnalyzerCore {
     int idx1=0;
     int idx2=0;
   };
+  
   vector<vector<ElectronMomentumVar>> vElectronMomentumVar;
 
+
+  //---JES by sources
+  struct JESSourcesVar{
+    TString name="jesSources";
+    TString source="JESSourceNotDefined";
+    TString dir="DirNotDefined";
+    int dir_int=0;
+  };
+
+  vector<vector<JESSourcesVar>> vJESSourcesVar;
+
+  
   TString sysname_current,sysdir_current;
   TString sysidx1_current,sysidx2_current;
   void SetCurrentSys(MomentumVar sys);
@@ -265,6 +283,7 @@ class JHAnalyzerBase : public AnalyzerCore {
   void SetSys(MomentumVar _sys);
   void SetSys(MuonMomentumVar _sys);
   void SetSys(ElectronMomentumVar _sys);
+  void SetSys(JESSourcesVar _sys);
 
   void SetSysSimpleMuon(int direction);
   void SetSysSimpleElectron(int direction);

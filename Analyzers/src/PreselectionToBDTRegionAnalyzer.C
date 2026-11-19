@@ -164,7 +164,16 @@ void PreselectionToBDTRegionAnalyzer::initializeAnalyzer(){
   min_z_pt=6.0;
   max_ptzb=-1;
 
+
+  
   apply_chargeid_eff_corr=HasFlag("apply_chargeid_eff_corr");
+  apply_chargeid_acc_corr=HasFlag("apply_chargeid_acc_corr");
+
+  apply_chargeid_corrs=HasFlag("apply_chargeid_corrs");
+  if(apply_chargeid_corrs){
+    apply_chargeid_eff_corr=1;
+    apply_chargeid_acc_corr=1;
+  }
   if(apply_chargeid_eff_corr || measure_bchargeacc){
     cout << "apply_chargeid_eff_corr!!" << endl;
     TString bCahrgeEffFileName="PreselectionToBDTRegionAnalyzer_HADDED.root";
@@ -173,7 +182,7 @@ void PreselectionToBDTRegionAnalyzer::initializeAnalyzer(){
     Setup_bChargeIDEff(bCahrgeEffFileName);
   }
 
-  apply_chargeid_acc_corr=HasFlag("apply_chargeid_acc_corr");
+
   
   if(apply_chargeid_acc_corr){
     cout << "apply_chargeid_acc_corr!!" << endl;

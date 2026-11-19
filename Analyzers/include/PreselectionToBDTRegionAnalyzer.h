@@ -76,6 +76,7 @@ public:
   bool bdtcut;
   bool apply_chargeid_eff_corr;
   bool apply_chargeid_acc_corr;
+  bool apply_chargeid_corrs;
   bool addxsuffix;
   bool addregionsuffix;
   double maxMET,min_dphi_z_b,min_z_pt,max_ptzb;
