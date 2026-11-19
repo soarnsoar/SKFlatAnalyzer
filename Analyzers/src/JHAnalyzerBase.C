@@ -49,6 +49,8 @@ void JHAnalyzerBase::initializeAnalyzer(){
   //bPDFsym=HasFlag("bPDFsym");
   bPDFsym=true;
   jsource=HasFlag("jsource");
+  if(jsource)    for(auto jec_source : JECSources)   SetupJECUncertainty(jec_source, "AK4PFchs");
+
   runSys=HasFlag("runSys");
   //runSysMom00=HasFlag("runSysMom00");
   weightonly=HasFlag("weightonly");
@@ -492,9 +494,7 @@ void JHAnalyzerBase::executeEvent(){
 
   //---Add JES sources----//
   if(jsource){
-    //setup
-    
-    for(auto jec_source : JECSources)   SetupJECUncertainty(jec_source, "AK4PFchs");
+
 
     //
     for(const auto &_vsys : vJESSourcesVar){
