@@ -93,12 +93,12 @@ void PreselectionToBDTRegionAnalyzer::initializeAnalyzer(){
     jhchoi_newtree->Branch("bjet_y",&bjet_y);
     jhchoi_newtree->Branch("z_eta",&z_eta);
     jhchoi_newtree->Branch("z_y",&z_y);
-    jhchoi_newtree->Branch("x_b",&x_b);
-    jhchoi_newtree->Branch("x_g",&x_g);
+    jhchoi_newtree->Branch("x_b_all",&x_b_all);
+    jhchoi_newtree->Branch("x_g_all",&x_g_all);
   }
 
   addxsuffix=HasFlag("addxsuffix");
-  addregionsuffix=HasFlag("addregionsuffix");
+
 
 
   prob_factor_test=HasFlag("prob_factor_test");
@@ -384,7 +384,7 @@ void PreselectionToBDTRegionAnalyzer::RunBasicZregion(){
     suffix_rapidity_region_idx=2;
   }
   suffix_rapidity_region="__"+suffix_rapidity_region;
-  if(i_proc==1 && addregionsuffix) ProcessName+=suffix_rapidity_region;
+
   //addxsuffix
   //------
 
@@ -664,26 +664,26 @@ void PreselectionToBDTRegionAnalyzer::RunBasicZregion(){
   if(measured_charge!=0) FillHist("AllEvents__"+bChargeType+"/measured_charge",measured_charge>0? +1 : -1,weight,3,-1.5,1.5);
 
   
-  if(addxsuffix || addregionsuffix){
-    FillHist("AllEvents/xcat_region",suffix_rapidity_region_idx,weight,5,-0.5,4.5);
-    FillHist("AllEvents"+suffix_rapidity_region+"/measured_charge_all",measured_charge,weight,13,-6.5,6.5);
-    if(measured_charge!=0){
-      FillHist("AllEvents"+suffix_rapidity_region+"/measured_charge",measured_charge,weight,13,-6.5,6.5);
-      FillHist("AllEvents__"+bChargeType+suffix_rapidity_region+"/measured_charge",measured_charge>0? +1 : -1,weight,3,-1.5,1.5);
-    }
-    if(measured_charge!=0) FillHist(bChargeType+"/xcat_region_dot_measured_charge",suffix_rapidity_region_idx*(measured_charge>0 ? +1 : -1),weight,9,-4.5,4.5);    
-    
-    FillHist("AllEvents"+suffix_rapidity_region+"/bChargeID_all",fabs(measured_charge),weight,7,-0.5,6.5);
-    if(measured_charge!=0)FillHist("AllEvents"+suffix_rapidity_region+"/bChargeID",fabs(measured_charge),weight,7,-0.5,6.5);
-    ///---if is DYb
-    if(IsDYbplus || IsDYbminus){
-      FillHist("AllEvents"+suffix_rapidity_region+"/log_x_b",log(x_b),weight,80,-8,0);
-      FillHist("AllEvents/log_x_b",log(x_b),weight,80,-8,0);
 
-      FillHist("AllEvents"+suffix_rapidity_region+"/Q",genWeight_Q,weight,200,0,200);
-      FillHist("AllEvents/Q",genWeight_Q,weight,200,0,200);      
-    }
-  }//[end] if addsuffix
+  FillHist("AllEvents/xcat_region",suffix_rapidity_region_idx,weight,5,-0.5,4.5);
+  FillHist("AllEvents"+suffix_rapidity_region+"/measured_charge_all",measured_charge,weight,13,-6.5,6.5);
+  if(measured_charge!=0){
+    FillHist("AllEvents"+suffix_rapidity_region+"/measured_charge",measured_charge,weight,13,-6.5,6.5);
+    FillHist("AllEvents__"+bChargeType+suffix_rapidity_region+"/measured_charge",measured_charge>0? +1 : -1,weight,3,-1.5,1.5);
+  }
+  if(measured_charge!=0) FillHist(bChargeType+"/xcat_region_dot_measured_charge",suffix_rapidity_region_idx*(measured_charge>0 ? +1 : -1),weight,9,-4.5,4.5);    
+  
+  FillHist("AllEvents"+suffix_rapidity_region+"/bChargeID_all",fabs(measured_charge),weight,7,-0.5,6.5);
+  if(measured_charge!=0)FillHist("AllEvents"+suffix_rapidity_region+"/bChargeID",fabs(measured_charge),weight,7,-0.5,6.5);
+  ///---if is DYb
+  if(IsDYbplus || IsDYbminus){
+    FillHist("AllEvents"+suffix_rapidity_region+"/log_x_b_all",log(x_b_all),weight,80,-8,0);
+    FillHist("AllEvents/log_x_b_all",log(x_b_all),weight,80,-8,0);
+    
+    FillHist("AllEvents"+suffix_rapidity_region+"/Q",genWeight_Q,weight,200,0,200);
+    FillHist("AllEvents/Q",genWeight_Q,weight,200,0,200);      
+  }
+
 
 
   
@@ -915,8 +915,8 @@ void PreselectionToBDTRegionAnalyzer::EventLoop(){
 
 
 
-
-void PreselectionToBDTRegionAnalyzer::TruthLoop(){
+/*
+void PreselectionToBDTRegionAnalyzer::TruthLoop_OLD(){
   //simplify the sample names
   if(MCSample.Contains("QCD_bEnriched")) ProcessName="QCD_bEnriched";
   if(MCSample.Contains("ZZ_pythia") || MCSample.Contains("WZ_pythia") || MCSample.Contains("WW_pythia") ) ProcessName="VV";
@@ -926,8 +926,8 @@ void PreselectionToBDTRegionAnalyzer::TruthLoop(){
   IsDYbplus=0;
   IsDYbminus=0;
   IsBKG=0;
-  x_b=100;
-  x_g=100;
+  x_b_all=100;
+  x_g_all=100;
   suffix_true_nb="";
 
   //---IsDYSample
@@ -975,18 +975,18 @@ void PreselectionToBDTRegionAnalyzer::TruthLoop(){
     }
     //-----in DYb
     if(abs(genWeight_id1)==5){
-      x_b=genWeight_X1;
-      x_g=genWeight_X2;
+      x_b_all=genWeight_X1;
+      x_g_all=genWeight_X2;
     }
     else if(abs(genWeight_id2)==5){
-      x_b=genWeight_X2;
-      x_g=genWeight_X1;
+      x_b_all=genWeight_X2;
+      x_g_all=genWeight_X1;
       
     }
     //suffix_xscale="";
-    if(log(x_b)<-4.5){
+    if(log(x_b_all)<-4.5){
       suffix_xscale="__logx_-InfTo-4.5";
-    }else if(log(x_b)<-3.5){
+    }else if(log(x_b_all)<-3.5){
       suffix_xscale="__logx_-4.5To-3.5";
     }else{
       suffix_xscale="__logx_-3.5To0";
@@ -1003,6 +1003,116 @@ void PreselectionToBDTRegionAnalyzer::TruthLoop(){
 
   //
   if(!IsDATA)GetPromptLepGenIdx();
+
+}
+*/
+  
+
+
+
+
+TString PreselectionToBDTRegionAnalyzer::Get_xscale_suffix(double this_x){
+  TString ret="";
+  if(log(this_x)<-4.5){
+    ret="logx_-InfTo-4.5";
+  }else if(log(this_x)<-3.5){
+    ret="logx_-4.5To-3.5";
+  }else{
+    ret="logx_-3.5To0";
+  }
+  return ret;
+}
+
+void PreselectionToBDTRegionAnalyzer::TruthLoop(){
+  if(!IsDATA)GetPromptLepGenIdx();
+  TString baseProcess=MCSample;
+
+  //simplify the sample names
+  if(MCSample.Contains("QCD_bEnriched")) baseProcess="QCD_bEnriched";
+  if(MCSample.Contains("ZZ_pythia") || MCSample.Contains("WZ_pythia") || MCSample.Contains("WW_pythia") ) baseProcess="VV";
+
+  
+  TString suffix_b_xscale="";
+  TString suffix_bbar_xscale="";
+  TString suffix_b="";
+  TString suffix_bbar="";
+  
+  IsDYbplus=0;
+  IsDYbminus=0;
+
+  x_b_all=100;
+  x_g_all=100;
+
+
+  //---IsDYSample
+  if(IsDATA){
+    return;
+  }
+
+
+  
+  //---For Rapidity region stury
+  //---only one incoming parton is bottom-type
+  bool only1_incoming_b=false;
+  int nb=0, nbbar=0;
+
+  if(genWeight_id1==5){
+    nb+=1;
+    suffix_b+="b";
+    suffix_b_xscale += "__b"+Get_xscale_suffix(genWeight_X1);
+    x_b_all=genWeight_X1;
+    if(genWeight_id2==21){
+      x_g_all=genWeight_X2;
+      IsDYbminus=1;
+    }
+  }else if(genWeight_id1==-5){
+    nbbar+=1;
+    suffix_bbar+="bbar";
+    suffix_bbar_xscale += "__bbar"+Get_xscale_suffix(genWeight_X1);
+    x_b_all=genWeight_X1;
+    if(genWeight_id2==21){
+      x_g_all=genWeight_X2;
+      IsDYbplus=1;
+    }
+  }
+  if(genWeight_id2==5){
+    nb+=1;
+    suffix_b+="b";
+    suffix_b_xscale += "__b"+Get_xscale_suffix(genWeight_X2);
+    x_b_all=genWeight_X2;
+    if(genWeight_id1==21){
+      x_g_all=genWeight_X1;
+      IsDYbminus=1;
+    }
+  }
+  else if(genWeight_id2==-5){
+    nbbar+=1;
+    suffix_bbar+="bbar";
+    suffix_bbar_xscale += "__bbar"+Get_xscale_suffix(genWeight_X2);
+    x_b_all=genWeight_X2;
+    if(genWeight_id1==21){
+      x_g_all=genWeight_X1;
+      IsDYbplus=1;
+    }
+  }
+
+  
+  //-----END for rapidity region study----//
+  
+  if(!IsDYSample){
+    IsDYbminus=0;
+    IsDYbplus=0;
+
+  }
+  if(suffix_b!="" || suffix_bbar!=""){
+    ProcessName=baseProcess+"_"+suffix_b+suffix_bbar;
+  }else{
+    ProcessName=baseProcess;
+  }
+  if(addxsuffix) ProcessName=baseProcess+suffix_b_xscale+suffix_bbar_xscale;
+
+  //
+
 
 }
 

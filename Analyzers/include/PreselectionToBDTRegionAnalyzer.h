@@ -11,7 +11,7 @@ public:
   void initializeAnalyzer() override;
   void EventLoop() override;
   void TruthLoop() override;
-
+  void TruthLoop_OLD();
   bool CheckIsDiMuonChannel(double min_mll=0., double max_mll=999999999.);
   bool CheckIsDiElectronChannel(double min_mll=0., double max_mll=999999999.);
   void SetIsDimuonChannel();
@@ -38,6 +38,9 @@ public:
   bool IsDiElectronChannel;
   void SetEventWeight();
   void SetEventNormWeight();
+
+  TString Get_xscale_suffix(double this_x);
+  
   TString LepCh;
   int mu1idx,mu2idx,el1idx,el2idx;
   Muon mu1, mu2;
@@ -57,8 +60,8 @@ public:
   vector<Jet> v_bjet;
 
 
-  TString suffix_true_nb;
-  int i_proc; //1:dyb 2:dyothers 3: bkg 0 :data
+  //TString suffix_true_nb;
+  //int i_proc; //1:dyb 2:dyothers 3: bkg 0 :data
   PreselectionToBDTRegionAnalyzer();
   ~PreselectionToBDTRegionAnalyzer();
 
@@ -78,10 +81,10 @@ public:
   bool apply_chargeid_acc_corr;
   bool apply_chargeid_corrs;
   bool addxsuffix;
-  bool addregionsuffix;
+  //  bool addregionsuffix;
   double maxMET,min_dphi_z_b,min_z_pt,max_ptzb;
 
-  double x_b,x_g;
+  double x_b_all,x_g_all;
   double bjet_y,bjet_eta,z_eta,z_y;
 
   //for optimization
@@ -94,7 +97,7 @@ public:
 
 
   //---xragne
-  TString suffix_xscale;
+  //TString suffix_xscale;
 
   //flag for this ana
   bool prob_factor_test;
