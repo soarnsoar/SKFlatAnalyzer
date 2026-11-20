@@ -671,7 +671,7 @@ void PreselectionToBDTRegionAnalyzer::RunBasicZregion(){
       FillHist("AllEvents"+suffix_rapidity_region+"/measured_charge",measured_charge,weight,13,-6.5,6.5);
       FillHist("AllEvents__"+bChargeType+suffix_rapidity_region+"/measured_charge",measured_charge>0? +1 : -1,weight,3,-1.5,1.5);
     }
-    FillHist(bChargeType+"/xcat_region_dot_measured_charge",suffix_rapidity_region_idx*(measured_charge>0 ? +1 : -1),weight,9,-4.5,4.5);    
+    if(measured_charge!=0) FillHist(bChargeType+"/xcat_region_dot_measured_charge",suffix_rapidity_region_idx*(measured_charge>0 ? +1 : -1),weight,9,-4.5,4.5);    
     
     FillHist("AllEvents"+suffix_rapidity_region+"/bChargeID_all",fabs(measured_charge),weight,7,-0.5,6.5);
     if(measured_charge!=0)FillHist("AllEvents"+suffix_rapidity_region+"/bChargeID",fabs(measured_charge),weight,7,-0.5,6.5);
