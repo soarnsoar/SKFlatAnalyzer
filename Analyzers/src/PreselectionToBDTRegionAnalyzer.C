@@ -649,18 +649,25 @@ void PreselectionToBDTRegionAnalyzer::RunBasicZregion(){
   }
 
   FillHistAll2("AllEvents");
+
+  //-----basic----//
   FillHist("AllEvents/measured_charge_all",measured_charge,weight,13,-6.5,6.5);
   if(measured_charge!=0)FillHist("AllEvents/measured_charge",measured_charge,weight,13,-6.5,6.5);
 
+
+  //----bchargeid----//
   FillHist("AllEvents/bChargeID_all",fabs(measured_charge),weight,7,-0.5,6.5);
   if(measured_charge!=0)FillHist("AllEvents/bChargeID",fabs(measured_charge),weight,7,-0.5,6.5);
-  FillHist("AllEvents__"+bChargeType+suffix_rapidity_region+"/measured_charge",measured_charge>0? +1 : -1,weight,3,-1.5,1.5);
 
+
+  //--by charge type---//
+  if(measured_charge!=0) FillHist("AllEvents__"+bChargeType+"/measured_charge",measured_charge>0? +1 : -1,weight,3,-1.5,1.5);
+
+  
   if(addxsuffix || addregionsuffix){
     FillHist("AllEvents/xcat_region",suffix_rapidity_region_idx,weight,5,-0.5,4.5);
     FillHist("AllEvents"+suffix_rapidity_region+"/measured_charge_all",measured_charge,weight,13,-6.5,6.5);
     if(measured_charge!=0){
-
       FillHist("AllEvents"+suffix_rapidity_region+"/measured_charge",measured_charge,weight,13,-6.5,6.5);
       FillHist("AllEvents__"+bChargeType+suffix_rapidity_region+"/measured_charge",measured_charge>0? +1 : -1,weight,3,-1.5,1.5);
     }
