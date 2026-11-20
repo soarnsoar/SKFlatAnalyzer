@@ -98,7 +98,7 @@ void PreselectionToBDTRegionAnalyzer::initializeAnalyzer(){
   }
 
   addxsuffix=HasFlag("addxsuffix");
-
+  bsuffixall=HasFlag("bsuffixall");
 
 
   prob_factor_test=HasFlag("prob_factor_test");
@@ -651,13 +651,13 @@ void PreselectionToBDTRegionAnalyzer::RunBasicZregion(){
   FillHistAll2("AllEvents");
 
   //-----basic----//
-  FillHist("AllEvents/measured_charge_all",measured_charge,weight,13,-6.5,6.5);
+  
   if(measured_charge!=0)FillHist("AllEvents/measured_charge",measured_charge,weight,13,-6.5,6.5);
 
 
   //----bchargeid----//
   FillHist("AllEvents/bChargeID_all",fabs(measured_charge),weight,7,-0.5,6.5);
-  if(measured_charge!=0)FillHist("AllEvents/bChargeID",fabs(measured_charge),weight,7,-0.5,6.5);
+  //if(measured_charge!=0)FillHist("AllEvents/bChargeID",fabs(measured_charge),weight,7,-0.5,6.5);
 
 
   //--by charge type---//
@@ -665,18 +665,17 @@ void PreselectionToBDTRegionAnalyzer::RunBasicZregion(){
 
   
 
-  FillHist("AllEvents/xcat_region",suffix_rapidity_region_idx,weight,5,-0.5,4.5);
-  FillHist("AllEvents"+suffix_rapidity_region+"/measured_charge_all",measured_charge,weight,13,-6.5,6.5);
+
+  FillHist("AllEvents"+suffix_rapidity_region+"/bChargeID_all",fabs(measured_charge),weight,7,-0.5,6.5);
   if(measured_charge!=0){
+    FillHist("AllEvents/rapidity_region",suffix_rapidity_region_idx,weight,5,-0.5,4.5);
     FillHist("AllEvents"+suffix_rapidity_region+"/measured_charge",measured_charge,weight,13,-6.5,6.5);
     FillHist("AllEvents__"+bChargeType+suffix_rapidity_region+"/measured_charge",measured_charge>0? +1 : -1,weight,3,-1.5,1.5);
+    FillHist(bChargeType+"/rapidity_region_dot_measured_charge",suffix_rapidity_region_idx*(measured_charge>0 ? +1 : -1),weight,9,-4.5,4.5);    
   }
-  if(measured_charge!=0) FillHist(bChargeType+"/xcat_region_dot_measured_charge",suffix_rapidity_region_idx*(measured_charge>0 ? +1 : -1),weight,9,-4.5,4.5);    
-  
-  FillHist("AllEvents"+suffix_rapidity_region+"/bChargeID_all",fabs(measured_charge),weight,7,-0.5,6.5);
-  if(measured_charge!=0)FillHist("AllEvents"+suffix_rapidity_region+"/bChargeID",fabs(measured_charge),weight,7,-0.5,6.5);
+
   ///---if is DYb
-  if(IsDYbplus || IsDYbminus){
+  if((IsDYbplus || IsDYbminus) && !runSys){
     FillHist("AllEvents"+suffix_rapidity_region+"/log_x_b_all",log(x_b_all),weight,80,-8,0);
     FillHist("AllEvents/log_x_b_all",log(x_b_all),weight,80,-8,0);
     
@@ -1024,12 +1023,16 @@ TString PreselectionToBDTRegionAnalyzer::Get_xscale_suffix(double this_x){
 }
 
 void PreselectionToBDTRegionAnalyzer::TruthLoop(){
+  //ToDo : b/bbar asym of other process, like tW?
+  // Their asym will be treated as bkg
   if(!IsDATA)GetPromptLepGenIdx();
   TString baseProcess=MCSample;
 
   //simplify the sample names
   if(MCSample.Contains("QCD_bEnriched")) baseProcess="QCD_bEnriched";
   if(MCSample.Contains("ZZ_pythia") || MCSample.Contains("WZ_pythia") || MCSample.Contains("WW_pythia") ) baseProcess="VV";
+  if(IsDYSample) baseProcess="DY";
+
 
   
   TString suffix_b_xscale="";
@@ -1048,6 +1051,7 @@ void PreselectionToBDTRegionAnalyzer::TruthLoop(){
   if(IsDATA){
     return;
   }
+  ProcessName=baseProcess;
 
 
   
@@ -1104,14 +1108,26 @@ void PreselectionToBDTRegionAnalyzer::TruthLoop(){
     IsDYbplus=0;
 
   }
-  if(suffix_b!="" || suffix_bbar!=""){
-    ProcessName=baseProcess+"_"+suffix_b+suffix_bbar;
-  }else{
-    ProcessName=baseProcess;
-  }
-  if(addxsuffix) ProcessName=baseProcess+suffix_b_xscale+suffix_bbar_xscale;
 
-  //
+  //-----incoming b suffix
+
+  if(bsuffixall){
+    if(suffix_b!="" || suffix_bbar!=""){
+      ProcessName=baseProcess+"_"+suffix_b+suffix_bbar;
+    }
+    
+    if(addxsuffix){
+      ProcessName=baseProcess+suffix_b_xscale+suffix_bbar_xscale;
+    }
+  }
+  else if(IsDYbminus || IsDYbplus){
+    ProcessName="DYgb_"+suffix_b+suffix_bbar;
+    
+    if(addxsuffix){
+      ProcessName="DYgb"+suffix_b_xscale+suffix_bbar_xscale;
+    }
+  }  
+
 
 
 }

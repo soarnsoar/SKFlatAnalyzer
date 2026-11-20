@@ -81,7 +81,7 @@ public:
   bool apply_chargeid_acc_corr;
   bool apply_chargeid_corrs;
   bool addxsuffix;
-  //  bool addregionsuffix;
+  bool bsuffixall;
   double maxMET,min_dphi_z_b,min_z_pt,max_ptzb;
 
   double x_b_all,x_g_all;
