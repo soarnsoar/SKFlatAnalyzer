@@ -1121,12 +1121,13 @@ void PreselectionToBDTRegionAnalyzer::TruthLoop(){
     }
   }
   else if(IsDYbminus || IsDYbplus){
-    ProcessName="DYb_"+suffix_b+suffix_bbar;
+    
+    ProcessName=baseProcess+"_"+suffix_b+suffix_bbar;
     
     if(addxsuffix){
-      ProcessName="DYb"+suffix_b_xscale+suffix_bbar_xscale;
+      ProcessName=baseProcess+suffix_b_xscale+suffix_bbar_xscale;
     }
-  }  
+  }
 
 
 
