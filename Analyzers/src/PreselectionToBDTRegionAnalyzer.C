@@ -1065,7 +1065,7 @@ void PreselectionToBDTRegionAnalyzer::TruthLoop(){
     suffix_b+="b";
     suffix_b_xscale += "__b"+Get_xscale_suffix(genWeight_X1);
     x_b_all=genWeight_X1;
-    if(genWeight_id2==21){
+    if(abs(genWeight_id2)!=5){
       x_g_all=genWeight_X2;
       IsDYbminus=1;
     }
@@ -1074,7 +1074,7 @@ void PreselectionToBDTRegionAnalyzer::TruthLoop(){
     suffix_bbar+="bbar";
     suffix_bbar_xscale += "__bbar"+Get_xscale_suffix(genWeight_X1);
     x_b_all=genWeight_X1;
-    if(genWeight_id2==21){
+    if(abs(genWeight_id2)!=5){
       x_g_all=genWeight_X2;
       IsDYbplus=1;
     }
@@ -1084,7 +1084,7 @@ void PreselectionToBDTRegionAnalyzer::TruthLoop(){
     suffix_b+="b";
     suffix_b_xscale += "__b"+Get_xscale_suffix(genWeight_X2);
     x_b_all=genWeight_X2;
-    if(genWeight_id1==21){
+    if(abs(genWeight_id1)!=5){
       x_g_all=genWeight_X1;
       IsDYbminus=1;
     }
@@ -1094,7 +1094,7 @@ void PreselectionToBDTRegionAnalyzer::TruthLoop(){
     suffix_bbar+="bbar";
     suffix_bbar_xscale += "__bbar"+Get_xscale_suffix(genWeight_X2);
     x_b_all=genWeight_X2;
-    if(genWeight_id1==21){
+    if(abs(genWeight_id1)!=5){
       x_g_all=genWeight_X1;
       IsDYbplus=1;
     }
@@ -1121,10 +1121,10 @@ void PreselectionToBDTRegionAnalyzer::TruthLoop(){
     }
   }
   else if(IsDYbminus || IsDYbplus){
-    ProcessName="DYgb_"+suffix_b+suffix_bbar;
+    ProcessName="DYb_"+suffix_b+suffix_bbar;
     
     if(addxsuffix){
-      ProcessName="DYgb"+suffix_b_xscale+suffix_bbar_xscale;
+      ProcessName="DYb"+suffix_b_xscale+suffix_bbar_xscale;
     }
   }  
 
