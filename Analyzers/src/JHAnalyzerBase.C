@@ -1001,7 +1001,13 @@ void JHAnalyzerBase::FillHistPDF(TString histname, double value, double this_wei
   int idx=0;
   int _size=weight_PDF->size();
   for(auto& _wsyst : *weight_PDF){
-    if(std::isnan(_wsyst)) _wsyst=1;
+
+    if(std::isnan(_wsyst) || std::isnan(v_r_bPDFsym[idx])){//is strange , fill nominal
+      FillHistIdx2(PDFalias,_size,idx,histname,value,this_weight,n_bin,x_min,x_max);
+      idx+=1;
+      continue;
+    }
+
     FillHistIdx2(PDFalias,_size,idx,histname,value,this_weight*_wsyst*v_r_bPDFsym[idx],n_bin,x_min,x_max);
     idx+=1;
   }
@@ -1010,7 +1016,11 @@ void JHAnalyzerBase::FillHistPDF(TString histname, double value, double this_wei
   int idx=0;
   int _size=weight_PDF->size();
   for(auto& _wsyst : *weight_PDF){
-    if(std::isnan(_wsyst)) _wsyst=1;
+    if(std::isnan(_wsyst) || std::isnan(v_r_bPDFsym[idx])){
+      FillHistIdx2(PDFalias,_size,idx,histname,value,this_weight,n_bin,xbins);
+      idx+=1;
+      continue;
+    }
     FillHistIdx2(PDFalias,_size,idx,histname,value,this_weight*_wsyst*v_r_bPDFsym[idx],n_bin,xbins);
     idx+=1;
   }
@@ -1021,6 +1031,13 @@ void JHAnalyzerBase::FillHistScale(TString histname, double value, double this_w
   int idx=0;
   int _size=weight_Scale->size();
   for(const auto& _wsyst : *weight_Scale){
+    if(std::isnan(_wsyst)){
+      FillHistIdx2("QCDScale",_size,idx,histname,value,this_weight,n_bin,x_min,x_max);
+      idx+=1;
+      continue;     
+    }
+
+    
     FillHistIdx2("QCDScale",_size,idx,histname,value,this_weight*_wsyst,n_bin,x_min,x_max);
     idx+=1;
   }
@@ -1029,6 +1046,12 @@ void JHAnalyzerBase::FillHistScale(TString histname, double value, double this_w
   int idx=0;
   int _size=weight_Scale->size();
   for(const auto& _wsyst : *weight_Scale){
+    if(std::isnan(_wsyst)){
+      FillHistIdx2("QCDScale",_size,idx,histname,value,this_weight,n_bin,xbins);
+      idx+=1;
+      continue;
+    }
+
     FillHistIdx2("QCDScale",_size,idx,histname,value,this_weight*_wsyst,n_bin,xbins);
     idx+=1;
   }
@@ -1039,6 +1062,11 @@ void JHAnalyzerBase::FillHistAlphaS(TString histname, double value, double this_
   int idx=0;
   int _size=weight_AlphaS->size();
   for(const auto& _wsyst : *weight_AlphaS){
+    if(std::isnan(_wsyst) || isnan(v_r_bPDFsym_AlphaS[idx])){
+      FillHistIdx2(PDFalias+"_AlphaS",_size,idx,histname,value,this_weight,n_bin,x_min,x_max);
+      idx+=1;
+      continue;
+    }
     FillHistIdx2(PDFalias+"_AlphaS",_size,idx,histname,value,this_weight*_wsyst*v_r_bPDFsym_AlphaS[idx],n_bin,x_min,x_max);
     idx+=1;
   }
@@ -1047,6 +1075,11 @@ void JHAnalyzerBase::FillHistAlphaS(TString histname, double value, double this_
   int idx=0;
   int _size=weight_AlphaS->size();
   for(const auto& _wsyst : *weight_AlphaS){
+    if(std::isnan(_wsyst) || std::isnan(v_r_bPDFsym_AlphaS[idx])){
+      FillHistIdx2(PDFalias+"_AlphaS",_size,idx,histname,value,this_weight,n_bin,xbins);
+      idx+=1;
+      continue;
+    }      
     FillHistIdx2(PDFalias+"_AlphaS",_size,idx,histname,value,this_weight*_wsyst*v_r_bPDFsym_AlphaS[idx],n_bin,xbins);
     idx+=1;
   }
