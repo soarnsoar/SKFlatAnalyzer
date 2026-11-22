@@ -834,7 +834,7 @@ void JHAnalyzerBase::InitClassVariablesPerEvent(){
 
   
   if(!IsDATA && bPDFsym){
-    bool has_valid_nom=(r_bPDFsym!=0) && (!std::isnan(r_bPDFsym));
+    bool has_valid_nom=(r_bPDFsym>0) && (!std::isnan(r_bPDFsym));
     if(!has_valid_nom) r_bPDFsym=1.;
     weight*=r_bPDFsym;
     //  AnalyzerCore::FillHist("r_bPDFsym",r_bPDFsym,1,100,0.95,1.05);
@@ -1001,8 +1001,16 @@ void JHAnalyzerBase::FillHistPDF(TString histname, double value, double this_wei
   int idx=0;
   int _size=weight_PDF->size();
   for(auto& _wsyst : *weight_PDF){
-
-    if(std::isnan(_wsyst) || std::isnan(v_r_bPDFsym[idx])){//is strange , fill nominal
+    if (_wsyst < 0){
+      cout << "PDF idx=" << idx << " negative _wsyst" <<endl;
+      cout <<"_wsyst=" << _wsyst << endl;
+    }
+    if (v_r_bPDFsym[idx] < 0){
+      cout << "PDF idx=" << idx << " negative v_r_bPDFsym[idx]" <<endl;
+      cout <<"v_r_bPDFsym[idx]" << v_r_bPDFsym[idx] << endl;
+    }
+    //if(std::isnan(_wsyst) || std::isnan(v_r_bPDFsym[idx]) || _wsyst< 0 || v_r_bPDFsym[idx]<0){//is strange , fill nominal
+    if(std::isnan(_wsyst) || std::isnan(v_r_bPDFsym[idx])){
       FillHistIdx2(PDFalias,_size,idx,histname,value,this_weight,n_bin,x_min,x_max);
       idx+=1;
       continue;
@@ -1016,6 +1024,15 @@ void JHAnalyzerBase::FillHistPDF(TString histname, double value, double this_wei
   int idx=0;
   int _size=weight_PDF->size();
   for(auto& _wsyst : *weight_PDF){
+    if (_wsyst < 0){
+      cout << "PDF idx=" << idx << " negative _wsyst" <<endl;
+      cout <<"_wsyst=" << _wsyst << endl;
+    }
+    if (v_r_bPDFsym[idx] < 0){
+      cout << "PDF idx=" << idx << " negative v_r_bPDFsym[idx]" <<endl;
+      cout <<"v_r_bPDFsym[idx]" << v_r_bPDFsym[idx] << endl;
+    }
+    //if(std::isnan(_wsyst) || std::isnan(v_r_bPDFsym[idx]) || _wsyst< 0 || v_r_bPDFsym[idx]<0){//is strange , fill nominal
     if(std::isnan(_wsyst) || std::isnan(v_r_bPDFsym[idx])){
       FillHistIdx2(PDFalias,_size,idx,histname,value,this_weight,n_bin,xbins);
       idx+=1;
@@ -10629,6 +10646,7 @@ void JHAnalyzerBase::Load_r_bPDFsym(){
   int n_mem=pdfReweight->PDFErrorSet.size();
   bool has_valid_nom=(r_bPDFsym!=0) && (!std::isnan(r_bPDFsym));
   for(int i =0; i < n_mem; i++){
+    /*
     double this_r= has_valid_nom ? Get_r_bPDFsym(i)/r_bPDFsym : 1.0; // because nominal r_bPDFsym is already applied to weight
     //so restore the weight to original one then applied sym factor of ith member
     v_r_bPDFsym.push_back(this_r);
@@ -10637,6 +10655,49 @@ void JHAnalyzerBase::Load_r_bPDFsym(){
     //so, this_r = r_sym_for_ithmem / r_sym_nom  
     
     AnalyzerCore::FillHist("r_bPDFsym/"+std::to_string(i),this_r,1,100,0.95,1.05);
+    */
+    double r_member = Get_r_bPDFsym(i);
+    double this_r = has_valid_nom ? r_member/r_bPDFsym : 1.0;
+    
+    if(!std::isfinite(this_r) || this_r < 0.5 || this_r > 2.0){
+      
+      cout << "\n[PDF OUTLIER] member=" << i << endl;
+      cout << "r_member=" << r_member
+	   << ", r_nom=" << r_bPDFsym
+	   << ", this_r=" << this_r << endl;
+      
+      cout << "id1=" << genWeight_id1
+	   << ", id2=" << genWeight_id2
+	   << ", x1=" << genWeight_X1
+	   << ", x2=" << genWeight_X2
+	   << ", Q=" << genWeight_Q << endl;
+      
+      if(abs(genWeight_id1)==5){
+	double f_this = pdfReweight->PDFErrorSet.at(i)->xfxQ(
+							     genWeight_id1, genWeight_X1, genWeight_Q);
+	double f_anti = pdfReweight->PDFErrorSet.at(i)->xfxQ(
+							     -genWeight_id1, genWeight_X1, genWeight_Q);
+	
+	cout << "parton1: f_this=" << f_this
+	     << ", f_anti=" << f_anti << endl;
+      }
+      
+      if(abs(genWeight_id2)==5){
+	double f_this = pdfReweight->PDFErrorSet.at(i)->xfxQ(
+							     genWeight_id2, genWeight_X2, genWeight_Q);
+	double f_anti = pdfReweight->PDFErrorSet.at(i)->xfxQ(
+							     -genWeight_id2, genWeight_X2, genWeight_Q);
+	
+	cout << "parton2: f_this=" << f_this
+	     << ", f_anti=" << f_anti << endl;
+      }
+    }
+    
+    v_r_bPDFsym.push_back(this_r);
+    
+    AnalyzerCore::FillHist("r_bPDFsym/"+std::to_string(i),
+			   this_r,1,100,0.95,1.05);
+    
   }
   //---Alpha s
   double r_bPDFsym_AlphaSUp=1.;
