@@ -1001,6 +1001,7 @@ void JHAnalyzerBase::FillHistPDF(TString histname, double value, double this_wei
   int idx=0;
   int _size=weight_PDF->size();
   for(auto& _wsyst : *weight_PDF){
+    /*
     if (_wsyst < 0){
       cout << "PDF idx=" << idx << " negative _wsyst" <<endl;
       cout <<"_wsyst=" << _wsyst << endl;
@@ -1009,8 +1010,9 @@ void JHAnalyzerBase::FillHistPDF(TString histname, double value, double this_wei
       cout << "PDF idx=" << idx << " negative v_r_bPDFsym[idx]" <<endl;
       cout <<"v_r_bPDFsym[idx]" << v_r_bPDFsym[idx] << endl;
     }
-    //if(std::isnan(_wsyst) || std::isnan(v_r_bPDFsym[idx]) || _wsyst< 0 || v_r_bPDFsym[idx]<0){//is strange , fill nominal
-    if(std::isnan(_wsyst) || std::isnan(v_r_bPDFsym[idx])){
+    */
+    if(std::isnan(_wsyst) || std::isnan(v_r_bPDFsym[idx]) || _wsyst< 0 || v_r_bPDFsym[idx]<0){//is strange , fill nominal
+      //if(std::isnan(_wsyst) || std::isnan(v_r_bPDFsym[idx])){
       FillHistIdx2(PDFalias,_size,idx,histname,value,this_weight,n_bin,x_min,x_max);
       idx+=1;
       continue;
@@ -1024,6 +1026,7 @@ void JHAnalyzerBase::FillHistPDF(TString histname, double value, double this_wei
   int idx=0;
   int _size=weight_PDF->size();
   for(auto& _wsyst : *weight_PDF){
+    /*
     if (_wsyst < 0){
       cout << "PDF idx=" << idx << " negative _wsyst" <<endl;
       cout <<"_wsyst=" << _wsyst << endl;
@@ -1032,8 +1035,9 @@ void JHAnalyzerBase::FillHistPDF(TString histname, double value, double this_wei
       cout << "PDF idx=" << idx << " negative v_r_bPDFsym[idx]" <<endl;
       cout <<"v_r_bPDFsym[idx]" << v_r_bPDFsym[idx] << endl;
     }
-    //if(std::isnan(_wsyst) || std::isnan(v_r_bPDFsym[idx]) || _wsyst< 0 || v_r_bPDFsym[idx]<0){//is strange , fill nominal
-    if(std::isnan(_wsyst) || std::isnan(v_r_bPDFsym[idx])){
+    */
+    if(std::isnan(_wsyst) || std::isnan(v_r_bPDFsym[idx]) || _wsyst< 0 || v_r_bPDFsym[idx]<0){//is strange , fill nominal
+    //if(std::isnan(_wsyst) || std::isnan(v_r_bPDFsym[idx])){
       FillHistIdx2(PDFalias,_size,idx,histname,value,this_weight,n_bin,xbins);
       idx+=1;
       continue;
@@ -10644,7 +10648,7 @@ void JHAnalyzerBase::Load_r_bPDFsym(){
   r_bPDFsym=Get_r_bPDFsym();
   //---syst r
   int n_mem=pdfReweight->PDFErrorSet.size();
-  bool has_valid_nom=(r_bPDFsym!=0) && (!std::isnan(r_bPDFsym));
+  bool has_valid_nom=(r_bPDFsym>0) && (!std::isnan(r_bPDFsym));
   for(int i =0; i < n_mem; i++){
     /*
     double this_r= has_valid_nom ? Get_r_bPDFsym(i)/r_bPDFsym : 1.0; // because nominal r_bPDFsym is already applied to weight
@@ -10658,7 +10662,9 @@ void JHAnalyzerBase::Load_r_bPDFsym(){
     */
     double r_member = Get_r_bPDFsym(i);
     double this_r = has_valid_nom ? r_member/r_bPDFsym : 1.0;
-    
+
+
+    /*
     if(!std::isfinite(this_r) || this_r < 0.5 || this_r > 2.0){
       
       cout << "\n[PDF OUTLIER] member=" << i << endl;
@@ -10692,7 +10698,7 @@ void JHAnalyzerBase::Load_r_bPDFsym(){
 	     << ", f_anti=" << f_anti << endl;
       }
     }
-    
+    */
     v_r_bPDFsym.push_back(this_r);
     
     AnalyzerCore::FillHist("r_bPDFsym/"+std::to_string(i),
