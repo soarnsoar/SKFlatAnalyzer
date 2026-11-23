@@ -33,7 +33,7 @@ class HaddJobManager:
         for line in lines:
             ##--exception
             if "IMPORTANT: Setting CMSSW environment to use 'x86-64-v2' target." in line : continue
-            print('['+thispath+']',line)
+            print('!!!['+thispath+']',line)
             
     def CheckErrFiles(self):
         for hadddir in self.list_hadddir:
