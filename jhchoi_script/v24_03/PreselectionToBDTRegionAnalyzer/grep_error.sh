@@ -5,7 +5,16 @@
 
 logdir=*logs
 #logdir=jetpuid_loose_use_beffasym_newlepveto_bdt2608.2_bdtcut_apply_chargeid_eff_corr_apply_chargeid_acc_corr_syslogs
-grep -r "err" 201*/${logdir}/*.log|grep -v HT|grep err
-grep -r "err" 201*/${logdir}/*.log|grep -v HT|grep Err
 
-grep -r "err" 201*/${logdir}/*.log|grep -v HT|grep ERR
+
+#grep -r "err" 201*/${logdir}/*.log|grep -v HT|grep err
+#grep -r "err" 201*/${logdir}/*.log|grep -v HT|grep Err
+
+#grep -r "err" 201*/${logdir}/*.log|grep -v HT|grep ERR
+
+
+
+grep -r "ERR" 201*/${logdir}/*.log|grep -v HT|grep -v www
+grep -r "Err" 201*/${logdir}/*.log|grep -v HT|grep -v www
+grep -r "err" 201*/${logdir}/*.log|grep -v HT|grep -v www
+
