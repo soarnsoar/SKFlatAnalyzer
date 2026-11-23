@@ -36,7 +36,11 @@ class HaddJobManager:
     def CheckErrFiles(self):
         for hadddir in self.list_hadddir:
             this_errpath=hadddir+"/run.err"
-            self.PrintFile(this_errpath)
+            if os.path.isfile(this_errpath):
+                self.PrintFile(this_errpath)
+            this_jidpath=hadddir+"/run.jid"
+            if os.path.isfile(this_jidpath):
+                self.PrintFile(this_jidpath)
 if __name__ == "__main__":
     import sys
     thislog=sys.argv[1]
