@@ -46,8 +46,8 @@ void JHAnalyzerBase::initializeAnalyzer(){
   if(IsDYSample)  AnalyzerCore::SetupZptWeight();
   InitSystematicMomentumVariations();
   //bPDF sym weight
-  //bPDFsym=HasFlag("bPDFsym");
-  bPDFsym=true;
+  bPDFsym=HasFlag("bPDFsym");
+  //bPDFsym=true;
   jsource=HasFlag("jsource");
   if(jsource)    for(auto jec_source : JECSources)   SetupJECUncertainty(jec_source, "AK4PFchs");
 
