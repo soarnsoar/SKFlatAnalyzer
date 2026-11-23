@@ -17,6 +17,8 @@ class HaddJobManager:
                 parent_path = os.path.dirname(this_rundir.rstrip('/')) + '/'
                 #print('parent_path=',parent_path)
                 self.list_rundir.append(parent_path)
+
+        print(self.list_rundir)
     def Get_WORKDIR_HADD(self):
         self.list_hadddir=[]
         for this_rundir in self.list_rundir:
