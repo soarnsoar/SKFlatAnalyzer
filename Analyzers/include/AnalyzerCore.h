@@ -143,7 +143,9 @@ public:
   std::vector<Jet> ScaleJets(const std::vector<Jet>& jets, int sys);
   std::vector<Jet> ScaleJetsIndividualSource(const std::vector<Jet>& jets, int sys, TString source);
   std::vector<Jet> SmearJets(const std::vector<Jet>& jets, int sys);
-
+  //--jhchoi
+  std::vector<Jet> SmearJetsMinMaxEta(const std::vector<Jet>& jets, int sys, double minEta, double maxEta);
+  //--end jhchoi
   std::vector<FatJet> ScaleFatJets(const std::vector<FatJet>& jets, int sys);
   std::vector<FatJet> SmearFatJets(const std::vector<FatJet>& jets, int sys);
   std::vector<FatJet> ScaleSDMassFatJets(const std::vector<FatJet>& jets, int sys);

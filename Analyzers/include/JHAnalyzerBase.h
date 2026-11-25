@@ -35,6 +35,7 @@ class JHAnalyzerBase : public AnalyzerCore {
   Event ev;
   //---flags
   bool jsource;
+  bool sjer;
   bool bPDFsym;
   bool runSys;
   bool runMomSys;
@@ -272,7 +273,17 @@ class JHAnalyzerBase : public AnalyzerCore {
   };
 
   vector<vector<JESSourcesVar>> vJESSourcesVar;
+  //---Jer by Eta
 
+  struct JERSplitVar{
+    TString name="jersplit";
+    TString source="JERsplitNotDefined";
+    TString dir="DirNotDefined";
+    int dir_int=0;
+    double minEta=-1;
+    double maxEta=5;
+  };
+  vector<vector<JERSplitVar>> vJERSplitVar;
   
   TString sysname_current,sysdir_current;
   TString sysidx1_current,sysidx2_current;
@@ -284,6 +295,7 @@ class JHAnalyzerBase : public AnalyzerCore {
   void SetSys(MuonMomentumVar _sys);
   void SetSys(ElectronMomentumVar _sys);
   void SetSys(JESSourcesVar _sys);
+  void SetSys(JERSplitVar _sys);
 
   void SetSysSimpleMuon(int direction);
   void SetSysSimpleElectron(int direction);

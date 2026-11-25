@@ -51,6 +51,9 @@ void JHAnalyzerBase::initializeAnalyzer(){
   jsource=HasFlag("jsource");
   if(jsource)    for(auto jec_source : JECSources)   SetupJECUncertainty(jec_source, "AK4PFchs");
 
+  //jersplit->sjer
+  sjer=HasFlag("sjer");
+  
   runSys=HasFlag("runSys");
   //runSysMom00=HasFlag("runSysMom00");
   weightonly=HasFlag("weightonly");
@@ -306,6 +309,30 @@ void JHAnalyzerBase::InitSystematicMomentumVariations(){
   }
   cout << "vJESSourcesVar.size()=" << vJESSourcesVar.size() << endl;
   
+  //----vJERSplitVar
+  const vector<TString> v_jeretaname={"Eta0To1p93","Eta1p93To2p5"};  
+  
+  for(unsigned int idx1=0; idx1<2;idx1++){
+    vector<JERSplitVar> this_v;
+    double this_minEta=0;
+    double this_maxEta=1.93;
+    if(idx1==1){
+      this_minEta=1.93;
+      this_maxEta=2.5;
+    }
+    for(int idx2=0; idx2 < 2;idx2++){
+      JERSplitVar thisvar;
+      thisvar.source=v_jeretaname[idx1];
+      thisvar.dir= idx2==0 ? "Up" : "Down";
+      thisvar.dir_int= idx2==0 ? 1 : -1;
+      thisvar.name="jerByEta";
+      thisvar.minEta=this_minEta;
+      thisvar.maxEta=this_maxEta;
+      this_v.push_back(thisvar);
+    }
+    vJERSplitVar.push_back(this_v);
+  }
+  cout << "vJERSplitVar.size()=" << vJERSplitVar.size() << endl;
   
 }
 
@@ -502,6 +529,18 @@ void JHAnalyzerBase::executeEvent(){
 	InitBtagSys();
 	
 	EventLoop();
+      }
+    }
+  }
+  //---jer split
+  if(sjer){
+    for(const auto &_vsys : vJERSplitVar){
+      for(const auto &sys : _vsys){
+        SetSys(sys);
+        InitClassVariablesPerEvent();
+        InitBtagSys();
+	
+        EventLoop();
       }
     }
   }
@@ -1922,6 +1961,30 @@ void JHAnalyzerBase::SetSys(JESSourcesVar _sys){
 
 }
 
+
+void JHAnalyzerBase::SetSys(JERSplitVar _sys){
+  sysname_current=_sys.name;
+  TString this_jer_source=_sys.source;
+  TString this_dir=_sys.dir;
+  double this_minEta=_sys.minEta;
+  double this_maxEta=_sys.maxEta;
+  int dir_int=_sys.dir_int;
+
+  AllMuons=AllMuons_roch;
+  std::sort(AllMuons.begin(), AllMuons.end(), PtComparing);
+  AllElectrons=AllElectrons_roch;
+  std::sort(AllElectrons.begin(), AllElectrons.end(), PtComparing);
+  
+
+  AllJets=SmearJetsMinMaxEta(AllJets_raw,dir_int,this_minEta,this_maxEta);
+  std::sort(AllJets.begin(), AllJets.end(), PtComparing);
+  
+  CurrentMET=UpdateMETByJetNewOld(CurrentMET_roch,AllJets,AllJets_raw);
+
+  sysidx1_current=this_jer_source;
+  sysidx2_current=this_dir;
+
+}
 
 void JHAnalyzerBase::InitAllObjects(){
   //cout << "[JHAnalyzerBase::InitAllObjects] init to nominal objects" << endl;

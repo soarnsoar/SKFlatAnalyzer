@@ -1626,6 +1626,33 @@ std::vector<Jet> AnalyzerCore::SmearJets(const std::vector<Jet>& jets, int sys){
 
 }
 
+
+
+std::vector<Jet> AnalyzerCore::SmearJetsMinMaxEta(const std::vector<Jet>& jets, int sys, double minEta, double maxEta){
+  
+  std::vector<Jet> out;
+  for(unsigned int i=0; i<jets.size(); i++){
+    //==== jets is a const vector. So in this function, we have to copy the elements like below
+    Jet this_jet = jets.at(i);
+    double this_eta=fabs(this_jet.Eta());
+
+
+    //
+    bool within_syseta=  (this_eta >= minEta && this_eta < maxEta);
+
+    int this_var = within_syseta ? sys : 0;
+    
+
+    this_jet *= this_jet.ResShift(this_var);
+
+    out.push_back( this_jet );
+  }
+
+  return out;
+
+}
+
+
 std::vector<FatJet> AnalyzerCore::ScaleFatJets(const std::vector<FatJet>& jets, int sys){
 
   std::vector<FatJet> out;
