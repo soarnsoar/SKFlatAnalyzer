@@ -214,7 +214,7 @@ if __name__ == '__main__':
    group_opt=''
    ##-append 'accounting_group = group_cms' 
    HOSTNAME=os.getenv('HOSTNAME')
-   if 'sdfarm' in HOSTNAME:
+   if 'sdfarm' in HOSTNAME or 'gsdc' in HOSTNAME:
        group_opt=" -append 'accounting_group = group_cms' "
    if submit:
        submit_command="condor_submit_dag "+group_opt+" hadd_manager_"+this_hadd.jobname+".dag"

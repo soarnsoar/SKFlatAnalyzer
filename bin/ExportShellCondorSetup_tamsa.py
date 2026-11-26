@@ -70,7 +70,7 @@ def Export(WORKDIR,command,jobname,submit,ncpu,memory=False,nretry=3,nmax=False)
     lines.append('output = '+os.getcwd()+'/'+WORKDIR+'/run.out')
     lines.append('error = '+os.getcwd()+'/'+WORKDIR+'/run.err')
     lines.append('log = '+os.getcwd()+'/'+WORKDIR+'/run.log')
-    if 'sdfarm' in HOSTNAME :##kisti
+    if 'sdfarm' in HOSTNAME or 'gsdc' in HOSTNAME : ##kisti
         lines.append('accounting_group=group_cms')            
     consumption='1' ## consumption of concurrency limit 
     if memory:

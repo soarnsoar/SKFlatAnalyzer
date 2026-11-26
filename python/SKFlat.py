@@ -99,7 +99,7 @@ if SKFlatLogWebDir=='':
 
 ## Check hostname
 
-IsKISTI = ("sdfarm.kr" in HOSTNAME)
+IsKISTI = ("sdfarm.kr" in HOSTNAME or 'gsdc' in HOSTNAME) 
 IsUI10 = ("ui10.sdfarm.kr" in HOSTNAME)
 IsUI20 = ("ui20.sdfarm.kr" in HOSTNAME)
 IsTAMSA1 = ("tamsa1" in HOSTNAME)
@@ -392,7 +392,7 @@ exit $EXITCODE
     run_commands.close()
 
     submit_command = open(base_rundir+'/submit.jds','w')
-    if IsTAMSA or IsKNU or IsUI20:
+    if IsTAMSA or IsKNU or IsKISTI:
       concurrency_limits=''
       if args.NMax:
         concurrency_limits='concurrency_limits = n'+str(args.NMax)+'.'+os.getenv("USER")
@@ -406,7 +406,7 @@ exit $EXITCODE
       if args.req_cpus:
         request_cpus='request_cpus = '+str(args.req_cpus)
       condor_group=''
-      if IsUI20:
+      if IsKISTI:
           condor_group='accounting_group=group_cms'
       #strict_resource='requirements =   (TARGET.RemoteUserResourcesInUse +    max(RequestCpus, RequestMemory/3200)) <= 400'
       
