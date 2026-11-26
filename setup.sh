@@ -57,7 +57,7 @@ export VECLIB_MAXIMUM_THREADS=1
 export NUMEXPR_NUM_THREADS=1
 
 
-if [[ $HOSTNAME == *"ui"*".sdfarm.kr"* ]]; then
+if [[ $HOSTNAME == *"ui"*".sdfarm.kr"* || $HOSTNAME == *"gsdc"* ]]; then
 
   echo "@@@@ Working on KISTI"
   #export SKFlatRunlogDir="/cms/ldap_home/$USER/SKFlatRunlog/"
