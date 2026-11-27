@@ -1054,6 +1054,7 @@ class JHAnalyzerBase : public AnalyzerCore {
   vector<double> v_r_bPDFsym_AlphaS; //down / up
   
   double r_bPDFsym;
+  double is_Valid_nom_r_bPDFsym;
   void Load_r_bPDFsym();
   bool PDFHasAlphaSvar;
 private:
